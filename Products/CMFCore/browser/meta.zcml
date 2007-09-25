@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <!-- Commenting out pending Lennart's fixes for Zope 3.2 compatibility.
+  <meta:directives namespace="http://namespaces.zope.org/cmf">
+
+    <meta:directive
+        name="menu"
+        schema="zope.app.publisher.browser.metadirectives.IMenuDirective"
+        handler="zope.app.publisher.browser.globalbrowsermenuservice.menuDirective"
+        />
+
+    <meta:directive
+        name="menuItem"
+        schema="zope.app.publisher.browser.metadirectives.IMenuItemDirective"
+        handler=".browser.globalbrowsermenuservice.menuItemDirective"
+        />
+
+    <meta:complexDirective
+        name="menuItems"
+        schema="zope.app.publisher.browser.metadirectives.IMenuItemsDirective"
+        handler=".browser.globalbrowsermenuservice.menuItemsDirective"
+        >
+
+      <meta:subdirective
+          name="menuItem"
+          schema="zope.app.publisher.browser.metadirectives.IMenuItemSubdirective"
+          />
+
+    </meta:complexDirective>
+
+  </meta:directives>
+  -->
+
+</configure>

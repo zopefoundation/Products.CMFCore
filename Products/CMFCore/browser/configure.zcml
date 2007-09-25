@@ -1,0 +1,48 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="cmf_default">
+
+  <configure package="Products.GenericSetup.browser">
+
+    <browser:page
+        for="zope.app.container.interfaces.IAdding"
+        name="addAction.html"
+        template="addWithPresettings.pt"
+        class="Products.CMFCore.browser.actions.ActionAddView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="zope.app.container.interfaces.IAdding"
+        name="addActionCategory.html"
+        template="addWithPresettings.pt"
+        class="Products.CMFCore.browser.actions.ActionCategoryAddView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="zope.app.container.interfaces.IAdding"
+        name="addFactoryTypeInformation.html"
+        template="addWithPresettings.pt"
+        class="Products.CMFCore.browser.typeinfo.FactoryTypeInformationAddView"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:page
+        for="zope.app.container.interfaces.IAdding"
+        name="addScriptableTypeInformation.html"
+        template="addWithPresettings.pt"
+        class="Products.CMFCore.browser.typeinfo.ScriptableTypeInformationAddView"
+        permission="cmf.ManagePortal"
+        />
+
+  </configure>
+
+  <!-- Set up default menus as action categories. -->
+  <browser:menu
+    id="object"
+    title="Object menu"
+    />
+
+</configure>

@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <include file="browser/meta.zcml"/>
+
+  <meta:directive
+      name="registerDirectory"
+      namespace="http://namespaces.zope.org/cmf"
+      schema=".zcml.IRegisterDirectoryDirective"
+      handler=".zcml.registerDirectory"
+      />
+
+</configure>

@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five">
+
+  <five:registerClass
+      class=".ActionInformation.ActionCategory"
+      meta_type="CMF Action Category"
+      addview="addActionCategory.html"
+      permission="cmf.ManagePortal"
+      global="False"
+      />
+
+  <five:registerClass
+      class=".ActionInformation.Action"
+      meta_type="CMF Action"
+      addview="addAction.html"
+      permission="cmf.ManagePortal"
+      global="False"
+      />
+
+  <five:registerClass
+      class=".TypesTool.FactoryTypeInformation"
+      meta_type="Factory-based Type Information"
+      addview="addFactoryTypeInformation.html"
+      permission="cmf.ManagePortal"
+      global="False"
+      />
+
+  <five:registerClass
+      class=".TypesTool.ScriptableTypeInformation"
+      meta_type="Scriptable Type Information"
+      addview="addScriptableTypeInformation.html"
+      permission="cmf.ManagePortal"
+      global="False"
+      />
+
+</configure>

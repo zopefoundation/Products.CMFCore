@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="cmf_default">
+
+  <browser:menu
+      id="mymenu"
+      title="CMF menu"
+      />
+
+  <browser:menuItem
+      for="Products.Five.tests.testing.simplecontent.ISimpleContent"
+      menu="mymenu"
+      title="Public Test Menu Item"
+      action="public.html"
+      description="This is a public test menu item"
+      permission="zope.Public"
+      />
+
+  <browser:menuItem
+      for="Products.Five.tests.testing.simplecontent.ISimpleContent"
+      menu="mymenu"
+      title="Protected Test Menu Item"
+      action="protected.html"
+      description="This is a protected test menu item"
+      permission="zope2.ManageUsers"
+      />
+
+</configure>
