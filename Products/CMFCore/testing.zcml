@@ -1,0 +1,34 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five">
+
+  <include
+      package="Products.Five"
+      file="meta.zcml"
+      />
+
+  <include
+      package="Products.GenericSetup"
+      file="meta.zcml"
+      />
+
+  <include
+      package="Products.CMFCore"
+      file="meta.zcml"
+      />
+
+  <include package="Products.Five"/>
+
+  <include package="Products.GenericSetup"/>
+
+  <include package="Products.CMFCore"/>
+
+  <five:deprecatedManageAddDelete
+      class="Products.CMFCore.tests.base.dummy.DummyContent"/>
+
+  <utility
+      component="zope.i18n.testmessagecatalog.TestMessageFallbackDomain"/>
+
+  <adapter factory=".testing.BrowserLanguages"/>
+
+</configure>

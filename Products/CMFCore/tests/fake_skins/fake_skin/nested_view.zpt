@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title tal:replace="context/Title"> A title </title>
+  </head>
+
+  <body>
+
+    <p tal:replace="structure context/doc2/nested_view_1">
+      Pulling in a second view to see if it triggers the CachingPolicyManager
+    </p>
+
+    <p tal:replace="structure context/doc3/nested_view_2">
+      Pulling in a third view to see if it triggers the CachingPolicyManager
+    </p>
+
+  </body>
+</html>
