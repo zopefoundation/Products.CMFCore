@@ -1,7 +1,0 @@
-Products.CMFCore Changelog
-
-  Products.CMFCore 2.1.0 (2007-08-08)
-
-    First egg release.  For changes up through this release, please see
-    the overall "CMF changelog",
-    http://svn.zope.org/CMF/tags/2.1.0/CHANGES.txt?rev=78713&view=markup
