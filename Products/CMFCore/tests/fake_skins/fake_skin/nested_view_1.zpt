@@ -1,0 +1,5 @@
+<h1 tal:content="context/Title"> This is the title </h1>
+
+<p tal:content="structure here/doc3/nested_view_2">
+  Pulling in yet another view to see if it triggers the CachingPolicyManager
+</p>

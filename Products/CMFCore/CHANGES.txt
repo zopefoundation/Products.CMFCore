@@ -1,0 +1,20 @@
+Products.CMFCore Changelog
+
+  Products.CMFCore 2.1.1 (unreleased)
+
+    - FSImage: Supply class-level defaults for 'alt', 'height', and 'width',
+      to avoid acquiring objects with the same names.
+      (http://www.zope.org/Collectors/CMF/507)
+
+    - Testing: Derive test layers from ZopeLite layer if available.
+
+    - PortalObject: Fixed a bug in the site manager creation code, which would
+      assign the __parent__ pointer to the Aq-wrapper and not the actual
+      object.
+
+
+  Products.CMFCore 2.1.0 (2007-08-08)
+
+    First egg release.  For changes up through this release, please see
+    the overall "CMF changelog",
+    http://svn.zope.org/CMF/tags/2.1.0/CHANGES.txt?rev=78713&view=markup
