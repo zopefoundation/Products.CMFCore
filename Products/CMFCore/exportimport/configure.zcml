@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <adapter
+      factory=".content.StructureFolderWalkingAdapter"
+      provides="Products.GenericSetup.interfaces.IFilesystemExporter"
+      for="Products.CMFCore.interfaces.IFolderish"
+      />
+
+  <adapter
+      factory=".content.StructureFolderWalkingAdapter"
+      provides="Products.GenericSetup.interfaces.IFilesystemImporter"
+      for="Products.CMFCore.interfaces.IFolderish"
+      />
+
+  <adapter factory=".actions.ActionCategoryNodeAdapter"/>
+
+  <adapter factory=".actions.ActionNodeAdapter"/>
+
+  <adapter factory=".actions.ActionsToolXMLAdapter"/>
+
+  <adapter factory=".cachingpolicymgr.CachingPolicyNodeAdapter"/>
+
+  <adapter factory=".cachingpolicymgr.CachingPolicyManagerXMLAdapter"/>
+
+  <adapter factory=".contenttyperegistry.ContentTypeRegistryXMLAdapter"/>
+
+  <adapter factory=".cookieauth.CookieCrumblerXMLAdapter"/>
+
+  <adapter factory=".properties.PropertiesXMLAdapter"/>
+
+  <adapter factory=".skins.DirectoryViewNodeAdapter"/>
+
+  <adapter factory=".skins.SkinsToolXMLAdapter"/>
+
+  <adapter factory=".typeinfo.TypeInformationXMLAdapter"/>
+
+  <adapter factory=".typeinfo.TypesToolXMLAdapter"/>
+
+  <adapter factory=".workflow.WorkflowToolXMLAdapter"/>
+
+</configure>

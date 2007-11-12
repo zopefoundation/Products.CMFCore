@@ -1,0 +1,8 @@
+#
+# Used for maintenance of external resources in this svn bundle.  Edit
+# this file as appropriate and then run the following command from within
+# the checkout directory where this file lives on your local machine:
+#
+# svn propset svn:externals -F ./EXTERNALS.txt .
+#
+localsitemanager svn://svn.zope.org/repos/main/five.localsitemanager/trunk/src/five/localsitemanager

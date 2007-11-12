@@ -1,0 +1,10 @@
+title:string=Test properties
+
+value1:string=one
+value2:string=two
+an_int:int=42
+a_float:float=3.1415926
+a_boolean:boolean=False
+a_long:long=40000000000
+a_date:date=01/01/2001
+a_tokens:tokens=peter paul mary

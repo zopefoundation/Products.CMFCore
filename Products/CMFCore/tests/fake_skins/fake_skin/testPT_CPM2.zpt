@@ -1,0 +1,5 @@
+<h1 tal:content="context/Title"> This is the title </h1>
+
+<p tal:content="structure context/doc3/subview_2">
+  Pulling in yet another view to see if it triggers the CachingPolicyManager
+</p>

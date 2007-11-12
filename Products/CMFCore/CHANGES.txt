@@ -1,0 +1,20 @@
+Products.CMFCore Changelog
+
+  Products.CMFCore 2.2.0 (unreleased)
+
+    - MembershipTool: Removed ancient LoginManager compatibility code and
+      deprecated the no longer needed __getPUS method.
+
+    - interfaces: Removed deprecated oldstyle interfaces.
+
+
+  Products.CMFCore 2.1.x
+
+    For a complete list see CHANGES.txt of the 2.1 branch.
+
+
+  Products.CMFCore 2.1.0 (2007-08-08)
+
+    First egg release.  For changes up through this release, please see
+    the overall "CMF changelog",
+    http://svn.zope.org/CMF/tags/2.1.0/CHANGES.txt?rev=78713&view=markup
