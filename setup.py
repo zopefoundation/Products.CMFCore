@@ -48,7 +48,8 @@ setup(name='Products.CMFCore',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'Zope >= 2.10' ],
+#          'Zope >= 2.10'
+          ],
       entry_points="""
       [zope2.initialize]
       Products.CMFCore = Products.CMFCore:initialize
