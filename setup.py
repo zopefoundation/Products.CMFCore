@@ -48,6 +48,7 @@ setup(name='Products.CMFCore',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'five.localsitemanager>=0.2',
 #          'Zope >= 2.10'
           ],
       entry_points="""
