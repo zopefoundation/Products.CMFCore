@@ -2,6 +2,9 @@ Products.CMFCore Changelog
 
   Products.CMFCore 2.1.1 (unreleased)
 
+    - PortalObject: Added setSite to getSiteManager for old instances. This
+      fixes migrations from Plone 2.1 to 3.0.
+
     - FSImage: Supply class-level defaults for 'alt', 'height', and 'width',
       to avoid acquiring objects with the same names.
       (http://www.zope.org/Collectors/CMF/507)

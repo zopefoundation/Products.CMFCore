@@ -25,6 +25,7 @@ from zope.app.publication.zopepublication import BeforeTraverseEvent
 from zope.component.globalregistry import base
 from zope.event import notify
 from zope.interface import implements
+from zope.app.component.hooks import setSite
 
 from interfaces import ISiteRoot
 from permissions import AddPortalMember
@@ -70,6 +71,7 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
             name = '/'.join(self.getPhysicalPath())
             self._components = components = PersistentComponents(name, (next,))
             components.__parent__ = self
+            setSite(self)
         elif self._components.utilities.LookupClass \
                 != FiveVerifyingAdapterLookup:
             # BBB: for CMF 2.1 beta instances
