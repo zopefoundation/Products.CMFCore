@@ -38,7 +38,7 @@ def exportMailHost(context):
     tool = sm.queryUtility(IMailHost)
     if tool is None:
         logger = context.getLogger('mailhost')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)

@@ -73,7 +73,7 @@ def exportCookieCrumbler(context):
     tool = getToolByName(site, 'cookie_authentication', None)
     if tool is None:
         logger = context.getLogger('cookies')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)

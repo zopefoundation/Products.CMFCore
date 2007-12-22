@@ -255,7 +255,7 @@ def exportActionProviders(context):
     tool = getToolByName(site, 'portal_actions', None)
     if tool is None:
         logger = context.getLogger('actions')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)

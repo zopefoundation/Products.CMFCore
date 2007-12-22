@@ -36,7 +36,7 @@ def exportCatalogTool(context):
     tool = getToolByName(site, 'portal_catalog', None)
     if tool is None:
         logger = context.getLogger('catalog')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)

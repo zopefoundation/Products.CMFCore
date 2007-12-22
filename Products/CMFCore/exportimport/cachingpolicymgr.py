@@ -184,7 +184,7 @@ def exportCachingPolicyManager(context):
     tool = getToolByName(site, 'caching_policy_manager', None)
     if tool is None:
         logger = context.getLogger('cachingpolicies')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)

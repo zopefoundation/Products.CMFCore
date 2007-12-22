@@ -123,7 +123,7 @@ def exportContentTypeRegistry(context):
     tool = getToolByName(site, 'content_type_registry', None)
     if tool is None:
         logger = context.getLogger('contenttypes')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)

@@ -75,7 +75,7 @@ def importSiteProperties(context):
 
     body = context.readDataFile(_FILENAME)
     if body is None:
-        logger.info('Nothing to import.')
+        logger.debug('Nothing to import.')
         return
 
     importer = queryMultiAdapter((site, context), IBody)

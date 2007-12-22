@@ -132,7 +132,7 @@ def exportWorkflowTool(context):
     tool = getToolByName(site, 'portal_workflow', None)
     if tool is None:
         logger = context.getLogger('workflow')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)

@@ -189,7 +189,7 @@ def exportTypesTool(context):
     tool = getToolByName(site, 'portal_types', None)
     if tool is None:
         logger = context.getLogger('types')
-        logger.info('Nothing to export.')
+        logger.debug('Nothing to export.')
         return
 
     exportObjects(tool, '', context)
