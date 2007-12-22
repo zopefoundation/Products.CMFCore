@@ -1,5 +1,7 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="cmf_default">
 
   <adapter
       factory=".content.StructureFolderWalkingAdapter"
@@ -38,5 +40,154 @@
   <adapter factory=".typeinfo.TypesToolXMLAdapter"/>
 
   <adapter factory=".workflow.WorkflowToolXMLAdapter"/>
+
+  <genericsetup:importStep
+      name="actions"
+      title="Action Providers"
+      description="Import actions tool's action providers and their actions."
+      handler="Products.CMFCore.exportimport.actions.importActionProviders">
+    <depends name="componentregistry"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="actions"
+      title="Action Providers"
+      description="Export actions tool's action providers and their actions."
+      handler="Products.CMFCore.exportimport.actions.exportActionProviders"
+      />
+
+  <genericsetup:importStep
+      name="caching_policy_mgr"
+      title="Caching Policies"
+      description="Import caching policy manager's policies."
+      handler="Products.CMFCore.exportimport.cachingpolicymgr.importCachingPolicyManager">
+    <depends name="toolset"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="caching_policy_mgr"
+      title="Caching Policies"
+      description="Export caching policy manager's policies."
+      handler="Products.CMFCore.exportimport.cachingpolicymgr.exportCachingPolicyManager"
+      />
+
+  <genericsetup:importStep
+      name="catalog"
+      title="Catalog Tool"
+      description="Import catalog tool's sub-objects, indexes and columns."
+      handler="Products.CMFCore.exportimport.catalog.importCatalogTool">
+    <depends name="toolset"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="catalog"
+      title="Catalog Tool"
+      description="Export catalog tool's sub-objects, indexes and columns."
+      handler="Products.CMFCore.exportimport.catalog.exportCatalogTool"
+      />
+
+  <genericsetup:importStep
+      name="content_type_registry"
+      title="Content Type Registry"
+      description="Import content type registry's predicates and bindings."
+      handler="Products.CMFCore.exportimport.contenttyperegistry.importContentTypeRegistry">
+    <depends name="componentregistry"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="content_type_registry"
+      title="Content Type Registry"
+      description="Export content type registry's predicates / bindings."
+      handler="Products.CMFCore.exportimport.contenttyperegistry.exportContentTypeRegistry"
+      />
+
+  <genericsetup:importStep
+      name="cookie_authentication"
+      title="Cookie Authentication"
+      description="Import cookie crumbler settings"
+      handler="Products.CMFCore.exportimport.cookieauth.importCookieCrumbler">
+    <depends name="toolset"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="cookieauth"
+      title="Cookie Authentication"
+      description="Export cookie crumbler settings"
+      handler="Products.CMFCore.exportimport.cookieauth.exportCookieCrumbler"
+      />
+
+  <genericsetup:importStep
+      name="mailhost"
+      title="MailHost"
+      description="Import mailhost settings"
+      handler="Products.CMFCore.exportimport.mailhost.importMailHost">
+    <depends name="componentregistry"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="mailhost"
+      title="MailHost"
+      description="Export the mailhost's settings and properties"
+      handler="Products.CMFCore.exportimport.mailhost.exportMailHost"
+      />
+
+  <genericsetup:importStep
+      name="properties"
+      title="Site Properties"
+      description="Import site properties."
+      handler="Products.CMFCore.exportimport.properties.importSiteProperties"
+      />
+
+  <genericsetup:exportStep
+      name="properties"
+      title="Site Properties"
+      description="Export site properties."
+      handler="Products.CMFCore.exportimport.properties.exportSiteProperties"
+      />
+
+  <genericsetup:importStep
+      name="skins"
+      title="Skins Tool"
+      description="Import skins tool's filesystem directory views and skin path definitions."
+      handler="Products.CMFCore.exportimport.skins.importSkinsTool">
+    <depends name="componentregistry"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="skins"
+      title="Skins Tool"
+      description="Export skins tool's filesystem directory views and skin path definitions."
+      handler="Products.CMFCore.exportimport.skins.exportSkinsTool"
+      />
+
+  <genericsetup:importStep
+      name="typeinfo"
+      title="Types Tool"
+      description="Import types tool's type information objects."
+      handler="Products.CMFCore.exportimport.typeinfo.importTypesTool">
+    <depends name="toolset"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="typeinfo"
+      title="Types Tool"
+      description="Export types tool's type information objects."
+      handler="Products.CMFCore.exportimport.typeinfo.exportTypesTool"
+      />
+
+  <genericsetup:importStep
+      name="workflow"
+      title="Workflow Tool"
+      description="Import workflow tool's workflow definitions and supporting scripts."
+      handler="Products.CMFCore.exportimport.workflow.importWorkflowTool">
+    <depends name="toolset"/>
+  </genericsetup:importStep>
+
+  <genericsetup:exportStep
+      name="workflows"
+      title="Workflow Tool"
+      description="Export workflow tool's workflow definitions and supporting scripts."
+      handler="Products.CMFCore.exportimport.workflow.exportWorkflowTool"
+      />
 
 </configure>
