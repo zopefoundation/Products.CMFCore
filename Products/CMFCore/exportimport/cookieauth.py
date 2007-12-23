@@ -62,7 +62,11 @@ def importCookieCrumbler(context):
     """Import cookie crumbler settings from an XML file.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'cookie_authentication')
+    tool = getToolByName(site, 'cookie_authentication', None)
+    if tool is not None:
+        logger = context.getLogger('cookies')
+        logger.debug('Nothing cookie tool to import.')
+        return
 
     importObjects(tool, '', context)
 
