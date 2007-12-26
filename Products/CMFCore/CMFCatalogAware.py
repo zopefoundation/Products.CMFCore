@@ -249,10 +249,14 @@ def handleDynamicTypeClonedEvent(ob, event):
     # Make sure owner local role is set after pasting
     # The standard Zope mechanisms take care of executable ownership
     current_user = _getAuthenticatedUser(ob)
-    if current_user is not None:
+    if current_user is None:
+        return
+
+    current_user_id = current_user.getId()
+    if current_user_id is not None:
         local_role_holders = [ x[0] for x in ob.get_local_roles() ]
         ob.manage_delLocalRoles(local_role_holders)
-        ob.manage_setLocalRoles(current_user.getId(), ['Owner'])
+        ob.manage_setLocalRoles(current_user_id, ['Owner'])
 
 def dispatchToOpaqueItems(ob, event):
     """Dispatch an event to opaque sub-items of a given object.
