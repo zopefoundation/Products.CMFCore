@@ -237,7 +237,7 @@ def handleContentishEvent(ob, event):
 
     elif IObjectMovedEvent.providedBy(event):
         if event.newParent is not None:
-            ob.reindexObject()
+            ob.indexObject()
 
     elif IObjectWillBeMovedEvent.providedBy(event):
         if event.oldParent is not None:

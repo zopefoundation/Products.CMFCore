@@ -315,7 +315,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityRequestTest):
         folder2.manage_pasteObjects(cookie)
 
         self.assertEquals(cat.log, ["unindex /site/folder1/bar",
-                                    "reindex /site/folder2/bar []"])
+                                    "index /site/folder2/bar"])
 
     def test_object_reindexed_after_moving(self):
 
@@ -331,7 +331,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityRequestTest):
 
         site.manage_renameObject(id='bar', new_id='baz')
         self.assertEquals(cat.log, ["unindex /site/bar",
-                                    "reindex /site/baz []"])
+                                    "index /site/baz"])
 
 
 def test_suite():
