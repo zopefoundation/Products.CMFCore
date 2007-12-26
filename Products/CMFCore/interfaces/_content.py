@@ -516,6 +516,44 @@ class IDynamicType(Interface):
         """
 
 
+class ICatalogAware(Interface):
+
+    """ Interface for notifying portal_catalog and portal_workflow.
+    """
+
+    def indexObject():
+        """ Index the object in the portal catalog.
+        """
+
+    def unindexObject():
+        """ Unindex the object from the portal catalog.
+        """
+
+    def reindexObject(idxs=[]):
+        """ Reindex the object in the portal catalog.
+
+        If idxs is present, only those indexes are reindexed. The metadata is
+        always updated.
+
+        Also update the modification date of the object, unless specific
+        indexes were requested.
+        """
+
+    def reindexObjectSecurity(skip_self=False):
+        """ Reindex security-related indexes on the object.
+
+        Recurses in the children to reindex them too.
+
+        If skip_self is True, only the children will be reindexed. This is a
+        useful optimization if the object itself has just been fully
+        reindexed, as there's no need to reindex its security twice.
+        """
+
+    def notifyWorkflowCreated():
+        """ Notify the workflow that the object was just created.
+        """
+
+
 #
 #   Folderish interfaces
 #

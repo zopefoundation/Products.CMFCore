@@ -27,8 +27,10 @@ from OFS.interfaces import IObjectWillBeMovedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectMovedEvent
 from zope.component import subscribers
+from zope.interface import implements
 
 from interfaces import ICallableOpaqueItem
+from interfaces import ICatalogAware
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import ModifyPortalContent
@@ -44,6 +46,8 @@ class CMFCatalogAware(Base):
     """Mix-in for notifying portal_catalog and portal_workflow
     """
 
+    implements(ICatalogAware)
+
     security = ClassSecurityInfo()
 
     # The following methods can be overriden using inheritence so that
@@ -56,13 +60,12 @@ class CMFCatalogAware(Base):
     def _getWorkflowTool(self):
         return getToolByName(self, 'portal_workflow', None)
 
-    # Cataloging methods
-    # ------------------
-
+    #
+    #   'ICatalogAware' interface methods
+    #
     security.declareProtected(ModifyPortalContent, 'indexObject')
     def indexObject(self):
-        """
-            Index the object in the portal catalog.
+        """ Index the object in the portal catalog.
         """
         catalog = self._getCatalogTool()
         if catalog is not None:
@@ -70,8 +73,7 @@ class CMFCatalogAware(Base):
 
     security.declareProtected(ModifyPortalContent, 'unindexObject')
     def unindexObject(self):
-        """
-            Unindex the object from the portal catalog.
+        """ Unindex the object from the portal catalog.
         """
         catalog = self._getCatalogTool()
         if catalog is not None:
@@ -79,13 +81,7 @@ class CMFCatalogAware(Base):
 
     security.declareProtected(ModifyPortalContent, 'reindexObject')
     def reindexObject(self, idxs=[]):
-        """
-            Reindex the object in the portal catalog.
-            If idxs is present, only those indexes are reindexed.
-            The metadata is always updated.
-
-            Also update the modification date of the object,
-            unless specific indexes were requested.
+        """ Reindex the object in the portal catalog.
         """
         if idxs == []:
             # Update the modification date.
@@ -99,13 +95,7 @@ class CMFCatalogAware(Base):
 
     security.declareProtected(ModifyPortalContent, 'reindexObjectSecurity')
     def reindexObjectSecurity(self, skip_self=False):
-        """Reindex security-related indexes on the object.
-
-        Recurses in the children to reindex them too.
-
-        If skip_self is True, only the children will be reindexed. This
-        is a useful optimization if the object itself has just been
-        fully reindexed, as there's no need to reindex its security twice.
+        """ Reindex security-related indexes on the object.
         """
         catalog = self._getCatalogTool()
         if catalog is None:
@@ -132,9 +122,6 @@ class CMFCatalogAware(Base):
             catalog.reindexObject(ob, idxs=self._cmf_security_indexes,
                                   update_metadata=0, uid=brain_path)
             if s is None: ob._p_deactivate()
-
-    # Workflow methods
-    # ----------------
 
     security.declarePrivate('notifyWorkflowCreated')
     def notifyWorkflowCreated(self):

@@ -34,10 +34,12 @@ class ConformsToFolder:
 
     def test_folder_interfaces(self):
         from webdav.interfaces import IWriteLock
+        from Products.CMFCore.interfaces import ICatalogAware
         from Products.CMFCore.interfaces import IDynamicType
         from Products.CMFCore.interfaces import IFolderish
         from Products.CMFCore.interfaces import IMutableMinimalDublinCore
 
+        verifyClass(ICatalogAware, self._getTargetClass())
         verifyClass(IDynamicType, self._getTargetClass())
         verifyClass(IFolderish, self._getTargetClass())
         verifyClass(IMutableMinimalDublinCore, self._getTargetClass())
@@ -48,6 +50,7 @@ class ConformsToContent:
 
     def test_content_interfaces(self):
         from Products.CMFCore.interfaces import ICatalogableDublinCore
+        from Products.CMFCore.interfaces import ICatalogAware
         from Products.CMFCore.interfaces import IContentish
         from Products.CMFCore.interfaces import IDublinCore
         from Products.CMFCore.interfaces import IDynamicType
@@ -55,6 +58,7 @@ class ConformsToContent:
         from Products.GenericSetup.interfaces import IDAVAware
 
         verifyClass(ICatalogableDublinCore, self._getTargetClass())
+        verifyClass(ICatalogAware, self._getTargetClass())
         verifyClass(IContentish, self._getTargetClass())
         verifyClass(IDAVAware, self._getTargetClass())
         verifyClass(IDublinCore, self._getTargetClass())

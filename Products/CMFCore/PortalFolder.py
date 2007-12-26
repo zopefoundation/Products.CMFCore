@@ -272,7 +272,7 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
     def reindexObject(self, idxs=[]):
         pass
 
-    def reindexObjectSecurity(self):
+    def reindexObjectSecurity(self, skip_self=False):
         pass
 
     def PUT_factory( self, name, typ, body ):

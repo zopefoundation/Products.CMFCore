@@ -2,6 +2,8 @@ Products.CMFCore Changelog
 
   Products.CMFCore 2.2.0 (unreleased)
 
+    - interfaces: Added ICatalogAware for CMFCatalogAware methods.
+
     - setup handlers: All import and export steps are now registered globally.
 
     - MembershipTool: Removed ancient LoginManager compatibility code and
