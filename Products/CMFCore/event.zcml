@@ -21,6 +21,12 @@
 
   <subscriber
       for=".interfaces.IDynamicType
+           OFS.interfaces.IObjectClonedEvent"
+      handler=".CMFCatalogAware.handleDynamicTypeClonedEvent"
+      />
+
+  <subscriber
+      for=".interfaces.IDynamicType
            zope.component.interfaces.IObjectEvent"
       handler=".CMFCatalogAware.dispatchToOpaqueItems"
       />
