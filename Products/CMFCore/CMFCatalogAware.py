@@ -243,8 +243,8 @@ def handleContentishEvent(ob, event):
         if event.oldParent is not None:
             ob.unindexObject()
 
-def handleDynamicTypeClonedEvent(ob, event):
-    """ Event subscriber for (IDynamicType, IObjectClonedEvent) events.
+def handleDynamicTypeCopiedEvent(ob, event):
+    """ Event subscriber for (IDynamicType, IObjectCopiedEvent) events.
     """
     # Make sure owner local role is set after pasting
     # The standard Zope mechanisms take care of executable ownership

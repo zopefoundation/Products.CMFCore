@@ -21,8 +21,8 @@
 
   <subscriber
       for=".interfaces.IDynamicType
-           OFS.interfaces.IObjectClonedEvent"
-      handler=".CMFCatalogAware.handleDynamicTypeClonedEvent"
+           zope.lifecycleevent.interfaces.IObjectCopiedEvent"
+      handler=".CMFCatalogAware.handleDynamicTypeCopiedEvent"
       />
 
   <subscriber
