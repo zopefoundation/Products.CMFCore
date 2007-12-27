@@ -195,18 +195,6 @@ class CMFCatalogAware(Base):
         """
         return [t[1] for t in self.opaqueItems()]
 
-    # Hooks
-    # -----
-
-    def _clearLocalRolesAfterClone(self):
-        # Make sure owner local role is set after pasting
-        # The standard Zope mechanisms take care of executable ownership
-        current_user = _getAuthenticatedUser(self)
-        if current_user is not None:
-            local_role_holders = [x[0] for x in self.get_local_roles()]
-            self.manage_delLocalRoles(local_role_holders)
-            self.manage_setLocalRoles(current_user.getId(), ['Owner'])
-
     # ZMI
     # ---
 
@@ -262,15 +250,29 @@ def handleContentishEvent(ob, event):
 
     elif IObjectClonedEvent.providedBy(event):
         ob.notifyWorkflowCreated()
-        ob._clearLocalRolesAfterClone()
 
     elif IObjectMovedEvent.providedBy(event):
         if event.newParent is not None:
-            ob.reindexObject()
+            ob.indexObject()
 
     elif IObjectWillBeMovedEvent.providedBy(event):
         if event.oldParent is not None:
             ob.unindexObject()
+
+def handleDynamicTypeCopiedEvent(ob, event):
+    """ Event subscriber for (IDynamicType, IObjectCopiedEvent) events.
+    """
+    # Make sure owner local role is set after pasting
+    # The standard Zope mechanisms take care of executable ownership
+    current_user = _getAuthenticatedUser(ob)
+    if current_user is None:
+        return
+
+    current_user_id = current_user.getId()
+    if current_user_id is not None:
+        local_role_holders = [ x[0] for x in ob.get_local_roles() ]
+        ob.manage_delLocalRoles(local_role_holders)
+        ob.manage_setLocalRoles(current_user_id, ['Owner'])
 
 def dispatchToOpaqueItems(ob, event):
     """Dispatch an event to opaque sub-items of a given object.

@@ -21,6 +21,12 @@
 
   <subscriber
       for=".interfaces.IDynamicType
+           zope.lifecycleevent.interfaces.IObjectCopiedEvent"
+      handler=".CMFCatalogAware.handleDynamicTypeCopiedEvent"
+      />
+
+  <subscriber
+      for=".interfaces.IDynamicType
            zope.component.interfaces.IObjectEvent"
       handler=".CMFCatalogAware.dispatchToOpaqueItems"
       />

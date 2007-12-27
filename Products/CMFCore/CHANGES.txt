@@ -2,6 +2,11 @@ Products.CMFCore Changelog
 
   Products.CMFCore 2.1.1 (unreleased)
 
+    - Events: Fixed some handleContentishEvent issues.
+      Moved _clearLocalRolesAfterClone code to separate handler that is
+      triggered before indexing and also for folders. Made sure notifyModified
+      is not called if objects are just moved.
+
     - PortalObject: Added setSite to getSiteManager for old instances. This
       fixes migrations from Plone 2.1 to 3.0.
 
