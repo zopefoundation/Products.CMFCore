@@ -1,6 +1,6 @@
 Products.CMFCore Changelog
 
-  Products.CMFCore 2.1.1 (unreleased)
+  Products.CMFCore 2.1.1-beta (2007/12/29)
 
     - Events: Fixed some handleContentishEvent issues.
       Moved _clearLocalRolesAfterClone code to separate handler that is
