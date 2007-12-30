@@ -131,7 +131,7 @@ class StructureFolderWalkingAdapter(object):
         stream = StringIO(objects)
 
         rowiter = reader(stream, dialect)
-        ours = tuple(rowiter)
+        ours = filter(None, tuple(rowiter))
         our_ids = set([item[0] for item in ours])
 
         prior = set(context.contentIds())
