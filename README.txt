@@ -1,1 +1,1 @@
-(See Products/GenericSetup/README.txt).
+(See Products/CMFCore/README.txt).

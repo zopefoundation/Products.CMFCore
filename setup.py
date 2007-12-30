@@ -2,14 +2,14 @@ import os
 from setuptools import setup
 from setuptools import find_packages
 
+NAME = 'CMFCore'
+
 here = os.path.abspath(os.path.dirname(__file__))
-package = os.path.join(here, 'Products', 'CMFCore')
+package = os.path.join(here, 'Products', NAME)
 
 def _package_doc(name):
     f = open(os.path.join(package, name))
     return f.read()
-
-NAME = 'CMFCore'
 
 VERSION = _package_doc('version.txt').strip()
 if VERSION.startswith(NAME):
@@ -48,11 +48,10 @@ setup(name='Products.CMFCore',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'five.localsitemanager>=0.2',
-#          'Zope >= 2.10'
+          'five.localsitemanager>=0.3',
           ],
       entry_points="""
       [zope2.initialize]
-      Products.CMFCore = Products.CMFCore:initialize
-      """,
+      Products.%s = Products.%s:initialize
+      """ % (NAME, NAME),
       )
