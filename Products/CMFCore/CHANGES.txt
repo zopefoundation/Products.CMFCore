@@ -1,5 +1,12 @@
 Products.CMFCore Changelog
 
+  Products.CMFCore 2.1.1 (unreleased)
+
+    - exportimport.content: Add simple guard against import failures when
+      the ".objects" file contains empty lines.
+      (https://bugs.launchpad.net/zope-cmf/+bug/176328)
+
+
   Products.CMFCore 2.1.1-beta (2007/12/29)
 
     - Events: Fixed some handleContentishEvent issues.
@@ -21,7 +28,7 @@ Products.CMFCore Changelog
       object.
 
 
-  Products.CMFCore 2.1.0 (2007-08-08)
+  Products.CMFCore 2.1.0 (2007/08/08)
 
     First egg release.  For changes up through this release, please see
     the overall "CMF changelog",
