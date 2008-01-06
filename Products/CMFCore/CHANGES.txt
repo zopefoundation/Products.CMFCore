@@ -1,6 +1,6 @@
 Products.CMFCore Changelog
 
-  Products.CMFCore 2.1.1 (2007/01/06)
+  Products.CMFCore 2.1.1 (2008/01/06)
 
     - exportimport.content: Add simple guard against import failures when
       the ".objects" file contains empty lines.
