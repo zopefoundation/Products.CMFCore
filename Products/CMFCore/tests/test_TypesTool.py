@@ -23,15 +23,22 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.SecurityManager import setSecurityPolicy
 from Acquisition import aq_base
+from OFS.interfaces import IObjectWillBeAddedEvent
 from Products.PythonScripts.PythonScript import PythonScript
 from Products.PythonScripts.standard import html_quote
 from webdav.NullResource import NullResource
+from zope.app.container.interfaces import IContainerModifiedEvent
+from zope.app.container.interfaces import IObjectAddedEvent
+from zope.component import adapter
 from zope.component import getSiteManager
+from zope.component import provideHandler
 from zope.component.interfaces import IFactory
+from zope.interface import implements
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.ActionInformation import ActionInformation
+from Products.CMFCore.interfaces import ITypeInformation
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyFactory
@@ -49,8 +56,6 @@ from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
 from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
 from Products.CMFCore.tests.base.tidata import STI_SCRIPT
 
-from zope.interface import implements
-from Products.CMFCore.interfaces import ITypeInformation
 
 class ActionTesterTypeInfo:
 
@@ -62,6 +67,7 @@ class ActionTesterTypeInfo:
         self._action_info = info
         self._action_obj = obj
         return ()
+
 
 class TypesToolTests(SecurityTest, WarningInterceptor):
 
@@ -432,6 +438,7 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase):
         newSecurityManager(None, UserWithRoles('FooAdder').__of__(self.f))
 
     def tearDown(self):
+        cleanUp()
         noSecurityManager()
 
     def test_constructInstance_w_id_munge(self):
@@ -439,6 +446,39 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase):
         self.ti.constructInstance(self.f, 'dust')
         majyk_dust = self.f._getOb('majyk_dust')
         self.assertEqual(majyk_dust.id, 'majyk_dust')
+
+    def test_events(self):
+        events = []
+
+        @adapter(IObjectWillBeAddedEvent)
+        def _handleObjectWillBeAdded(event):
+            events.append(event)
+        provideHandler(_handleObjectWillBeAdded)
+
+        @adapter(IObjectAddedEvent)
+        def _handleObjectAdded(event):
+            events.append(event)
+        provideHandler(_handleObjectAdded)
+
+        @adapter(IContainerModifiedEvent)
+        def _handleContainerModified(event):
+            events.append(event)
+        provideHandler(_handleContainerModified)
+
+        self.ti.constructInstance(self.f, 'foo')
+        self.assertEquals(len(events), 2)
+
+        evt = events[0]
+        self.failUnless(IObjectAddedEvent.providedBy(evt))
+        self.assertEquals(evt.object, self.f.foo)
+        self.assertEquals(evt.oldParent, None)
+        self.assertEquals(evt.oldName, None)
+        self.assertEquals(evt.newParent, self.f)
+        self.assertEquals(evt.newName, 'foo')
+
+        evt = events[1]
+        self.failUnless(IContainerModifiedEvent.providedBy(evt))
+        self.assertEquals(evt.object, self.f)
 
 
 class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
@@ -456,6 +496,47 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
     def tearDown(self):
         cleanUp()
         SecurityTest.tearDown(self)
+
+    def test_events(self):
+        events = []
+
+        @adapter(IObjectWillBeAddedEvent)
+        def _handleObjectWillBeAdded(event):
+            events.append(event)
+        provideHandler(_handleObjectWillBeAdded)
+
+        @adapter(IObjectAddedEvent)
+        def _handleObjectAdded(event):
+            events.append(event)
+        provideHandler(_handleObjectAdded)
+
+        @adapter(IContainerModifiedEvent)
+        def _handleContainerModified(event):
+            events.append(event)
+        provideHandler(_handleContainerModified)
+
+        self.ti.constructInstance(self.f, 'foo')
+        self.assertEquals(len(events), 3)
+
+        evt = events[0]
+        self.failUnless(IObjectWillBeAddedEvent.providedBy(evt))
+        self.assertEquals(evt.object, self.f.foo)
+        self.assertEquals(evt.oldParent, None)
+        self.assertEquals(evt.oldName, None)
+        self.assertEquals(evt.newParent, self.f)
+        self.assertEquals(evt.newName, 'foo')
+
+        evt = events[1]
+        self.failUnless(IObjectAddedEvent.providedBy(evt))
+        self.assertEquals(evt.object, self.f.foo)
+        self.assertEquals(evt.oldParent, None)
+        self.assertEquals(evt.oldName, None)
+        self.assertEquals(evt.newParent, self.f)
+        self.assertEquals(evt.newName, 'foo')
+
+        evt = events[2]
+        self.failUnless(IContainerModifiedEvent.providedBy(evt))
+        self.assertEquals(evt.object, self.f)
 
 
 def test_suite():

@@ -229,11 +229,8 @@ def handleContentishEvent(ob, event):
     """ Event subscriber for (IContentish, IObjectEvent) events.
     """
     if IObjectAddedEvent.providedBy(event):
-        if event.newParent is not None:
-            ob.indexObject()
-
-    elif IObjectClonedEvent.providedBy(event):
         ob.notifyWorkflowCreated()
+        ob.indexObject()
 
     elif IObjectMovedEvent.providedBy(event):
         if event.newParent is not None:

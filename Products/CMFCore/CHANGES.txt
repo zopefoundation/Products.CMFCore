@@ -2,6 +2,12 @@ Products.CMFCore Changelog
 
   Products.CMFCore 2.2.0 (unreleased)
 
+    - TypesTool: Refactored content creation.
+      Moved notifyWorkflowCreated and indexObject calls to IObjectAddedEvent
+      handler. Please make sure all oldstyle content factory methods use
+      _setObject with suppress_events=True. CMF factory methods don't finish
+      object creation, so they should not send the IObjectAddedEvent.
+
     - interfaces: Added ICatalogAware for CMFCatalogAware methods.
 
     - setup handlers: All import and export steps are now registered globally.

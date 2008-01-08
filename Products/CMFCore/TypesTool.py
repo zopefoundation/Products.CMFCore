@@ -28,9 +28,12 @@ from Globals import InitializeClass
 from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.app.container.contained import ObjectAddedEvent
+from zope.app.container.contained import notifyContainerModified
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
+from zope.event import notify
 from zope.i18nmessageid import Message
 from zope.interface import implements
 
@@ -270,24 +273,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         if not self.isConstructionAllowed(container):
             raise AccessControl_Unauthorized('Cannot create %s' % self.getId())
 
-        ob = self._constructInstance(container, id, *args, **kw)
-
-        return self._finishConstruction(ob)
-
-    security.declarePrivate('_finishConstruction')
-    def _finishConstruction(self, ob):
-        """
-            Finish the construction of a content object.
-            Set its portal_type, insert it into the workflows.
-        """
-        if hasattr(ob, '_setPortalTypeName'):
-            ob._setPortalTypeName(self.getId())
-
-        if hasattr(aq_base(ob), 'notifyWorkflowCreated'):
-            ob.notifyWorkflowCreated()
-
-        ob.reindexObject()
-        return ob
+        return self._constructInstance(container, id, *args, **kw)
 
     security.declareProtected(ManagePortal, 'getMethodAliases')
     def getMethodAliases(self):
@@ -428,8 +414,6 @@ class FactoryTypeInformation(TypeInformation):
         """Build a bare instance of the appropriate type.
 
         Does not do any security checks.
-
-        Returns the object without calling _finishConstruction().
         """
         # XXX: this method violates the rules for tools/utilities:
         # it depends on self.REQUEST
@@ -446,15 +430,23 @@ class FactoryTypeInformation(TypeInformation):
                 newid = m(id, *args, **kw)
             # allow factory to munge ID
             newid = newid or id
+            obj = container._getOb(newid)
+            if hasattr(obj, '_setPortalTypeName'):
+                obj._setPortalTypeName(self.getId())
+            notify(ObjectAddedEvent(obj, container, newid))
+            notifyContainerModified(container)
 
         else:
             # newstyle factory
             factory = getUtility(IFactory, self.factory)
             obj = factory(id, *args, **kw)
+            if hasattr(obj, '_setPortalTypeName'):
+                obj._setPortalTypeName(self.getId())
             rval = container._setObject(id, obj)
             newid = isinstance(rval, basestring) and rval or id
+            obj = container._getOb(newid)
 
-        return container._getOb(newid)
+        return obj
 
 InitializeClass(FactoryTypeInformation)
 
@@ -497,8 +489,6 @@ class ScriptableTypeInformation(TypeInformation):
         """Build a bare instance of the appropriate type.
 
         Does not do any security checks.
-
-        Returns the object without calling _finishConstruction().
         """
         constructor = self.restrictedTraverse( self.constructor_path )
 
@@ -509,7 +499,13 @@ class ScriptableTypeInformation(TypeInformation):
         constructor = aq_base(constructor).__of__( container )
 
         id = str(id)
-        return constructor(container, id, *args, **kw)
+        obj = constructor(container, id, *args, **kw)
+        if hasattr(obj, '_setPortalTypeName'):
+            obj._setPortalTypeName(self.getId())
+        notify(ObjectAddedEvent(obj, container, obj.getId()))
+        notifyContainerModified(container)
+        return obj
+
 
 InitializeClass(ScriptableTypeInformation)
 

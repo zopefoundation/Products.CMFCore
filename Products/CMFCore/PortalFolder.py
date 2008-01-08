@@ -491,7 +491,7 @@ class PortalFolder(OrderSupport, PortalFolderBase):
         """Add a new PortalFolder object with id *id*.
         """
         ob = PortalFolder(id, title)
-        self._setObject(id, ob)
+        self._setObject(id, ob, suppress_events=True)
         if REQUEST is not None:
             return self.folder_contents( # XXX: ick!
                 self, REQUEST, portal_status_message="Folder added")

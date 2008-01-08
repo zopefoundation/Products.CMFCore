@@ -194,7 +194,7 @@ class DummyFactoryDispatcher:
         if getattr(self._folder, '_prefix', None):
             id = '%s_%s' % ( self._folder._prefix, id )
         foo = DummyContent(id, *args, **kw)
-        self._folder._setObject(id, foo)
+        self._folder._setObject(id, foo, suppress_events=True)
         if getattr(self._folder, '_prefix', None):
             return id
 
@@ -225,14 +225,16 @@ class DummyFolder(DummyObject):
     def _getOb( self, id ):
         return getattr(self, id)
 
-    def _setObject(self, id, object):
-        notify(ObjectWillBeAddedEvent(object, self, id))
+    def _setObject(self, id, object, suppress_events=False):
+        if not suppress_events:
+            notify(ObjectWillBeAddedEvent(object, self, id))
         self._setOb(id, object)
         object = self._getOb(id)
         if hasattr(aq_base(object), 'manage_afterAdd'):
             object.manage_afterAdd(object, self)
-        notify(ObjectAddedEvent(object, self, id))
-        notifyContainerModified(self)
+        if not suppress_events:
+            notify(ObjectAddedEvent(object, self, id))
+            notifyContainerModified(self)
         return object
 
     def _delObject(self, id):
