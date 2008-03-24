@@ -2,6 +2,10 @@ Products.CMFCore Changelog
 
   Products.CMFCore 2.2.0 (unreleased)
 
+    - removed the five.localsitemanager svn:external and its import hack
+      in favor of stating the dependency for separate installation in
+      DEPENDENCIES.txt and automatic installation in setup.py.
+
     - TypesTool: Refactored content creation.
       Moved notifyWorkflowCreated and indexObject calls to IObjectAddedEvent
       handler. Please make sure all oldstyle content factory methods use
