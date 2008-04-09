@@ -26,7 +26,7 @@
       />
 
   <subscriber
-      for=".interfaces.IDynamicType
+      for=".interfaces.IOpaqueItemManager
            zope.component.interfaces.IObjectEvent"
       handler=".CMFCatalogAware.dispatchToOpaqueItems"
       />

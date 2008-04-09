@@ -518,7 +518,7 @@ class IDynamicType(Interface):
 
 class ICatalogAware(Interface):
 
-    """ Interface for notifying portal_catalog and portal_workflow.
+    """ Interface for notifying the catalog tool.
     """
 
     def indexObject():
@@ -549,9 +549,21 @@ class ICatalogAware(Interface):
         reindexed, as there's no need to reindex its security twice.
         """
 
+
+class IWorkflowAware(Interface):
+
+    """ Interface for notifying the workflow tool.
+    """
+
     def notifyWorkflowCreated():
         """ Notify the workflow that the object was just created.
         """
+
+
+class IOpaqueItemManager(Interface):
+
+    """Interface for managing opaque items.
+    """
 
 
 #

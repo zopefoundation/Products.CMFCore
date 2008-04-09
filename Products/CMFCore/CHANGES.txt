@@ -12,7 +12,9 @@ Products.CMFCore Changelog
       _setObject with suppress_events=True. CMF factory methods don't finish
       object creation, so they should not send the IObjectAddedEvent.
 
-    - interfaces: Added ICatalogAware for CMFCatalogAware methods.
+    - interfaces: Added new interfaces for CMFCatalogAware methods.
+      In the long run ICatalogAware, IWorkflowAware and IOpaqueItemManager will
+      become deprecated. Don't expect that CMF content always implements them.
 
     - setup handlers: All import and export steps are now registered globally.
 

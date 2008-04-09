@@ -31,6 +31,8 @@ from zope.interface import implements
 
 from interfaces import ICallableOpaqueItem
 from interfaces import ICatalogAware
+from interfaces import IOpaqueItemManager
+from interfaces import IWorkflowAware
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from permissions import ModifyPortalContent
@@ -46,19 +48,14 @@ class CMFCatalogAware(Base):
     """Mix-in for notifying portal_catalog and portal_workflow
     """
 
-    implements(ICatalogAware)
+    implements(ICatalogAware, IWorkflowAware, IOpaqueItemManager)
 
     security = ClassSecurityInfo()
 
-    # The following methods can be overriden using inheritence so that
-    # it's possible to specifiy another catalog tool or workflow tool
-    # for a given content type
-
+    # The following method can be overriden using inheritence so that it's
+    # possible to specifiy another catalog tool for a given content type
     def _getCatalogTool(self):
         return getToolByName(self, 'portal_catalog', None)
-
-    def _getWorkflowTool(self):
-        return getToolByName(self, 'portal_workflow', None)
 
     #
     #   'ICatalogAware' interface methods
@@ -123,10 +120,17 @@ class CMFCatalogAware(Base):
                                   update_metadata=0, uid=brain_path)
             if s is None: ob._p_deactivate()
 
+    # The following method can be overriden using inheritence so that it's
+    # possible to specifiy another workflow tool for a given content type
+    def _getWorkflowTool(self):
+        return getToolByName(self, 'portal_workflow', None)
+
+    #
+    #   'IWorkflowAware' interface methods
+    #
     security.declarePrivate('notifyWorkflowCreated')
     def notifyWorkflowCreated(self):
-        """
-            Notify the workflow that self was just created.
+        """ Notify the workflow that the object was just created.
         """
         wftool = self._getWorkflowTool()
         if wftool is not None:
