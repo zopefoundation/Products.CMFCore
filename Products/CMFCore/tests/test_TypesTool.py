@@ -35,6 +35,7 @@ from zope.component import provideHandler
 from zope.component.interfaces import IFactory
 from zope.interface import implements
 from zope.interface.verify import verifyClass
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.ActionInformation import ActionInformation
@@ -450,6 +451,11 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase):
     def test_events(self):
         events = []
 
+        @adapter(IObjectCreatedEvent)
+        def _handleObjectCreated(event):
+            events.append(event)
+        provideHandler(_handleObjectCreated)
+
         @adapter(IObjectWillBeAddedEvent)
         def _handleObjectWillBeAdded(event):
             events.append(event)
@@ -466,9 +472,13 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase):
         provideHandler(_handleContainerModified)
 
         self.ti.constructInstance(self.f, 'foo')
-        self.assertEquals(len(events), 2)
+        self.assertEquals(len(events), 3)
 
         evt = events[0]
+        self.failUnless(IObjectCreatedEvent.providedBy(evt))
+        self.assertEquals(evt.object, self.f.foo)
+
+        evt = events[1]
         self.failUnless(IObjectAddedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
         self.assertEquals(evt.oldParent, None)
@@ -476,7 +486,7 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase):
         self.assertEquals(evt.newParent, self.f)
         self.assertEquals(evt.newName, 'foo')
 
-        evt = events[1]
+        evt = events[2]
         self.failUnless(IContainerModifiedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f)
 
@@ -500,6 +510,11 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
     def test_events(self):
         events = []
 
+        @adapter(IObjectCreatedEvent)
+        def _handleObjectCreated(event):
+            events.append(event)
+        provideHandler(_handleObjectCreated)
+
         @adapter(IObjectWillBeAddedEvent)
         def _handleObjectWillBeAdded(event):
             events.append(event)
@@ -516,9 +531,13 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         provideHandler(_handleContainerModified)
 
         self.ti.constructInstance(self.f, 'foo')
-        self.assertEquals(len(events), 3)
+        self.assertEquals(len(events), 4)
 
         evt = events[0]
+        self.failUnless(IObjectCreatedEvent.providedBy(evt))
+        self.assertEquals(evt.object, self.f.foo)
+
+        evt = events[1]
         self.failUnless(IObjectWillBeAddedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
         self.assertEquals(evt.oldParent, None)
@@ -526,7 +545,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         self.assertEquals(evt.newParent, self.f)
         self.assertEquals(evt.newName, 'foo')
 
-        evt = events[1]
+        evt = events[2]
         self.failUnless(IObjectAddedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
         self.assertEquals(evt.oldParent, None)
@@ -534,7 +553,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         self.assertEquals(evt.newParent, self.f)
         self.assertEquals(evt.newName, 'foo')
 
-        evt = events[2]
+        evt = events[3]
         self.failUnless(IContainerModifiedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f)
 

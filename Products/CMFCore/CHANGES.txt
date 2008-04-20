@@ -7,10 +7,11 @@ Products.CMFCore Changelog
       DEPENDENCIES.txt and automatic installation in setup.py.
 
     - TypesTool: Refactored content creation.
-      Moved notifyWorkflowCreated and indexObject calls to IObjectAddedEvent
-      handler. Please make sure all oldstyle content factory methods use
-      _setObject with suppress_events=True. CMF factory methods don't finish
-      object creation, so they should not send the IObjectAddedEvent.
+      Moved addCreator call to IObjectCreatedEvent handler and moved
+      notifyWorkflowCreated and indexObject calls to IObjectAddedEvent handler.
+      Please make sure all oldstyle content factory methods use _setObject with
+      suppress_events=True. CMF factory methods don't finish object creation,
+      so they should not send the IObjectAddedEvent.
 
     - interfaces: Added new interfaces for CMFCatalogAware methods.
       In the long run ICatalogAware, IWorkflowAware and IOpaqueItemManager will

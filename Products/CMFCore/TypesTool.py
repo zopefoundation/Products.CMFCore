@@ -36,6 +36,7 @@ from zope.component.interfaces import IFactory
 from zope.event import notify
 from zope.i18nmessageid import Message
 from zope.interface import implements
+from zope.lifecycleevent import ObjectCreatedEvent
 
 from ActionProviderBase import ActionProviderBase
 from exceptions import AccessControl_Unauthorized
@@ -433,6 +434,7 @@ class FactoryTypeInformation(TypeInformation):
             obj = container._getOb(newid)
             if hasattr(obj, '_setPortalTypeName'):
                 obj._setPortalTypeName(self.getId())
+            notify(ObjectCreatedEvent(obj))
             notify(ObjectAddedEvent(obj, container, newid))
             notifyContainerModified(container)
 
@@ -442,6 +444,7 @@ class FactoryTypeInformation(TypeInformation):
             obj = factory(id, *args, **kw)
             if hasattr(obj, '_setPortalTypeName'):
                 obj._setPortalTypeName(self.getId())
+            notify(ObjectCreatedEvent(obj))
             rval = container._setObject(id, obj)
             newid = isinstance(rval, basestring) and rval or id
             obj = container._getOb(newid)

@@ -28,6 +28,8 @@ from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectMovedEvent
 from zope.component import subscribers
 from zope.interface import implements
+from zope.lifecycleevent.interfaces import IObjectCopiedEvent
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
 from interfaces import ICallableOpaqueItem
 from interfaces import ICatalogAware
@@ -243,6 +245,13 @@ def handleContentishEvent(ob, event):
     elif IObjectWillBeMovedEvent.providedBy(event):
         if event.oldParent is not None:
             ob.unindexObject()
+
+    elif IObjectCopiedEvent.providedBy(event):
+        pass
+
+    elif IObjectCreatedEvent.providedBy(event):
+        if hasattr(aq_base(ob), 'addCreator'):
+            ob.addCreator()
 
 def handleDynamicTypeCopiedEvent(ob, event):
     """ Event subscriber for (IDynamicType, IObjectCopiedEvent) events.
