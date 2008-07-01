@@ -2,6 +2,9 @@ Products.CMFCore Changelog
 
   Products.CMFCore 2.2.0 (unreleased)
 
+    - FSSTXMethod: Fixed Zope 2.12 compatibility.
+      zope.structuredtext is now used instead of StructuredText.
+
     - removed the five.localsitemanager svn:external and its import hack
       in favor of stating the dependency for separate installation in
       DEPENDENCIES.txt and automatic installation in setup.py.

@@ -21,8 +21,8 @@ from DocumentTemplate.DT_HTML import HTML as DTML_HTML
 from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.DTMLDocument import DTMLDocument
-from StructuredText.StructuredText import HTML as STX_HTML
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+from zope.structuredtext import stx2html
 
 from Products.CMFCore.DirectoryView import registerFileExtension
 from Products.CMFCore.DirectoryView import registerMetaType
@@ -143,7 +143,7 @@ class FSSTXMethod(FSObject):
 
     def cook(self):
         if not hasattr(self, '_v_cooked'):
-            self._v_cooked = STX_HTML(self.raw, level=1, header=0)
+            self._v_cooked = stx2html(self.raw, level=1, header=0)
         return self._v_cooked
 
     _default_DTML_template = DTML_HTML(_DEFAULT_TEMPLATE_DTML)
