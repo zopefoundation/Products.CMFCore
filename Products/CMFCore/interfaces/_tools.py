@@ -90,7 +90,7 @@ class IActionsTool(Interface):
         """ Map actions available to the user by category.
 
         o Returned mapping will have category IDs as keys, and sequences
-          of IActionInformation objects as the corresponding values for each
+          of IActionInfo objects as the corresponding values for each
           category.
 
         o Categories may be arbitrarily extended.
@@ -105,9 +105,9 @@ class IActionProvider(Interface):
     """
 
     def listActions(info=None, object=None):
-        """ List known action informations.
+        """ List known actions.
 
-        o Return a sequence of IActionInformation intances.
+        o Return a sequence of action objects.
 
         o Both the 'object' and the 'info' arguments are deprecated and
           ignored (use 'listActionInfos' to filter actions by context).
@@ -115,7 +115,7 @@ class IActionProvider(Interface):
 
     def listActionInfos(action_chain=None, object=None, check_visibility=True,
                         check_permissions=True, check_condition=True, max=None):
-        """ Return a sequence of IActionInformation matching the given criteria.
+        """ Return a sequence of IActionInfo objects matching given criteria.
 
         o 'action_chain' is a sequence of one or more action paths
           (e.g. 'object/view');  each path is formatted as
@@ -142,7 +142,7 @@ class IActionProvider(Interface):
 
     def getActionInfo(action_chain, object=None, check_visibility=False,
                       check_condition=False):
-        """ Return the first IActionInformation matching the given criteria.
+        """ Return the first IActionInfo object matching the given criteria.
 
         o If no action is found matching the criteria, raise ValueError.
 
@@ -168,7 +168,7 @@ class IActionCategory(Interface):
     """
 
     def listActions():
-        """ Return a sequence of IActionInformation defined by this category
+        """ Return a sequence of IAction objects defined by this category.
 
         o Include actions defined by subcategories.
 
@@ -183,7 +183,7 @@ class IAction(Interface):
 
     def getInfoData():
         """ Return a lazy mapping of the data needed to create an
-            IActionInformation.
+            IActionInfo object.
 
         o Returned value is actually a tuple, '(lazy_map, lazy_keys)'.
 
@@ -1846,9 +1846,9 @@ class IWorkflowDefinition(Interface):
         """
 
     def listObjectActions(info):
-        """ Return a sequence of IActionInformation defining workflow actions.
+        """ Return a sequence of workflow action objects.
 
-        o 'info' is an ObjectActionInformation structure. XXX?
+        o 'info' is an OAI (ObjectActionInformation ?) structure.
 
         o Returned actions are relevant to 'info.content' (this method is
           called only when this workflow is applicable to 'info.content').
@@ -1859,9 +1859,9 @@ class IWorkflowDefinition(Interface):
         """
 
     def listGlobalActions(info):
-        """ Return a sequence of IActionInformation defining workflow actions.
+        """ Return a sequence of workflow action objects.
 
-        o 'info' is an ObjectActionInformation structure. XXX?
+        o 'info' is an OAI (ObjectActionInformation ?) structure.
 
         o Returned actions are "global", i.e. relevant to the user and  the
           site, rather than to any particular content object (this method is

@@ -2,6 +2,11 @@ Products.CMFCore Changelog
 
   Products.CMFCore 2.2.0 (unreleased)
 
+    - interfaces: Fixed some docstrings.
+      There is no IActionInformation. ActionInformation is an old action class
+      that implements IAction, non-persistent IActionInfo objects adapt action
+      objects to a given context.
+
     - FSSTXMethod: Fixed Zope 2.12 compatibility.
       zope.structuredtext is now used instead of StructuredText.
 
