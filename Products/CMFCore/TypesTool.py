@@ -42,6 +42,8 @@ from ActionProviderBase import ActionProviderBase
 from exceptions import AccessControl_Unauthorized
 from exceptions import BadRequest
 from exceptions import zExceptions_Unauthorized
+from Expression import Expression
+from interfaces import IAction
 from interfaces import ITypeInformation
 from interfaces import ITypesTool
 from permissions import AccessContentsInformation
@@ -62,6 +64,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
     """ Base class for information about a content type.
     """
+
+    implements(IAction)
 
     manage_options = ( SimpleItemWithProperties.manage_options[:1]
                      + ( {'label':'Aliases',
@@ -90,6 +94,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         )
 
     _advanced_properties = (
+        {'id': 'add_view_expr', 'type': 'string', 'mode': 'w',
+         'label': 'Add view URL (Expression)'},
         {'id':'immediate_view', 'type': 'string', 'mode':'w',
          'label':'Initial view name'},
         {'id':'global_allow', 'type': 'boolean', 'mode':'w',
@@ -112,6 +118,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     i18n_domain = ''
     content_meta_type = ''
     content_icon = ''
+    add_view_expr = ''
     immediate_view = ''
     filter_content_types = True
     allowed_content_types = ()
@@ -313,6 +320,55 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         if isinstance(method_id, tuple):
             method_id = method_id[0]
         return method_id
+
+    #
+    #   'IAction' interface methods
+    #
+    security.declarePrivate('getInfoData')
+    def getInfoData(self):
+        """ Get the data needed to create an ActionInfo.
+        """
+        lazy_keys = ['available', 'allowed']
+        lazy_map = {}
+
+        lazy_map['id'] = self.getId()
+        lazy_map['category'] = 'folder/add'
+        lazy_map['title'] = self.Title()
+        lazy_map['description'] = self.Description()
+        if self.add_view_expr:
+            lazy_map['url'] = self.add_view_expr_object
+            lazy_keys.append('url')
+        else:
+            lazy_map['url'] = ''
+        if self.content_icon:
+            lazy_map['icon'] = Expression('string:${portal_url}/%s'
+                                          % self.content_icon)
+            lazy_keys.append('icon')
+        else:
+            lazy_map['icon'] = ''
+        lazy_map['visible'] = True
+        lazy_map['available'] = self._checkAvailable
+        lazy_map['allowed'] = self._checkAllowed
+
+        return (lazy_map, lazy_keys)
+
+    def _setPropValue(self, id, value):
+        self._wrapperCheck(value)
+        if isinstance(value, list):
+            value = tuple(value)
+        setattr(self, id, value)
+        if value and id.endswith('_expr'):
+            setattr(self, '%s_object' % id, Expression(value))
+
+    def _checkAvailable(self, ec):
+        """ Check if the action is available in the current context.
+        """
+        return ec.contexts['folder'].getTypeInfo().allowType(self.getId())
+
+    def _checkAllowed(self, ec):
+        """ Check if the action is allowed in the current context.
+        """
+        return self.isConstructionAllowed(ec.contexts['folder'])
 
 InitializeClass(TypeInformation)
 
@@ -727,6 +783,10 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
             type_info = self.getTypeInfo(object)
             if type_info is not None:
                 actions.extend( type_info.listActions(info, object) )
+
+        add_actions = [ ti for ti in self.objectValues()
+                        if IAction.providedBy(ti) and ti.add_view_expr ]
+        actions.extend(add_actions)
 
         return actions
 

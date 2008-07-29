@@ -43,6 +43,7 @@ _FTI_BODY = """\
  <property name="content_meta_type"></property>
  <property name="product"></property>
  <property name="factory"></property>
+ <property name="add_view_expr"></property>
  <property name="immediate_view"></property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
@@ -73,6 +74,7 @@ _TI_LIST = ({
     'content_icon':          'foo.png',
     'product':               'CMFSetup',
     'factory':               'addFoo',
+    'add_view_expr':         'string:${folder_url}/foo_add_view',
     'immediate_view':        'foo_view',
     'filter_content_types':  False,
     'allowed_content_types': (),
@@ -105,6 +107,7 @@ _TI_LIST = ({
     'content_icon':          'bar.png',
     'constructor_path':      'make_bar',
     'permission':            'Add portal content',
+    'add_view_expr':         'string:${folder_url}/bar_add_view',
     'immediate_view':        'bar_view',
     'filter_content_types':  True,
     'allowed_content_types': ('foo',),
@@ -185,6 +188,7 @@ _FOO_EXPORT = """\
  <property name="content_meta_type">Foo Thing</property>
  <property name="product">CMFSetup</property>
  <property name="factory">addFoo</property>
+ <property name="add_view_expr">string:${folder_url}/foo_add_view</property>
  <property name="immediate_view">foo_view</property>
  <property name="global_allow">False</property>
  <property name="filter_content_types">False</property>
@@ -218,6 +222,7 @@ _BAR_EXPORT = """\
  <property name="content_meta_type">Bar Thing</property>
  <property name="permission">Add portal content</property>
  <property name="constructor_path">make_bar</property>
+ <property name="add_view_expr">string:${folder_url}/bar_add_view</property>
  <property name="immediate_view">bar_view</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>

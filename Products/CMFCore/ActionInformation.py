@@ -181,7 +181,7 @@ class ActionInfo(UserDict):
             (lazy_map, lazy_keys) = action.getInfoData()
             UserDict.__init__(self, lazy_map)
 
-        self.data['allowed'] = True
+        self.data.setdefault('allowed', True)
         permissions = self.data.pop( 'permissions', () )
         if permissions:
             self.data['allowed'] = self._checkPermissions

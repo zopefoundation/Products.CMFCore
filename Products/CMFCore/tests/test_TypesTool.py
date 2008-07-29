@@ -277,6 +277,57 @@ class TypeInfoTests(unittest.TestCase):
         ti.setMethodAliases( ti.getMethodAliases() )
         self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF15[0]['aliases'] )
 
+    def test_getInfoData(self):
+        ti_data = {'id': 'foo',
+                   'title': 'Foo',
+                   'description': 'Foo objects are just used for testing.',
+                   'content_icon': 'foo_icon.gif',
+                   'content_meta_type': 'Foo Content',
+                   'factory' : 'cmf.foo',
+                   'add_view_expr': 'string:${folder_url}/foo_add_view'}
+        ti = self._makeInstance(**ti_data)
+        info_data = ti.getInfoData()
+        self.assertEqual(len(info_data), 2)
+
+        self.assertEqual(len(info_data[0]), 9)
+        self.assertEqual(info_data[0]['id'], ti_data['id'])
+        self.assertEqual(info_data[0]['category'], 'folder/add')
+        self.assertEqual(info_data[0]['title'], ti_data['title'])
+        self.assertEqual(info_data[0]['description'], ti_data['description'])
+        self.assertEqual(info_data[0]['url'].text,
+                         'string:${folder_url}/foo_add_view')
+        self.assertEqual(info_data[0]['icon'].text,
+                         'string:${portal_url}/foo_icon.gif')
+        self.assertEqual(info_data[0]['visible'], True)
+        self.assertEqual(info_data[0]['available'], ti._checkAvailable)
+        self.assertEqual(info_data[0]['allowed'], ti._checkAllowed)
+
+        self.assertEqual(set(info_data[1]),
+                         set(['url', 'icon', 'available', 'allowed']))
+
+    def test_getInfoData_without_urls(self):
+        ti_data = {'id': 'foo',
+                   'title': 'Foo',
+                   'description': 'Foo objects are just used for testing.',
+                   'content_meta_type': 'Foo Content',
+                   'factory' : 'cmf.foo'}
+        ti = self._makeInstance(**ti_data)
+        info_data = ti.getInfoData()
+        self.assertEqual(len(info_data), 2)
+
+        self.assertEqual(len(info_data[0]), 9)
+        self.assertEqual(info_data[0]['id'], ti_data['id'])
+        self.assertEqual(info_data[0]['category'], 'folder/add')
+        self.assertEqual(info_data[0]['title'], ti_data['title'])
+        self.assertEqual(info_data[0]['description'], ti_data['description'])
+        self.assertEqual(info_data[0]['url'], '')
+        self.assertEqual(info_data[0]['icon'], '')
+        self.assertEqual(info_data[0]['visible'], True)
+        self.assertEqual(info_data[0]['available'], ti._checkAvailable)
+        self.assertEqual(info_data[0]['allowed'], ti._checkAllowed)
+
+        self.assertEqual(set(info_data[1]), set(['available', 'allowed']))
+
     def _checkContentTI(self, ti):
         wanted_aliases = { 'view': 'dummy_view', '(Default)': 'dummy_view' }
         wanted_actions_text0 = 'string:${object_url}/dummy_view'
