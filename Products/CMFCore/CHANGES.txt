@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- fiveactionstool: fix typo in a method name that isn't even used in the CMF 
+  or Plone.
+
 - TypeInformation and TypesTool: Added support for add view actions.
   Type infos now have a new 'add_view_expr' property and implement IAction.
   'listActions' of the types tool includes type infos as 'add' actions if
@@ -41,7 +44,7 @@ Products.CMFCore Changelog
 
 
 2.1.2-beta (2008-08-26)
-------------------
+-----------------------
 
 - completed devolution from monolithic CMF package into its component
   products that are distributed as eggs from PyPI.

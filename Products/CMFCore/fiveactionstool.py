@@ -41,7 +41,7 @@ class FiveActionsTool( UniqueObject, SimpleItem, ActionProviderBase ):
 
     security = ClassSecurityInfo()
 
-    def getReqestURL(self):
+    def getRequestURL(self):
         return self.REQUEST.URL
 
     security.declarePrivate('listActions')
