@@ -72,6 +72,8 @@ your search terms below.
 </tr>
 </dtml-if>
 </table>
+
+<FORM ACTION="manage_compareResults" METHOD="GET">
 <TABLE width="100%" CELLSPACING="0" CELLPADDING="2" border="0">
 <dtml-in results size="batch_size" start="query_start" sort_expr="skey" reverse_expr="rkey">
 <dtml-if sequence-odd>
@@ -79,7 +81,8 @@ your search terms below.
 <dtml-else>
 <TR class="row-hilite">
 </dtml-if>
-  <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="16">
+  <TD ALIGN="LEFT" VALIGN="TOP" WIDTH="40">
+  <input type="checkbox" value="&dtml.url_quote-sequence-key;" name="item_paths:list"/>
   <A HREF="&dtml.url_quote-sequence-key;/manage_workspace">
   <IMG SRC="&dtml-BASEPATH1;/&dtml-icon;"
    ALT="[&dtml-meta_type;]" BORDER="0"></A>
@@ -100,7 +103,10 @@ your search terms below.
 </TR>
 </dtml-in>
 </TABLE>
+<INPUT TYPE="SUBMIT" NAME="btn_submit" VALUE="Compare">  
+</FORM>
 </dtml-with>
+
 </dtml-if>
 
 <a name="form">

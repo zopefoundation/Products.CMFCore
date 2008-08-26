@@ -41,6 +41,7 @@ from SkinsContainer import SkinsContainer
 from utils import _dtmldir
 from utils import getToolByName
 from utils import UniqueObject
+from difflib import unified_diff
 
 def modifiedOptions():
     # Remove the existing "Properties" option and add our own.
@@ -107,7 +108,9 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     manage_findForm = DTMLFile('findForm', _dtmldir,
                                management_view='Find')
 
-
+    security.declareProtected(ManagePortal, 'manage_compareResults')
+    manage_compareResults = DTMLFile('compareResults', _dtmldir,
+                                 management_view='Compare')
 
     security.declareProtected(ManagePortal, 'manage_skinLayers')
     def manage_skinLayers(self, chosen=(), add_skin=0, del_skin=0,
@@ -369,5 +372,26 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         sels[str(skinname)] = skinpath
         if make_default:
             self.default_skin = skinname
+
+    security.declareProtected(AccessContentsInformation, 'getDiff')
+    def getDiff(self, item_one_path, item_two_path, reverse=0):
+        """ Return a diff between one and two.
+        """
+        if not reverse:
+            item_one = self.unrestrictedTraverse(item_one_path)
+            item_two = self.unrestrictedTraverse(item_two_path)
+        else:
+            item_one = self.unrestrictedTraverse(item_two_path)
+            item_two = self.unrestrictedTraverse(item_one_path)
+
+        res =  unified_diff( item_one.read().splitlines()
+                           , item_two.read().splitlines()
+                           , item_one_path
+                           , item_two_path
+                           , ''
+                           , ''
+                           , lineterm=""
+                           )
+        return res
 
 InitializeClass(SkinsTool)

@@ -4,8 +4,13 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- SkinsTool: Added the ability to do a diff comparison between items
+  found using the portal_skins "Find" ZMI tab.
+  (https://bugs.launchpad.net/zope-cmf/+bug/238489)
+
 - fiveactionstool: fix typo in a method name that isn't even used in the CMF 
   or Plone.
+  (https://bugs.launchpad.net/zope-cmf/+bug/257259)
 
 - TypeInformation and TypesTool: Added support for add view actions.
   Type infos now have a new 'add_view_expr' property and implement IAction.

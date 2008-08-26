@@ -1,0 +1,52 @@
+<dtml-var manage_page_header>
+<dtml-var manage_tabs>
+
+<dtml-if btn_submit>
+  <br/>
+
+  <dtml-if expr="len(item_paths) != 2">
+
+    Please select two items to compare on the <i>Find</i> page.
+
+  <dtml-else>
+    
+    <form action="manage_compareResults" method="POST">
+      <dtml-in item_paths>
+        <input name="item_paths:list" value="&dtml-sequence-item;" type="hidden"/>
+      </dtml-in>
+      <input name="reverse:int" value=<dtml-var expr="abs(REQUEST.get('reverse',0)-1)"> type="hidden"/>
+      <input type="submit" name="btn_submit" value="Reverse Diff">
+    </form>
+
+    <dtml-let lines="[line for line in getDiff(item_paths[0], item_paths[1], REQUEST.get('reverse', 0))]">
+
+      <dtml-if lines>
+        <dtml-in "lines">
+        <dtml-let line="_['sequence-item']">
+
+            <dtml-if "line.startswith('---')">
+              <pre style="color: green; margin: 0; padding: 0;"><dtml-var line html_quote></pre>
+            <dtml-elif "line.startswith('+++')">
+              <pre style="color: green; margin: 0; padding: 0;"><dtml-var line html_quote></pre>
+            <dtml-elif "line.startswith('@@')">
+              <pre style="color: #daa520; margin: 0; padding: 0;"><dtml-var line html_quote></pre>
+            <dtml-elif "line.startswith('-')">
+              <pre style="color: purple; margin: 0; padding: 0;"><dtml-var line html_quote></pre>
+            <dtml-elif "line.startswith('+')">
+              <pre style="color: #20b2aa; margin: 0; padding: 0;"><dtml-var line html_quote></pre>
+            <dtml-else>
+              <pre style="margin: 0; padding: 0;"><dtml-var line html_quote></pre>
+            </dtml-if>
+
+          </dtml-let>
+        </dtml-in>
+      <dtml-else>
+        No changes
+      </dtml-if>
+    </dtml-let>
+
+  </dtml-if>
+</dtml-if>
+
+Back to <a href="manage_findForm">Find</a>
+<dtml-var manage_page_footer>
