@@ -50,15 +50,35 @@ Products.CMFCore Changelog
 2.1.1 (2008-01-06)
 ------------------
 
-- no changes
+- exportimport.content: Add simple guard against import failures when
+  the ".objects" file contains empty lines.
+  (https://bugs.launchpad.net/zope-cmf/+bug/176328)
 
 
-2.1.1-beta(2007-12/29)
+2.1.1-beta (2007-12/29)
 ----------------------
 
 - Testing: Derive test layers from ZopeLite layer if available.
 
 - Updated to the 0.3 release of five.localsitemanager.
+
+- Events: Fixed some handleContentishEvent issues.
+  Moved _clearLocalRolesAfterClone code to separate handler that is
+  triggered before indexing and also for folders. Made sure notifyModified
+  is not called if objects are just moved.
+
+- PortalObject: Added setSite to getSiteManager for old instances. This
+  fixes migrations from Plone 2.1 to 3.0.
+
+- FSImage: Supply class-level defaults for 'alt', 'height', and 'width',
+  to avoid acquiring objects with the same names.
+  (http://www.zope.org/Collectors/CMF/507)
+
+- Testing: Derive test layers from ZopeLite layer if available.
+
+- PortalObject: Fixed a bug in the site manager creation code, which would
+  assign the __parent__ pointer to the Aq-wrapper and not the actual
+  object.
 
 
 2.1.0 (2007-08-08)
@@ -70,6 +90,10 @@ Products.CMFCore Changelog
 
 - PortalFolder: Enabled 'Components' ZMI tab.
   This GenericSetup tab allows to inspect and edit component registrations.
+
+- First egg release.  For changes up through this release, please see
+  the overall "CMF changelog",
+  http://svn.zope.org/CMF/tags/2.1.0/CHANGES.txt?rev=78713&view=markup
 
 
 2.1.0-beta2 (2007-07-12)
