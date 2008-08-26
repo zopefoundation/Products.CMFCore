@@ -19,7 +19,7 @@ README = (_package_doc('README.txt')
          + "Download\n========"
          )
 
-setup(name='Products.CMFCore',
+setup(name='Products.%s' % NAME,
       version=_package_doc('version.txt').strip(),
       description='Core components of Zope Content Management Framework',
       long_description=README,
