@@ -1,6 +1,10 @@
 Products.CMFCore Changelog
 ==========================
 
+2.1.2 (unreleased)
+------------------
+
+
 2.1.2-beta (2008-08-26)
 -----------------------
 
@@ -17,7 +21,7 @@ Products.CMFCore Changelog
 
 
 2.1.1-beta (2007-12/29)
-----------------------
+-----------------------
 
 - Testing: Derive test layers from ZopeLite layer if available.
 
