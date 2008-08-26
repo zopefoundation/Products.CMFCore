@@ -1,35 +1,234 @@
 Products.CMFCore Changelog
+==========================
 
-  Products.CMFCore 2.1.1 (2008/01/06)
+2.1.2 (2008-08-26)
+------------------
 
-    - exportimport.content: Add simple guard against import failures when
-      the ".objects" file contains empty lines.
-      (https://bugs.launchpad.net/zope-cmf/+bug/176328)
-
-
-  Products.CMFCore 2.1.1-beta (2007/12/29)
-
-    - Events: Fixed some handleContentishEvent issues.
-      Moved _clearLocalRolesAfterClone code to separate handler that is
-      triggered before indexing and also for folders. Made sure notifyModified
-      is not called if objects are just moved.
-
-    - PortalObject: Added setSite to getSiteManager for old instances. This
-      fixes migrations from Plone 2.1 to 3.0.
-
-    - FSImage: Supply class-level defaults for 'alt', 'height', and 'width',
-      to avoid acquiring objects with the same names.
-      (http://www.zope.org/Collectors/CMF/507)
-
-    - Testing: Derive test layers from ZopeLite layer if available.
-
-    - PortalObject: Fixed a bug in the site manager creation code, which would
-      assign the __parent__ pointer to the Aq-wrapper and not the actual
-      object.
+- completed devolution from monolithic CMF package into its component
+  products that are distributed as eggs from PyPI.
 
 
-  Products.CMFCore 2.1.0 (2007/08/08)
+2.1.1 (2008-01-06)
+------------------
 
-    First egg release.  For changes up through this release, please see
-    the overall "CMF changelog",
-    http://svn.zope.org/CMF/tags/2.1.0/CHANGES.txt?rev=78713&view=markup
+- exportimport.content: Add simple guard against import failures when
+  the ".objects" file contains empty lines.
+  (https://bugs.launchpad.net/zope-cmf/+bug/176328)
+
+
+2.1.1-beta (2007-12/29)
+----------------------
+
+- Testing: Derive test layers from ZopeLite layer if available.
+
+- Updated to the 0.3 release of five.localsitemanager.
+
+- Events: Fixed some handleContentishEvent issues.
+  Moved _clearLocalRolesAfterClone code to separate handler that is
+  triggered before indexing and also for folders. Made sure notifyModified
+  is not called if objects are just moved.
+
+- PortalObject: Added setSite to getSiteManager for old instances. This
+  fixes migrations from Plone 2.1 to 3.0.
+
+- FSImage: Supply class-level defaults for 'alt', 'height', and 'width',
+  to avoid acquiring objects with the same names.
+  (http://www.zope.org/Collectors/CMF/507)
+
+- Testing: Derive test layers from ZopeLite layer if available.
+
+- PortalObject: Fixed a bug in the site manager creation code, which would
+  assign the __parent__ pointer to the Aq-wrapper and not the actual
+  object.
+
+
+2.1.0 (2007-08-08)
+------------------
+
+- Fixed all componentregistry.xml files to use plain object paths and strip
+  and slashes. GenericSetup does only support registering objects which are
+  in the site root.
+
+- PortalFolder: Enabled 'Components' ZMI tab.
+  This GenericSetup tab allows to inspect and edit component registrations.
+
+- First egg release.  For changes up through this release, please see
+  the overall "CMF changelog",
+  http://svn.zope.org/CMF/tags/2.1.0/CHANGES.txt?rev=78713&view=markup
+
+
+2.1.0-beta2 (2007-07-12)
+------------------------
+
+- moved the Zope dependency to version 2.10.4
+
+- Remove antique usage of marker attributes in favor of interfaces,
+  leaving BBB behind for places potentially affecting third-party code.
+  (http://www.zope.org/Collectors/CMF/440)
+
+- Add POST-only protections to security critical methods.
+  http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0240)
+
+- exportimport.skins: Added the ability to remove whole skin selections using a 
+  GS profile.
+  (http://www.zope.org/Collectors/CMF/479)
+
+- UndoTool: Fixed 'listUndoableTransactionsFor'.
+  The required 'object' argument is now respected. This doesn't change the
+  behavior as long as 'object' is the site root object.
+
+- TypesTool: Corrected method signature of all_meta_types to have
+  an interface keyword argument, as per the underlying OFS.ObjectManager
+  interface declaration.
+
+- SkinnableObjectManager: Changed the way skins are set up.
+  Acquisition wrapping no longer triggers 'setupCurrentSkin'. This is now
+  done on publishing traversal after the BeforeTraverseEvent triggers
+  'setSite'. This fix replaces a temporary hack introduced in 2.1.0-beta,
+  making sure ISkinsTool is looked up after setting the site.
+
+- CMFBTreeFolder: CMFBTreeFolders could not be used as the
+  toplevel /Members container.
+  (http://www.zope.org/Collectors/CMF/441)
+
+- TypesTool: Pass 'object' through to TypeInformation objects'
+  'listActions'.
+  (http://www.zope.org/Collectors/CMF/482)
+
+- Removed extraneous "Cache" tab from FS-based skin objects.
+  (http://www.zope.org/Collectors/CMF/343)
+
+- WorkflowTool: Using the '(Default)' keyword for a type's
+  workflow chain will now reset any custom workflow chains for the type.
+  (http://www.zope.org/Collectors/CMF/475)
+
+- SkinsTool: Use the property API to get the member specific skin,
+  because direct attribute access won't work with PAS based membership.
+  (http://dev.plone.org/plone/ticket/5904)
+
+- Allow customization from DirectoryViews to be redirected into
+  alternate folders, and use manually-built clones.
+  (http://www.zope.org/Collectors/CMF/382)
+
+
+2.1.0-beta (2007-03-09)
+-----------------------
+
+- moved the Zope dependency to verson 2.10.2
+
+- Tool lookup and registration is now done "the Zope 3 way" as utilities, see
+  http://svn.zope.org/CMF/branches/2.1/docs/ToolsAreUtilities.stx?view=auto
+
+- DirectoryView: Added 'registerDirectory' ZCML directive.
+  Using the old registerDirectory method in __init__.py is now deprecated.
+  See zcml.IRegisterDirectoryDirective for details.
+
+- DirectoryView: Added support for non-product packages.
+  This introduces new registry keys. Old registry keys stored in
+  persistent DirectoryView objects are updated on the fly.
+  (http://www.zope.org/Collectors/CMF/467)
+
+- setup handlers: Improved properties handler.
+  It now works with properties using a default_charset other than UTF-8.
+
+- MembershipTool: Fixed inconsistent behavior where member lookup
+  would take all user folders up to the Zope root into account whereas
+  member area creation would not.
+
+- MembershipTool: when using an object without a __nonzero__ but with a 
+  __len__ (ala CMFBTreeFolder) as a member folder, the createMemberArea 
+  method would believe there was no members folder if the folder was
+  empty, and so would fail (change "not membersfolder" to
+  "membersfolder is not None") .
+
+- DynamicType: Fixed behaviour regarding default view.
+  DynamicType was making it impossible to use a Zope3-style
+  default view for CMF content types.
+  (http://www.zope.org/Collectors/CMF/459)
+
+- utils: Marked 'minimalpath' and 'expandpath' as deprecated.
+
+- Merged patches from Martin Aspeli to enable generating events before
+  and after DCWorkflow transitions, and in the 'notify' methods of the
+  workflow tool (http://www.zope.org/Collectors/CMF/461).
+
+
+2.1.0-alpha2 (2006-11-23)
+-------------------------
+
+- moved the Zope dependency to version 2.10.1
+
+- Fixed test breakage induced by use of Z3 pagetemplates in Zope 2.10+.
+
+- browser views: Added some zope.formlib based forms.
+
+- testing: Added test layers for setting up ZCML.
+
+- WorkflowTool: Added the IConfigurableWorkflowTool interface.
+  This change includes the new 'getDefaultChain' and 'listChainOverrides'
+  methods and an improved 'setChainForPortalTypes' method. The import
+  handler now supports the 'remove' attribute for removing overrides.
+  (http://www.zope.org/Collectors/CMF/457)
+
+- CachingPolicyManager: Implemented the old OFS.Cache.CacheManager
+  API. Now objects other than CMF content or CMF templates can have their
+  caching headers set by the caching policy manager with the same
+  fine-grained control.
+  (http://www.zope.org/Collectors/CMF/408)
+
+- Added CMFCore.FSRestMethod:  ReST equivalent of FSSTXMethod.
+
+- FSSTXMethod:  Modernized, added tests, made customization
+  possible (now renders via ZPT by default, using 'main_template').
+
+- CachingPolicyManager: Prevent firing of caching policies
+  for templates (DTML or ZPT) that are rendered in-line (without a
+  separate request) while rendering the requested content item's view.
+  (http://www.zope.org/Collectors/CMF/456)
+
+
+2.1.0-alpha (2006-10-09)
+------------------------
+
+- skins: Changed encoding of translated portal_status_messages.
+  Now getBrowserCharset is used to play nice with Five forms. Customized
+  setRedirect and getMainGlobals scripts have to be updated.
+
+- Profiles: All profiles are now registered by ZCML.
+
+- ZClasses: Removed unmaintained support for ZClasses.
+  Marked the 'initializeBases*' methods as deprecated.
+
+- Content: Added IFactory utilities for all content classes.
+  They are now used by default instead of the old constructor methods.
+
+- Content: All content classes are now registered by ZCML.
+  ContentInit is still used to register oldstyle constructors.
+
+- setup handlers: Removed support for CMF 1.5 CMFSetup profiles.
+
+- FactoryTypeInformation: Added support for Zope3 style factories.
+  If the 'product' property of a type info instance is empty the 'factory'
+  property is interpreted as an IFactory name.
+
+- ActionInformation: don't use a fixed set of properties for
+  ActionInformation. (http://www.zope.org/Collectors/CMF/232/)
+
+- CatalogTool: Use current executable's proxy roles, if any,
+  in place of user's roles when computing 'allowedRolesAndUsers' for
+  a query. (http://www.zope.org/Collectors/CMF/380)
+
+- FSFile: Added registration for 'txt' extension.
+
+- CMFCatalogAware: Added 'handleObjectEvent' subscriber.
+  This replaces the deprecated 'manage_afterAdd', 'manage_afterClone' and
+  'manage_beforeDelete' hooks.
+
+
+Earlier releases
+----------------
+
+For a complete list of changes before version 2.1.0-alpha, see the HISTORY.txt
+file on the CMF-2.1 branch:
+http://svn.zope.org/CMF/branches/2.1/HISTORY.txt?view=auto
+
