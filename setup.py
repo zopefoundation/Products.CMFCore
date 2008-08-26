@@ -46,6 +46,7 @@ setup(name='Products.%s' % NAME,
           #'Zope >= 2.10.4',
           'setuptools',
           'five.localsitemanager>=0.3',
+          'Products.GenericSetup',
           ],
       entry_points="""
       [zope2.initialize]
