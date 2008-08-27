@@ -58,9 +58,8 @@ class FSMetadata:
             # found the new type, lets use that
             self._readMetadata()
         else:
-            # not found so try the old ones
-            self._properties = self._old_readProperties()
-            self._security = self._old_readSecurity()
+            self._properties = {}
+            self._security = {}
 
     def getProxyRoles(self):
         """ Returns the proxy roles """
@@ -146,65 +145,3 @@ class FSMetadata:
         # with existing API
         return None
 
-    def _old_readProperties(self):
-        """
-        Reads the properties file next to an object.
-
-        Moved from DirectoryView.py to here with only minor
-        modifications. Old and deprecated in favour of .metadata now
-        """
-        fp = self._filename + '.properties'
-        try:
-            f = open(fp, 'rt')
-        except IOError:
-            return None
-        else:
-            warn('.properties objects will disappear in CMF 2.0 - Use '
-                 '.metadata objects instead.', DeprecationWarning)
-            lines = f.readlines()
-            f.close()
-            props = {}
-            for line in lines:
-                kv = line.split('=', 1)
-                if len(kv) == 2:
-                    props[kv[0].strip()] = kv[1].strip()
-                else:
-                    logger.exception("Error parsing .properties file")
-
-            return props
-
-    def _old_readSecurity(self):
-        """
-        Reads the security file next to an object.
-
-        Moved from DirectoryView.py to here with only minor
-        modifications. Old and deprecated in favour of .metadata now
-        """
-        fp = self._filename + '.security'
-        try:
-            f = open(fp, 'rt')
-        except IOError:
-            return None
-        else:
-            warn('.security objects will disappear in CMF 2.0 - Use '
-                 '.metadata objects instead.', DeprecationWarning)
-            lines = f.readlines()
-            f.close()
-            prm = {}
-            for line in lines:
-                try:
-                    c1 = line.index(':')+1
-                    c2 = line.index(':',c1)
-                    permission = line[:c1-1]
-                    acquire = bool(line[c1:c2])
-                    proles = line[c2+1:].split(',')
-                    roles=[]
-                    for role in proles:
-                        role = role.strip()
-                        if role:
-                            roles.append(role)
-                except:
-                    logger.exception("Error reading permission "
-                                     "from .security file")
-                prm[permission]=(acquire,roles)
-            return prm

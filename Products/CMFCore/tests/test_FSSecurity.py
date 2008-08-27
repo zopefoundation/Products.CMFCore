@@ -88,7 +88,8 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
         # baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
         # add .rpm with dodgy permission name
-        self._writeFile('test5.py.security','Access stoopid contents::')
+        self._writeFile('test5.py.metadata',
+                        '[security]\nAccess stoopid contents = 0:')
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
@@ -97,7 +98,7 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
         # baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
         # add dodgy .rpm
-        self._writeFile('test5.py.security','View:aquire:')
+        self._writeFile('test5.py.metadata','[security]\nView = aquire:')
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
@@ -106,27 +107,29 @@ if DevelopmentMode:
     class DebugModeTests( FSSecurityBase ):
 
         def test_addPRM( self ):
-            # Test adding of a .security
+            # Test adding of a .metadata
             # baseline
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
             # add
-            self._writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.metadata',
+                            '[security]\nView = 1:Manager')
             # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
         def test_delPRM( self ):
-            # Test deleting of a .security
+            # Test deleting of a .metadata
             # baseline
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
-            self._writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.metadata',
+                            '[security]\nView = 1:Manager')
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
             # delete
-            self._deleteFile('test5.py.security')
+            self._deleteFile('test5.py.metadata')
             # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
         def test_editPRM( self ):
-            # Test editing a .security
+            # Test editing a .metadata
             # we need to wait a second here or the mtime will actually
             # have the same value as set in the last test.
             # Maybe someone brainier than me can figure out a way to make this
@@ -134,19 +137,21 @@ if DevelopmentMode:
             sleep(1)
 
             # baseline
-            self._writeFile('test5.py.security','View::Manager,Anonymous')
+            self._writeFile('test5.py.metadata',
+                            '[security]\nView = 0:Manager,Anonymous')
             self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])
             # edit
-            self._writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.metadata',
+                            '[security]\nView = 1:Manager')
             # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
         def test_DelAddEditPRM( self ):
-            # Test deleting, then adding, then editing a .security file
+            # Test deleting, then adding, then editing a .metadata file
             # baseline
-            self._writeFile('test5.py.security','View::Manager')
+            self._writeFile('test5.py.metadata','[security]\nView = 0:Manager')
             # delete
-            self._deleteFile('test5.py.security')
+            self._deleteFile('test5.py.metadata')
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
             # we need to wait a second here or the mtime will actually
@@ -155,11 +160,13 @@ if DevelopmentMode:
             sleep(1)
 
             # add back
-            self._writeFile('test5.py.security','View::Manager,Anonymous')
+            self._writeFile('test5.py.metadata',
+                            '[security]\nView = 0:Manager,Anonymous')
             self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])
 
             # edit
-            self._writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.metadata',
+                            '[security]\nView = 1:Manager')
             # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
