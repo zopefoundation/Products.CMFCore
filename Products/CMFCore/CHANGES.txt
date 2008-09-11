@@ -7,6 +7,9 @@ Products.CMFCore Changelog
 - fiveactionstool: fix typo in a method name that isn't even used in the CMF 
   or Plone.
 
+- test fixture: Fix failng tests with GenericSetup > 1.3 by explicitly
+  loading GS' meta.zcml during setup.
+
 
 2.1.2-beta (2008-08-26)
 -----------------------
