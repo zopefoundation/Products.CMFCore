@@ -1,3 +1,0 @@
-Zope >= 2.10.4
-five.localsitemanager >= 0.2
-GenericSetup
