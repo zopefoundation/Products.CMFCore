@@ -4,8 +4,12 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
-- ZMI: Removed the ability to create content from the ZMI. It was never
-  fully supported and carried the risk of creating half-formed content.
+- ZMI: Prevent users from creating content through the ZMI by hiding the
+  entry for "CMFCore Content".
+
+- utils: Add a new optional argument to ContentInit that allows hiding
+  a content item's ZMI add list entry. The default is to leave the item
+  visible, which reflects the previous behavior.
 
 - FSMetadata: Remove handling of .security and .properties metadata
   files which was supposed to have been removed in CMF 2.0 already.

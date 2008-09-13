@@ -126,6 +126,14 @@ def initialize(context):
                   , icon='tool.gif'
                   ).initialize( context )
 
+    # BBB: register oldstyle constructors
+    utils.ContentInit( 'CMF Core Content'
+                     , content_types=()
+                     , permission=AddPortalFolders
+                     , extra_constructors=_EXTRA_CONSTRUCTORS
+                     , visibility=None
+                     ).initialize( context )
+
     # make registerHelp work with 2 directories
     help = context.getProductHelp()
     lastRegistered = help.lastRegistered
