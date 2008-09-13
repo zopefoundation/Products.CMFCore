@@ -392,7 +392,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
         if isinstance(chain, basestring):
             if chain == '(Default)':
-                chain = ''
+                chain = self.getDefaultChain()
             else:
                 chain = [ wf.strip() for wf in chain.split(',') if wf.strip() ]
 

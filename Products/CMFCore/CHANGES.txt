@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.1.3-beta (unreleased)
 -----------------------
 
+- WorkflowTool: Passing the "magic" chain name "(Default)" to the
+  setChainForPortalTypes method did not set the chain to the default 
+  chain value as expected.
+  (https://bugs.launchpad.net/zope-cmf/+bug/161702)
+
 
 2.1.2 (2008-09-13)
 ------------------
