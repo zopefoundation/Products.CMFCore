@@ -634,12 +634,14 @@ class ContentInit:
                 , permission=None
                 , extra_constructors=()
                 , fti=()
+                , visibility='Global'
                 ):
         # BBB: fti argument is ignored
         self.meta_type = meta_type
         self.content_types = content_types
         self.permission = permission
         self.extra_constructors = extra_constructors
+        self.visibility = visibility
 
     def initialize(self, context):
         # Add only one meta type to the folder add list.
@@ -652,6 +654,7 @@ class ContentInit:
                                , manage_addContent
                                , self ) + self.extra_constructors
             , permission = self.permission
+            , visibility = self.visibility
             )
 
         for ct in self.content_types:
