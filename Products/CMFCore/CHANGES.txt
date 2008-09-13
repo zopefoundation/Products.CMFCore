@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- WorkflowTool: Passing the "magic" chain name "(Default)" to the
+  setChainForPortalTypes method did not set the chain to the default 
+  chain value as expected.
+  (https://bugs.launchpad.net/zope-cmf/+bug/161702)
+
 - ZMI: Prevent users from creating content through the ZMI by hiding the
   entry for "CMFCore Content".
 

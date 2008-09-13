@@ -298,9 +298,9 @@ class WorkflowToolTests(unittest.TestCase):
         self.assertEquals( tool.getChainFor(dummy), ('b', 'a') )
 
         # Using the '(Default)' keyword
-        # http://www.zope.org/Collectors/CMF/475
+        # https://bugs.launchpad.net/zope-cmf/+bug/161702
         tool.setChainForPortalTypes( ('Dummy Content',), '(Default)' )
-        self.assertEquals( tool.getChainFor(dummy), () )
+        self.assertEquals( tool.getDefaultChain(), tool.getChainFor( dummy ) )
 
     def test_getCatalogVariablesFor( self ):
 
