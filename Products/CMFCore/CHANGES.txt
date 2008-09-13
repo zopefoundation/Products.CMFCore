@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.1.2 (unreleased)
+2.1.2 (2008-09-13)
 ------------------
 
 - fiveactionstool: fix typo in a method name that isn't even used in the CMF 
