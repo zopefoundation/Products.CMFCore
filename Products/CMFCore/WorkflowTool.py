@@ -382,17 +382,17 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         if cbt is None:
             self._chains_by_type = cbt = PersistentMapping()
 
+        if isinstance(chain, basestring):
+            if chain == '(Default)':
+                chain = None
+            else:
+                chain = [ wf.strip() for wf in chain.split(',') if wf.strip() ]
+
         if chain is None:
             for type_id in pt_names:
                 if cbt.has_key(type_id):
                     del cbt[type_id]
             return
-
-        if isinstance(chain, basestring):
-            if chain == '(Default)':
-                chain = self.getDefaultChain()
-            else:
-                chain = [ wf.strip() for wf in chain.split(',') if wf.strip() ]
 
         ti_ids = [ t.getId() for t in self._listTypeInfo() ]
 
