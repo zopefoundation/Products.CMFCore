@@ -312,6 +312,8 @@ class WorkflowToolTests(unittest.TestCase):
         # https://bugs.launchpad.net/zope-cmf/+bug/161702
         tool.setChainForPortalTypes( ('Dummy Content',), '(Default)' )
         self.assertEquals( tool.getDefaultChain(), tool.getChainFor( dummy ) )
+        tool.setDefaultChain('a, b')
+        self.assertEquals( tool.getDefaultChain(), tool.getChainFor( dummy ) )
 
     def test_getCatalogVariablesFor( self ):
 
