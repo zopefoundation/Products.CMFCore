@@ -52,8 +52,8 @@ _FTI_BODY = """\
  <alias from="(Default)" to="foo"/>
  <alias from="view" to="foo"/>
  <action title="Foo" action_id="foo_action" category="Bar"
-    condition_expr="python:1" url_expr="string:${object_url}/foo"
-    visible="True"/>
+    condition_expr="python:1" icon_expr="string:${portal_url}/icon.png"
+    url_expr="string:${object_url}/foo" visible="True"/>
 </object>
 """
 
@@ -86,16 +86,19 @@ _TI_LIST = ({
     'actions': ({'id':     'view',
                  'title':  'View',
                  'action': 'string:${object_url}/foo_view',
+                 'icon_expr': 'string:${portal_url}/preview_icon.png',
                  'permissions': (View,),
                  },
                 {'id':     'edit',
                  'title':  'Edit',
                  'action': 'string:${object_url}/foo_edit_form',
+                 'icon_expr': 'string:${portal_url}/edit_icon.png',
                  'permissions': (ModifyPortalContent,),
                  },
                 {'id':     'metadata',
                  'title':  'Metadata',
                  'action': 'string:${object_url}/metadata_edit_form',
+                 'icon_expr': 'string:${portal_url}/metadata_icon.png',
                  'permissions': (ModifyPortalContent,),
                  },
                 ),
@@ -197,16 +200,18 @@ _FOO_EXPORT = """\
  <alias from="(Default)" to="foo_view"/>
  <alias from="view" to="foo_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${object_url}/foo_view" visible="True">
+    url_expr="string:${object_url}/foo_view" 
+    icon_expr="string:${portal_url}/preview_icon.png" visible="True">
   <permission value="View"/>
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
-    url_expr="string:${object_url}/foo_edit_form" visible="True">
+    url_expr="string:${object_url}/foo_edit_form" 
+    icon_expr="string:${portal_url}/edit_icon.png" visible="True">
   <permission value="Modify portal content"/>
  </action>
  <action title="Metadata" action_id="metadata" category="object"
     condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
-    visible="True">
+    icon_expr="string:${portal_url}/metadata_icon.png" visible="True">
   <permission value="Modify portal content"/>
  </action>
 </object>
@@ -233,21 +238,23 @@ _BAR_EXPORT = """\
  <alias from="(Default)" to="bar_view"/>
  <alias from="view" to="bar_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${object_url}/bar_view" visible="True">
+    url_expr="string:${object_url}/bar_view" 
+    icon_expr="" visible="True">
   <permission value="View"/>
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
-    url_expr="string:${object_url}/bar_edit_form" visible="True">
+    url_expr="string:${object_url}/bar_edit_form"
+    icon_expr="" visible="True">
   <permission value="Modify portal content"/>
  </action>
  <action title="Contents" action_id="contents" category="object"
     condition_expr="" url_expr="string:${object_url}/folder_contents"
-    visible="True">
+    icon_expr="" visible="True">
   <permission value="Access contents information"/>
  </action>
  <action title="Metadata" action_id="metadata" category="object"
     condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
-    visible="True">
+    icon_expr="" visible="True">
   <permission value="Modify portal content"/>
  </action>
 </object>
@@ -273,7 +280,8 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     def _populate(self, obj):
         obj.setMethodAliases({'(Default)': 'foo', 'view': 'foo'})
         obj.addAction('foo_action', 'Foo', 'string:${object_url}/foo',
-                      'python:1', (), 'Bar')
+                      'python:1', (), 'Bar', 
+                      icon_expr="string:${portal_url}/icon.png")
 
     def _verifyImport(self, obj):
         self.assertEqual(type(obj._aliases), dict)
@@ -291,6 +299,9 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         self.assertEqual(obj._actions[0].category, 'Bar')
         self.assertEqual(type(obj._actions[0].condition.text), str)
         self.assertEqual(obj._actions[0].condition.text, 'python:1')
+        self.assertEqual(type(obj._actions[0].icon_expr.text), str)
+        self.assertEqual(obj._actions[0].icon_expr.text, 
+                                  "string:${portal_url}/icon.png")
 
     def setUp(self):
         self._obj = FactoryTypeInformation('foo_fti')

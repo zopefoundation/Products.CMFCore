@@ -168,6 +168,7 @@ class ActionProviderBase:
                  , permission
                  , category
                  , visible=1
+                 , icon_expr=''
                  , REQUEST=None
                  ):
         """ Add an action to our list.
@@ -190,6 +191,7 @@ class ActionProviderBase:
                                       , permissions=permission
                                       , visible=bool(visible)
                                       , action=action
+                                      , icon_expr=icon_expr
                                       )
 
         new_actions.append( new_action )
@@ -312,6 +314,7 @@ class ActionProviderBase:
         id          = str( properties.get( 'id_%d'          % index, '' ) )
         title       = str( properties.get( 'name_%d'        % index, '' ) )
         action      = str( properties.get( 'action_%d'      % index, '' ) )
+        icon_expr   = str( properties.get( 'icon_expr_%d'   % index, '' ) )
         condition   = str( properties.get( 'condition_%d'   % index, '' ) )
         category    = str( properties.get( 'category_%d'    % index, '' ))
         visible     = bool( properties.get('visible_%d'     % index, False) )
@@ -333,6 +336,7 @@ class ActionProviderBase:
                                 , permissions=permissions
                                 , category=category
                                 , visible=visible
+                                , icon_expr=icon_expr
                                 )
 
     def _getOAI(self, object):

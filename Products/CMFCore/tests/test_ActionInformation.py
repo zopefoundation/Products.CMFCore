@@ -167,7 +167,7 @@ class ActionInfoTests(unittest.TestCase):
 
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'description': '', 'id': 'foo', 'title': 'foo', 'url': '',
-                  'visible': True}
+                  'visible': True, 'icon': ''}
 
         action = ActionInformation(id='foo')
         ec = None
@@ -177,6 +177,7 @@ class ActionInfoTests(unittest.TestCase):
         self.assertEqual( ai['title'], WANTED['title'] )
         self.assertEqual( ai['description'], WANTED['description'] )
         self.assertEqual( ai['url'], WANTED['url'] )
+        self.assertEqual( ai['icon'], WANTED['icon'] )
         self.assertEqual( ai['category'], WANTED['category'] )
         self.assertEqual( ai['visible'], WANTED['visible'] )
         self.assertEqual( ai['available'], WANTED['available'] )
@@ -185,7 +186,8 @@ class ActionInfoTests(unittest.TestCase):
 
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
-                  'id': 'foo', 'title': 'foo', 'url': '', 'visible': True}
+                  'id': 'foo', 'title': 'foo', 'url': '', 'visible': True,
+                  'icon': '' }
 
         action = {'name': 'foo', 'url': ''}
         ec = None
@@ -194,6 +196,7 @@ class ActionInfoTests(unittest.TestCase):
         self.assertEqual( ai['id'], WANTED['id'] )
         self.assertEqual( ai['title'], WANTED['title'] )
         self.assertEqual( ai['url'], WANTED['url'] )
+        self.assertEqual( ai['icon'], WANTED['icon'] )
         self.assertEqual( ai['category'], WANTED['category'] )
         self.assertEqual( ai['visible'], WANTED['visible'] )
         self.assertEqual( ai['available'], WANTED['available'] )
@@ -215,7 +218,8 @@ class ActionInfoSecurityTests(SecurityTest):
 
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
-                  'id': 'foo', 'title': 'foo', 'url': '', 'visible': True}
+                  'id': 'foo', 'title': 'foo', 'url': '', 'visible': True,
+                  'icon': ''}
 
         action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
         ec = createExprContext(self.site, self.site, None)
@@ -224,6 +228,7 @@ class ActionInfoSecurityTests(SecurityTest):
         self.assertEqual( ai['id'], WANTED['id'] )
         self.assertEqual( ai['title'], WANTED['title'] )
         self.assertEqual( ai['url'], WANTED['url'] )
+        self.assertEqual( ai['icon'], WANTED['icon'] )
         self.assertEqual( ai['category'], WANTED['category'] )
         self.assertEqual( ai['visible'], WANTED['visible'] )
         self.assertEqual( ai['available'], WANTED['available'] )
@@ -418,7 +423,7 @@ class ActionInformationTests(TransactionalTest):
     def test_getInfoData_empty(self):
         WANTED = ( {'available': True, 'category': 'object',
                     'description': '', 'id': 'foo', 'permissions': (),
-                    'title': 'foo', 'url': '', 'visible': True}, [] )
+                    'title': 'foo', 'url': '', 'visible': True, 'icon': ''},[])
         a = self._makeOne('foo')
         self.assertEqual( a.getInfoData(), WANTED )
 
@@ -427,14 +432,16 @@ class ActionInformationTests(TransactionalTest):
                           title='Foo Title',
                           description='Foo description.',
                           action='string:${object_url}/foo_url',
+                          icon_expr='string:${object_url}/icon.gif',
                           condition='',
                           permissions=('View',),
                           visible=False)
         WANTED = ( {'available': True, 'category': 'object',
                     'description': 'Foo description.', 'id': 'foo',
                     'permissions': ('View',), 'title': 'Foo Title',
-                    'url': a._getActionObject(), 'visible': False},
-                   ['url'] )
+                    'url': a._getActionObject(), 'visible': False,
+                    'icon': a._getIconExpressionObject(), },
+                   ['url', 'icon'] )
         self.assertEqual( a.getInfoData(), WANTED )
 
 

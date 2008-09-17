@@ -173,6 +173,7 @@ class ActionInfo(UserDict):
                 self.data.setdefault( 'title', self.data['name'] )
                 del self.data['name']
             self.data.setdefault( 'url', '' )
+            self.data.setdefault( 'icon', '' )
             self.data.setdefault( 'category', 'object' )
             self.data.setdefault( 'visible', True )
             self.data['available'] = True
@@ -200,7 +201,7 @@ class ActionInfo(UserDict):
 
     def __eq__(self, other):
         # this is expensive, use it with care
-        [ self.__getitem__(key) for key in self._lazy_keys ]
+        [ self.__getitem__(key) for key in self._lazy_keys[:] ]
 
         if isinstance(other, self.__class__):
             [ other[key] for key in other._lazy_keys ]
@@ -261,6 +262,7 @@ class ActionInformation( SimpleItem ):
                 , priority=10
                 , visible=True
                 , action=''
+                , icon_expr=''
                 ):
         """ Set up an instance.
         """
@@ -273,6 +275,7 @@ class ActionInformation( SimpleItem ):
                  , priority
                  , visible
                  , action
+                 , icon_expr
                  )
 
     security.declarePrivate('edit')
@@ -286,6 +289,7 @@ class ActionInformation( SimpleItem ):
             , priority=_unchanged
             , visible=_unchanged
             , action=_unchanged
+            , icon_expr=_unchanged
             ):
         """Edit the specified properties.
         """
@@ -314,6 +318,10 @@ class ActionInformation( SimpleItem ):
             if action and isinstance(action, basestring):
                 action = Expression(action)
             self.setActionExpression(action)
+        if icon_expr is not _unchanged:
+            if icon_expr and isinstance(icon_expr, basestring):
+                icon_expr = Expression(icon_expr)
+            self.setIconExpression(icon_expr)
 
     security.declareProtected( View, 'Title' )
     def Title(self):
@@ -385,6 +393,36 @@ class ActionInformation( SimpleItem ):
             action = Expression( action )
         self.action = action
 
+    security.declarePrivate( '_getIconExpressionObject' )
+    def _getIconExpressionObject( self ):
+
+        """ Find the icon expression object, working around name changes.
+        """
+        return getattr( self, 'icon_expr', None )
+
+    security.declarePublic( 'getIconExpression' )
+    def getIconExpression( self ):
+
+        """ Return the text of the TALES expression for our icon URL.
+        """
+        icon_expr = self._getIconExpressionObject()
+        expr = icon_expr and icon_expr.text or ''
+        if expr and isinstance(expr, basestring):
+            if ( not expr.startswith('string:')
+                 and not expr.startswith('python:') ):
+                expr = 'string:${object_url}/%s' % expr
+                self.icon_expr = Expression( expr )
+        return expr
+
+    security.declarePrivate( 'setIconExpression' )
+    def setIconExpression(self, icon_expr):
+        if icon_expr and isinstance(icon_expr, basestring):
+            if ( not icon_expr.startswith('string:')
+                 and not icon_expr.startswith('python:') ):
+                icon_expr = 'string:${object_url}/%s' % icon_expr
+            icon_expr = Expression( icon_expr )
+        self.icon_expr = icon_expr
+
     security.declarePublic( 'getCondition' )
     def getCondition(self):
 
@@ -427,7 +465,8 @@ class ActionInformation( SimpleItem ):
                               and self.condition.text or '',
                  'permissions': self.permissions,
                  'visible': bool(self.visible),
-                 'action': self.getActionExpression() }
+                 'action': self.getActionExpression(),
+                 'icon_expr' : self.getIconExpression() }
 
     security.declarePrivate('clone')
     def clone( self ):
@@ -448,6 +487,13 @@ class ActionInformation( SimpleItem ):
         else:
             lazy_map['url'] = ''
         del lazy_map['action']
+
+        if lazy_map['icon_expr']:
+            lazy_map['icon'] = self._getIconExpressionObject()
+            lazy_keys.append('icon')
+        else:
+            lazy_map['icon'] = ''
+        del lazy_map['icon_expr']
 
         if lazy_map['condition']:
             lazy_map['available'] = self.testCondition

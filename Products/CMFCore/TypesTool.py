@@ -156,6 +156,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
                 , permission=action.get( 'permissions', () )
                 , category=action.get('category', 'object')
                 , visible=action.get('visible', True)
+                , icon_expr=action.get('icon_expr', '')
                 )
 
         self.setMethodAliases(kw.get('aliases', {}))

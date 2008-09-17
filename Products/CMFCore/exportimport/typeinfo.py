@@ -101,6 +101,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             child.setAttribute('category', ai_info['category'])
             child.setAttribute('condition_expr', ai_info['condition'])
             child.setAttribute('url_expr', ai_info['action'])
+            child.setAttribute('icon_expr', ai_info['icon_expr'])
             child.setAttribute('visible', str(bool(ai_info['visible'])))
             for permission in ai_info['permissions']:
                 sub = self._doc.createElement('permission')
@@ -121,6 +122,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             category = str(child.getAttribute('category'))
             condition = str(child.getAttribute('condition_expr'))
             action = str(child.getAttribute('url_expr'))
+            icon_expr = str(child.getAttribute('icon_expr'))
             visible = self._convertToBoolean(child.getAttribute('visible'))
             permissions = []
             for sub in child.childNodes:
@@ -131,10 +133,11 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             action_obj = self.context.getActionObject(category+'/'+id)
             if action_obj is None:
                 self.context.addAction(id, title, action, condition,
-                                       tuple(permissions), category, visible)
+                                       tuple(permissions), category, visible,
+                                       icon_expr=icon_expr)
             else:
                 action_obj.edit(title=title, action=action,
-                                condition=condition,
+                                icon_expr=icon_expr, condition=condition,
                                 permissions=tuple(permissions),
                                 visible=visible)
 

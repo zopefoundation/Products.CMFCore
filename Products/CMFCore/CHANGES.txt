@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- ActionInformation: extend the ActionInformation and ActionInfo classes 
+  to support a icon URL just like the newer Action class already does
+
 - WorkflowTool: Passing the "magic" chain name "(Default)" to the
   setChainForPortalTypes method did not set the chain to the default 
   chain value as expected.

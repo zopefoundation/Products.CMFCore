@@ -120,6 +120,8 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
                                 title='Folder contents',
                                 action=Expression(text='string:'
                                              '${folder_url}/folder_contents'),
+                                icon_expr=Expression(text='string:'
+                                             '${folder_url}/icon.gif'),
                                 condition=Expression(text='python: '
                                                       'folder is not object'),
                                 permissions=('List folder contents',),
@@ -133,6 +135,7 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
                           'object': [],
                           'folder': [{'id': 'folderContents',
                                       'url': 'http://nohost/folder_contents',
+                                      'icon': 'http://nohost/icon.gif',
                                       'title': 'Folder contents',
                                       'description': '',
                                       'visible': True,
