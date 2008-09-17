@@ -166,7 +166,7 @@ class TypesToolTests(SecurityTest, WarningInterceptor):
                       'Unauthorized raised' )
 
 
-class TypeInfoTests(unittest.TestCase):
+class TypeInfoTests:
 
     def _makeTypesTool(self):
         from Products.CMFCore.TypesTool import TypesTool
@@ -364,7 +364,7 @@ class TypeInfoTests(unittest.TestCase):
         self.assertEqual(ti._actions[2].action.text, wanted_actions_text2)
 
 
-class FTIDataTests( TypeInfoTests ):
+class FTIDataTests( TypeInfoTests, unittest.TestCase ):
 
     def _makeInstance(self, id, **kw):
         from Products.CMFCore.TypesTool import FactoryTypeInformation
@@ -390,7 +390,7 @@ class FTIDataTests( TypeInfoTests ):
         self.assertEqual( ti.factory, 'addFoo' )
 
 
-class STIDataTests( TypeInfoTests ):
+class STIDataTests( TypeInfoTests, unittest.TestCase ):
 
     def _makeInstance(self, id, **kw):
         from Products.CMFCore.TypesTool import ScriptableTypeInformation
@@ -416,7 +416,7 @@ class STIDataTests( TypeInfoTests ):
         self.assertEqual( ti.constructor_path, 'foo_add' )
 
 
-class FTIConstructionTestCase(unittest.TestCase):
+class FTIConstructionTestCase:
 
     def _getTargetClass(self):
         from Products.CMFCore.TypesTool import FactoryTypeInformation
@@ -482,7 +482,7 @@ class FTIConstructionTestCase(unittest.TestCase):
         self.assertEqual(bam._kw['frickle'], 'natz')
 
 
-class FTIOldstyleConstructionTests(FTIConstructionTestCase):
+class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
 
     def setUp(self):
         self.f = DummyFolder(fake_product=1)
