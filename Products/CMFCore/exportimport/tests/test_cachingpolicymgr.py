@@ -49,7 +49,9 @@ _CPM_BODY = """\
 """
 
 
-class CachingPolicyNodeAdapterTests(NodeAdapterTestCase):
+class CachingPolicyNodeAdapterTests(NodeAdapterTestCase,
+                                    unittest.TestCase,
+                                   ):
 
     layer = ExportImportZCMLLayer
 
@@ -62,12 +64,13 @@ class CachingPolicyNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.CachingPolicyManager import CachingPolicy
 
-        NodeAdapterTestCase.setUp(self)
         self._obj = CachingPolicy('foo_policy', max_age_secs=0)
         self._XML = _CP_XML
 
 
-class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase):
+class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase,
+                                          unittest.TestCase,
+                                         ):
 
     layer = ExportImportZCMLLayer
 
@@ -85,7 +88,6 @@ class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
 
-        BodyAdapterTestCase.setUp(self)
         self._obj = CachingPolicyManager()
         self._BODY = _CPM_BODY
 

@@ -237,7 +237,7 @@ class DummyActionsTool(DummyTool):
         self._providers = [ x for x in self._providers if x != provider_name ]
 
 
-class ActionNodeAdapterTests(NodeAdapterTestCase):
+class ActionNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -270,12 +270,11 @@ class ActionNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.ActionInformation import Action
 
-        NodeAdapterTestCase.setUp(self)
         self._obj = Action('foo_action')
         self._XML = _ACTION_XML
 
 
-class ActionCategoryNodeAdapterTests(NodeAdapterTestCase):
+class ActionCategoryNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -297,12 +296,11 @@ class ActionCategoryNodeAdapterTests(NodeAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.ActionInformation import ActionCategory
 
-        NodeAdapterTestCase.setUp(self)
         self._obj = ActionCategory('foo_category')
         self._XML = _ACTIONCATEGORY_XML
 
 
-class ActionsToolXMLAdapterTests(BodyAdapterTestCase):
+class ActionsToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -330,7 +328,6 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.ActionsTool import ActionsTool
 
-        BodyAdapterTestCase.setUp(self)
         site = DummySite('site')
         site._setObject('portal_actions', ActionsTool('portal_actions'))
         self._obj = site.portal_actions

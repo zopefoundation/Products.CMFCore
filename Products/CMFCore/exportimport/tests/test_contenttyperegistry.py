@@ -58,7 +58,9 @@ _CTR_BODY = """\
 """
 
 
-class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase):
+class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase,
+                                         unittest.TestCase,
+                                        ):
 
     layer = ExportImportZCMLLayer
 
@@ -85,7 +87,6 @@ class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
 
-        BodyAdapterTestCase.setUp(self)
         self._obj = ContentTypeRegistry()
         self._BODY = _CTR_BODY
 

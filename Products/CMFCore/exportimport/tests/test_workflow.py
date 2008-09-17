@@ -134,7 +134,7 @@ class DummyWorkflowTool(Folder):
             self._chains_by_type[pt_name] = chain
 
 
-class WorkflowToolXMLAdapterTests(BodyAdapterTestCase):
+class WorkflowToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -152,7 +152,6 @@ class WorkflowToolXMLAdapterTests(BodyAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.WorkflowTool import WorkflowTool
 
-        BodyAdapterTestCase.setUp(self)
         self._obj = WorkflowTool()
         self._BODY = _WORKFLOWTOOL_BODY
 

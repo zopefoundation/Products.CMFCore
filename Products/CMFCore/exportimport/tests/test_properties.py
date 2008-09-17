@@ -59,7 +59,7 @@ _NORMAL_EXPORT = """\
 """
 
 
-class PropertiesXMLAdapterTests(BodyAdapterTestCase):
+class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -89,7 +89,6 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.PortalObject import PortalObjectBase
 
-        BodyAdapterTestCase.setUp(self)
         self._obj = PortalObjectBase('foo_site')
         self._BODY = _PROPERTIES_BODY
 

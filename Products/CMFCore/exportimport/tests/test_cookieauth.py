@@ -77,7 +77,7 @@ _CHANGED_EXPORT = """\
 """
 
 
-class CookieCrumblerXMLAdapterTests(BodyAdapterTestCase):
+class CookieCrumblerXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -88,7 +88,6 @@ class CookieCrumblerXMLAdapterTests(BodyAdapterTestCase):
         return CookieCrumblerXMLAdapter
 
     def setUp(self):
-        BodyAdapterTestCase.setUp(self)
         self._obj = CookieCrumbler('foo_cookiecrumbler')
         self._BODY = _COOKIECRUMBLER_BODY
 

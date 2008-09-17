@@ -227,7 +227,10 @@ class _DVRegistrySetup:
         DirectoryView._dirreg = self._olddirreg
 
 
-class DirectoryViewAdapterTests(_DVRegistrySetup, NodeAdapterTestCase):
+class DirectoryViewAdapterTests(_DVRegistrySetup,
+                                NodeAdapterTestCase,
+                                unittest.TestCase,
+                               ):
 
     layer = ExportImportZCMLLayer
 
@@ -243,17 +246,18 @@ class DirectoryViewAdapterTests(_DVRegistrySetup, NodeAdapterTestCase):
     def setUp(self):
         from Products.CMFCore.DirectoryView import DirectoryView
 
-        NodeAdapterTestCase.setUp(self)
         _DVRegistrySetup.setUp(self)
         self._obj = DirectoryView('foo_directoryview').__of__(Folder())
         self._XML = _DIRECTORYVIEW_XML
 
     def tearDown(self):
         _DVRegistrySetup.tearDown(self)
-        NodeAdapterTestCase.tearDown(self)
 
 
-class SkinsToolXMLAdapterTests(_DVRegistrySetup, BodyAdapterTestCase):
+class SkinsToolXMLAdapterTests(_DVRegistrySetup,
+                               BodyAdapterTestCase,
+                               unittest.TestCase,
+                              ):
 
     layer = ExportImportZCMLLayer
 
@@ -277,14 +281,12 @@ class SkinsToolXMLAdapterTests(_DVRegistrySetup, BodyAdapterTestCase):
         from Products.CMFCore import DirectoryView
         from Products.CMFCore.SkinsTool import SkinsTool
 
-        BodyAdapterTestCase.setUp(self)
         _DVRegistrySetup.setUp(self)
         self._obj = SkinsTool()
         self._BODY = _SKINSTOOL_BODY
 
     def tearDown(self):
         _DVRegistrySetup.tearDown(self)
-        BodyAdapterTestCase.tearDown(self)
 
 
 class _SkinsSetup(_DVRegistrySetup, BaseRegistryTests):

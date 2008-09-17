@@ -260,7 +260,7 @@ _UPDATE_FOO_IMPORT = """\
 """
 
 
-class TypeInformationXMLAdapterTests(BodyAdapterTestCase):
+class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -293,12 +293,11 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase):
         self.assertEqual(obj._actions[0].condition.text, 'python:1')
 
     def setUp(self):
-        BodyAdapterTestCase.setUp(self)
         self._obj = FactoryTypeInformation('foo_fti')
         self._BODY = _FTI_BODY
 
 
-class TypesToolXMLAdapterTests(BodyAdapterTestCase):
+class TypesToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -312,7 +311,6 @@ class TypesToolXMLAdapterTests(BodyAdapterTestCase):
         obj._setObject('foo_type', FactoryTypeInformation('foo_type'))
 
     def setUp(self):
-        BodyAdapterTestCase.setUp(self)
         self._obj = TypesTool()
         self._BODY = _TYPESTOOL_BODY
 
