@@ -157,6 +157,8 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
             return fragment
 
         for ai in actions:
+            if getattr(ai, 'getMapping', None) is None:
+                continue
             mapping = ai.getMapping()
             child = self._doc.createElement('action')
             child.setAttribute('action_id', mapping['id'])
