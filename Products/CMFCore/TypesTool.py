@@ -16,6 +16,7 @@ $Id$
 """
 
 import logging
+from urllib import quote
 from warnings import warn
 
 import Products
@@ -329,7 +330,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     def getInfoData(self):
         """ Get the data needed to create an ActionInfo.
         """
-        lazy_keys = ['available', 'allowed']
+        lazy_keys = ['url', 'available', 'allowed']
         lazy_map = {}
 
         lazy_map['id'] = self.getId()
@@ -338,9 +339,9 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         lazy_map['description'] = self.Description()
         if self.add_view_expr:
             lazy_map['url'] = self.add_view_expr_object
-            lazy_keys.append('url')
         else:
-            lazy_map['url'] = ''
+            lazy_map['url'] = Expression('string:${folder_url}/+%s'
+                                         % quote(self.getId()))
         if self.content_icon:
             lazy_map['icon'] = Expression('string:${portal_url}/%s'
                                           % self.content_icon)
@@ -786,7 +787,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
                 actions.extend( type_info.listActions(info, object) )
 
         add_actions = [ ti for ti in self.objectValues()
-                        if IAction.providedBy(ti) and ti.add_view_expr ]
+                        if IAction.providedBy(ti) ]
         actions.extend(add_actions)
 
         return actions

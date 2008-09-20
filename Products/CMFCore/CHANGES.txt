@@ -32,8 +32,7 @@ Products.CMFCore Changelog
 
 - TypeInformation and TypesTool: Added support for add view actions.
   Type infos now have a new 'add_view_expr' property and implement IAction.
-  'listActions' of the types tool includes type infos as 'add' actions if
-  an add view URL is specified.
+  'listActions' of the types tool includes type infos as 'add' actions.
 
 - interfaces: Fixed some docstrings.
   There is no IActionInformation. ActionInformation is an old action class
