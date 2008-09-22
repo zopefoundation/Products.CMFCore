@@ -157,6 +157,14 @@ _FRAGMENT6_IMPORT = """\
 </object>
 """
 
+_FRAGMENT7_IMPORT = """\
+<?xml version="1.0"?>
+<object name="portal_skins" meta_type="Dummy Skins Tool">
+ <skin-path name="existing">
+  <layer name="two" insert-after="one"/>
+ </skin-path>
+</object>"""
+
 
 class DummySite(Folder):
 
@@ -360,6 +368,7 @@ class importSkinsToolTests(_SkinsSetup):
     _FRAGMENT4_IMPORT = _FRAGMENT4_IMPORT
     _FRAGMENT5_IMPORT = _FRAGMENT5_IMPORT
     _FRAGMENT6_IMPORT = _FRAGMENT6_IMPORT
+    _FRAGMENT7_IMPORT = _FRAGMENT7_IMPORT
     _NORMAL_EXPORT = _NORMAL_EXPORT
 
 
@@ -619,6 +628,32 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(skin_paths[1], ('existing', 'one,two,three,four'))
         self.assertEqual(skin_paths[2], ('new', 'one,two,three,four'))
         self.assertEqual(skin_paths[3], ('wrongbase', 'two'))
+        self.assertEqual(len(skins_tool.objectItems()), 4)
+
+    def test_fragment7_modified_skin(self):
+        # https://bugs.launchpad.net/zope-cmf/+bug/161732
+        from Products.CMFCore.exportimport.skins import importSkinsTool
+
+        _IDS = ('one', 'two', 'three', 'four')
+        _PATHS = {'existing': 'one,three,four'}
+
+        site = self._initSite(selections=_PATHS, ids=_IDS)
+        skins_tool = site.portal_skins
+
+        skin_paths = skins_tool.getSkinPaths()
+        self.assertEqual(len(skin_paths), 1)
+        self.assertEqual(skin_paths[0], ('existing', 'one,three,four'))
+        self.assertEqual(len(skins_tool.objectItems()), 4)
+
+        context = DummyImportContext(site, False)
+        context._files['skins.xml'] = self._FRAGMENT7_IMPORT
+
+        importSkinsTool(context)
+
+        self.failUnless(site._skin_setup_called)
+        skin_paths = skins_tool.getSkinPaths()
+        self.assertEqual(len(skin_paths), 1)
+        self.assertEqual(skin_paths[0], ('existing', 'one,two,three,four'))
         self.assertEqual(len(skins_tool.objectItems()), 4)
 
 

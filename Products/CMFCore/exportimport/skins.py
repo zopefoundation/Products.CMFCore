@@ -144,6 +144,7 @@ class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
                         pass
                 if path_id in self.context._getSelections():
                     oldpath = self.context._getSelections()[path_id].split(',')
+                    newlayerstart = child.firstChild
                     for layer in oldpath:
                         if layer not in path:
                             layernode = self._doc.createElement('layer')
@@ -153,7 +154,7 @@ class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
                             else:
                                 pos = oldpath[oldpath.index(layer)-1]
                                 layernode.setAttribute('insert-after', pos)
-                            child.appendChild(layernode)
+                            child.insertBefore(layernode, newlayerstart)
                 path = self._updatePath(path, child)
                 self.context.addSkinSelection(path_id, path)
         #
