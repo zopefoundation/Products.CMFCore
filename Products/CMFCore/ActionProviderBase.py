@@ -147,7 +147,12 @@ class ActionProviderBase:
 
         """ Show the 'Actions' management tab.
         """
-        actions = [ ai.getMapping() for ai in self.listActions() ]
+        actions = []
+        for action in self.listActions():
+            # The Actions tab currently only shows old-style actions,
+            # so we need to weed out everything else.
+            if getattr(action, 'getMapping', None) is not None:
+                actions.append(action.getMapping())
 
         # possible_permissions is in AccessControl.Role.RoleManager.
         pp = self.possible_permissions()
