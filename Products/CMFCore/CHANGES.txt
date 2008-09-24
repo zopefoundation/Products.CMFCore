@@ -4,6 +4,12 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Properties export/import: Get the string encoding for property 
+  imports from the import context and fall back to UTF-8, which 
+  mirrors the behavior for exports. This fixes property export/import 
+  round tripping.
+  (https://bugs.launchpad.net/zope-cmf/+bug/248853)
+
 - traversal: Added ++add++ namespace for add views.
 
 - Skinstool import: Fix imports that manipulate existing skins.
