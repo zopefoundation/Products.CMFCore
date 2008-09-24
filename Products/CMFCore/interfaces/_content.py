@@ -354,7 +354,7 @@ class IDublinCore(IMinimalDublinCore):
         """
 
     def Rights():
-        """ Reutrn the DCMI Rights element (resource copyright).
+        """ Return the DCMI Rights element (resource copyright).
 
         o Return a string describing the intellectual property status, if
           any, of the resource.
