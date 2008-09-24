@@ -51,6 +51,8 @@ class PropertiesXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
     def _importNode(self, node):
         """Import the object from the DOM node.
         """
+        self._encoding = self.context.getProperty('default_charset', 'utf-8')
+
         for child in node.childNodes:
             if child.nodeName != 'property':
                 continue

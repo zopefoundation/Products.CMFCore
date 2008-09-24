@@ -32,7 +32,7 @@ _PROPERTIES_BODY = u"""\
  <property name="title">Foo</property>
  <property name="default_charset" type="string">iso-8859-1</property>
  <property name="foo_string" type="string">foo</property>
- <property name="bar_string" type="string">Bär</property>
+ <property name="bar_string" type="string">B\xe4r</property>
  <property name="foo_boolean" type="boolean">False</property>
 </site>
 """.encode('utf-8')
@@ -73,7 +73,7 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase):
         obj._setPropValue('title', 'Foo')
         obj._setProperty('default_charset', 'iso-8859-1', 'string')
         obj._setProperty('foo_string', 'foo', 'string')
-        obj._setProperty('bar_string', 'Bär', 'string')
+        obj._setProperty('bar_string', u'B\xe4r'.encode('iso-8859-1'), 'string')
         obj._setProperty('foo_boolean', False, 'boolean')
 
     def _verifyImport(self, obj):
@@ -82,7 +82,7 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase):
         self.assertEqual(type(obj.foo_string), str)
         self.assertEqual(obj.foo_string, 'foo')
         self.assertEqual(type(obj.bar_string), str)
-        self.assertEqual(obj.bar_string, 'Bär')
+        self.assertEqual(obj.bar_string, u'B\xe4r'.encode('iso-8859-1'))
         self.assertEqual(type(obj.foo_boolean), bool)
         self.assertEqual(obj.foo_boolean, False)
 
@@ -231,11 +231,45 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual( site.getProperty('bar'), ('Bar',) )
 
 
+class roundtripSitePropertiesTests(_SitePropertiesSetup):
+
+    layer = ExportImportZCMLLayer
+
+    def test_nonascii_no_default_charset(self):
+        from Products.CMFCore.exportimport.properties \
+                import exportSiteProperties
+        from Products.CMFCore.exportimport.properties \
+                import importSiteProperties
+
+        NONASCII = u'B\xe4r'.encode('utf-8')
+        site = self._initSite(foo=0, bar=0)
+        site._updateProperty('title', NONASCII)
+
+        self.assertEquals(site.title, NONASCII)
+
+        # export the site properties
+        context = DummyExportContext( site )
+        exportSiteProperties(context)
+        filename, text, content_type = context._wrote[0]
+
+        # Clear the title property
+        site._updateProperty('title', '')
+        self.assertEquals(site.title, '')
+
+        # Import from the previous export
+        context = DummyImportContext(site)
+        context._files['properties.xml'] = text
+        importSiteProperties(context)
+
+        self.assertEquals(site.title, NONASCII)
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(PropertiesXMLAdapterTests),
         unittest.makeSuite(exportSitePropertiesTests),
         unittest.makeSuite(importSitePropertiesTests),
+        unittest.makeSuite(roundtripSitePropertiesTests),
         ))
 
 if __name__ == '__main__':
