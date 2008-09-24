@@ -48,6 +48,7 @@ from interfaces import IAction
 from interfaces import ITypeInformation
 from interfaces import ITypesTool
 from permissions import AccessContentsInformation
+from permissions import AddPortalContent
 from permissions import ManagePortal
 from permissions import View
 from utils import _checkPermission
@@ -340,7 +341,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         if self.add_view_expr:
             lazy_map['url'] = self.add_view_expr_object
         else:
-            lazy_map['url'] = Expression('string:${folder_url}/+%s'
+            lazy_map['url'] = Expression('string:${folder_url}/++add++%s'
                                          % quote(self.getId()))
         if self.content_icon:
             lazy_map['icon'] = Expression('string:${portal_url}/%s'
@@ -370,7 +371,10 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     def _checkAllowed(self, ec):
         """ Check if the action is allowed in the current context.
         """
-        return self.isConstructionAllowed(ec.contexts['folder'])
+        container = ec.contexts['folder']
+        if not _checkPermission(AddPortalContent, container):
+            return False
+        return self.isConstructionAllowed(container)
 
 InitializeClass(TypeInformation)
 

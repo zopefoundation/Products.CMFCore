@@ -2,6 +2,11 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five">
 
+  <adapter
+      name="add"
+      factory=".namespace.AddViewTraverser"
+      />
+
   <five:registerClass
       class=".PortalFolder.PortalFolder"
       meta_type="Portal Folder"

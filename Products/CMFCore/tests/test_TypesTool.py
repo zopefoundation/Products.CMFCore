@@ -321,7 +321,7 @@ class TypeInfoTests:
         self.assertEqual(info_data[0]['title'], ti_data['title'])
         self.assertEqual(info_data[0]['description'], ti_data['description'])
         self.assertEqual(info_data[0]['url'].text,
-                         'string:${folder_url}/+foo')
+                         'string:${folder_url}/++add++foo')
         self.assertEqual(info_data[0]['icon'], '')
         self.assertEqual(info_data[0]['visible'], True)
         self.assertEqual(info_data[0]['available'], ti._checkAvailable)

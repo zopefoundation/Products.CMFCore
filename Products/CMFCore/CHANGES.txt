@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- traversal: Added ++add++ namespace for add views.
+
 - Skinstool import: Fix imports that manipulate existing skins.
   (https://bugs.launchpad.net/zope-cmf/+bug/161732)
 
