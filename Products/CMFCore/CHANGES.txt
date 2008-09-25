@@ -4,6 +4,12 @@ Products.CMFCore Changelog
 2.1.3-beta (unreleased)
 -----------------------
 
+- CatalogTool: If proxy roles are set on a script that uses the catalog
+  and those proxy roles have been unset using the ZMI, which results
+  in an empty tuple as proxy roles, then the catalog would not correctly
+  determine what the current user is allowed to see.
+  (https://bugs.launchpad.net/zope-cmf/+bug/161729)
+
 - Properties export/import: Get the string encoding for property 
   imports from the import context and fall back to UTF-8, which 
   mirrors the behavior for exports. This fixes property export/import 

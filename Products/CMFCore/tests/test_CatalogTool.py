@@ -18,6 +18,7 @@ $Id$
 import unittest
 import Testing
 
+from AccessControl.SecurityManagement import getSecurityManager
 from AccessControl.SecurityManagement import newSecurityManager
 from DateTime import DateTime
 
@@ -416,6 +417,37 @@ class CatalogToolTests(SecurityTest):
                          'CMF Collector issue #379 (\'Update Catalog\' '
                          'fails): %s entries after refreshCatalog'
                          % (len(ctool._catalog.searchResults()),))
+
+    def test_listAllowedRolesAndUsers_proxyroles(self):
+        # https://bugs.launchpad.net/zope-cmf/+bug/161729
+        catalog = self._makeOne()
+        self.loginWithRoles('Blob')
+        user = getSecurityManager().getUser()
+
+        # First case, no proxy roles set at all
+        arus = catalog._listAllowedRolesAndUsers(user)
+        self.assertEquals(len(arus), 3)
+        self.failUnless('Anonymous' in arus)
+        self.failUnless('Blob' in arus)
+        self.failUnless('user:%s' % user.getId() in arus)
+
+        # Second case, a proxy role is set
+        self.setupProxyRoles('Waggle')
+        arus = catalog._listAllowedRolesAndUsers(user)
+        self.assertEquals(len(arus), 3)
+        self.failUnless('Anonymous' in arus)
+        self.failUnless('Waggle' in arus)
+        self.failUnless('user:%s' % user.getId() in arus)
+
+        # Third case, proxy roles are an empty tuple. This happens if
+        # proxy roles are unset using the ZMI. The behavior should 
+        # mirror the first case with no proxy role setting at all.
+        self.setupProxyRoles()
+        arus = catalog._listAllowedRolesAndUsers(user)
+        self.assertEquals(len(arus), 3)
+        self.failUnless('Anonymous' in arus)
+        self.failUnless('Blob' in arus)
+        self.failUnless('user:%s' % user.getId() in arus)       
 
 
 def test_suite():
