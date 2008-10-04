@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Discussion tool: Removed the listActions method that would return 
+  a hardcoded Reply action. This action has been handled by the
+  Actions tool itself for a while now, and the Discussions tool was 
+  not set as an action provider anymore.
+
 - actions tool export/import: The actions tool export/import mechanism 
   is no longer attempting to handle actions stored on tools other than
   itself. Other tools are themselves responsible for their actions.

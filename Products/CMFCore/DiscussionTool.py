@@ -156,29 +156,4 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
             return typeInfo.allowDiscussion()
         return 0
 
-    security.declarePrivate('listActions')
-    def listActions(self, info=None, object=None):
-        # Return actions for reply and show replies
-        if object is not None or info is None:
-            info = self._getOAI(object)
-        content = info.object
-        if content is None or not self.isDiscussionAllowedFor(content):
-            return ()
-
-        discussion = self.getDiscussionFor(content)
-        if discussion.aq_base == content.aq_base:
-            discussion_url = info.object_url
-        else:
-            discussion_url = discussion.absolute_url()
-
-        actions = (
-            {'name': 'Reply',
-             'url': discussion_url + '/discussion_reply_form',
-             'permissions': [ReplyToItem],
-             'category': 'object'
-             },
-            )
-
-        return actions
-
 InitializeClass(DiscussionTool)
