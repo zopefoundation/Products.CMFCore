@@ -540,7 +540,7 @@ class IMemberDataTool(Interface):
             )
 
     def wrapUser(user):
-        """Returns an IMemberData instance for to the given user object.
+        """Returns an IMemberData instance for the given user object.
 
         o Permission:  Private (Python-only)
         """
