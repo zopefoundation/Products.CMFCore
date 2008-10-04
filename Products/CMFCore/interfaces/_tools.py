@@ -537,7 +537,7 @@ class IMemberDataTool(Interface):
             )
 
     def wrapUser(user):
-        """Returns an IMember corresponding to the given user object.
+        """Returns an IMemberData instance for to the given user object.
 
         o Permission:  Private (Python-only)
         """
@@ -729,7 +729,7 @@ class IMembershipTool(Interface):
         """
 
     def getMemberById(id):
-        """ Returns the given IMember.
+        """ Returns the IMemberData instance corresponding to the given id.
 
         o Permission:  Manage users
         """
@@ -744,7 +744,7 @@ class IMembershipTool(Interface):
         """
 
     def listMembers():
-        """ Return a sequence of all IMembers.
+        """ Return a sequence of all IMemberData instances.
 
         o This may eventually be replaced with a set of methods for querying
           pieces of the list rather than the entire list at once.
