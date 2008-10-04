@@ -15,6 +15,8 @@
 $Id$
 """
 
+from warnings import warn
+
 from AccessControl import ClassSecurityInfo
 from Globals import DTMLFile
 from Globals import InitializeClass
@@ -57,7 +59,13 @@ class ActionProviderBase:
     def listActions(self, info=None, object=None):
         """ List all the actions defined by a provider.
         """
-        return self._actions or ()
+        oldstyle_actions = self._actions or ()
+        if oldstyle_actions:
+            warn('Old-style actions are deprecated and will be removed in CMF '
+                 '2.4. Use Action and Action Category objects instead.',
+                 DeprecationWarning, stacklevel=2)
+
+        return oldstyle_actions
 
     security.declarePrivate('getActionObject')
     def getActionObject(self, action):

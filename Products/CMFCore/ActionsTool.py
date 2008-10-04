@@ -15,6 +15,8 @@
 $Id$
 """
 
+from warnings import warn
+
 from AccessControl import ClassSecurityInfo
 from Globals import DTMLFile
 from Globals import InitializeClass
@@ -112,7 +114,12 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
     def listActions(self, info=None, object=None):
         """ List all the actions defined by a provider.
         """
-        actions = list(self._actions)
+        oldstyle_actions = self._actions or ()
+        if oldstyle_actions:
+            warn('Old-style actions are deprecated and will be removed in CMF '
+                 '2.4. Use Action and Action Category objects instead.',
+                 DeprecationWarning, stacklevel=2)
+        actions = list(oldstyle_actions)
         for category in self.objectValues():
             actions.extend( category.listActions() )
         return tuple(actions)

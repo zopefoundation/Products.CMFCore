@@ -13,6 +13,16 @@
 </dtml-let>
 <dtml-var manage_tabs>
 
+<p>
+  <span style="{Color:red}" class="form-label">DEPRECATION WARNING</span><br/>
+  <span class="form-help">
+    Storing actions here is deprecated. Please move to using Action and 
+    Action Category objects. See the CMF ActionsTool implementation for
+    details. Starting with CMF 2.4, the "Actions" tab will no longer be
+    shown for tools provided by the CMF.
+  </span>
+</p>
+
 <form action="&dtml-absolute_url;" method="POST">
 
 <dtml-if actions>

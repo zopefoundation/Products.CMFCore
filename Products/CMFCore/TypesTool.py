@@ -781,7 +781,12 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
     def listActions(self, info=None, object=None):
         """ List all the actions defined by a provider.
         """
-        actions = list( self._actions )
+        oldstyle_actions = self._actions or ()
+        if oldstyle_actions:
+            warn('Old-style actions are deprecated and will be removed in CMF '
+                 '2.4. Use Action and Action Category objects instead.',
+                 DeprecationWarning, stacklevel=2)
+        actions = list(oldstyle_actions)
 
         if object is None and info is not None:
             object = info.object

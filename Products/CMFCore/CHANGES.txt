@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Actions: Added deprecation warnings to the ZMI actions tab and 
+  most listActions methods where old-style actions are found 
+  asking developers to move to new-style actions instead. These 
+  warnings allow us to remove old-style actions code by version 2.4.
+
 - Discussion tool: Removed the listActions method that would return 
   a hardcoded Reply action. This action has been handled by the
   Actions tool itself for a while now, and the Discussions tool was 
