@@ -90,11 +90,18 @@ _EMPTY_EXPORT = """\
 </object>
 """
 
-_NORMAL_EXPORT = """\
+_OLD_EXPORT = """\
 <?xml version="1.0"?>
 <object name="portal_actions" meta_type="CMF Actions Tool"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
- <action-provider name="portal_actions"/>
+ <action-provider name="portal_actions">
+  <action action_id="baz"
+          title="Baz"
+          url_expr="string:${object_url}/baz"
+          condition_expr="python:1"
+          category="dummy"
+          visible="True"/>
+ </action-provider>
  <action-provider name="portal_foo">
   <action action_id="foo"
           title="Foo"
@@ -116,32 +123,40 @@ _NORMAL_EXPORT = """\
 </object>
 """
 
+_NORMAL_EXPORT = """\
+<?xml version="1.0"?>
+<object name="portal_actions" meta_type="CMF Actions Tool"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <action-provider name="portal_actions">
+  <action action_id="baz"
+          title="Baz"
+          url_expr="string:${object_url}/baz"
+          condition_expr="python:1"
+          category="dummy"
+          visible="True"/>
+ </action-provider>
+ <action-provider name="portal_foo"/>
+ <action-provider name="portal_bar"/>
+</object>
+"""
+
 _NEWSYTLE_EXPORT = """\
 <?xml version="1.0"?>
 <object name="portal_actions" meta_type="CMF Actions Tool"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
  <action-provider name="portal_actions"/>
+ <action-provider name="portal_foo"/>
+ <action-provider name="portal_bar"/>
  <object name="dummy" meta_type="CMF Action Category">
   <property name="title"></property>
-  <object name="foo" meta_type="CMF Action">
-   <property name="title">Foo</property>
+  <object name="baz" meta_type="CMF Action">
+   <property name="title">Baz</property>
    <property name="description"></property>
-   <property name="url_expr">string:${object_url}/foo</property>
+   <property name="url_expr">string:${object_url}/baz</property>
    <property name="icon_expr"></property>
    <property name="available_expr">python:1</property>
    <property name="permissions"></property>
    <property name="visible">True</property>
-  </object>
-  <object name="bar" meta_type="CMF Action">
-   <property name="title">Bar</property>
-   <property name="description"></property>
-   <property name="url_expr">string:${object_url}/bar</property>
-   <property name="icon_expr"></property>
-   <property name="available_expr">python:0</property>
-   <property name="permissions">
-    <element value="Manage portal"/>
-   </property>
-   <property name="visible">False</property>
   </object>
  </object>
 </object>
@@ -181,8 +196,8 @@ _INSERT_IMPORT = """\
    <element value="View" /></property>
   <property name="visible">True</property>
  </object>
- <object name="foo" insert-after="*">
-  <property name="icon_expr">string:foo_icon.png</property>
+ <object name="baz" insert-after="*">
+  <property name="icon_expr">string:baz_icon.png</property>
  </object>
  </object>
 </object>
@@ -396,6 +411,15 @@ class exportActionProvidersTests(_ActionSetup):
                 import exportActionProviders
 
         site = self._initSite()
+        # Set up an old action for added difficulty
+        site.portal_actions.addAction(id='baz',
+                                      name='Baz',
+                                      action='baz',
+                                      condition='python:1',
+                                      permission=(),
+                                      category='dummy',
+                                      visible=1)
+
         context = DummyExportContext(site)
         exportActionProviders(context)
 
@@ -488,18 +512,21 @@ class importActionProvidersTests(_ActionSetup):
         self.failUnless('portal_actions' in atool.listActionProviders())
 
         context = DummyImportContext(site)
-        context._files['actions.xml'] = _NORMAL_EXPORT
+        context._files['actions.xml'] = _OLD_EXPORT
         importActionProviders(context)
 
-        self.assertEqual(len(atool.listActionProviders()), 1)
-        self.failIf('portal_foo' in atool.listActionProviders())
+        self.assertEqual(len(atool.listActionProviders()), 3)
+        self.failUnless('portal_bar' in atool.listActionProviders())
+        self.failUnless('portal_foo' in atool.listActionProviders())
         self.failUnless('portal_actions' in atool.listActionProviders())
 
         self.assertEqual(len(atool.objectIds()), 1)
         self.failUnless('dummy' in atool.objectIds())
-        self.assertEqual(len(atool.dummy.objectIds()) , 2)
-        self.failUnless('foo' in atool.dummy.objectIds())
-        self.failUnless('bar' in atool.dummy.objectIds())
+        # Only one action appears. The importer only deals with actions
+        # defined by the actions tool. Other tools are responsible for
+        # exporting/importing actions themselves.
+        self.assertEqual(len(atool.dummy.objectIds()) , 1)
+        self.failUnless('baz' in atool.dummy.objectIds())
         self.failIf(foo.listActions())
         self.failIf(bar.listActions())
 
@@ -552,19 +579,19 @@ class importActionProvidersTests(_ActionSetup):
         context._files['actions.xml'] = _NEWSYTLE_EXPORT
         importActionProviders(context)
 
-        self.assertEqual(len(atool.listActionProviders()), 1)
+        self.assertEqual(len(atool.listActionProviders()), 3)
         self.assertEqual(atool.objectIds(), ['dummy'])
-        self.assertEqual(atool.dummy.objectIds(), ['foo', 'bar'])
-        self.assertEqual(atool.dummy.foo.icon_expr, '')
+        self.assertEqual(atool.dummy.objectIds(), ['baz'])
+        self.assertEqual(atool.dummy.baz.icon_expr, '')
 
         context = DummyImportContext(site, False)
         context._files['actions.xml'] = _INSERT_IMPORT
         importActionProviders(context)
 
-        self.assertEqual(len(atool.listActionProviders()), 1)
+        self.assertEqual(len(atool.listActionProviders()), 3)
         self.assertEqual(atool.objectIds(), ['dummy'])
-        self.assertEqual(atool.dummy.objectIds(), ['spam', 'bar', 'foo'])
-        self.assertEqual(atool.dummy.foo.icon_expr, 'string:foo_icon.png')
+        self.assertEqual(atool.dummy.objectIds(), ['spam', 'baz'])
+        self.assertEqual(atool.dummy.baz.icon_expr, 'string:baz_icon.png')
 
     def test_remove_skip_purge(self):
         from Products.CMFCore.exportimport.actions \

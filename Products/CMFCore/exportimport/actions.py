@@ -32,8 +32,6 @@ from Products.CMFCore.interfaces import IActionProvider
 from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.utils import getToolByName
 
-_SPECIAL_PROVIDERS = ('portal_actions', 'portal_types', 'portal_workflow')
-
 
 class ActionCategoryNodeAdapter(NodeAdapterBase, ObjectManagerHelpers,
                                 PropertyManagerHelpers):
@@ -134,14 +132,22 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
         for provider_id in self.context.listActionProviders():
             child = self._doc.createElement('action-provider')
             child.setAttribute('name', provider_id)
-            # BBB: for CMF 1.6 profiles
-            sub = self._extractOldstyleActions(provider_id)
-            child.appendChild(sub)
+            # BBB: for CMF 1.6 action settings
+            # We only do this for the portal_actions tool itself. Other 
+            # providers are responsible for their own action import/export.
+            if provider_id == 'portal_actions':
+                sub = self._extractOldstyleActions(provider_id)
+                child.appendChild(sub)
+
             fragment.appendChild(child)
+
         return fragment
 
     def _extractOldstyleActions(self, provider_id):
-        # BBB: for CMF 1.6 profiles
+        # BBB: for CMF 1.6 action settings
+        # This method collects "old-style" action information and
+        # formats it for import as "new-style" actions
+
         fragment = self._doc.createDocumentFragment()
 
         provider = getToolByName(self.context, provider_id)
@@ -189,15 +195,23 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
                     self.context.deleteActionProvider(provider_id)
                 continue
 
-            if provider_id in _SPECIAL_PROVIDERS and \
-                    provider_id not in self.context.listActionProviders():
+            if provider_id not in self.context.listActionProviders():
                 self.context.addActionProvider(provider_id)
 
-            # BBB: for CMF 1.6 profiles
-            self._initOldstyleActions(child)
+            # BBB: for CMF 1.6 action setting exports
+            # We only do this for the portal_actions tool itself. Other 
+            # providers are responsible for their own action import/export.
+            if provider_id == 'portal_actions':
+                self._initOldstyleActions(child)
 
     def _initOldstyleActions(self, node):
-        # BBB: for CMF 1.6 profiles
+        # BBB: for CMF 1.6 action setting exports
+        # This code transparently migrates old export data containing
+        # "old-style" action information to "new-style" actions.
+        # It does this by synthesizing "new-style" export data from the
+        # existing export and then importing that instead of the 
+        # "real" export data, which also moves these actions into the
+        # actions tool.
         doc = node.ownerDocument
         fragment = doc.createDocumentFragment()
         for child in node.childNodes:

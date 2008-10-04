@@ -4,6 +4,13 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- actions tool export/import: The actions tool export/import mechanism 
+  is no longer attempting to handle actions stored on tools other than
+  itself. Other tools are themselves responsible for their actions.
+  The importer has been fixed to add all action providers to the actions 
+  tool, not just a select list of providers we know about.
+  (https://bugs.launchpad.net/zope-cmf/+bug/177675)
+
 - tool interfaces: Replace non-existing IMember interface with the
   correct IMemberData.
 
