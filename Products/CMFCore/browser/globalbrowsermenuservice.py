@@ -17,18 +17,14 @@ Five-based adaptation of the one in Zope 3.0.
 
 $Id$
 """
-
-from zope.security.interfaces import Unauthorized, Forbidden
 from zope.interface import implementedBy
-from Products.Five.security import checkPermission, CheckerPublic
+from zope.interface.interfaces import IInterface
+from zope.security.interfaces import Unauthorized, Forbidden
 from zope.app.publication.browser import PublicationTraverser
 from zope.app.component.interface import provideInterface
 
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-     globalBrowserMenuService
-from zope.app.publisher.browser.globalbrowsermenuservice import MenuItem
+from Products.Five.security import checkPermission, CheckerPublic
 
-from zope.interface.interfaces import IInterface
 from types import ClassType
 
 
@@ -36,6 +32,9 @@ def addMenuItem(menu_id, interface, action, title,
                 description='', filter_string=None, permission=None,
                 extra=None,
                 ):
+    from zope.app.publisher.browser.globalbrowsermenuservice import \
+        globalBrowserMenuService
+    from zope.app.publisher.browser.globalbrowsermenuservice import MenuItem
     registry = globalBrowserMenuService._registry[menu_id].registry
 
     if permission:
@@ -58,6 +57,8 @@ def addMenuItem(menu_id, interface, action, title,
 
 
 def getMenu(menu_id, object, request, max=999999):
+    from zope.app.publisher.browser.globalbrowsermenuservice import \
+        globalBrowserMenuService
     traverser = PublicationTraverser()
 
     result = []
