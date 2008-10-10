@@ -39,10 +39,4 @@
 
   </configure>
 
-  <!-- Set up default menus as action categories. -->
-  <browser:menu
-    id="object"
-    title="Object menu"
-    />
-
 </configure>

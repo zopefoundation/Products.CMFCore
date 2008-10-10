@@ -20,7 +20,6 @@ import MembershipTool, WorkflowTool, CatalogTool, DiscussionTool
 import ActionsTool, UndoTool, RegistrationTool, SkinsTool
 import MemberDataTool, TypesTool
 import URLTool
-import fiveactionstool
 import DirectoryView, FSImage, FSFile, FSPropertiesObject
 import FSDTMLMethod, FSPythonScript
 import FSPageTemplate
@@ -52,7 +51,6 @@ tools = (
     MemberDataTool.MemberDataTool,
     TypesTool.TypesTool,
     URLTool.URLTool,
-    fiveactionstool.FiveActionsTool,
     )
 
 # BBB: oldstyle constructors

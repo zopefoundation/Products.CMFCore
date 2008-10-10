@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- FiveActionsTool: Removed the tool and all functionality for bridging
+  between Zope 3-style menu items and CMF actions. The CMF has been going
+  a different route for a long time and the code is unused and 
+  unmaintained.
+
 - Actions: Added deprecation warnings to the ZMI actions tab and 
   most listActions methods where old-style actions are found 
   asking developers to move to new-style actions instead. These 
