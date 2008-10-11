@@ -526,6 +526,64 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertEqual(tool.foo._aliases,
                {'(Default)': 'foo_view', 'view': 'foo_view', 'spam': 'eggs'})
 
+    def test_action_remove(self):
+        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+
+        site = self._initSite()
+        tool = site.portal_types
+
+        self.assertEqual(len(tool.objectIds()), 0)
+
+        context = DummyImportContext(site, False)
+
+        # Make sure removing a non-existant action doesn't fail
+        _TOOL = """\
+        <?xml version="1.0"?>
+        <object name="portal_types" meta_type="CMF Types Tool">
+         <object name="%s" meta_type="Factory-based Type Information"/>
+        </object>
+        """
+        context._files['types.xml'] = (_TOOL % 'baz').strip()
+
+        _BAZ_SETUP = """\
+        <?xml version="1.0"?>
+        <object name="%s" meta_type="Factory-based Type Information">
+         <property name="title">Baz</property>
+         <action title="View" action_id="view" category="object"
+            condition_expr="" url_expr="string:${object_url}/baz_view" 
+            icon_expr="" visible="True">
+          <permission value="View"/>
+         </action>
+         <action action_id="edit" category="object" remove="True" />
+        </object>
+        """
+        context._files['types/baz.xml'] = (_BAZ_SETUP % 'baz').strip()
+        importTypesTool(context)
+
+        self.assertEqual(len(tool.objectIds()), 1)
+        self.failUnless('baz' in tool.objectIds())
+        baz = tool['baz']
+        actions = baz.listActions()
+        self.assertEqual(len(actions), 1)
+        self.assertEqual(actions[0].title, 'View')
+
+        # Remove an already existing action
+        _BAZ_REMOVE = """\
+        <?xml version="1.0"?>
+        <object name="%s" meta_type="Factory-based Type Information">
+         <property name="title">Baz</property>
+         <action action_id="view" category="object" remove="True" />
+        </object>
+        """
+        context._files['types/baz.xml'] = (_BAZ_REMOVE % 'baz').strip()
+        importTypesTool(context)
+
+        self.assertEqual(len(tool.objectIds()), 1)
+        self.failUnless('baz' in tool.objectIds())
+        baz = tool['baz']
+        actions = baz.listActions()
+        self.assertEqual(len(actions), 0)
+
 
 def test_suite():
     return unittest.TestSuite((

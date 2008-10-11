@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Added remove support to GenericSetup types tool exportimport handler.
+
 - FiveActionsTool: Removed the tool and all functionality for bridging
   between Zope 3-style menu items and CMF actions. The CMF has been going
   a different route for a long time and the code is unused and 

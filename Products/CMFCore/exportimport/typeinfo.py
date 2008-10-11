@@ -124,6 +124,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             action = str(child.getAttribute('url_expr'))
             icon_expr = str(child.getAttribute('icon_expr'))
             visible = self._convertToBoolean(child.getAttribute('visible'))
+            remove = child.hasAttribute('remove') and True or False
             permissions = []
             for sub in child.childNodes:
                 if sub.nodeName != 'permission':
@@ -131,15 +132,23 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
                 permission = sub.getAttribute('value')
                 permissions.append(permission)
             action_obj = self.context.getActionObject(category+'/'+id)
-            if action_obj is None:
-                self.context.addAction(id, title, action, condition,
-                                       tuple(permissions), category, visible,
-                                       icon_expr=icon_expr)
+            if remove:
+                if action_obj is not None:
+                    # Find the index for the action to remove it
+                    actions = self.context.listActions()
+                    indexes = [(a.category, a.id) for a in actions]
+                    index = indexes.index((category, id))
+                    self.context.deleteActions((index, ))
             else:
-                action_obj.edit(title=title, action=action,
-                                icon_expr=icon_expr, condition=condition,
-                                permissions=tuple(permissions),
-                                visible=visible)
+                if action_obj is None:
+                    self.context.addAction(id, title, action, condition,
+                                           tuple(permissions), category, visible,
+                                           icon_expr=icon_expr)
+                else:
+                    action_obj.edit(title=title, action=action,
+                                    icon_expr=icon_expr, condition=condition,
+                                    permissions=tuple(permissions),
+                                    visible=visible)
 
 
 class TypesToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers,
