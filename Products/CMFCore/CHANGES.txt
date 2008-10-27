@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Fixed compatibility with non-string execeptoins on Zope trunk.
+
 - Added remove support to GenericSetup types tool exportimport handler.
 
 - FiveActionsTool: Removed the tool and all functionality for bridging
