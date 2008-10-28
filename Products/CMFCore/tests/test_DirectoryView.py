@@ -196,8 +196,8 @@ class DirectoryViewTests( FSDVTest ):
     def test_ignored(self):
         # Test that "artifact" files and dirs are ignored
         for name in '#test1', 'CVS', '.test1', 'test1~':
-            assert(name not in self.ob.fake_skin.objectIds(),
-                   '%s not ignored' % name)
+            assert name not in self.ob.fake_skin.objectIds(), \
+                   '%s not ignored' % name
 
     def test_surrogate_writethrough(self):
         # CMF Collector 316: It is possible to cause ZODB writes because
