@@ -342,11 +342,7 @@ class CookieCrumbler(Folder):
             if page is not None:
                 came_from = req.get('came_from', None)
                 if came_from is None:
-                    came_from = req.get('VIRTUAL_URL', None)
-                    if came_from is None:
-                        came_from = '%s%s%s' % ( req['SERVER_URL'].strip(),
-                                                 req['SCRIPT_NAME'].strip(),
-                                                 req['PATH_INFO'].strip() )
+                    came_from = req.get('ACTUAL_URL')
                     query = req.get('QUERY_STRING')
                     if query:
                         # Include the query string in came_from
