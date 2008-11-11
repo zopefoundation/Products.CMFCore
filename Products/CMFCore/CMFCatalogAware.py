@@ -54,8 +54,8 @@ class CMFCatalogAware(Base):
 
     security = ClassSecurityInfo()
 
-    # The following method can be overriden using inheritence so that it's
-    # possible to specifiy another catalog tool for a given content type
+    # The following method can be overridden using inheritance so that it's
+    # possible to specify another catalog tool for a given content type
     def _getCatalogTool(self):
         return getToolByName(self, 'portal_catalog', None)
 
@@ -122,8 +122,8 @@ class CMFCatalogAware(Base):
                                   update_metadata=0, uid=brain_path)
             if s is None: ob._p_deactivate()
 
-    # The following method can be overriden using inheritence so that it's
-    # possible to specifiy another workflow tool for a given content type
+    # The following method can be overridden using inheritance so that it's
+    # possible to specify another workflow tool for a given content type
     def _getWorkflowTool(self):
         return getToolByName(self, 'portal_workflow', None)
 
