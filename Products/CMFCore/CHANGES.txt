@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- PortalObject: Removed backwards compatibility code in getSiteManager.
+  Please use CMFDefault's upgrade steps for upgrading old CMF sites.
+
 - Fixed compatibility with non-string execeptoins on Zope trunk.
 
 - Added remove support to GenericSetup types tool exportimport handler.

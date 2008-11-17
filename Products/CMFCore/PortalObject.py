@@ -15,14 +15,11 @@
 $Id$
 """
 
-from Acquisition import aq_base
-from five.localsitemanager import find_next_sitemanager
-from five.localsitemanager.registry import FiveVerifyingAdapterLookup
 from five.localsitemanager.registry import PersistentComponents
 from Globals import InitializeClass
 from Products.Five.component.interfaces import IObjectManagerSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
-from zope.component.globalregistry import base
+from zope.component.interfaces import ComponentLookupError
 from zope.event import notify
 from zope.interface import implements
 
@@ -58,30 +55,14 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         (ReviewPortalContent, ()),
         )
 
+    def __init__(self, id, title='', description=''):
+        super(PortalObjectBase, self).__init__(id, title, description)
+        components = PersistentComponents('++etc++site')
+        components.__parent__ = self
+        self.setSiteManager(components)
+
     def getSkinsFolderName(self):
         return PORTAL_SKINS_TOOL_ID
-
-    def getSiteManager(self):
-        if self._components is None:
-            # BBB: for CMF 2.0 instances
-            next = find_next_sitemanager(self)
-            if next is None:
-                next = base
-            name = '/'.join(self.getPhysicalPath())
-            self._components = components = PersistentComponents(name, (next,))
-            components.__parent__ = self
-        elif self._components.utilities.LookupClass \
-                != FiveVerifyingAdapterLookup:
-            # BBB: for CMF 2.1 beta instances
-            # XXX: should be removed again after the CMF 2.1 beta2 release
-            components = aq_base(self._components)
-            components.__parent__ = self
-            utilities = aq_base(components.utilities)
-            utilities.LookupClass = FiveVerifyingAdapterLookup
-            utilities._createLookup()
-            utilities.__parent__ = components
-            
-        return self._components
 
     def __before_publishing_traverse__(self, arg1, arg2=None):
         """ Pre-traversal hook.
@@ -89,7 +70,11 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         # XXX hack around a bug(?) in BeforeTraverse.MultiHook
         REQUEST = arg2 or arg1
 
-        notify(BeforeTraverseEvent(self, REQUEST))
+        try:
+            notify(BeforeTraverseEvent(self, REQUEST))
+        except ComponentLookupError:
+            # allow ZMI access, even if the portal's site manager is missing
+            pass
         self.setupCurrentSkin(REQUEST)
 
         super(PortalObjectBase,
