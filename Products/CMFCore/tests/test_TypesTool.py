@@ -320,15 +320,13 @@ class TypeInfoTests:
         self.assertEqual(info_data[0]['category'], 'folder/add')
         self.assertEqual(info_data[0]['title'], ti_data['title'])
         self.assertEqual(info_data[0]['description'], ti_data['description'])
-        self.assertEqual(info_data[0]['url'].text,
-                         'string:${folder_url}/++add++foo')
+        self.assertEqual(info_data[0]['url'], '')
         self.assertEqual(info_data[0]['icon'], '')
         self.assertEqual(info_data[0]['visible'], True)
         self.assertEqual(info_data[0]['available'], ti._checkAvailable)
         self.assertEqual(info_data[0]['allowed'], ti._checkAllowed)
 
-        self.assertEqual(set(info_data[1]),
-                         set(['url', 'available', 'allowed']))
+        self.assertEqual(set(info_data[1]), set(['available', 'allowed']))
 
     def _checkContentTI(self, ti):
         wanted_aliases = { 'view': 'dummy_view', '(Default)': 'dummy_view' }
