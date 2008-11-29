@@ -31,16 +31,6 @@ from ZODB.POSException import ConflictError
 logger = logging.getLogger('CMFCore.Skinnable')
 
 
-# superGetAttr is assigned to whatever ObjectManager.__getattr__
-# used to do.
-try:
-    superGetAttr = ObjectManager.__getattr__
-except AttributeError:
-    try:
-        superGetAttr = ObjectManager.inheritedAttribute('__getattr__')
-    except AttributeError:
-        superGetAttr = None
-
 _MARKER = object()  # Create a new marker object.
 
 
@@ -78,8 +68,8 @@ class SkinnableObjectManager(ObjectManager):
             sd = SKINDATA.get(get_ident())
             if sd is not None:
                 ob, skinname, ignore, resolve = sd
-                if not ignore.has_key(name):
-                    if resolve.has_key(name):
+                if not name in ignore:
+                    if name in resolve:
                         return resolve[name]
                     subob = getattr(ob, name, _MARKER)
                     if subob is not _MARKER:
@@ -91,9 +81,7 @@ class SkinnableObjectManager(ObjectManager):
                         return retval
                     else:
                         ignore[name] = 1
-        if superGetAttr is None:
-            raise AttributeError, name
-        return superGetAttr(self, name)
+        raise AttributeError, name
 
     security.declarePrivate('getSkin')
     def getSkin(self, name=None):

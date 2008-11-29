@@ -4,10 +4,13 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Removed superGetAttr fallback from SkinnableObjectManager. None of its base
+  classes have a `__getattr__` method anymore.
+
 - PortalObject: Removed backwards compatibility code in getSiteManager.
   Please use CMFDefault's upgrade steps for upgrading old CMF sites.
 
-- Fixed compatibility with non-string execeptoins on Zope trunk.
+- Fixed compatibility with non-string exceptions on Zope trunk.
 
 - Added remove support to GenericSetup types tool exportimport handler.
 
