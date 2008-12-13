@@ -284,6 +284,7 @@ class TypeInfoTests:
                    'content_icon': 'foo_icon.gif',
                    'content_meta_type': 'Foo Content',
                    'factory' : 'cmf.foo',
+                   'icon_expr' : 'string:${portal_url}/foo_icon_expr.gif',
                    'add_view_expr': 'string:${folder_url}/foo_add_view'}
         ti = self._makeInstance(**ti_data)
         info_data = ti.getInfoData()
@@ -297,7 +298,7 @@ class TypeInfoTests:
         self.assertEqual(info_data[0]['url'].text,
                          'string:${folder_url}/foo_add_view')
         self.assertEqual(info_data[0]['icon'].text,
-                         'string:${portal_url}/foo_icon.gif')
+                         'string:${portal_url}/foo_icon_expr.gif')
         self.assertEqual(info_data[0]['visible'], True)
         self.assertEqual(info_data[0]['available'], ti._checkAvailable)
         self.assertEqual(info_data[0]['allowed'], ti._checkAllowed)

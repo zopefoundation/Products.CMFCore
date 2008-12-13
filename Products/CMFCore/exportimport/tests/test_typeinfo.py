@@ -40,6 +40,7 @@ _FTI_BODY = """\
  <property name="title"></property>
  <property name="description"></property>
  <property name="content_icon"></property>
+ <property name="icon_expr"></property>
  <property name="content_meta_type"></property>
  <property name="product"></property>
  <property name="factory"></property>
@@ -72,6 +73,7 @@ _TI_LIST = ({
     'i18n_domain':           'foo_domain',
     'content_meta_type':     'Foo Thing',
     'content_icon':          'foo.png',
+    'icon_expr':             'string:${portal_url}/foo.png',
     'product':               'CMFSetup',
     'factory':               'addFoo',
     'add_view_expr':         'string:${folder_url}/foo_add_view',
@@ -108,6 +110,7 @@ _TI_LIST = ({
     'description':           'Bar things',
     'content_meta_type':     'Bar Thing',
     'content_icon':          'bar.png',
+    'icon_expr':             'string:${portal_url}/bar.png',
     'constructor_path':      'make_bar',
     'permission':            'Add portal content',
     'add_view_expr':         'string:${folder_url}/bar_add_view',
@@ -188,6 +191,7 @@ _FOO_EXPORT = """\
  <property name="title" i18n:translate="">Foo</property>
  <property name="description" i18n:translate="">Foo things</property>
  <property name="content_icon">foo.png</property>
+ <property name="icon_expr">string:${portal_url}/foo.png</property>
  <property name="content_meta_type">Foo Thing</property>
  <property name="product">CMFSetup</property>
  <property name="factory">addFoo</property>
@@ -224,6 +228,7 @@ _BAR_EXPORT = """\
  <property name="title">Bar</property>
  <property name="description">Bar things</property>
  <property name="content_icon">bar.png</property>
+ <property name="icon_expr">string:${portal_url}/bar.png</property>
  <property name="content_meta_type">Bar Thing</property>
  <property name="permission">Add portal content</property>
  <property name="constructor_path">make_bar</property>

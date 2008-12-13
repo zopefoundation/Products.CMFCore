@@ -90,6 +90,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
          'label':'I18n Domain'},
         {'id':'content_icon', 'type': 'string', 'mode':'w',
          'label':'Icon'},
+        {'id': 'icon_expr', 'type': 'string', 'mode': 'w',
+         'label': 'Icon (Expression)'},
         {'id':'content_meta_type', 'type': 'string', 'mode':'w',
          'label':'Product meta type'},
         )
@@ -119,6 +121,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     i18n_domain = ''
     content_meta_type = ''
     content_icon = ''
+    icon_expr = ''
     add_view_expr = ''
     immediate_view = ''
     filter_content_types = True
@@ -342,7 +345,10 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             lazy_keys.append('url')
         else:
             lazy_map['url'] = ''
-        if self.content_icon:
+        if self.icon_expr:
+            lazy_map['icon'] = self.icon_expr_object
+            lazy_keys.append('icon')
+        elif self.content_icon:
             lazy_map['icon'] = Expression('string:${portal_url}/%s'
                                           % self.content_icon)
             lazy_keys.append('icon')

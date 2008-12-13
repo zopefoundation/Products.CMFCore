@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Added `icon_expr` as a new property to type information. This allows you
+  to specify the `content_icon` as an expression and store it. This avoids
+  creating the expression on the fly at rendering time.
+
 - Removed superGetAttr fallback from SkinnableObjectManager. None of its base
   classes have a `__getattr__` method anymore.
 
