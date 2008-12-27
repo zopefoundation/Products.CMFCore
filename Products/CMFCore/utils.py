@@ -22,25 +22,24 @@ from os.path import abspath
 from warnings import warn
 import sys
 
-from AccessControl import ClassSecurityInfo
-from AccessControl import getSecurityManager
-from AccessControl import ModuleSecurityInfo
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.Role import gather_permissions
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityInfo import ModuleSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition.interfaces import IAcquirer
 from Acquisition import aq_get
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Acquisition import Implicit
-from DateTime import DateTime
+from App.class_init import default__class_init__ as InitializeClass
+from App.Common import package_home
+from App.Dialogs import MessageDialog
+from App.ImageFile import ImageFile
+from App.special_dtml import HTMLFile
+from DateTime.DateTime import DateTime
 from ExtensionClass import Base
-from Globals import HTMLFile
-from Globals import ImageFile
-from Globals import InitializeClass
-from Globals import MessageDialog
-from Globals import package_home
-from Globals import UNIQUE
 from OFS.misc_ import misc_ as misc_images
 from OFS.misc_ import Misc_ as MiscImage
 from OFS.PropertyManager import PropertyManager
@@ -53,8 +52,8 @@ from zope.component.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 
-from exceptions import AccessControl_Unauthorized
-from exceptions import NotFound
+from Products.CMFCore.exceptions import AccessControl_Unauthorized
+from Products.CMFCore.exceptions import NotFound
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 
@@ -505,7 +504,11 @@ class UniqueObject (ImmutableId):
 
     """ Base class for objects which cannot be "overridden" / shadowed.
     """
-    __replaceable__ = UNIQUE
+    def _getUNIQUE(self):
+        import Globals # for data
+        return Globals.UNIQUE
+
+    __replaceable__ = property(_getUNIQUE,)
 
 
 class SimpleItemWithProperties (PropertyManager, SimpleItem):

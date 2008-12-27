@@ -15,25 +15,26 @@
 $Id$
 """
 
-from os import path, stat
+import os
 
-import Globals
-from AccessControl import ClassSecurityInfo
 from AccessControl.Permission import Permission
 from AccessControl.Role import RoleManager
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Acquisition import Implicit
-from DateTime import DateTime
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import HTML
+from DateTime.DateTime import DateTime
 from OFS.Cache import Cacheable
 from OFS.SimpleItem import Item
 from Products.PythonScripts.standard import html_quote
 
-from permissions import ManagePortal
-from permissions import View
-from permissions import ViewManagementScreens
-from utils import getToolByName
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import View
+from Products.CMFCore.permissions import ViewManagementScreens
+from Products.CMFCore.utils import getToolByName
 
 
 class FSObject(Implicit, Item, RoleManager, Cacheable):
@@ -70,7 +71,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         self._filepath = filepath
 
         try:
-             self._file_mod_time = stat(filepath)[8]
+             self._file_mod_time = os.stat(filepath)[8]
         except:
              pass
         self._readFile(0)
@@ -166,10 +167,11 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     # Refresh our contents from the filesystem if that is newer and we are
     # running in debug mode.
     def _updateFromFS(self):
+        import Globals # for data
         parsed = self._parsed
         if not parsed or Globals.DevelopmentMode:
             try:
-                mtime = stat(self._filepath)[8]
+                mtime = os.stat(self._filepath)[8]
             except:
                 mtime = 0
             if not parsed or mtime != self._file_mod_time:
@@ -182,7 +184,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     security.declareProtected(View, 'get_size')
     def get_size(self):
         """Get the size of the underlying file."""
-        return path.getsize(self._filepath)
+        return os.path.getsize(self._filepath)
 
     security.declareProtected(View, 'getModTime')
     def getModTime(self):
@@ -199,7 +201,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         self._updateFromFS()
         return self._filepath
 
-Globals.InitializeClass(FSObject)
+InitializeClass(FSObject)
 
 
 class BadFile(FSObject):
@@ -239,7 +241,7 @@ class BadFile(FSObject):
 
     security = ClassSecurityInfo()
 
-    showError = Globals.HTML( BAD_FILE_VIEW )
+    showError = HTML( BAD_FILE_VIEW )
     security.declareProtected(ManagePortal, 'manage_showError')
     def manage_showError( self, REQUEST ):
         """
@@ -275,4 +277,4 @@ class BadFile(FSObject):
         """
         return self.exc_str
 
-Globals.InitializeClass( BadFile )
+InitializeClass( BadFile )

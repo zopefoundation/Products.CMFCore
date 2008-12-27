@@ -20,32 +20,32 @@ import marshal
 import re
 from warnings import warn
 
-from AccessControl import ClassSecurityInfo
-from AccessControl import getSecurityManager
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_parent, aq_inner, aq_base
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
 from OFS.Folder import Folder
 from OFS.OrderSupport import OrderSupport
 from zope.component.factory import Factory
 from zope.interface import implements
 
-from CMFCatalogAware import CMFCatalogAware
-from DynamicType import DynamicType
-from exceptions import AccessControl_Unauthorized
-from exceptions import BadRequest
-from exceptions import zExceptions_Unauthorized
-from interfaces import IFolderish
-from interfaces import IMutableMinimalDublinCore
-from interfaces import ISiteRoot
-from permissions import AddPortalContent
-from permissions import AddPortalFolders
-from permissions import DeleteObjects
-from permissions import ListFolderContents
-from permissions import ManagePortal
-from permissions import ManageProperties
-from permissions import View
-from utils import _checkPermission
-from utils import getToolByName
+from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
+from Products.CMFCore.DynamicType import DynamicType
+from Products.CMFCore.exceptions import AccessControl_Unauthorized
+from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.exceptions import zExceptions_Unauthorized
+from Products.CMFCore.interfaces import IFolderish
+from Products.CMFCore.interfaces import IMutableMinimalDublinCore
+from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.permissions import AddPortalContent
+from Products.CMFCore.permissions import AddPortalFolders
+from Products.CMFCore.permissions import DeleteObjects
+from Products.CMFCore.permissions import ListFolderContents
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import ManageProperties
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import getToolByName
 
 
 class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):

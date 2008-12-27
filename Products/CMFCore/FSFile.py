@@ -17,23 +17,24 @@ $Id$
 
 import codecs
 
-import Globals
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.Cache import Cacheable
 from OFS.Image import File
 from zope.contenttype import guess_content_type
 
-from DirectoryView import registerFileExtension
-from DirectoryView import registerMetaType
-from FSObject import FSObject
-from permissions import FTPAccess
-from permissions import View
-from permissions import ViewManagementScreens
-from utils import _checkConditionalGET
-from utils import _dtmldir
-from utils import _FSCacheHeaders
-from utils import _setCacheHeaders
-from utils import _ViewEmulator
+from Products.CMFCore.DirectoryView import registerFileExtension
+from Products.CMFCore.DirectoryView import registerMetaType
+from Products.CMFCore.FSObject import FSObject
+from Products.CMFCore.permissions import FTPAccess
+from Products.CMFCore.permissions import View
+from Products.CMFCore.permissions import ViewManagementScreens
+from Products.CMFCore.utils import _checkConditionalGET
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _FSCacheHeaders
+from Products.CMFCore.utils import _setCacheHeaders
+from Products.CMFCore.utils import _ViewEmulator
 
 
 class FSFile(FSObject):
@@ -51,7 +52,7 @@ class FSFile(FSObject):
     security.declareObjectProtected(View)
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('custfile', _dtmldir)
+    manage_main = DTMLFile('custfile', _dtmldir)
 
     def __init__(self, id, filepath, fullname=None, properties=None):
         id = fullname or id # Use the whole filename.
@@ -164,7 +165,7 @@ class FSFile(FSObject):
     security.declareProtected(FTPAccess, 'manage_FTPget')
     manage_FTPget = index_html
 
-Globals.InitializeClass(FSFile)
+InitializeClass(FSFile)
 
 registerFileExtension('doc', FSFile)
 registerFileExtension('txt', FSFile)

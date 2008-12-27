@@ -15,20 +15,20 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
-from CMFCatalogAware import CMFCatalogAware
-from DynamicType import DynamicType
-from exceptions import NotFound
-from exceptions import ResourceLockedError
-from interfaces import IContentish
-from permissions import FTPAccess
-from permissions import View
-from utils import Message as _
+from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
+from Products.CMFCore.DynamicType import DynamicType
+from Products.CMFCore.exceptions import NotFound
+from Products.CMFCore.exceptions import ResourceLockedError
+from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.permissions import FTPAccess
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import Message as _
 
 
 class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):

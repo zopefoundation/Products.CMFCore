@@ -17,17 +17,19 @@ $Id$
 
 import logging
 
-import Globals
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
+import Globals # for data
 from Products.ZSQLMethods.SQL import SQL
 
-from DirectoryView import registerFileExtension
-from DirectoryView import registerMetaType
-from FSObject import FSObject
-from permissions import View
-from permissions import ViewManagementScreens
-from utils import _dtmldir
+from Products.CMFCore.DirectoryView import registerFileExtension
+from Products.CMFCore.DirectoryView import registerMetaType
+from Products.CMFCore.FSObject import FSObject
+from Products.CMFCore.permissions import View
+from Products.CMFCore.permissions import ViewManagementScreens
+from Products.CMFCore.utils import _dtmldir
 
 logger = logging.getLogger('CMFCore.FSZSQLMethod')
 
@@ -55,7 +57,7 @@ class FSZSQLMethod(SQL, FSObject):
     manage=None
 
     security.declareProtected(ViewManagementScreens, 'manage_customise')
-    manage_customise = Globals.DTMLFile('custzsql', _dtmldir)
+    manage_customise = DTMLFile('custzsql', _dtmldir)
 
     def __init__(self, id, filepath, fullname=None, properties=None):
         FSObject.__init__(self, id, filepath, fullname, properties)
@@ -144,7 +146,7 @@ class FSZSQLMethod(SQL, FSObject):
                 logger.exception("Error during __of__")
                 raise
 
-Globals.InitializeClass(FSZSQLMethod)
+InitializeClass(FSZSQLMethod)
 
 registerFileExtension('zsql', FSZSQLMethod)
 registerMetaType('Z SQL Method', FSZSQLMethod)

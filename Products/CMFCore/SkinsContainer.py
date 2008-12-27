@@ -15,14 +15,14 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
 from zope.interface import implements
 
-from exceptions import SkinPathError
-from interfaces import ISkinsContainer
-from permissions import AccessContentsInformation
+from Products.CMFCore.exceptions import SkinPathError
+from Products.CMFCore.interfaces import ISkinsContainer
+from Products.CMFCore.permissions import AccessContentsInformation
 
 
 class SkinsContainer:

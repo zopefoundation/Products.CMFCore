@@ -15,12 +15,11 @@
 $Id$
 """
 
-import Products
-from AccessControl import ModuleSecurityInfo
 from AccessControl import Permissions
 from AccessControl.Permission import _registeredPermissions
 from AccessControl.Permission import pname
-from Globals import ApplicationDefaultPermissions
+from AccessControl.SecurityInfo import ModuleSecurityInfo
+from App.class_init import ApplicationDefaultPermissions
 
 
 security = ModuleSecurityInfo('Products.CMFCore.permissions')
@@ -61,6 +60,7 @@ def setDefaultRoles(permission, roles):
     '''
     Sets the defaults roles for a permission.
     '''
+    import Products
     # XXX This ought to be in AccessControl.SecurityInfo.
     registered = _registeredPermissions
     if not registered.has_key(permission):

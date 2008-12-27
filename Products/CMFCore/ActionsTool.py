@@ -17,20 +17,20 @@ $Id$
 
 from warnings import warn
 
-from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
-from Globals import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 from zope.interface import implements
 
-from ActionProviderBase import ActionProviderBase
-from interfaces import IActionCategory
-from interfaces import IActionProvider
-from interfaces import IActionsTool
-from permissions import ManagePortal
-from utils import _dtmldir
-from utils import UniqueObject
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import IActionCategory
+from Products.CMFCore.interfaces import IActionProvider
+from Products.CMFCore.interfaces import IActionsTool
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import UniqueObject
 
 
 class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,

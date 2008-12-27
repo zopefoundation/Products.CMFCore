@@ -15,26 +15,26 @@
 $Id$
 """
 
-import re
 from random import choice
+import re
 
-from AccessControl import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
-from Globals import DTMLFile
-from Globals import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
-from interfaces import IRegistrationTool
-from permissions import AddPortalMember
-from permissions import MailForgottenPassword
-from permissions import ManagePortal
-from utils import _checkPermission
-from utils import _dtmldir
-from utils import _limitGrantedRoles
-from utils import getToolByName
-from utils import Message as _
-from utils import UniqueObject
+from Products.CMFCore.interfaces import IRegistrationTool
+from Products.CMFCore.permissions import AddPortalMember
+from Products.CMFCore.permissions import MailForgottenPassword
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _limitGrantedRoles
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import Message as _
+from Products.CMFCore.utils import UniqueObject
 
 
 class RegistrationTool(UniqueObject, SimpleItem):

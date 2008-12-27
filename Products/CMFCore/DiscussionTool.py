@@ -17,24 +17,24 @@ $Id$
 
 import urllib
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import Implicit
 from DateTime.DateTime import DateTime
-from Globals import DTMLFile
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
-from ActionProviderBase import ActionProviderBase
-from interfaces import IOldstyleDiscussable
-from interfaces import IOldstyleDiscussionTool
-from permissions import AccessContentsInformation
-from permissions import ManagePortal
-from permissions import ReplyToItem
-from permissions import View
-from utils import _dtmldir
-from utils import getToolByName
-from utils import UniqueObject
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import IOldstyleDiscussable
+from Products.CMFCore.interfaces import IOldstyleDiscussionTool
+from Products.CMFCore.permissions import AccessContentsInformation
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import ReplyToItem
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import UniqueObject
 
 
 class OldDiscussable(Implicit):

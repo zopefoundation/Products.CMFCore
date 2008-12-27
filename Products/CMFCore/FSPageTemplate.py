@@ -17,26 +17,29 @@ $Id$
 
 import re
 
-import Globals
-from AccessControl import ClassSecurityInfo
-from AccessControl import getSecurityManager
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.Cache import Cacheable
 from Products.PageTemplates.PageTemplate import PageTemplate
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate, Src
+from Products.PageTemplates.utils import encodingFromXMLPreamble
+from Products.PageTemplates.utils import charsetFromMetaEquiv
+from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+from Products.PageTemplates.ZopePageTemplate import Src
 from Shared.DC.Scripts.Script import Script
 
-from DirectoryView import registerFileExtension
-from DirectoryView import registerMetaType
-from FSObject import FSObject
-from permissions import FTPAccess
-from permissions import View
-from permissions import ViewManagementScreens
-from utils import _checkConditionalGET
-from utils import _dtmldir
-from utils import _setCacheHeaders
+from Products.CMFCore.DirectoryView import registerFileExtension
+from Products.CMFCore.DirectoryView import registerMetaType
+from Products.CMFCore.FSObject import FSObject
+from Products.CMFCore.permissions import FTPAccess
+from Products.CMFCore.permissions import View
+from Products.CMFCore.permissions import ViewManagementScreens
+from Products.CMFCore.utils import _checkConditionalGET
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _setCacheHeaders
 
 
-from Products.PageTemplates.utils import encodingFromXMLPreamble, charsetFromMetaEquiv
 
 xml_detect_re = re.compile('^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
 _marker = object()
@@ -58,7 +61,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     security.declareObjectProtected(View)
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('custpt', _dtmldir)
+    manage_main = DTMLFile('custpt', _dtmldir)
 
     # Declare security for unprotected PageTemplate methods.
     security.declarePrivate('pt_edit', 'write')
@@ -111,7 +114,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                     elif self.content_type.startswith('text/xml'):
                         charset = encodingFromXMLPreamble(data)
                     else:
-                        raise ValueError('Unsupported content-type: %s' % self.content_type)
+                        raise ValueError('Unsupported content-type: %s'
+                                            % self.content_type)
 
                 if not isinstance(data, unicode):
                     data = unicode(data, charset)
@@ -245,7 +249,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
 setattr(FSPageTemplate, 'source.xml',  FSPageTemplate.source_dot_xml)
 setattr(FSPageTemplate, 'source.html', FSPageTemplate.source_dot_xml)
-Globals.InitializeClass(FSPageTemplate)
+InitializeClass(FSPageTemplate)
 
 registerFileExtension('pt', FSPageTemplate)
 registerFileExtension('zpt', FSPageTemplate)

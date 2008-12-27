@@ -15,20 +15,20 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
-from ActionProviderBase import ActionProviderBase
-from interfaces import IURLTool
-from permissions import ManagePortal
-from permissions import View
-from utils import _dtmldir
-from utils import UniqueObject
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import IURLTool
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import UniqueObject
 
 
 class URLTool(UniqueObject, SimpleItem, ActionProviderBase):

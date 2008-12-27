@@ -6,8 +6,6 @@ from os import remove, mkdir, rmdir
 from os.path import join
 from tempfile import mktemp
 
-from Globals import DevelopmentMode
-
 from Products.CMFCore.tests import _globals
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.testcase import FSDVTest
@@ -285,9 +283,7 @@ class DirectoryViewFolderTests(FSDVTest):
         self.failUnless(isinstance(testfolder, DummyDirectoryViewSurrogate))
 
 
-if DevelopmentMode:
-
-  class DebugModeTests(WritableFSDVTest):
+class DebugModeTests(WritableFSDVTest):
 
     def setUp( self ):
         WritableFSDVTest.setUp(self)
@@ -318,7 +314,8 @@ if DevelopmentMode:
     def test_NewFolder( self ):
         # See if a new folder shows up
         from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
-        self.failUnless(isinstance(self.ob.fake_skin.test3,DirectoryViewSurrogate))
+        self.failUnless(isinstance(self.ob.fake_skin.test3,
+                                   DirectoryViewSurrogate))
         self.ob.fake_skin.test3.objectIds()
 
     def test_DeleteMethod( self ):
@@ -350,20 +347,17 @@ if DevelopmentMode:
         rmdir(self.test3path)
         self.failIf(hasattr(self.ob.fake_skin,'test3'))
 
-else:
-
-    class DebugModeTests(unittest.TestCase):
-        pass
-
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(DirectoryViewPathTests),
-        unittest.makeSuite(DirectoryViewTests),
-        unittest.makeSuite(DirectoryViewIgnoreTests),
-        unittest.makeSuite(DirectoryViewFolderTests),
-        unittest.makeSuite(DebugModeTests),
-        ))
+    import Globals # for data
+    tests = [unittest.makeSuite(DirectoryViewPathTests),
+             unittest.makeSuite(DirectoryViewTests),
+             unittest.makeSuite(DirectoryViewIgnoreTests),
+             unittest.makeSuite(DirectoryViewFolderTests),
+            ]
+    if Globals.DevelopmentMode:
+        tests.append(unittest.makeSuite(DebugModeTests))
+    return unittest.TestSuite(tests)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

@@ -15,13 +15,13 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
-from AccessControl import getSecurityManager
 from AccessControl.PermissionRole import rolesForPermissionOn
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
-from DateTime import DateTime
-from Globals import DTMLFile
-from Globals import InitializeClass
+from DateTime.DateTime import DateTime
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.interface import implements
@@ -30,18 +30,18 @@ from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 
-from ActionProviderBase import ActionProviderBase
-from interfaces import ICatalogTool
-from interfaces import IIndexableObjectWrapper
-from permissions import AccessInactivePortalContent
-from permissions import ManagePortal
-from permissions import View
-from utils import _checkPermission
-from utils import _dtmldir
-from utils import _getAuthenticatedUser
-from utils import _mergedLocalRoles
-from utils import getToolByName
-from utils import UniqueObject
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.interfaces import IIndexableObjectWrapper
+from Products.CMFCore.permissions import AccessInactivePortalContent
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _getAuthenticatedUser
+from Products.CMFCore.utils import _mergedLocalRoles
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import UniqueObject
 
 
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):

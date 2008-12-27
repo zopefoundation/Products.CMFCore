@@ -15,23 +15,23 @@
 $Id$
 """
 
+from App.class_init import default__class_init__ as InitializeClass
 from five.localsitemanager.registry import PersistentComponents
-from Globals import InitializeClass
 from Products.Five.component.interfaces import IObjectManagerSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
 from zope.component.interfaces import ComponentLookupError
 from zope.event import notify
 from zope.interface import implements
 
-from interfaces import ISiteRoot
-from permissions import AddPortalMember
-from permissions import SetOwnPassword
-from permissions import SetOwnProperties
-from permissions import MailForgottenPassword
-from permissions import RequestReview
-from permissions import ReviewPortalContent
-from PortalFolder import PortalFolder
-from Skinnable import SkinnableObjectManager
+from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.permissions import AddPortalMember
+from Products.CMFCore.permissions import SetOwnPassword
+from Products.CMFCore.permissions import SetOwnProperties
+from Products.CMFCore.permissions import MailForgottenPassword
+from Products.CMFCore.permissions import RequestReview
+from Products.CMFCore.permissions import ReviewPortalContent
+from Products.CMFCore.PortalFolder import PortalFolder
+from Products.CMFCore.Skinnable import SkinnableObjectManager
 
 PORTAL_SKINS_TOOL_ID = 'portal_skins'
 

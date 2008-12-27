@@ -18,20 +18,22 @@ $Id$
 from base64 import encodestring, decodestring
 from urllib import quote, unquote
 
-from Acquisition import aq_inner, aq_parent
-from DateTime import DateTime
-from AccessControl import ClassSecurityInfo, Permissions
-from ZPublisher import BeforeTraverse
-import Globals
-from Globals import HTMLFile
-from ZPublisher.HTTPRequest import HTTPRequest
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.Permissions import view_management_screens
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import HTMLFile
+from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
+from OFS.interfaces import IObjectWillBeMovedEvent
 from zExceptions import Redirect
 from zope.interface import implements
 from zope.app.container.interfaces import IObjectMovedEvent
-from OFS.interfaces import IObjectWillBeMovedEvent
+from ZPublisher import BeforeTraverse
+from ZPublisher.HTTPRequest import HTTPRequest
 
-from interfaces import ICookieCrumbler
+from Products.CMFCore.interfaces import ICookieCrumbler
 
 
 # Constants.
@@ -40,7 +42,7 @@ ATTEMPT_LOGIN = 1      # Attempt to log in
 ATTEMPT_RESUME = 2     # Attempt to resume session
 
 ModifyCookieCrumblers = 'Modify Cookie Crumblers'
-ViewManagementScreens = Permissions.view_management_screens
+ViewManagementScreens = view_management_screens
 
 
 class CookieCrumblerDisabled(Exception):
@@ -387,7 +389,7 @@ class CookieCrumbler(Folder):
                 return p.get('label', id)
         return id
 
-Globals.InitializeClass(CookieCrumbler)
+InitializeClass(CookieCrumbler)
 
 
 def handleCookieCrumblerEvent(ob, event):

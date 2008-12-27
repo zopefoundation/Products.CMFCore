@@ -15,21 +15,21 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
-from Globals import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 
-from exceptions import AccessControl_Unauthorized
-from interfaces import IUndoTool
-from permissions import ListUndoableChanges
-from permissions import ManagePortal
-from utils import _checkPermission
-from utils import _dtmldir
-from utils import _getAuthenticatedUser
-from utils import registerToolInterface
-from utils import UniqueObject
+from Products.CMFCore.exceptions import AccessControl_Unauthorized
+from Products.CMFCore.interfaces import IUndoTool
+from Products.CMFCore.permissions import ListUndoableChanges
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _getAuthenticatedUser
+from Products.CMFCore.utils import registerToolInterface
+from Products.CMFCore.utils import UniqueObject
 
 
 class UndoTool(UniqueObject, SimpleItem):

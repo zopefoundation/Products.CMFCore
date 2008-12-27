@@ -14,34 +14,34 @@
 
 $Id$
 """
+from difflib import unified_diff
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from DateTime import DateTime
-from Globals import DTMLFile
-from Globals import InitializeClass
-from Globals import PersistentMapping
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
+import Globals  # for data
 from OFS.DTMLMethod import DTMLMethod
 from OFS.Folder import Folder
 from OFS.Image import Image
-from OFS.ObjectManager import REPLACEABLE
+from Persistence import PersistentMapping
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PythonScripts.PythonScript import PythonScript
 from zope.interface import implements
 
-from ActionProviderBase import ActionProviderBase
-from DirectoryView import base_ignore
-from DirectoryView import ignore
-from DirectoryView import ignore_re
-from interfaces import ISkinsTool
-from permissions import AccessContentsInformation
-from permissions import ManagePortal
-from permissions import View
-from SkinsContainer import SkinsContainer
-from utils import _dtmldir
-from utils import getToolByName
-from utils import UniqueObject
-from difflib import unified_diff
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.DirectoryView import base_ignore
+from Products.CMFCore.DirectoryView import ignore
+from Products.CMFCore.DirectoryView import ignore_re
+from Products.CMFCore.interfaces import ISkinsTool
+from Products.CMFCore.permissions import AccessContentsInformation
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import View
+from Products.CMFCore.SkinsContainer import SkinsContainer
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import UniqueObject
 
 def modifiedOptions():
     # Remove the existing "Properties" option and add our own.
@@ -221,7 +221,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         return None
 
     # Make the PUT_factory replaceable
-    PUT_factory__replaceable__ = REPLACEABLE
+    PUT_factory__replaceable__ = Globals.REPLACEABLE
 
 
     security.declarePrivate('testSkinPath')

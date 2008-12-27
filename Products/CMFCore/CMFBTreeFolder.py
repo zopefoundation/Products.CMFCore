@@ -17,13 +17,13 @@ $Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from zope.component.factory import Factory
 
-from permissions import AddPortalFolders
-from PortalFolder import PortalFolder
-from PortalFolder import PortalFolderBase
+from Products.CMFCore.permissions import AddPortalFolders
+from Products.CMFCore.PortalFolder import PortalFolder
+from Products.CMFCore.PortalFolder import PortalFolderBase
 
 
 def manage_addCMFBTreeFolder(dispatcher, id, title='', REQUEST=None):

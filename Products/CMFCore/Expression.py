@@ -15,14 +15,16 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
-from Acquisition import aq_base, aq_inner, aq_parent
-from Globals import InitializeClass
-from Globals import Persistent
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from App.class_init import default__class_init__ as InitializeClass
+from Persistence import Persistent
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 
-from utils import getToolByName
+from Products.CMFCore.utils import getToolByName
 
 
 class Expression(Persistent):

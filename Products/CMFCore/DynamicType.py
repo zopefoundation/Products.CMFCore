@@ -17,14 +17,14 @@ $Id$
 
 from urllib import quote
 
-from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
 from zope.app.publisher.browser import queryDefaultViewName
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 
-from interfaces import IDynamicType
-from utils import getToolByName
+from Products.CMFCore.interfaces import IDynamicType
+from Products.CMFCore.utils import getToolByName
 
 
 class DynamicType:

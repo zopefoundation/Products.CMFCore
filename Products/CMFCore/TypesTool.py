@@ -18,13 +18,12 @@ $Id$
 import logging
 from warnings import warn
 
-import Products
-from AccessControl import ClassSecurityInfo
-from AccessControl import getSecurityManager
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from Acquisition import aq_get
-from Globals import DTMLFile
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
@@ -38,23 +37,23 @@ from zope.i18nmessageid import Message
 from zope.interface import implements
 from zope.lifecycleevent import ObjectCreatedEvent
 
-from ActionProviderBase import ActionProviderBase
-from exceptions import AccessControl_Unauthorized
-from exceptions import BadRequest
-from exceptions import zExceptions_Unauthorized
-from Expression import Expression
-from interfaces import IAction
-from interfaces import ITypeInformation
-from interfaces import ITypesTool
-from permissions import AccessContentsInformation
-from permissions import AddPortalContent
-from permissions import ManagePortal
-from permissions import View
-from utils import _checkPermission
-from utils import _dtmldir
-from utils import _wwwdir
-from utils import SimpleItemWithProperties
-from utils import UniqueObject
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.exceptions import AccessControl_Unauthorized
+from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.exceptions import zExceptions_Unauthorized
+from Products.CMFCore.Expression import Expression
+from Products.CMFCore.interfaces import IAction
+from Products.CMFCore.interfaces import ITypeInformation
+from Products.CMFCore.interfaces import ITypesTool
+from Products.CMFCore.permissions import AccessContentsInformation
+from Products.CMFCore.permissions import AddPortalContent
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _wwwdir
+from Products.CMFCore.utils import SimpleItemWithProperties
+from Products.CMFCore.utils import UniqueObject
 
 logger = logging.getLogger('CMFCore.TypesTool')
 
@@ -626,6 +625,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
     def all_meta_types(self, interfaces=None):
         # this is a workaround and should be removed again if allowedTypes
         # have an interface we can use in _product_interfaces
+        import Products
         all = TypesTool.inheritedAttribute('all_meta_types')(self)
         others = [ mt for mt in Products.meta_types
                    if mt['name'] in allowedTypes ]
@@ -640,6 +640,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
         """Create a TypeInformation in self.
         """
         # BBB: typeinfo_name is ignored
+        import Products
         if not id:
             raise BadRequest('An id is required.')
         for mt in Products.meta_types:

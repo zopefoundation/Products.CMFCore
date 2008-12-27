@@ -17,37 +17,37 @@ $Id$
 import logging
 from warnings import warn
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
 from AccessControl.User import nobody
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Globals import DTMLFile
-from Globals import InitializeClass
-from Globals import MessageDialog
-from Globals import PersistentMapping
+from App.class_init import default__class_init__ as InitializeClass
+from App.Dialogs import MessageDialog
+from App.special_dtml import DTMLFile
 from OFS.Folder import Folder
+from Persistence import PersistentMapping
 from ZODB.POSException import ConflictError
 from zope.component import getUtility
 from zope.interface import implements
 
-from exceptions import AccessControl_Unauthorized
-from exceptions import BadRequest
-from interfaces import IMembershipTool
-from interfaces import ISiteRoot
-from permissions import AccessContentsInformation
-from permissions import ChangeLocalRoles
-from permissions import ListPortalMembers
-from permissions import ManagePortal
-from permissions import ManageUsers
-from permissions import SetOwnPassword
-from permissions import View
-from utils import _checkPermission
-from utils import _dtmldir
-from utils import _getAuthenticatedUser
-from utils import getToolByName
-from utils import UniqueObject
+from Products.CMFCore.exceptions import AccessControl_Unauthorized
+from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.permissions import AccessContentsInformation
+from Products.CMFCore.permissions import ChangeLocalRoles
+from Products.CMFCore.permissions import ListPortalMembers
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import ManageUsers
+from Products.CMFCore.permissions import SetOwnPassword
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _getAuthenticatedUser
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import UniqueObject
 
 logger = logging.getLogger('CMFCore.MembershipTool')
 

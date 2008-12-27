@@ -21,7 +21,6 @@ import Testing
 from time import sleep
 
 from AccessControl.Permission import Permission
-from Globals import DevelopmentMode
 
 from Products.CMFCore.tests.base.testcase import LogInterceptor
 from Products.CMFCore.tests.base.testcase import RequestTest
@@ -78,8 +77,10 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
         # check a normal method is as we'd expect
         self._checkSettings(self.ob.fake_skin.test1,'View',1,[])
         # now do some checks on the method with FS permissions
-        self._checkSettings(self.ob.fake_skin.test4,'View',1,['Manager','Owner'])
-        self._checkSettings(self.ob.fake_skin.test4,'Access contents information',0,[])
+        self._checkSettings(self.ob.fake_skin.test4,
+                            'View',1,['Manager','Owner'])
+        self._checkSettings(self.ob.fake_skin.test4,
+                            'Access contents information',0,[])
 
     def test_invalidPermissionNames( self ):
         import logging
@@ -102,85 +103,81 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
-if DevelopmentMode:
+class DebugModeTests( FSSecurityBase ):
 
-    class DebugModeTests( FSSecurityBase ):
+    def test_addPRM( self ):
+        # Test adding of a .metadata
+        # baseline
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        # add
+        self._writeFile('test5.py.metadata',
+                        '[security]\nView = 1:Manager')
+        # test
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
-        def test_addPRM( self ):
-            # Test adding of a .metadata
-            # baseline
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
-            # add
-            self._writeFile('test5.py.metadata',
-                            '[security]\nView = 1:Manager')
-            # test
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
+    def test_delPRM( self ):
+        # Test deleting of a .metadata
+        # baseline
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._writeFile('test5.py.metadata',
+                        '[security]\nView = 1:Manager')
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
+        # delete
+        self._deleteFile('test5.py.metadata')
+        # test
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
-        def test_delPRM( self ):
-            # Test deleting of a .metadata
-            # baseline
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
-            self._writeFile('test5.py.metadata',
-                            '[security]\nView = 1:Manager')
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
-            # delete
-            self._deleteFile('test5.py.metadata')
-            # test
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+    def test_editPRM( self ):
+        # Test editing a .metadata
+        # we need to wait a second here or the mtime will actually
+        # have the same value as set in the last test.
+        # Maybe someone brainier than me can figure out a way to make this
+        # suck less :-(
+        sleep(1)
 
-        def test_editPRM( self ):
-            # Test editing a .metadata
-            # we need to wait a second here or the mtime will actually
-            # have the same value as set in the last test.
-            # Maybe someone brainier than me can figure out a way to make this
-            # suck less :-(
-            sleep(1)
+        # baseline
+        self._writeFile('test5.py.metadata',
+                        '[security]\nView = 0:Manager,Anonymous')
+        self._checkSettings(self.ob.fake_skin.test5,
+                            'View',0,['Manager','Anonymous'])
+        # edit
+        self._writeFile('test5.py.metadata',
+                        '[security]\nView = 1:Manager')
+        # test
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
-            # baseline
-            self._writeFile('test5.py.metadata',
-                            '[security]\nView = 0:Manager,Anonymous')
-            self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])
-            # edit
-            self._writeFile('test5.py.metadata',
-                            '[security]\nView = 1:Manager')
-            # test
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
+    def test_DelAddEditPRM( self ):
+        # Test deleting, then adding, then editing a .metadata file
+        # baseline
+        self._writeFile('test5.py.metadata','[security]\nView = 0:Manager')
+        # delete
+        self._deleteFile('test5.py.metadata')
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
-        def test_DelAddEditPRM( self ):
-            # Test deleting, then adding, then editing a .metadata file
-            # baseline
-            self._writeFile('test5.py.metadata','[security]\nView = 0:Manager')
-            # delete
-            self._deleteFile('test5.py.metadata')
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        # we need to wait a second here or the mtime will actually
+        # have the same value, no human makes two edits in less
+        # than a second ;-)
+        sleep(1)
 
-            # we need to wait a second here or the mtime will actually
-            # have the same value, no human makes two edits in less
-            # than a second ;-)
-            sleep(1)
+        # add back
+        self._writeFile('test5.py.metadata',
+                        '[security]\nView = 0:Manager,Anonymous')
+        self._checkSettings(self.ob.fake_skin.test5,
+                            'View',0,['Manager','Anonymous'])
 
-            # add back
-            self._writeFile('test5.py.metadata',
-                            '[security]\nView = 0:Manager,Anonymous')
-            self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])
-
-            # edit
-            self._writeFile('test5.py.metadata',
-                            '[security]\nView = 1:Manager')
-            # test
-            self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
-
-else:
-
-    class DebugModeTests( FSSecurityBase ):
-        pass
-
+        # edit
+        self._writeFile('test5.py.metadata',
+                        '[security]\nView = 1:Manager')
+        # test
+        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(FSSecurityTests),
-        unittest.makeSuite(DebugModeTests),
-        ))
+    import Globals # for data
+    tests = [unittest.makeSuite(FSSecurityTests)]
+    if Globals.DevelopmentMode:
+        tests.append(unittest.makeSuite(DebugModeTests))
+
+    return unittest.TestSuite(tests)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

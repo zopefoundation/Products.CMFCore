@@ -15,33 +15,33 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
-from Globals import DTMLFile
-from Globals import InitializeClass
-from Globals import PersistentMapping
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.Cache import Cache
 from OFS.Cache import CacheManager
 from OFS.Cache import getVerifiedManagerIds
 from OFS.Cache import ZCM_MANAGERS
 from OFS.interfaces import IObjectWillBeMovedEvent
 from OFS.SimpleItem import SimpleItem
+from Persistence import PersistentMapping
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from zope.app.container.interfaces import IObjectMovedEvent
 from zope.interface import implements
 
-from Expression import Expression
-from interfaces import ICachingPolicy
-from interfaces import ICachingPolicyManager
-from permissions import ManagePortal
-from permissions import View
-from utils import _dtmldir
-from utils import _setCacheHeaders
-from utils import _ViewEmulator
-from utils import getToolByName
-from utils import registerToolInterface
+from Products.CMFCore.Expression import Expression
+from Products.CMFCore.interfaces import ICachingPolicy
+from Products.CMFCore.interfaces import ICachingPolicyManager
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _setCacheHeaders
+from Products.CMFCore.utils import _ViewEmulator
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import registerToolInterface
 
 # This is lame :(
 # This listing is used to decide whether to wrap an object inside a "fake view"

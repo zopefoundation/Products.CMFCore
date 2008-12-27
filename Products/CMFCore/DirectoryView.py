@@ -17,32 +17,30 @@ $Id$
 
 import logging
 import re
-from os import path, listdir, stat
-from os.path import abspath
+import os
 from sys import platform
 from warnings import warn
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_inner, aq_parent
-from Globals import DevelopmentMode
-from Globals import DTMLFile
-from Globals import HTMLFile
-from Globals import InitializeClass
-from Globals import Persistent
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
+from App.special_dtml import HTMLFile
 from OFS.Folder import Folder
 from OFS.ObjectManager import bad_id
+from Persistence import Persistent
 from zope.interface import implements
 
-from FSMetadata import FSMetadata
-from FSObject import BadFile
-from interfaces import IDirectoryView
-from permissions import AccessContentsInformation as ACI
-from permissions import ManagePortal
-from utils import _dtmldir
-from utils import normalize
-from utils import getPackageName
-from utils import getPackageLocation
-from utils import ProductsPath
+from Products.CMFCore.FSMetadata import FSMetadata
+from Products.CMFCore.FSObject import BadFile
+from Products.CMFCore.interfaces import IDirectoryView
+from Products.CMFCore.permissions import AccessContentsInformation as ACI
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import normalize
+from Products.CMFCore.utils import getPackageName
+from Products.CMFCore.utils import getPackageLocation
+from Products.CMFCore.utils import ProductsPath
 
 logger = logging.getLogger('CMFCore.DirectoryView')
 
@@ -59,7 +57,7 @@ ignore_re = re.compile(r'\.|(.*~$)|#')
 def _filtered_listdir(path, ignore):
     return [ name
              for name
-             in listdir(path)
+             in os.listdir(path)
              if name not in ignore and not ignore_re.match(name) ]
 
 class _walker:
@@ -67,16 +65,16 @@ class _walker:
         # make a dict for faster lookup
         self.ignore = dict([(x, None) for x in ignore])
 
-    def __call__(self, listdir, dirname, names):
+    def __call__(self, dirlist, dirname, names):
         # filter names inplace, so filtered directories don't get visited
         names[:] = [ name
                      for name
                      in names
                      if name not in self.ignore and not ignore_re.match(name) ]
         # append with stat info
-        results = [ (name, stat(path.join(dirname,name))[8])
+        results = [ (name, os.stat(os.path.join(dirname,name))[8])
                     for name in names ]
-        listdir.extend(results)
+        dirlist.extend(results)
 
 
 def _generateKey(package, subdir):
@@ -89,7 +87,7 @@ def _generateKey(package, subdir):
 
 def _findProductForPath(path, subdir=None):
     # like minimalpath, but raises an error if path is not inside a product
-    p = abspath(path)
+    p = os.path.abspath(path)
     for ppath in ProductsPath:
         if p.startswith(ppath):
             dirpath = p[len(ppath)+1:]
@@ -119,8 +117,8 @@ class DirectoryInformation:
             self._walker = _walker(self.ignore)
         subdirs = []
         for entry in _filtered_listdir(self._filepath, ignore=self.ignore):
-           entry_filepath = path.join(self._filepath, entry)
-           if path.isdir(entry_filepath):
+           entry_filepath = os.path.join(self._filepath, entry)
+           if os.path.isdir(entry_filepath):
                subdirs.append(entry)
         self.subdirs = tuple(subdirs)
 
@@ -142,7 +140,7 @@ class DirectoryInformation:
         """
         types = {}
         try:
-            f = open( path.join(self._filepath, '.objects'), 'rt' )
+            f = open( os.path.join(self._filepath, '.objects'), 'rt' )
         except IOError:
             pass
         else:
@@ -157,35 +155,31 @@ class DirectoryInformation:
                     types[obname.strip()] = meta_type.strip()
         return types
 
-    if DevelopmentMode:
-
-        def _changed(self):
-            mtime=0
-            filelist=[]
-            try:
-                mtime = stat(self._filepath)[8]
-                if platform == 'win32':
-                    # some Windows directories don't change mtime
-                    # when a file is added to or deleted from them :-(
-                    # So keep a list of files as well, and see if that
-                    # changes
-                    path.walk(self._filepath, self._walker, filelist)
-                    filelist.sort()
-            except:
-                logger.exception("Error checking for directory modification")
-
-            if mtime != self._v_last_read or filelist != self._v_last_filelist:
-                self._v_last_read = mtime
-                self._v_last_filelist = filelist
-
-                return 1
-
+    def _changed(self):
+        import Globals  # for data
+        if not Globals.DevelopmentMode:
             return 0
+        mtime=0
+        filelist=[]
+        try:
+            mtime = os.stat(self._filepath)[8]
+            if platform == 'win32':
+                # some Windows directories don't change mtime
+                # when a file is added to or deleted from them :-(
+                # So keep a list of files as well, and see if that
+                # changes
+                os.path.walk(self._filepath, self._walker, filelist)
+                filelist.sort()
+        except:
+            logger.exception("Error checking for directory modification")
 
-    else:
+        if mtime != self._v_last_read or filelist != self._v_last_filelist:
+            self._v_last_read = mtime
+            self._v_last_filelist = filelist
 
-        def _changed(self):
-            return 0
+            return 1
+
+        return 0
 
     def getContents(self, registry):
         changed = self._changed()
@@ -208,8 +202,8 @@ class DirectoryInformation:
         for entry in _filtered_listdir(self._filepath, ignore=self.ignore):
             if not self._isAllowableFilename(entry):
                 continue
-            entry_filepath = path.join(self._filepath, entry)
-            if path.isdir(entry_filepath):
+            entry_filepath = os.path.join(self._filepath, entry)
+            if os.path.isdir(entry_filepath):
                 # Add a subdirectory only if it was previously registered,
                 # unless register_subdirs is set.
                 entry_reg_key = '/'.join((self._reg_key, entry))
@@ -244,7 +238,7 @@ class DirectoryInformation:
                 pos = entry.rfind('.')
                 if pos >= 0:
                     name = entry[:pos]
-                    ext = path.normcase(entry[pos + 1:])
+                    ext = os.path.normcase(entry[pos + 1:])
                 else:
                     name = entry
                     ext = ''
@@ -335,12 +329,12 @@ class DirectoryRegistry:
         # file system directory to become a FSDV.
         if not isinstance(_prefix, basestring):
             package = getPackageName(_prefix)
-            filepath = path.join(getPackageLocation(package), name)
+            filepath = os.path.join(getPackageLocation(package), name)
         else:
             warn('registerDirectory() called with deprecated _prefix type. '
                  'Support for paths will be removed in CMF 2.3. Please use '
                  'globals instead.', DeprecationWarning, stacklevel=2)
-            filepath = path.join(_prefix, name)
+            filepath = os.path.join(_prefix, name)
             (package, name) = _findProductForPath(_prefix, name)
         reg_key = _generateKey(package, name)
         self.registerDirectoryByKey(filepath, reg_key, subdirs, ignore)
@@ -351,7 +345,7 @@ class DirectoryRegistry:
         self._directories[reg_key] = info
         if subdirs:
             for entry in info.getSubdirs():
-                entry_filepath = path.join(filepath, entry)
+                entry_filepath = os.path.join(filepath, entry)
                 entry_reg_key = '/'.join((reg_key, entry))
                 self.registerDirectoryByKey(entry_filepath, entry_reg_key,
                                             subdirs, ignore)

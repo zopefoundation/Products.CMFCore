@@ -18,32 +18,32 @@ $Id$
 import sys
 from warnings import warn
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
 from Acquisition import aq_base, aq_inner, aq_parent
-from Globals import DTMLFile
-from Globals import InitializeClass
-from Globals import PersistentMapping
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
+from Persistence import PersistentMapping
 from zope.event import notify
 from zope.interface import implements
 
-from ActionProviderBase import ActionProviderBase
-from interfaces import IConfigurableWorkflowTool
-from interfaces import IWorkflowDefinition
-from interfaces import IWorkflowTool
-from permissions import ManagePortal
-from utils import _dtmldir
-from utils import getToolByName
-from utils import Message as _
-from utils import UniqueObject
-from WorkflowCore import ActionRaisedExceptionEvent
-from WorkflowCore import ActionSucceededEvent
-from WorkflowCore import ActionWillBeInvokedEvent
-from WorkflowCore import ObjectDeleted
-from WorkflowCore import ObjectMoved
-from WorkflowCore import WorkflowException
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import IConfigurableWorkflowTool
+from Products.CMFCore.interfaces import IWorkflowDefinition
+from Products.CMFCore.interfaces import IWorkflowTool
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import Message as _
+from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.WorkflowCore import ActionRaisedExceptionEvent
+from Products.CMFCore.WorkflowCore import ActionSucceededEvent
+from Products.CMFCore.WorkflowCore import ActionWillBeInvokedEvent
+from Products.CMFCore.WorkflowCore import ObjectDeleted
+from Products.CMFCore.WorkflowCore import ObjectMoved
+from Products.CMFCore.WorkflowCore import WorkflowException
 
 _marker = []  # Create a new marker object.
 

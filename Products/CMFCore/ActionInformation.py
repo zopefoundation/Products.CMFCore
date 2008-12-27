@@ -17,9 +17,9 @@ $Id$
 
 from UserDict import UserDict
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base, aq_inner, aq_parent
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 from OFS.PropertyManager import PropertyManager
@@ -27,13 +27,13 @@ from OFS.SimpleItem import SimpleItem
 from zope.i18nmessageid import Message
 from zope.interface import implements
 
-from Expression import Expression
-from interfaces import IAction
-from interfaces import IActionCategory
-from interfaces import IActionInfo
-from permissions import View
-from utils import _checkPermission
-from utils import getToolByName
+from Products.CMFCore.Expression import Expression
+from Products.CMFCore.interfaces import IAction
+from Products.CMFCore.interfaces import IActionCategory
+from Products.CMFCore.interfaces import IActionInfo
+from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import getToolByName
 
 _unchanged = [] # marker
 

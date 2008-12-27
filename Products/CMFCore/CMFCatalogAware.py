@@ -17,11 +17,11 @@ $Id$
 
 import logging
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from ExtensionClass import Base
-from Globals import DTMLFile
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
 from zope.app.container.interfaces import IObjectAddedEvent
@@ -31,16 +31,16 @@ from zope.interface import implements
 from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
-from interfaces import ICallableOpaqueItem
-from interfaces import ICatalogAware
-from interfaces import IOpaqueItemManager
-from interfaces import IWorkflowAware
-from permissions import AccessContentsInformation
-from permissions import ManagePortal
-from permissions import ModifyPortalContent
-from utils import _dtmldir
-from utils import _getAuthenticatedUser
-from utils import getToolByName
+from Products.CMFCore.interfaces import ICallableOpaqueItem
+from Products.CMFCore.interfaces import ICatalogAware
+from Products.CMFCore.interfaces import IOpaqueItemManager
+from Products.CMFCore.interfaces import IWorkflowAware
+from Products.CMFCore.permissions import AccessContentsInformation
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.permissions import ModifyPortalContent
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import _getAuthenticatedUser
+from Products.CMFCore.utils import getToolByName
 
 logger = logging.getLogger('CMFCore.CMFCatalogAware')
 

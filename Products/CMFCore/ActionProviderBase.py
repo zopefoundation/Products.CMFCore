@@ -17,19 +17,19 @@ $Id$
 
 from warnings import warn
 
-from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
-from Globals import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from zope.interface import implements
 
-from ActionInformation import ActionInfo
-from ActionInformation import ActionInformation
-from ActionInformation import getOAI
-from exceptions import AccessControl_Unauthorized
-from Expression import getExprContext
-from interfaces import IActionProvider
-from permissions import ManagePortal
-from utils import _dtmldir
+from Products.CMFCore.ActionInformation import ActionInfo
+from Products.CMFCore.ActionInformation import ActionInformation
+from Products.CMFCore.ActionInformation import getOAI
+from Products.CMFCore.exceptions import AccessControl_Unauthorized
+from Products.CMFCore.Expression import getExprContext
+from Products.CMFCore.interfaces import IActionProvider
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import _dtmldir
 
 
 class ActionProviderBase:

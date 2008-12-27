@@ -15,21 +15,23 @@
 $Id$
 """
 
-import re, os, urllib
+import os
+import re
+import urllib
 
-from AccessControl import ClassSecurityInfo
-from Globals import DTMLFile
-from Globals import InitializeClass
-from Globals import PersistentMapping
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
+from Persistence import PersistentMapping
 from zope.interface import implements
 from ZPublisher.mapply import mapply
 
-from interfaces import IContentTypeRegistry
-from interfaces import IContentTypeRegistryPredicate
-from permissions import ManagePortal
-from utils import _dtmldir
-from utils import getToolByName
+from Products.CMFCore.interfaces import IContentTypeRegistry
+from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import getToolByName
 
 
 class MajorMinorPredicate( SimpleItem ):

@@ -4,6 +4,16 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Cleaned up / normalized imports:
+
+  o Don't import from Globals;  instead, use real locations.
+
+  o Make other imports use the actual source module, rather than an
+    intermediate (e.g., prefer importing 'ClassSecurityInfo' from
+    'AccessControl.SecurityInfo' rather than from 'AccessControl').
+
+  o Avoid relative imports, which will break in later versions of Python.
+
 - Added `icon_expr` as a new property to type information. This allows you
   to specify the `content_icon` as an expression and store it. This avoids
   creating the expression on the fly at rendering time.

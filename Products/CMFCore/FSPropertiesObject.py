@@ -15,9 +15,11 @@
 $Id$
 """
 
-import Globals
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
+from App.class_init import default__class_init__ as InitializeClass
+from App.special_dtml import DTMLFile
+import Globals  # for data
 from OFS.Folder import Folder
 from OFS.PropertyManager import PropertyManager
 from ZPublisher.Converters import get_converter
@@ -40,7 +42,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
     security = ClassSecurityInfo()
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
-    manage_main = Globals.DTMLFile('custprops', _dtmldir)
+    manage_main = DTMLFile('custprops', _dtmldir)
 
     # Declare all (inherited) mutating methods private.
     security.declarePrivate('manage_addProperty')
@@ -138,7 +140,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
             self._updateFromFS()
             return self
 
-Globals.InitializeClass(FSPropertiesObject)
+InitializeClass(FSPropertiesObject)
 
 registerFileExtension('props', FSPropertiesObject)
 registerMetaType('Properties Object', FSPropertiesObject)
