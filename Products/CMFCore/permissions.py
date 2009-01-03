@@ -17,9 +17,9 @@ $Id$
 
 from AccessControl import Permissions
 from AccessControl.Permission import _registeredPermissions
+from AccessControl.Permission import ApplicationDefaultPermissions
 from AccessControl.Permission import pname
 from AccessControl.SecurityInfo import ModuleSecurityInfo
-from App.class_init import ApplicationDefaultPermissions
 
 
 security = ModuleSecurityInfo('Products.CMFCore.permissions')

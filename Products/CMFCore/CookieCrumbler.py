@@ -18,18 +18,18 @@ $Id$
 from base64 import encodestring, decodestring
 from urllib import quote, unquote
 
-from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.Permissions import view_management_screens
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 from OFS.interfaces import IObjectWillBeMovedEvent
 from zExceptions import Redirect
-from zope.interface import implements
 from zope.app.container.interfaces import IObjectMovedEvent
+from zope.interface import implements
 from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest
 

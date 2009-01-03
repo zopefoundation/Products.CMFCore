@@ -14,17 +14,18 @@
 
 $Id$
 """
+
 from difflib import unified_diff
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
-from DateTime import DateTime
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-import Globals  # for data
+from DateTime import DateTime
 from OFS.DTMLMethod import DTMLMethod
 from OFS.Folder import Folder
 from OFS.Image import Image
+from OFS.ObjectManager import REPLACEABLE
 from Persistence import PersistentMapping
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PythonScripts.PythonScript import PythonScript
@@ -221,7 +222,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         return None
 
     # Make the PUT_factory replaceable
-    PUT_factory__replaceable__ = Globals.REPLACEABLE
+    PUT_factory__replaceable__ = REPLACEABLE
 
 
     security.declarePrivate('testSkinPath')

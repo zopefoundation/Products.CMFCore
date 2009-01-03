@@ -23,7 +23,7 @@ from warnings import warn
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_parent, aq_inner, aq_base
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from OFS.Folder import Folder
 from OFS.OrderSupport import OrderSupport
 from zope.component.factory import Factory

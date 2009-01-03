@@ -16,10 +16,10 @@ $Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import InitializeClass
 from App.Common import rfc1123_date
-from DateTime.DateTime import DateTime
-from App.class_init import default__class_init__ as InitializeClass
 from App.special_dtml import DTMLFile
+from DateTime.DateTime import DateTime
 from OFS.Cache import Cache
 from OFS.Cache import CacheManager
 from OFS.Cache import getVerifiedManagerIds

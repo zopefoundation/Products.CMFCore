@@ -20,10 +20,9 @@ import new
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from ComputedAttribute import ComputedAttribute
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-from OFS.Cache import Cacheable
+from ComputedAttribute import ComputedAttribute
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PythonScripts.PythonScript import PythonScript
 from Shared.DC.Scripts.Script import Script

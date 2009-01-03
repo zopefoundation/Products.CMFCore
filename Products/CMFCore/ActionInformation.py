@@ -19,7 +19,7 @@ from UserDict import UserDict
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base, aq_inner, aq_parent
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 from OFS.PropertyManager import PropertyManager

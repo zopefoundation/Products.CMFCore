@@ -19,10 +19,9 @@ from AccessControl.DTML import RestrictedDTML
 from AccessControl.Role import RoleManager
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from App.special_dtml import HTML
-from OFS.Cache import Cacheable
 from OFS.DTMLMethod import DTMLMethod, decapitate, guess_content_type
 
 from Products.CMFCore.DirectoryView import registerFileExtension

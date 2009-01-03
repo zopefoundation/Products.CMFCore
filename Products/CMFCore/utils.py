@@ -33,7 +33,7 @@ from Acquisition import aq_get
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Acquisition import Implicit
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.Common import package_home
 from App.Dialogs import MessageDialog
 from App.ImageFile import ImageFile
@@ -42,6 +42,7 @@ from DateTime.DateTime import DateTime
 from ExtensionClass import Base
 from OFS.misc_ import misc_ as misc_images
 from OFS.misc_ import Misc_ as MiscImage
+from OFS.ObjectManager import UNIQUE
 from OFS.PropertyManager import PropertyManager
 from OFS.PropertySheets import PropertySheets
 from OFS.SimpleItem import SimpleItem
@@ -505,8 +506,7 @@ class UniqueObject (ImmutableId):
     """ Base class for objects which cannot be "overridden" / shadowed.
     """
     def _getUNIQUE(self):
-        import Globals # for data
-        return Globals.UNIQUE
+        return UNIQUE
 
     __replaceable__ = property(_getUNIQUE,)
 

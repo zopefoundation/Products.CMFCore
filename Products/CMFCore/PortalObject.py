@@ -15,7 +15,7 @@
 $Id$
 """
 
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from five.localsitemanager.registry import PersistentComponents
 from Products.Five.component.interfaces import IObjectManagerSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent

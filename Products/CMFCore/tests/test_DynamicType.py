@@ -22,7 +22,6 @@ from StringIO import StringIO
 
 from Acquisition import Implicit
 from Products.Five.browser import BrowserView
-from zope.component import getSiteManager
 from zope.component import provideAdapter
 from zope.component.interfaces import IDefaultViewName
 from zope.interface import alsoProvides

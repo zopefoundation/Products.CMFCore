@@ -18,7 +18,6 @@ $Id$
 import unittest
 import Testing
 
-from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 

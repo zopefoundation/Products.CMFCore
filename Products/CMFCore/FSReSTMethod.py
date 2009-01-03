@@ -15,11 +15,12 @@
 
 $Id$
 """
+
 from docutils.core import publish_parts
 from docutils.writers.html4css1 import Writer
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.ZReST.ZReST import Warnings
