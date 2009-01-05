@@ -16,61 +16,11 @@ $Id$
 """
 
 import unittest
-import Testing
 
-from AccessControl import Unauthorized
-from AccessControl.SecurityManagement import newSecurityManager
-from AccessControl.SecurityManagement import noSecurityManager
-from AccessControl.SecurityManager import setSecurityPolicy
-from Acquisition import aq_base
-from OFS.interfaces import IObjectWillBeAddedEvent
-from Products.PythonScripts.PythonScript import PythonScript
-from Products.PythonScripts.standard import html_quote
-from webdav.NullResource import NullResource
-from zope.app.container.interfaces import IContainerModifiedEvent
-from zope.app.container.interfaces import IObjectAddedEvent
-from zope.component import adapter
-from zope.component import getSiteManager
-from zope.component import provideHandler
-from zope.component.interfaces import IFactory
-from zope.interface import implements
-from zope.interface.verify import verifyClass
-from zope.lifecycleevent.interfaces import IObjectCreatedEvent
-from zope.testing.cleanup import cleanUp
-
-from Products.CMFCore.ActionInformation import ActionInformation
-from Products.CMFCore.interfaces import ITypeInformation
-from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.testing import FunctionalZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyFactory
-from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummyFolder
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyUserFolder
-from Products.CMFCore.tests.base.security import OmnipotentUser
-from Products.CMFCore.tests.base.security import UserWithRoles
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import WarningInterceptor
-from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
-from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
-from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-from Products.CMFCore.tests.base.tidata import STI_SCRIPT
 
-
-class ActionTesterTypeInfo:
-
-    implements(ITypeInformation)
-
-    id = 'Dummy Content'
-
-    def listActions(self, info=None, obj=None):
-        self._action_info = info
-        self._action_obj = obj
-        return ()
-
-
-class TypesToolTests(SecurityTest, WarningInterceptor):
+class TypesToolTests(SecurityTest):
 
     layer = FunctionalZCMLLayer
 
@@ -81,7 +31,9 @@ class TypesToolTests(SecurityTest, WarningInterceptor):
 
     def setUp(self):
         from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
-
+        from Products.CMFCore.tests.base.dummy import DummySite
+        from Products.CMFCore.tests.base.dummy import DummyUserFolder
+        from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
         self.acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
@@ -91,12 +43,27 @@ class TypesToolTests(SecurityTest, WarningInterceptor):
 
     def tearDown(self):
         SecurityTest.tearDown(self)
-        self._free_warning_output()
+
+    def _makeDummyTypeInfo(self):
+        from zope.interface import implements
+        from Products.CMFCore.interfaces import ITypeInformation
+
+        class ActionTesterTypeInfo:
+            implements(ITypeInformation)
+            id = 'Dummy Content'
+
+            def listActions(self, info=None, obj=None):
+                self._action_info = info
+                self._action_obj = obj
+                return ()
+
+        return ActionTesterTypeInfo()
 
     def test_interfaces(self):
         from Products.CMFCore.interfaces import IActionProvider
         from Products.CMFCore.interfaces import ITypesTool
         from Products.CMFCore.TypesTool import TypesTool
+        from zope.interface.verify import verifyClass
 
         verifyClass(IActionProvider, TypesTool)
         verifyClass(ITypesTool, TypesTool)
@@ -105,8 +72,9 @@ class TypesToolTests(SecurityTest, WarningInterceptor):
         """test that a full set of context information is passed
            by the types tool
         """
+        from Products.CMFCore.tests.base.dummy import DummyContent
         tool = self.ttool
-        ti = ActionTesterTypeInfo()
+        ti = self._makeDummyTypeInfo()
         setattr( tool, 'Dummy Content', ti )
 
         dummy = self.site._setObject('dummy', DummyContent('dummy'))
@@ -120,6 +88,9 @@ class TypesToolTests(SecurityTest, WarningInterceptor):
         Test that everything returned by allMetaTypes can be
         traversed to.
         """
+        from Acquisition import aq_base
+        from Products.PythonScripts.standard import html_quote
+        from webdav.NullResource import NullResource
         tool = self.ttool
         meta_types={}
         # Seems we get NullResource if the method couldn't be traverse to
@@ -136,8 +107,15 @@ class TypesToolTests(SecurityTest, WarningInterceptor):
         self.failUnless(meta_types.has_key('Factory-based Type Information'))
 
     def test_constructContent(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
+        from AccessControl.unauthorized import Unauthorized
+        from Products.PythonScripts.PythonScript import PythonScript
+        from Products.CMFCore.PortalFolder import PortalFolder
         from Products.CMFCore.TypesTool \
                 import ScriptableTypeInformation as STI
+        from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
+        from Products.CMFCore.tests.base.tidata import STI_SCRIPT
 
         site = self.site
         acl_users = self.acl_users
@@ -242,6 +220,7 @@ class TypeInfoTests:
         self.failUnless( ti.allowDiscussion() )
 
     def test_listActions( self ):
+        from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
         ti = self._makeInstance( 'Foo' )
         self.failIf( ti.listActions() )
 
@@ -269,6 +248,7 @@ class TypeInfoTests:
         self.failIf( 'slot' in visible )
 
     def test_MethodAliases_methods(self):
+        from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
         ti = self._makeInstance( **FTIDATA_CMF15[0] )
         self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF15[0]['aliases'] )
         self.assertEqual( ti.queryMethodID('view'), 'dummy_view' )
@@ -330,6 +310,7 @@ class TypeInfoTests:
         self.assertEqual(set(info_data[1]), set(['available', 'allowed']))
 
     def _checkContentTI(self, ti):
+        from Products.CMFCore.ActionInformation import ActionInformation
         wanted_aliases = { 'view': 'dummy_view', '(Default)': 'dummy_view' }
         wanted_actions_text0 = 'string:${object_url}/dummy_view'
         wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
@@ -352,6 +333,7 @@ class TypeInfoTests:
         self.assertEqual( action0.getVisibility(), 1 )
 
     def _checkFolderTI(self, ti):
+        from Products.CMFCore.ActionInformation import ActionInformation
         wanted_aliases = { 'view': '(Default)' }
         wanted_actions_text0 = 'string:${object_url}'
         wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
@@ -375,6 +357,7 @@ class FTIDataTests( TypeInfoTests, unittest.TestCase ):
     def test_interfaces(self):
         from Products.CMFCore.interfaces import ITypeInformation
         from Products.CMFCore.TypesTool import FactoryTypeInformation
+        from zope.interface.verify import verifyClass
 
         verifyClass(ITypeInformation, FactoryTypeInformation)
 
@@ -401,6 +384,7 @@ class STIDataTests( TypeInfoTests, unittest.TestCase ):
     def test_interfaces(self):
         from Products.CMFCore.interfaces import ITypeInformation
         from Products.CMFCore.TypesTool import ScriptableTypeInformation
+        from zope.interface.verify import verifyClass
 
         verifyClass(ITypeInformation, ScriptableTypeInformation)
 
@@ -435,10 +419,13 @@ class FTIConstructionTestCase:
         self.failIf(ti.isConstructionAllowed(self.f))
 
     def test_isConstructionAllowed_wo_Security(self):
+        from AccessControl.SecurityManagement import noSecurityManager
         noSecurityManager()
         self.failIf(self.ti.isConstructionAllowed(self.f))
 
     def test_isConstructionAllowed_for_Omnipotent(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from Products.CMFCore.tests.base.security import OmnipotentUser
         newSecurityManager(None, OmnipotentUser().__of__(self.f))
         self.failUnless(self.ti.isConstructionAllowed(self.f))
 
@@ -446,10 +433,15 @@ class FTIConstructionTestCase:
         self.failUnless(self.ti.isConstructionAllowed(self.f))
 
     def test_isConstructionAllowed_wo_Role(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from Products.CMFCore.tests.base.security import UserWithRoles
         newSecurityManager(None, UserWithRoles('FooViewer').__of__(self.f))
         self.failIf(self.ti.isConstructionAllowed(self.f))
 
     def test_constructInstance_wo_Roles(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.unauthorized import Unauthorized
+        from Products.CMFCore.tests.base.security import UserWithRoles
         newSecurityManager(None, UserWithRoles('FooViewer').__of__(self.f))
         self.assertRaises(Unauthorized,
                           self.ti.constructInstance, self.f, 'foo')
@@ -460,6 +452,8 @@ class FTIConstructionTestCase:
         self.assertEqual(foo.id, 'foo')
 
     def test_constructInstance_private(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from Products.CMFCore.tests.base.security import UserWithRoles
         newSecurityManager(None, UserWithRoles('NotAFooAdder').__of__(self.f))
         self.ti._constructInstance(self.f, 'foo')
         foo = self.f._getOb('foo')
@@ -486,11 +480,16 @@ class FTIConstructionTestCase:
 class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
 
     def setUp(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from Products.CMFCore.tests.base.dummy import DummyFolder
+        from Products.CMFCore.tests.base.security import UserWithRoles
         self.f = DummyFolder(fake_product=1)
         self.ti = self._makeOne('Foo', product='FooProduct', factory='addFoo')
         newSecurityManager(None, UserWithRoles('FooAdder').__of__(self.f))
 
     def tearDown(self):
+        from AccessControl.SecurityManagement import noSecurityManager
+        from zope.testing.cleanup import cleanUp
         cleanUp()
         noSecurityManager()
 
@@ -501,6 +500,12 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
         self.assertEqual(majyk_dust.id, 'majyk_dust')
 
     def test_events(self):
+        from OFS.interfaces import IObjectWillBeAddedEvent
+        from zope.app.container.interfaces import IContainerModifiedEvent
+        from zope.app.container.interfaces import IObjectAddedEvent
+        from zope.component import adapter
+        from zope.component import provideHandler
+        from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 
         @adapter(IObjectCreatedEvent)
@@ -546,6 +551,12 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
 class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
 
     def setUp(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from zope.component import getSiteManager
+        from zope.component.interfaces import IFactory
+        from Products.CMFCore.tests.base.dummy import DummyFactory
+        from Products.CMFCore.tests.base.dummy import DummyFolder
+        from Products.CMFCore.tests.base.security import UserWithRoles
         SecurityTest.setUp(self)
         sm = getSiteManager()
         sm.registerUtility(DummyFactory, IFactory, 'test.dummy')
@@ -556,10 +567,17 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         newSecurityManager(None, UserWithRoles('FooAdder').__of__(self.f))
 
     def tearDown(self):
+        from zope.testing.cleanup import cleanUp
         cleanUp()
         SecurityTest.tearDown(self)
 
     def test_events(self):
+        from OFS.interfaces import IObjectWillBeAddedEvent
+        from zope.app.container.interfaces import IContainerModifiedEvent
+        from zope.app.container.interfaces import IObjectAddedEvent
+        from zope.component import adapter
+        from zope.component import provideHandler
+        from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 
         @adapter(IObjectCreatedEvent)
