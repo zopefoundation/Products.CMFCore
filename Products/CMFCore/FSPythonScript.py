@@ -180,6 +180,7 @@ class FSPythonScript(FSObject, Script):
         new_globals['__traceback_supplement__'] = (
             FSPythonScriptTracebackSupplement, self)
         new_globals['__file__'] = self._filepath
+        new_globals['__name__'] = self.id
         if bound_names:
             new_globals.update(bound_names)
         if f.func_defaults:
