@@ -502,7 +502,7 @@ class MembershipTool(UniqueObject, Folder):
                     member_ids.remove(member_id)
             try:
                 acl_users.userFolderDelUsers(member_ids)
-            except (AttributeError, NotImplementedError, 'NotImplemented'):
+            except (AttributeError, NotImplementedError):
                 raise NotImplementedError('The underlying User Folder '
                                          'doesn\'t support deleting members.')
         else:

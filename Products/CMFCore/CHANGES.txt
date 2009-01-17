@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- No longer catch a `NotImplemented` string exception in the MembershipTool
+  in deleteMembers.
+
 - Added `__name__` to the FSPythonScript execution scope in addition to
   `__file__`. This makes Python 2.6's warnings module happy.
 
