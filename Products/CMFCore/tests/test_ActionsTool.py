@@ -78,6 +78,13 @@ class ActionsToolTests(unittest.TestCase, WarningInterceptor):
         self.assertEqual(tool.listActionProviders(), ('portal_actions',))
 
     def test_getActionObject_oldskool_action_deprecated(self):
+        # We have to clear APB's __warningregistry__, or else we may not see
+        # the warning we expect (i.e., if somebody else triggered it first).
+        from Products.CMFCore import ActionProviderBase
+        try:
+            del ActionProviderBase.__warningregistry__
+        except AttributeError:
+            pass
         self._trap_warning_output()
         tool = self._makeOne()
         tool.addAction('an_id', 'name', '', '', '', 'object')
