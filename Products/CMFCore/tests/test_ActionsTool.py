@@ -29,10 +29,14 @@ from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.MembershipTool import MembershipTool
 from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.URLTool import URLTool
 
 
-class ActionsToolTests(unittest.TestCase):
+class ActionsToolTests(unittest.TestCase, WarningInterceptor):
+
+    def tearDown(self):
+        self._free_warning_output()
 
     def _getTargetClass(self):
         from Products.CMFCore.ActionsTool import ActionsTool
@@ -73,17 +77,33 @@ class ActionsToolTests(unittest.TestCase):
         tool.deleteActionProvider('foo')
         self.assertEqual(tool.listActionProviders(), ('portal_actions',))
 
-    def test_getActionObject(self):
+    def test_getActionObject_oldskool_action_deprecated(self):
+        self._trap_warning_output()
         tool = self._makeOne()
-        tool._setObject('object', ActionCategory('object'))
-        tool.object._setObject('newstyle_id', Action('newstyle_id'))
         tool.addAction('an_id', 'name', '', '', '', 'object')
         rval = tool.getActionObject('object/an_id')
         self.assertEqual(rval, tool._actions[0])
+        warning = self._our_stderr_stream.getvalue()
+        self.failUnless(
+            'DeprecationWarning: '
+            'Old-style actions are deprecated and will be removed in CMF '
+            '2.4. Use Action and Action Category objects instead.' in warning)
+
+    def test_getActionObject_skips_newstyle_actions(self):
+        tool = self._makeOne()
+        tool._setObject('object', ActionCategory('object'))
+        tool.object._setObject('newstyle_id', Action('newstyle_id'))
         rval = tool.getActionObject('object/newstyle_id')
         self.assertEqual(rval, None)
+
+    def test_getActionObject_nonesuch_returns_None(self):
+        tool = self._makeOne()
+        tool._setObject('object', ActionCategory('object'))
         rval = tool.getActionObject('object/not_existing_id')
         self.assertEqual(rval, None)
+
+    def test_getActionObject_wrong_format_raises_ValueError(self):
+        tool = self._makeOne()
         self.assertRaises(ValueError, tool.getActionObject, 'wrong_format')
 
 
