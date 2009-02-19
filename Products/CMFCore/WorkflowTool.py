@@ -286,6 +286,8 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         """
         wfs = self.getWorkflowsFor(ob)
         for wf in wfs:
+            if self.getHistoryOf(wf.getId(), ob):
+                continue
             wf.notifyCreated(ob)
         self._reindexWorkflowVariables(ob)
 

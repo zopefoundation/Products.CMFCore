@@ -247,7 +247,8 @@ def handleContentishEvent(ob, event):
             ob.unindexObject()
 
     elif IObjectCopiedEvent.providedBy(event):
-        pass
+        if hasattr(aq_base(ob), 'workflow_history'):
+            del ob.workflow_history
 
     elif IObjectCreatedEvent.providedBy(event):
         if hasattr(aq_base(ob), 'addCreator'):

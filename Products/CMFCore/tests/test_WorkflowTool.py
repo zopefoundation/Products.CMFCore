@@ -349,6 +349,21 @@ class WorkflowToolTests(unittest.TestCase):
             self.assertEqual( len( notified ), 1 )
             self.assertEqual( notified[0], ( ob, ) )
 
+    def test_notifyCreated_skips_workflows_with_status(self):
+        tool = self._makeWithTypesAndChain()
+
+        ob = DummyContent('dummy')
+        dummy_status0 = object()
+        ob.workflow_history = {'a': (dummy_status0,)}
+        tool.notifyCreated(ob)
+
+        notified = tool.a.notified('created')
+        self.assertEqual( len(notified), 0 )
+
+        notified = tool.b.notified('created')
+        self.assertEqual( len(notified), 1 )
+        self.assertEqual( notified[0], (ob,) )
+
     def test_notifyBefore( self ):
 
         provideHandler(notifyBeforeHandler)
@@ -402,6 +417,35 @@ class WorkflowToolTests(unittest.TestCase):
             notified = wf.notified( 'exception-evt' )
             self.assertEqual( len( notified ), 1 )
             self.assertEqual( notified[0], ( ob, 'action', 'exception' ) )
+
+    def test_getStatusOf(self):
+        tool = self._makeWithTypesAndChain()
+
+        ob = DummyContent('dummy')
+        dummy_status0 = object()
+        dummy_status1 = object()
+        ob.workflow_history = {'a': (dummy_status0, dummy_status1)}
+
+        self.assertEqual( tool.getStatusOf('a', ob), dummy_status1 )
+
+    def test_setStatusOf(self):
+        tool = self._makeWithTypesAndChain()
+
+        ob = DummyContent('dummy')
+        dummy_status0 = object()
+        tool.setStatusOf('a', ob, dummy_status0)
+
+        self.failUnless( 'a' in ob.workflow_history )
+        self.assertEqual( len(ob.workflow_history['a']), 1 )
+        self.assertEqual( ob.workflow_history['a'][0], dummy_status0 )
+
+        dummy_status1 = object()
+        tool.setStatusOf('a', ob, dummy_status1)
+
+        self.failUnless( 'a' in ob.workflow_history )
+        self.assertEqual( len(ob.workflow_history['a']), 2 )
+        self.assertEqual( ob.workflow_history['a'][0], dummy_status0 )
+        self.assertEqual( ob.workflow_history['a'][1], dummy_status1 )
 
     def xxx_test_updateRoleMappings( self ):
         """

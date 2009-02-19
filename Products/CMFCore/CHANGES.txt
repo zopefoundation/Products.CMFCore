@@ -4,6 +4,12 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Events: Changed 'handleContentishEvent' behavior for IObjectCopiedEvent.
+  'WorkflowTool.notifyCreated' no longer resets the workflow state, so the
+  the event subscriber clears the workflow history instead.
+
+- WorkflowTool: 'notifyCreated' no longer overrides assigned workflow states.
+
 - No longer catch a `NotImplemented` string exception in the MembershipTool
   in deleteMembers.
 
