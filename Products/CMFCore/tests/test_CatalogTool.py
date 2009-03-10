@@ -16,17 +16,7 @@ $Id$
 """
 
 import unittest
-import Testing
 
-from AccessControl.SecurityManagement import getSecurityManager
-from AccessControl.SecurityManagement import newSecurityManager
-from DateTime import DateTime
-from zope.interface.verify import verifyClass
-
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.security import OmnipotentUser
-from Products.CMFCore.tests.base.security import UserWithRoles
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
 
@@ -40,7 +30,12 @@ class IndexableObjectWrapperTests(unittest.TestCase):
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
 
+    def _makeContent(self, *args, **kw):
+        from Products.CMFCore.tests.base.dummy import DummyContent
+        return DummyContent(*args, **kw)
+
     def test_interfaces(self):
+        from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IIndexableObjectWrapper
 
         verifyClass(IIndexableObjectWrapper, self._getTargetClass())
@@ -49,24 +44,24 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         # XXX This test fails when verbose security is enabled in zope.conf,
         # because the roles will then contain '_View_Permission' as well as
         # 'Manager'.
-        obj = DummyContent()
+        obj = self._makeContent()
         w = self._makeOne({}, obj)
         self.assertEqual(w.allowedRolesAndUsers(), ['Manager'])
 
     def test___str__(self):
-        obj = DummyContent('foo')
+        obj = self._makeContent('foo')
         w = self._makeOne({}, obj)
         self.assertEqual(str(w), str(obj))
 
     def test_proxied_attributes(self):
-        obj = DummyContent('foo')
+        obj = self._makeContent('foo')
         obj.title = 'Foo'
         w = self._makeOne({}, obj)
         self.assertEqual(w.getId(), 'foo')
         self.assertEqual(w.Title(), 'Foo')
 
     def test_vars(self):
-        obj = DummyContent()
+        obj = self._makeContent()
         w = self._makeOne({'bar': 1, 'baz': 2}, obj)
         self.assertEqual(w.bar, 1)
         self.assertEqual(w.baz, 2)
@@ -75,7 +70,7 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         from Products.CMFCore.interfaces import IContentish
         from Products.CMFCore.interfaces import IIndexableObjectWrapper
 
-        obj = DummyContent()
+        obj = self._makeContent()
         w = self._makeOne({}, obj)
         self.failUnless(IContentish.providedBy(w))
         self.failUnless(IIndexableObjectWrapper.providedBy(w))
@@ -92,6 +87,7 @@ class CatalogToolTests(SecurityTest):
         return self._getTargetClass()(*args, **kw)
 
     def test_interfaces(self):
+        from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider
         from Products.CMFCore.interfaces import ICatalogTool
         from Products.ZCatalog.interfaces import IZCatalog
@@ -101,10 +97,14 @@ class CatalogToolTests(SecurityTest):
         verifyClass(IZCatalog, self._getTargetClass())
 
     def loginWithRoles(self, *roles):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from Products.CMFCore.tests.base.security import UserWithRoles
         user = UserWithRoles(*roles).__of__(self.root)
         newSecurityManager(None, user)
 
     def loginManager(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from Products.CMFCore.tests.base.security import OmnipotentUser
         user = OmnipotentUser().__of__(self.root)
         newSecurityManager(None, user)
 
@@ -122,7 +122,7 @@ class CatalogToolTests(SecurityTest):
         """
         tool = self._makeOne()
         tool.addIndex('SearchableText', 'KeywordIndex')
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
 
         tool.catalog_object( dummy, '/dummy' )
         tool.catalog_object( dummy, '/dummy', [ 'SearchableText' ] )
@@ -130,7 +130,7 @@ class CatalogToolTests(SecurityTest):
     def test_search_anonymous(self):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         catalog.catalog_object(dummy, '/dummy')
 
         self.assertEqual(1, len(catalog._catalog.searchResults()))
@@ -139,7 +139,7 @@ class CatalogToolTests(SecurityTest):
     def test_search_member_with_valid_roles(self):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         dummy._View_Permission = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
@@ -151,7 +151,7 @@ class CatalogToolTests(SecurityTest):
     def test_search_member_with_valid_roles_but_proxy_roles_limit(self):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         dummy._View_Permission = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
@@ -164,7 +164,7 @@ class CatalogToolTests(SecurityTest):
     def test_search_member_wo_valid_roles(self):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         dummy._View_Permission = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
@@ -176,7 +176,7 @@ class CatalogToolTests(SecurityTest):
     def test_search_member_wo_valid_roles_but_proxy_roles_allow(self):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         dummy._View_Permission = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
@@ -187,12 +187,13 @@ class CatalogToolTests(SecurityTest):
         self.assertEqual(1, len(catalog.searchResults()))
 
     def test_search_inactive(self):
+        from DateTime.DateTime import DateTime
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('effective', 'DateIndex')
         catalog.addIndex('expires', 'DateIndex')
         now = DateTime()
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         dummy._View_Permission = ('Blob',)
 
         self.loginWithRoles('Blob')
@@ -212,12 +213,13 @@ class CatalogToolTests(SecurityTest):
         self.assertEqual(0, len(catalog.searchResults()))
 
     def test_search_restrict_manager(self):
+        from DateTime.DateTime import DateTime
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('effective', 'DateIndex')
         catalog.addIndex('expires', 'DateIndex')
         now = DateTime()
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
 
         self.loginManager()
 
@@ -246,12 +248,13 @@ class CatalogToolTests(SecurityTest):
             expires={'query': now-2, 'range': None})))
 
     def test_search_restrict_inactive(self):
+        from DateTime.DateTime import DateTime
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('effective', 'DateIndex')
         catalog.addIndex('expires', 'DateIndex')
         now = DateTime()
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         dummy._View_Permission = ('Blob',)
 
         self.loginWithRoles('Blob')
@@ -279,12 +282,13 @@ class CatalogToolTests(SecurityTest):
             expires={'query': now-2, 'range': None})))
 
     def test_search_restrict_visible(self):
+        from DateTime.DateTime import DateTime
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('effective', 'DateIndex')
         catalog.addIndex('expires', 'DateIndex')
         now = DateTime()
-        dummy = DummyContent(catalog=1)
+        dummy = self._makeContent(catalog=1)
         dummy._View_Permission = ('Blob',)
 
         self.loginWithRoles('Blob')
@@ -385,8 +389,9 @@ class CatalogToolTests(SecurityTest):
         self.assertEqual(kw, {'expires': {'query': (5,7), 'range': 'min:max'}})
 
     def test_refreshCatalog(self):
+        from Products.CMFCore.tests.base.dummy import DummySite
         site = DummySite('site').__of__(self.root)
-        site._setObject('dummy', DummyContent(catalog=1))
+        site._setObject('dummy', self._makeContent(catalog=1))
         site._setObject('portal_catalog', self._makeOne())
         ctool = site.portal_catalog
         ctool.catalog_object(site.dummy, '/dummy')
@@ -400,6 +405,7 @@ class CatalogToolTests(SecurityTest):
 
     def test_listAllowedRolesAndUsers_proxyroles(self):
         # https://bugs.launchpad.net/zope-cmf/+bug/161729
+        from AccessControl import getSecurityManager
         catalog = self._makeOne()
         self.loginWithRoles('Blob')
         user = getSecurityManager().getUser()
