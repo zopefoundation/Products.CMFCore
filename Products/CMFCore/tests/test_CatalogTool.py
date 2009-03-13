@@ -86,6 +86,10 @@ class CatalogToolTests(SecurityTest):
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
 
+    def _makeContent(self, *args, **kw):
+        from Products.CMFCore.tests.base.dummy import DummyContent
+        return DummyContent(*args, **kw)
+
     def test_interfaces(self):
         from zope.interface.verify import verifyClass
         from Products.CMFCore.interfaces import IActionProvider
