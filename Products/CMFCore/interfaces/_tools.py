@@ -406,6 +406,11 @@ class IIndexableObjectWrapper(Interface):
           a user is not allowed to see.
         """
 
+class IIndexableObject(Interface):
+
+    """ Marker interface for objects that can be indexed in
+        the portal catalog
+    """
 
 #
 #   PUT factory handler interfaces

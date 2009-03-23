@@ -25,6 +25,8 @@ from DateTime.DateTime import DateTime
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.interface import implements
+from zope.component import adapts
+from zope.component import queryMultiAdapter
 from zope.interface import providedBy
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
@@ -33,6 +35,8 @@ from zope.interface.declarations import ObjectSpecificationDescriptor
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IIndexableObjectWrapper
+from Products.CMFCore.interfaces import IIndexableObject
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.permissions import AccessInactivePortalContent
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
@@ -43,8 +47,10 @@ from Products.CMFCore.utils import _mergedLocalRoles
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
 
-
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):
+
+    # This class makes the wrapper transparent, adapter lookup is
+    # carried out based on the interfaces of the wrapped object. 
 
     def __get__(self, inst, cls=None):
         if inst is None:
@@ -57,11 +63,17 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 
 class IndexableObjectWrapper(object):
 
-    implements(IIndexableObjectWrapper)
+    implements(IIndexableObjectWrapper, IIndexableObject)
+    adapts(IContentish, ICatalogTool)
     __providedBy__ = IndexableObjectSpecification()
 
-    def __init__(self, vars, ob):
-        self.__vars = vars
+    def __init__(self, ob, catalog):
+        # look up the workflow variables for the object
+        wftool = getToolByName(catalog, 'portal_workflow', None)
+        if wftool is not None:
+            self.__vars = wftool.getCatalogVariablesFor(ob)
+        else:
+            self.__vars = {}
         self.__ob = ob
 
     def __str__(self):
@@ -246,12 +258,13 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # information just before cataloging.
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool
-        wftool = getToolByName(self, 'portal_workflow', None)
-        if wftool is not None:
-            vars = wftool.getCatalogVariablesFor(obj)
+        if IIndexableObject.providedBy(obj):
+            w = obj
         else:
-            vars = {}
-        w = IndexableObjectWrapper(vars, obj)
+            w = queryMultiAdapter( (obj, self), IIndexableObject )
+            if w is None:
+                # BBB
+                w = IndexableObjectWrapper(obj, self)
         ZCatalog.catalog_object(self, w, uid, idxs, update_metadata,
                                 pghandler)
 

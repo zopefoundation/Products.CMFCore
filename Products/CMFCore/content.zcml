@@ -29,4 +29,11 @@
       name="cmf.folder.btree"
       />
 
+  <!-- Default wrapper for indexing IContentish objects -->
+  <adapter
+      for=".interfaces.ICatalogAware
+           .interfaces.ICatalogTool"
+      provides=".interfaces.IIndexableObject"
+      factory=".CatalogTool.IndexableObjectWrapper" />
+
 </configure>

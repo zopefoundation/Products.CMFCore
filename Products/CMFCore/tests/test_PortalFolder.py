@@ -31,7 +31,7 @@ from zope.component.interfaces import IFactory
 from zope.interface import implements
 from zope.interface.verify import verifyClass
 
-from Products.CMFCore.CatalogTool import CatalogTool
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.exceptions import BadRequest
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import ConformsToFolder
@@ -45,16 +45,43 @@ from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
 from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-from Products.CMFCore.tests.base.utils import has_path
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
 from Products.CMFCore.WorkflowTool import WorkflowTool
-
+from types import TupleType
 
 def extra_meta_types():
     return [{'name': 'Dummy', 'action': 'manage_addFolder',
              'permission': 'View'}]
 
+class DummyCatalogTool:
+    implements(ICatalogTool)
+
+    def __init__(self):
+       self.paths = []
+       self.ids = []
+
+    def indexObject(self, object):
+       self.paths.append( '/'.join(object.getPhysicalPath()) )
+       self.ids.append( object.getId() )
+
+    def unindexObject(self, object):
+       self.paths.remove( '/'.join(object.getPhysicalPath()) )
+       self.ids.append( object.getId() )
+
+    def reindexObject(self, object):
+       pass
+
+    def __len__(self):
+       return len(self.paths)
+
+def has_path(catalog, path):
+    if type(path) is TupleType:
+       path = '/'.join(path)
+    return path in catalog.paths
+
+def has_id(catalog, id):
+    return id in catalog.ids
 
 class PortalFolderFactoryTests(SecurityTest):
 
@@ -211,7 +238,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         #
         test = self._makeOne('test')
         ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
         self.assertEqual( len(ctool), 0 )
 
         test._setObject( 'foo', DummyContent( 'foo' , catalog=1 ) )
@@ -232,7 +259,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         # instantiation (Tracker issue 309)
         #
         ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
         wftool = self.site._setObject( 'portal_workflow', WorkflowTool() )
         test = self._makeOne('test')
         wftool.notifyCreated(test)
@@ -248,7 +275,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
 
         test = self._makeOne('test')
         ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
         self.assertEqual( len(ctool), 0 )
 
         test._setObject( 'sub', PortalFolder( 'sub', '' ) )
@@ -436,29 +463,28 @@ class PortalFolderMoveTests(SecurityTest):
         from Products.CMFCore.PortalFolder import PortalFolder
 
         ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
-        ctool.addIndex('getId', 'FieldIndex')
+        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
         self.assertEqual( len(ctool), 0 )
 
         folder = self._makeOne('folder')
         folder._setObject( 'sub', PortalFolder( 'sub', '' ) )
         folder.sub._setObject( 'foo', DummyContent( 'foo', catalog=1 ) )
         self.assertEqual( len(ctool), 1 )
-        self.failUnless( 'foo' in ctool.uniqueValuesFor('getId') )
-        self.failUnless( has_path(ctool._catalog,
+        self.failUnless( has_id(ctool, 'foo') )
+        self.failUnless( has_path(ctool,
                                   '/bar/site/folder/sub/foo') )
 
         transaction.savepoint(optimistic=True)
         folder.manage_renameObject(id='sub', new_id='new_sub')
         self.assertEqual( len(ctool), 1 )
-        self.failUnless( 'foo' in ctool.uniqueValuesFor('getId') )
-        self.failUnless( has_path(ctool._catalog,
+        self.failUnless( has_id(ctool, 'foo') )
+        self.failUnless( has_path(ctool,
                                   '/bar/site/folder/new_sub/foo') )
 
         folder._setObject( 'bar', DummyContent( 'bar', catalog=1 ) )
         self.assertEqual( len(ctool), 2 )
-        self.failUnless( 'bar' in ctool.uniqueValuesFor('getId') )
-        self.failUnless( has_path(ctool._catalog, '/bar/site/folder/bar') )
+        self.failUnless( has_id(ctool, 'bar') )
+        self.failUnless( has_path(ctool, '/bar/site/folder/bar') )
 
         folder._setObject( 'sub2', PortalFolder( 'sub2', '' ) )
         sub2 = folder.sub2
@@ -471,17 +497,17 @@ class PortalFolderMoveTests(SecurityTest):
         cookie = folder.manage_cutObjects(ids=['bar'])
         sub2.manage_pasteObjects(cookie)
 
-        self.failUnless( 'foo' in ctool.uniqueValuesFor('getId') )
-        self.failUnless( 'bar' in ctool.uniqueValuesFor('getId') )
+        self.failUnless( has_id( ctool, 'foo' ) )
+        self.failUnless( has_id( ctool, 'bar' ) )
         self.assertEqual( len(ctool), 2 )
-        self.failUnless( has_path(ctool._catalog,
+        self.failUnless( has_path(ctool,
                                   '/bar/site/folder/sub2/bar') )
 
     def test_contentPaste(self):
         #
         #   Does copy / paste work?
         #
-        ctool = self.site._setObject( 'portal_catalog', CatalogTool() )
+        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_DUMMY[0].copy()
         ttool._setObject( 'Dummy Content', FTI(**fti) )
@@ -497,9 +523,9 @@ class PortalFolderMoveTests(SecurityTest):
         self.failIf( 'dummy' in sub2.contentIds() )
         self.failIf( 'dummy' in sub3.objectIds() )
         self.failIf( 'dummy' in sub3.contentIds() )
-        self.failUnless( has_path(ctool._catalog, '/bar/site/sub1/dummy') )
-        self.failIf( has_path(ctool._catalog, '/bar/site/sub2/dummy') )
-        self.failIf( has_path(ctool._catalog, '/bar/site/sub3/dummy') )
+        self.failUnless( has_path(ctool, '/bar/site/sub1/dummy') )
+        self.failIf( has_path(ctool, '/bar/site/sub2/dummy') )
+        self.failIf( has_path(ctool, '/bar/site/sub3/dummy') )
 
         cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
         # Waaa! force sub2 to allow paste of Dummy object.
@@ -513,9 +539,9 @@ class PortalFolderMoveTests(SecurityTest):
         self.failUnless( 'dummy' in sub2.contentIds() )
         self.failIf( 'dummy' in sub3.objectIds() )
         self.failIf( 'dummy' in sub3.contentIds() )
-        self.failUnless( has_path(ctool._catalog, '/bar/site/sub1/dummy') )
-        self.failUnless( has_path(ctool._catalog, '/bar/site/sub2/dummy') )
-        self.failIf( has_path(ctool._catalog, '/bar/site/sub3/dummy') )
+        self.failUnless( has_path(ctool, '/bar/site/sub1/dummy') )
+        self.failUnless( has_path(ctool, '/bar/site/sub2/dummy') )
+        self.failIf( has_path(ctool, '/bar/site/sub3/dummy') )
 
         transaction.savepoint(optimistic=True)
         cookie = sub1.manage_cutObjects( ids = ('dummy',) )
@@ -530,9 +556,9 @@ class PortalFolderMoveTests(SecurityTest):
         self.failUnless( 'dummy' in sub2.contentIds() )
         self.failUnless( 'dummy' in sub3.objectIds() )
         self.failUnless( 'dummy' in sub3.contentIds() )
-        self.failIf( has_path(ctool._catalog, '/bar/site/sub1/dummy') )
-        self.failUnless( has_path(ctool._catalog, '/bar/site/sub2/dummy') )
-        self.failUnless( has_path(ctool._catalog, '/bar/site/sub3/dummy') )
+        self.failIf( has_path(ctool, '/bar/site/sub1/dummy') )
+        self.failUnless( has_path(ctool, '/bar/site/sub2/dummy') )
+        self.failUnless( has_path(ctool, '/bar/site/sub3/dummy') )
 
 
 class ContentFilterTests(unittest.TestCase):
