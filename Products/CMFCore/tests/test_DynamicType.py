@@ -23,11 +23,14 @@ from StringIO import StringIO
 from Acquisition import Implicit
 from Products.Five.browser import BrowserView
 from zope.component import provideAdapter
-from zope.component.interfaces import IDefaultViewName
 from zope.interface import alsoProvides
 from zope.interface.verify import verifyClass
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserView
+try:
+    from zope.publisher.interfaces import IDefaultViewName
+except ImportError:  # zope.component had this before the ZTK
+    from zope.component.interfaces import IDefaultViewName
 from zope.testing.cleanup import cleanUp
 from ZPublisher.HTTPRequest import HTTPRequest
 from ZPublisher.HTTPResponse import HTTPResponse
