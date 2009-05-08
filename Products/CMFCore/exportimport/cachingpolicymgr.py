@@ -173,9 +173,10 @@ def importCachingPolicyManager(context):
     """Import caching policy manager settings from an XML file.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'caching_policy_manager')
+    tool = getToolByName(site, 'caching_policy_manager', None)
 
-    importObjects(tool, '', context)
+    if tool is not None:
+        importObjects(tool, '', context)
 
 def exportCachingPolicyManager(context):
     """Export caching policy manager settings as an XML file.
