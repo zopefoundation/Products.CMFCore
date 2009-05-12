@@ -4,6 +4,12 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- TypeInformation: DCWorkflow instances define a method and a guard 
+  for vetoing object creation, but it was never used. Now  
+  TypeInformation objects will consult these guard conditions during 
+  object creation.
+  (https://bugs.launchpad.net/zope-cmf/+bug/308947)
+
 - PortalCatalog: Changed to use a multi-adaptor to allow a pluggable
   IndexableObjectWrapper class.  Objects that implement IIndexableObject
   are not wrapped.  The change will assist in integrating with

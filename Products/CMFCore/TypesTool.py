@@ -52,6 +52,7 @@ from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _wwwdir
+from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import SimpleItemWithProperties
 from Products.CMFCore.utils import UniqueObject
 
@@ -324,6 +325,28 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         if isinstance(method_id, tuple):
             method_id = method_id[0]
         return method_id
+    
+    security.declarePrivate('_checkWorkflowAllowed')
+    def _checkWorkflowAllowed(self, container):
+        """ Check if a workflow veto object creation
+        """
+        wtool = getToolByName(self, 'portal_workflow', None)
+        if wtool is None:
+            return True
+        
+        type_id = self.getId()
+        workflows = wtool.getWorkflowsFor(type_id)
+        for workflow in workflows:
+            # DCWorkflow workflows define an instance creation guard
+            guard = getattr(workflow, 'allowCreate', None)
+
+            if guard is None:
+                continue
+
+            if not guard(container, type_id):
+                return False
+        
+        return True        
 
     #
     #   'IAction' interface methods
@@ -459,11 +482,15 @@ class FactoryTypeInformation(TypeInformation):
 
         c. Does the current user have the permission required in
         order to invoke the factory method?
+        
+        d. Do all workflows authorize the creation?
         """
+        ti_check = False
+
         if self.product:
             # oldstyle factory
             m = self._queryFactoryMethod(container)
-            return (m is not None)
+            ti_check = m is not None
 
         elif container is not None:
             # newstyle factory
@@ -472,9 +499,13 @@ class FactoryTypeInformation(TypeInformation):
                 for d in container.all_meta_types():
                     if d['name'] == self.content_meta_type:
                         sm = getSecurityManager()
-                        return sm.checkPermission(d['permission'], container)
+                        ti_check = sm.checkPermission(d['permission'], container)
+                        break
 
-        return False
+        if not ti_check:
+            return False
+        else :
+            return self._checkWorkflowAllowed(container)
 
     security.declarePrivate('_constructInstance')
     def _constructInstance(self, container, id, *args, **kw):
@@ -551,7 +582,7 @@ class ScriptableTypeInformation(TypeInformation):
         permission = self.permission
         if permission and not _checkPermission( permission, container ):
             return 0
-        return 1
+        return self._checkWorkflowAllowed(container)
 
     security.declarePrivate('_constructInstance')
     def _constructInstance(self, container, id, *args, **kw):

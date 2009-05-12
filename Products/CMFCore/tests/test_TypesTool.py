@@ -40,6 +40,24 @@ class TypesToolTests(SecurityTest):
         self.ttool = self.site._setObject( 'portal_types', self._makeOne() )
         fti = FTIDATA_DUMMY[0].copy()
         self.ttool._setObject( 'Dummy Content', FTI(**fti) )
+        
+        # setup workflow tool
+        # to test 'Instance creation conditions' of workflows
+        from Products.CMFCore.WorkflowTool import WorkflowTool
+        self.site._setObject( 'portal_workflow', WorkflowTool() )
+        wftool = self.site.portal_workflow
+
+        from Products.DCWorkflow.DCWorkflow import DCWorkflowDefinition
+        wftool._setObject('wf', DCWorkflowDefinition('wf'))
+        wftool.setDefaultChain('wf')
+        wf = wftool.wf
+        wf.states.addState('initial')
+        wf.states.setInitialState('initial')
+
+        from Products.DCWorkflow.Guard import Guard
+        g = Guard()
+        wf.creation_guard = g
+        
 
     def tearDown(self):
         SecurityTest.tearDown(self)
@@ -142,6 +160,21 @@ class TypesToolTests(SecurityTest):
         except Unauthorized:
             self.fail('CMF Collector issue #165 (Ownership bug): '
                       'Unauthorized raised' )
+
+        wf = site.portal_workflow.wf
+        wf.creation_guard.changeFromProperties({'guard_expr':'python:False'})
+        try :
+            ttool.constructContent('Dummy Content', container=f, id='page3')
+        except Unauthorized, e :
+            self.assertEqual(str(e), "Cannot create Dummy Content")
+        else :
+            self.fail("workflow 'Instance creation conditions' does not work")
+        
+        wf.manager_bypass = 1
+        try :
+            ttool.constructContent('Dummy Content', container=f, id='page4')
+        except Unauthorized:
+            self.fail("manager may bypass 'Instance creation conditions'")
 
 
 class TypeInfoTests:
