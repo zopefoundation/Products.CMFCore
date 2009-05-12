@@ -16,6 +16,7 @@ $Id$
 """
 
 import codecs
+import os
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
@@ -98,7 +99,13 @@ class FSFile(FSObject):
             file.close()
 
         if reparse or self.content_type == 'unknown/unknown':
-            self.ZCacheable_invalidate()
+            try:
+                mtime = os.stat(self._filepath)[8]
+            except:
+                mtime = 0
+            if mtime != self._file_mod_time or mtime == 0:
+                self.ZCacheable_invalidate()
+                self._file_mod_time = mtime
             self.content_type=self._get_content_type(file, data, self.id)
         return data
 

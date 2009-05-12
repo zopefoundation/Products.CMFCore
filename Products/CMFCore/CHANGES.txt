@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- FSObject: Ensure that ZCache invalidations only happens if the 
+  filesystem modification time differs from the internally stored
+  previous modification time.
+  (https://bugs.launchpad.net/zope-cmf/+bug/325246)
+
 - TypeInformation: DCWorkflow instances define a method and a guard 
   for vetoing object creation, but it was never used. Now  
   TypeInformation objects will consult these guard conditions during 

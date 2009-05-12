@@ -234,6 +234,38 @@ class FSImageTests(RequestTest, FSDVTest):
         tag = image.tag()
         self.failUnless('alt=""' in tag)
 
+    def test_unnecessary_invalidation_avoidance(self):
+        # See https://bugs.launchpad.net/zope-cmf/+bug/325246
+        invalidated = []
+        def fake_invalidate(*args, **kw):
+            invalidated.append(True)
+        image = self._makeOne( 'test_image', 'test_image.gif' )
+        image.ZCacheable_invalidate = fake_invalidate
+
+        # First pass: The images internal file modification representation
+        # equals the filesystem modification time.
+        del invalidated[:]
+        image._readFile(True)
+        self.failIf(invalidated)
+
+        del invalidated[:]
+        image._parsed = False
+        image._updateFromFS()
+        self.failIf(invalidated)
+
+        # Second pass: Forcing a different internal file modification
+        # time onto the image instance. Now the image will be invalidated.
+        del invalidated[:]
+        image._file_mod_time = 0
+        image._readFile(True)
+        self.failUnless(invalidated)
+
+        del invalidated[:]
+        image._file_mod_time = 0
+        image._parsed = False
+        image._updateFromFS()
+        self.failUnless(invalidated)
+
 
 def test_suite():
     return unittest.TestSuite((

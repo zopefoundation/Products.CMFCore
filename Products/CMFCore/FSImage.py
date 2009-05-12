@@ -15,6 +15,8 @@
 $Id$
 """
 
+import os
+
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
@@ -72,7 +74,13 @@ class FSImage(FSObject):
             file.close()
 
         if reparse or self.content_type == 'unknown/unknown':
-            self.ZCacheable_invalidate()
+            try:
+                mtime = os.stat(self._filepath)[8]
+            except:
+                mtime = 0
+            if mtime != self._file_mod_time or mtime == 0:
+                self.ZCacheable_invalidate()
+                self._file_mod_time = mtime
             ct, width, height = getImageInfo( data )
             self.content_type = ct
             self.width = width

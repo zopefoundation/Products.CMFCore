@@ -175,10 +175,10 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             except:
                 mtime = 0
             if not parsed or mtime != self._file_mod_time:
-                # if we have to read the file again, remove the cache
-                self.ZCacheable_invalidate()
                 self._readFile(1)
-                self._file_mod_time = mtime
+                if mtime != self._file_mod_time or mtime == 0:
+                    self.ZCacheable_invalidate()
+                    self._file_mod_time = mtime
                 self._parsed = 1
 
     security.declareProtected(View, 'get_size')
