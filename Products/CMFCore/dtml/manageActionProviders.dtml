@@ -32,7 +32,11 @@
           <dtml-if sequence-start>
            <ul>
           </dtml-if>
+          <dtml-try>
+            <li><dtml-var "_['sequence-item']['id']"></li>
+          <dtml-except>
             <li><dtml-var id></li>
+          </dtml-try>
           <dtml-if sequence-end>
            </ul>
           </dtml-if>
