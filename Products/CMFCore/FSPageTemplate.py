@@ -82,13 +82,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'rU') # not 'rb', as this is a text file!
-        try:
-            data = file.read()
-        finally:
-            file.close()
-
         if reparse:
+            file = open(self._filepath, 'rU') # not 'rb', as this is a text file!
+            try:
+                data = file.read()
+            finally:
+                file.close()
+
             # If we already have a content_type set it must come from a
             # .metadata file and we should always honor that. The content
             # type is initialized as text/html by default, so we only

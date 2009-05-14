@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- FSPageTemplate: Prevent reading the underlying file without doing 
+  anything with the data in some cases.
+
 - FSObject: Ensure that ZCache invalidations only happens if the 
   filesystem modification time differs from the internally stored
   previous modification time.
