@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- ActionsTool: The "Action Providers" tab in the ZMI did not render
+  actions from the WorkflowTool correctly since those are not 
+  "new-style" actions.
+  (https://bugs.launchpad.net/zope-cmf/+bug/322300)
+
 - FSPageTemplate: Prevent reading the underlying file without doing 
   anything with the data in some cases.
 
