@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Expose the ZMI manage view of the `_components ` object manager as
+  a new "Components Folder" tab in the ZMI.
+
 - ActionsTool: The "Action Providers" tab in the ZMI did not render
   actions from the WorkflowTool correctly since those are not 
   "new-style" actions.

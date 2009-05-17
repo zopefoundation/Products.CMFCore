@@ -62,6 +62,8 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
     manage_options = ( Folder.manage_options[:1]
                      + ({'label': 'Components',
                          'action': 'manage_components'},)
+                     + ({'label': 'Components Folder',
+                         'action': '++etc++site/manage_main'},)
                      + Folder.manage_options[1:]
                      + CMFCatalogAware.manage_options
                      )
