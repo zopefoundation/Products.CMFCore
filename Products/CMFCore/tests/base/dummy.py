@@ -54,7 +54,17 @@ class DummyObject(Implicit):
         return self._id
 
     def restrictedTraverse( self, path ):
-        return path and getattr( self, path ) or self
+        if not path:
+            return self
+
+        parent = self
+        path_elements = path.split('/')
+        path_elements.reverse()
+        while path_elements:
+            path_element = path_elements.pop()
+            parent = getattr(parent, path_element) 
+
+        return parent
 
     def getIcon( self, relative=0 ):
         return 'Site: %s' % relative
