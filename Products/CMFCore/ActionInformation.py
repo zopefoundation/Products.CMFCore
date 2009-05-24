@@ -74,6 +74,7 @@ class Action(PropertyManager, SimpleItem):
     implements(IAction)
 
     i18n_domain = 'cmf_default'
+    link_target = ''
 
     security = ClassSecurityInfo()
 
@@ -92,6 +93,8 @@ class Action(PropertyManager, SimpleItem):
          'label': 'Condition (Expression)'},
         {'id': 'permissions', 'type': 'multiple selection', 'mode': 'w',
          'label': 'Permissions', 'select_variable': 'possible_permissions'},
+        {'id':'link_target', 'type': 'string', 'mode':'w',
+         'label':'Link Target'},
         {'id': 'visible', 'type': 'boolean', 'mode': 'w',
          'label': 'Visible?'},
         )
@@ -109,6 +112,7 @@ class Action(PropertyManager, SimpleItem):
         self._setPropValue( 'icon_expr', kw.get('icon_expr', '') )
         self._setPropValue( 'available_expr', kw.get('available_expr', '') )
         self._setPropValue( 'permissions', kw.get('permissions', () ) )
+        self._setPropValue( 'link_target', kw.get('link_target', '') )
         self._setPropValue( 'visible', kw.get('visible', True) )
 
     def _setPropValue(self, id, value):
@@ -177,6 +181,7 @@ class ActionInfo(UserDict):
             self.data.setdefault( 'category', 'object' )
             self.data.setdefault( 'visible', True )
             self.data['available'] = True
+            self.data.setdefault('link_target', '')
         else:
             # if action isn't a dict, it has to implement IAction
             (lazy_map, lazy_keys) = action.getInfoData()
@@ -263,6 +268,7 @@ class ActionInformation( SimpleItem ):
                 , visible=True
                 , action=''
                 , icon_expr=''
+                , link_target=''
                 ):
         """ Set up an instance.
         """
@@ -276,6 +282,7 @@ class ActionInformation( SimpleItem ):
                  , visible
                  , action
                  , icon_expr
+                 , link_target
                  )
 
     security.declarePrivate('edit')
@@ -290,6 +297,7 @@ class ActionInformation( SimpleItem ):
             , visible=_unchanged
             , action=_unchanged
             , icon_expr=_unchanged
+            , link_target=_unchanged
             ):
         """Edit the specified properties.
         """
@@ -322,6 +330,8 @@ class ActionInformation( SimpleItem ):
             if icon_expr and isinstance(icon_expr, basestring):
                 icon_expr = Expression(icon_expr)
             self.setIconExpression(icon_expr)
+        if link_target is not _unchanged:
+            self.link_target = link_target
 
     security.declareProtected( View, 'Title' )
     def Title(self):
@@ -453,6 +463,12 @@ class ActionInformation( SimpleItem ):
         """
         return bool(self.visible)
 
+    security.declarePublic('getLinkTarget')
+    def getLinkTarget(self):
+        """ Return the rendered link tag's target attribute value
+        """
+        return self.link_target
+
     security.declarePrivate('getMapping')
     def getMapping(self):
         """ Get a mapping of this object's data.
@@ -466,7 +482,8 @@ class ActionInformation( SimpleItem ):
                  'permissions': self.permissions,
                  'visible': bool(self.visible),
                  'action': self.getActionExpression(),
-                 'icon_expr' : self.getIconExpression() }
+                 'icon_expr' : self.getIconExpression(),
+                 'link_target' : self.getLinkTarget() }
 
     security.declarePrivate('clone')
     def clone( self ):

@@ -108,6 +108,21 @@
 <td></td>
 <td>
   <div class="form-label">
+  Link target
+  </div>
+</td>
+<td>
+  <div class="form-element">
+  <input type="text" name="link_target_&dtml-index;" value="&dtml-link_target;" size="80"/>
+  </div>
+</td>
+</tr>
+
+
+<tr>
+<td></td>
+<td>
+  <div class="form-label">
   Permission
   </div>
 </td>
@@ -254,6 +269,20 @@ Add an action
 <td>
   <div class="form-element">
   <input type="text" name="condition" value="" size="80" />
+  </div>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+  <div class="form-label">
+  Link target
+  </div>
+</td>
+<td>
+  <div class="form-element">
+  <input type="text" name="link_target" value="" size="80" />
   </div>
 </td>
 </tr>

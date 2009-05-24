@@ -72,7 +72,7 @@ class ActionTests(unittest.TestCase):
     def test_getInfoData_empty(self):
         WANTED = ( {'available': True, 'category': '', 'description': '',
                     'id': 'foo', 'icon': '', 'permissions': (), 'title': '',
-                    'url': '', 'visible': True}, [] )
+                    'url': '', 'visible': True, 'link_target': ''}, [] )
         a = self._makeOne('foo')
         self.assertEqual( a.getInfoData(), WANTED )
 
@@ -84,12 +84,14 @@ class ActionTests(unittest.TestCase):
                           icon_expr='string:foo_icon',
                           available_expr='',
                           permissions=('View',),
-                          visible=False)
+                          visible=False,
+                          link_target='_top')
         WANTED = ( {'available': True, 'category': '',
                     'description': 'Foo description.',
                     'id': 'foo', 'icon': a.icon_expr_object,
                     'permissions': ('View',), 'title': 'Foo Title',
-                    'url': a.url_expr_object, 'visible': False},
+                    'url': a.url_expr_object, 'visible': False,
+                    'link_target': a.link_target },
                    ['url', 'icon'] )
         self.assertEqual( a.getInfoData(), WANTED )
 
@@ -146,7 +148,7 @@ class ActionInfoTests(unittest.TestCase):
 
         WANTED = {'allowed': True, 'available': True, 'category': '',
                   'description': '', 'icon': '', 'id': 'foo', 'title': '',
-                  'url': '', 'visible': True}
+                  'url': '', 'visible': True, 'link_target': ''}
 
         action = Action(id='foo')
         ec = None
@@ -167,7 +169,7 @@ class ActionInfoTests(unittest.TestCase):
 
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'description': '', 'id': 'foo', 'title': 'foo', 'url': '',
-                  'visible': True, 'icon': ''}
+                  'visible': True, 'icon': '', 'link_target': ''}
 
         action = ActionInformation(id='foo')
         ec = None
@@ -187,7 +189,7 @@ class ActionInfoTests(unittest.TestCase):
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'id': 'foo', 'title': 'foo', 'url': '', 'visible': True,
-                  'icon': '' }
+                  'icon': '' , 'link_target': ''}
 
         action = {'name': 'foo', 'url': ''}
         ec = None
@@ -219,7 +221,7 @@ class ActionInfoSecurityTests(SecurityTest):
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'id': 'foo', 'title': 'foo', 'url': '', 'visible': True,
-                  'icon': ''}
+                  'icon': '', 'link_target': ''}
 
         action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
         ec = createExprContext(self.site, self.site, None)
@@ -423,7 +425,8 @@ class ActionInformationTests(TransactionalTest):
     def test_getInfoData_empty(self):
         WANTED = ( {'available': True, 'category': 'object',
                     'description': '', 'id': 'foo', 'permissions': (),
-                    'title': 'foo', 'url': '', 'visible': True, 'icon': ''},[])
+                    'title': 'foo', 'url': '', 'visible': True, 'icon': '',
+                    'link_target': ''},[])
         a = self._makeOne('foo')
         self.assertEqual( a.getInfoData(), WANTED )
 
@@ -435,12 +438,14 @@ class ActionInformationTests(TransactionalTest):
                           icon_expr='string:${object_url}/icon.gif',
                           condition='',
                           permissions=('View',),
-                          visible=False)
+                          visible=False,
+                          link_target='_top')
         WANTED = ( {'available': True, 'category': 'object',
                     'description': 'Foo description.', 'id': 'foo',
                     'permissions': ('View',), 'title': 'Foo Title',
                     'url': a._getActionObject(), 'visible': False,
-                    'icon': a._getIconExpressionObject(), },
+                    'icon': a._getIconExpressionObject(), 
+                    'link_target': a.link_target },
                    ['url', 'icon'] )
         self.assertEqual( a.getInfoData(), WANTED )
 

@@ -45,6 +45,7 @@ _FTI_BODY = """\
  <property name="product"></property>
  <property name="factory"></property>
  <property name="add_view_expr"></property>
+ <property name="link_target"></property>
  <property name="immediate_view"></property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
@@ -54,7 +55,7 @@ _FTI_BODY = """\
  <alias from="view" to="foo"/>
  <action title="Foo" action_id="foo_action" category="Bar"
     condition_expr="python:1" icon_expr="string:${portal_url}/icon.png"
-    url_expr="string:${object_url}/foo" visible="True"/>
+    link_target="" url_expr="string:${object_url}/foo" visible="True"/>
 </object>
 """
 
@@ -77,6 +78,7 @@ _TI_LIST = ({
     'product':               'CMFSetup',
     'factory':               'addFoo',
     'add_view_expr':         'string:${folder_url}/foo_add_view',
+    'link_target':           '_new',
     'immediate_view':        'foo_view',
     'filter_content_types':  False,
     'allowed_content_types': (),
@@ -89,6 +91,7 @@ _TI_LIST = ({
                  'title':  'View',
                  'action': 'string:${object_url}/foo_view',
                  'icon_expr': 'string:${portal_url}/preview_icon.png',
+                 'link_target': '_new',
                  'permissions': (View,),
                  },
                 {'id':     'edit',
@@ -114,6 +117,7 @@ _TI_LIST = ({
     'constructor_path':      'make_bar',
     'permission':            'Add portal content',
     'add_view_expr':         'string:${folder_url}/bar_add_view',
+    'link_target':           '',
     'immediate_view':        'bar_view',
     'filter_content_types':  True,
     'allowed_content_types': ('foo',),
@@ -196,6 +200,7 @@ _FOO_EXPORT = """\
  <property name="product">CMFSetup</property>
  <property name="factory">addFoo</property>
  <property name="add_view_expr">string:${folder_url}/foo_add_view</property>
+ <property name="link_target">_new</property>
  <property name="immediate_view">foo_view</property>
  <property name="global_allow">False</property>
  <property name="filter_content_types">False</property>
@@ -205,17 +210,20 @@ _FOO_EXPORT = """\
  <alias from="view" to="foo_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
     url_expr="string:${object_url}/foo_view" 
-    icon_expr="string:${portal_url}/preview_icon.png" visible="True">
+    icon_expr="string:${portal_url}/preview_icon.png" link_target="_new" 
+    visible="True">
   <permission value="View"/>
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
     url_expr="string:${object_url}/foo_edit_form" 
-    icon_expr="string:${portal_url}/edit_icon.png" visible="True">
+    icon_expr="string:${portal_url}/edit_icon.png" link_target="" 
+    visible="True">
   <permission value="Modify portal content"/>
  </action>
  <action title="Metadata" action_id="metadata" category="object"
     condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
-    icon_expr="string:${portal_url}/metadata_icon.png" visible="True">
+    icon_expr="string:${portal_url}/metadata_icon.png" link_target="" 
+    visible="True">
   <permission value="Modify portal content"/>
  </action>
 </object>
@@ -233,6 +241,7 @@ _BAR_EXPORT = """\
  <property name="permission">Add portal content</property>
  <property name="constructor_path">make_bar</property>
  <property name="add_view_expr">string:${folder_url}/bar_add_view</property>
+ <property name="link_target"/>
  <property name="immediate_view">bar_view</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
@@ -244,22 +253,22 @@ _BAR_EXPORT = """\
  <alias from="view" to="bar_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
     url_expr="string:${object_url}/bar_view" 
-    icon_expr="" visible="True">
+    icon_expr="" link_target="" visible="True">
   <permission value="View"/>
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
     url_expr="string:${object_url}/bar_edit_form"
-    icon_expr="" visible="True">
+    icon_expr="" link_target="" visible="True">
   <permission value="Modify portal content"/>
  </action>
  <action title="Contents" action_id="contents" category="object"
     condition_expr="" url_expr="string:${object_url}/folder_contents"
-    icon_expr="" visible="True">
+    icon_expr="" link_target="" visible="True">
   <permission value="Access contents information"/>
  </action>
  <action title="Metadata" action_id="metadata" category="object"
     condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
-    icon_expr="" visible="True">
+    icon_expr="" link_target="" visible="True">
   <permission value="Modify portal content"/>
  </action>
 </object>

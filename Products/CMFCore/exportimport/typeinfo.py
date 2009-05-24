@@ -102,6 +102,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             child.setAttribute('condition_expr', ai_info['condition'])
             child.setAttribute('url_expr', ai_info['action'])
             child.setAttribute('icon_expr', ai_info['icon_expr'])
+            child.setAttribute('link_target', ai_info['link_target'])
             child.setAttribute('visible', str(bool(ai_info['visible'])))
             for permission in ai_info['permissions']:
                 sub = self._doc.createElement('permission')
@@ -123,6 +124,10 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             condition = str(child.getAttribute('condition_expr'))
             action = str(child.getAttribute('url_expr'))
             icon_expr = str(child.getAttribute('icon_expr'))
+            if child.hasAttribute('link_target'):
+                link_target = str(child.getAttribute('link_target'))
+            else:
+                link_target = ''
             visible = self._convertToBoolean(child.getAttribute('visible'))
             remove = child.hasAttribute('remove') and True or False
             permissions = []
@@ -143,12 +148,13 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
                 if action_obj is None:
                     self.context.addAction(id, title, action, condition,
                                            tuple(permissions), category, visible,
-                                           icon_expr=icon_expr)
+                                           icon_expr=icon_expr, 
+                                           link_target=link_target)
                 else:
                     action_obj.edit(title=title, action=action,
                                     icon_expr=icon_expr, condition=condition,
                                     permissions=tuple(permissions),
-                                    visible=visible)
+                                    visible=visible, link_target=link_target)
 
 
 class TypesToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers,

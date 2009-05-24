@@ -43,6 +43,7 @@ _ACTION_XML = """\
  <property name="icon_expr"></property>
  <property name="available_expr">python:1</property>
  <property name="permissions"/>
+ <property name="link_target"></property>
  <property name="visible">True</property>
 </object>
 """
@@ -57,6 +58,7 @@ _ACTIONCATEGORY_XML = """\
   <property name="icon_expr"></property>
   <property name="available_expr"></property>
   <property name="permissions"/>
+  <property name="link_target"></property>
   <property name="visible">True</property>
  </object>
 </object>
@@ -76,6 +78,7 @@ _ACTIONSTOOL_BODY = """\
    <property name="icon_expr"></property>
    <property name="available_expr"></property>
    <property name="permissions"/>
+   <property name="link_target"></property>
    <property name="visible">True</property>
   </object>
  </object>
@@ -156,6 +159,7 @@ _NEWSYTLE_EXPORT = """\
    <property name="icon_expr"></property>
    <property name="available_expr">python:1</property>
    <property name="permissions"></property>
+   <property name="link_target"></property>
    <property name="visible">True</property>
   </object>
  </object>
@@ -176,6 +180,7 @@ _I18N_IMPORT = """\
    <property name="icon_expr"></property>
    <property name="available_expr">python:1</property>
    <property name="permissions"></property>
+   <property name="link_target"></property>
    <property name="visible">True</property>
   </object>
  </object>

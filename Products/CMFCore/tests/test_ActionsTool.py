@@ -153,6 +153,7 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
                                                       'folder is not object'),
                                 permissions=('List folder contents',),
                                 category='folder',
+                                link_target='_top',
                                 visible=1)
             ,
             )
@@ -168,7 +169,8 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
                                       'visible': True,
                                       'available': True,
                                       'allowed': True,
-                                      'category': 'folder'}],
+                                      'category': 'folder',
+                                      'link_target': '_top'}],
                           'global': []})
 
     def tearDown(self):

@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Actions: Add a link_target attribute to store a value for the 
+  final rendered link tag's "target" attribute
+  (https://bugs.launchpad.net/zope-cmf/+bug/376951)
+
 - MemberData tool: Make it easier to override the default 
   MemberData implementation by trying to look up a named 
   factory utility named "MemberData" before falling back on the

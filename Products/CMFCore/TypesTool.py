@@ -99,6 +99,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     _advanced_properties = (
         {'id': 'add_view_expr', 'type': 'string', 'mode': 'w',
          'label': 'Add view URL (Expression)'},
+        {'id': 'link_target', 'type': 'string', 'mode': 'w',
+         'label': 'Add view link target'},
         {'id':'immediate_view', 'type': 'string', 'mode':'w',
          'label':'Initial view name'},
         {'id':'global_allow', 'type': 'boolean', 'mode':'w',
@@ -128,6 +130,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     allowed_content_types = ()
     allow_discussion = False
     global_allow = True
+    link_target = ''
 
     def __init__(self, id, **kw):
 
@@ -161,6 +164,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
                 , category=action.get('category', 'object')
                 , visible=action.get('visible', True)
                 , icon_expr=action.get('icon_expr', '')
+                , link_target=action.get('link_target', '')
                 )
 
         self.setMethodAliases(kw.get('aliases', {}))
@@ -376,6 +380,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             lazy_keys.append('icon')
         else:
             lazy_map['icon'] = ''
+        lazy_map['link_target'] = self.link_target
         lazy_map['visible'] = True
         lazy_map['available'] = self._checkAvailable
         lazy_map['allowed'] = self._checkAllowed

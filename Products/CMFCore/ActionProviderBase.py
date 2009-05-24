@@ -182,6 +182,7 @@ class ActionProviderBase:
                  , category
                  , visible=1
                  , icon_expr=''
+                 , link_target=''
                  , REQUEST=None
                  ):
         """ Add an action to our list.
@@ -205,6 +206,7 @@ class ActionProviderBase:
                                       , visible=bool(visible)
                                       , action=action
                                       , icon_expr=icon_expr
+                                      , link_target=link_target
                                       )
 
         new_actions.append( new_action )
@@ -332,6 +334,7 @@ class ActionProviderBase:
         category    = str( properties.get( 'category_%d'    % index, '' ))
         visible     = bool( properties.get('visible_%d'     % index, False) )
         permissions =      properties.get( 'permission_%d'  % index, () )
+        link_target = str( properties.get( 'link_target_%d' % index, '' ) )
 
         if not title:
             raise ValueError('A title is required.')
@@ -350,6 +353,7 @@ class ActionProviderBase:
                                 , category=category
                                 , visible=visible
                                 , icon_expr=icon_expr
+                                , link_target=link_target
                                 )
 
     def _getOAI(self, object):
