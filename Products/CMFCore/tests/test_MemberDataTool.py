@@ -19,6 +19,8 @@ import unittest
 import Testing
 
 import Acquisition
+from zope.component import provideUtility
+from zope.component.interfaces import IFactory
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
@@ -50,6 +52,9 @@ class DummyUser(Acquisition.Implicit):
         self.__ = password
         self.roles = tuple(roles)
         self.domains = tuple(domains)
+
+    def getId(self):
+        return self.name
 
     def getUserName(self):
         return self.name
@@ -119,6 +124,21 @@ class MemberDataToolTests(unittest.TestCase):
         info_dict = contents[0]
         self.assertEqual(info_dict['member_count'], 0)
         self.assertEqual(info_dict['orphan_count'], 0)
+
+    def test_switching_memberdata_factory(self):
+        from Products.CMFCore.MemberDataTool import MemberData
+        tool = self._makeOne()
+        user = DummyUser('dummy', '', [], [])
+        member = Acquisition.aq_base(tool.wrapUser(user))
+        self.assertEquals(getattr(member, 'iamnew', None), None)
+
+        class NewMemberData(MemberData):
+            iamnew = 'yes'
+        provideUtility(NewMemberData, IFactory, 'MemberData')
+
+        user = DummyUser('dummy2', '', [], [])
+        member = Acquisition.aq_base(tool.wrapUser(user))
+        self.assertEquals(getattr(member, 'iamnew', None), 'yes')
 
 
 class MemberDataTests(unittest.TestCase):

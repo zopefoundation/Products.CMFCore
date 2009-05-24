@@ -22,6 +22,9 @@ from App.special_dtml import DTMLFile
 from BTrees.OOBTree import OOBTree
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
+from zope.component import queryUtility
+from zope.component.factory import Factory
+from zope.component.interfaces import IFactory
 from zope.interface import implements
 from ZPublisher.Converters import type_converters
 
@@ -193,8 +196,11 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         id = u.getId()
         members = self._members
         if not id in members:
+            member_factory = queryUtility(IFactory, u'MemberData')
+            if member_factory is None:
+                member_factory = MemberData
             base = aq_base(self)
-            members[id] = MemberData(base, id)
+            members[id] = member_factory(base, id)
         # Return a wrapper with self as containment and
         # the user as context.
         return members[id].__of__(self).__of__(u)
@@ -405,3 +411,5 @@ class MemberData(SimpleItem):
     # deprecated for use with CMF applications.
 
 InitializeClass(MemberData)
+
+memberFactory = Factory(MemberData)
