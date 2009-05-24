@@ -96,6 +96,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         self.assertEqual( self.RESPONSE.getHeader('content-type')
                         , 'text/xml'
                         )
+
     def test_CharsetFromFSMetadata(self):
         # testPT3 is an UTF-16 encoded file (see its .metadatafile)
         # is respected
@@ -113,6 +114,13 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         data = script.read()
         self.failUnless(u'123üצהß' in data)
         self.assertEqual(script.content_type, 'text/html')
+
+    def test_CharsetFromContentTypeMetadata(self):
+        script = self._makeOne('testPT5', 'testPT5.pt')
+        script = script.__of__(self.root)
+        data = script.read()
+        self.failUnless(u'123üצהß' in data)
+        self.assertEqual(script.content_type, 'text/html; charset=utf-16')
 
     def test_BadCall( self ):
         script = self._makeOne( 'testPTbad', 'testPTbad.pt' )

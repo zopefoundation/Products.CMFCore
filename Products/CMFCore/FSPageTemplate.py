@@ -22,10 +22,11 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from Products.PageTemplates.PageTemplate import PageTemplate
-from Products.PageTemplates.utils import encodingFromXMLPreamble
 from Products.PageTemplates.utils import charsetFromMetaEquiv
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+from Products.PageTemplates.utils import encodingFromXMLPreamble
+from Products.PageTemplates.ZopePageTemplate import preferred_encodings
 from Products.PageTemplates.ZopePageTemplate import Src
+from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Shared.DC.Scripts.Script import Script
 
 from Products.CMFCore.DirectoryView import registerFileExtension
@@ -39,8 +40,8 @@ from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _setCacheHeaders
 
 
-
 xml_detect_re = re.compile('^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
+charset_re = re.compile(r'charset.*?=.*?(?P<charset>[\w\-]*)', re.I|re.M|re.S)
 _marker = object()
 
 
@@ -94,8 +95,10 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
             # type is initialized as text/html by default, so we only
             # attempt further detection if the default is encountered.
             # One previous misbehavior remains: It is not possible to
-            # force a text./html type if parsing detects it as XML.
+            # force a text/html type if parsing detects it as XML.
             encoding = None
+            preferred = preferred_encodings[:]
+
             if getattr(self, 'content_type', 'text/html') == 'text/html':
                 xml_info = xml_detect_re.match(data)
                 if xml_info:
@@ -104,23 +107,41 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                     encoding = xml_info.group(1) or 'utf-8'
                     self.content_type = 'text/xml; charset=%s' % encoding
 
+            if not isinstance(data, unicode):
+                if encoding is None:
+                    charset = getattr(self, 'charset', None)
 
-            if encoding is None:
-                charset = getattr(self, 'charset', None)
-                if charset is None:
-                    if self.content_type.startswith('text/html'):
-                        charset = charsetFromMetaEquiv(data) or 'iso-8859-15'
-                    elif self.content_type.startswith('text/xml'):
-                        charset = encodingFromXMLPreamble(data)
-                    else:
-                        raise ValueError('Unsupported content-type: %s'
-                                            % self.content_type)
+                    if charset is None:
+                        if self.content_type.startswith('text/html'):
+                            mo = charset_re.search(self.content_type)
+                            if mo:
+                                charset = mo.group(1).lower()
 
-                if not isinstance(data, unicode):
-                    data = unicode(data, charset)
-            else:
-                if not isinstance(data, unicode):
-                    data = unicode(data, encoding)
+                            if charset is None:
+                                charset = charsetFromMetaEquiv(data)
+                                
+                        elif self.content_type.startswith('text/xml'):
+                            charset = encodingFromXMLPreamble(data)
+
+                        else:
+                            raise ValueError('Unsupported content_type: %s'
+                                                % self.content_type)
+
+                    if charset is not None:
+                        preferred.insert(0, charset)
+
+                else:
+                    preferred.insert(0, encoding)
+
+                for enc in preferred:
+                    try:
+                        data = unicode(data, enc)
+                        if isinstance(data, unicode):
+                            break
+                    except UnicodeDecodeError:
+                            continue
+                else:
+                    data = unicode(data)
 
             self.write(data)
 
