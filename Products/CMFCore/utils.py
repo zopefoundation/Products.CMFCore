@@ -107,7 +107,7 @@ def getToolByName(obj, name, default=_marker):
             if IAcquirer.providedBy(obj) and \
                     aq_parent(utility) is None and \
                     IAcquirer.providedBy(utility):
-                utilty = utility.__of__(obj)
+                utility = utility.__of__(obj)
             return utility
         except ComponentLookupError:
             # behave in backwards-compatible way
