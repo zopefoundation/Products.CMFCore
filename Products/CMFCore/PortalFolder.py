@@ -130,7 +130,8 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
         result = portal_types.listTypeInfo()
 
         if myType is not None:
-            return [t for t in result if myType.allowType(t.getId()) and t.isConstructionAllowed(self)]
+            return [t for t in result if myType.allowType(t.getId()) and
+                    t.isConstructionAllowed(self)]
 
         return [t for t in result if t.isConstructionAllowed(self)]
 
