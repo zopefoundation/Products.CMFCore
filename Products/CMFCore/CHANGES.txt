@@ -154,10 +154,6 @@ Products.CMFCore Changelog
   found using the portal_skins "Find" ZMI tab.
   (https://bugs.launchpad.net/zope-cmf/+bug/238489)
 
-- fiveactionstool: fix typo in a method name that isn't even used in the CMF 
-  or Plone.
-  (https://bugs.launchpad.net/zope-cmf/+bug/257259)
-
 - TypeInformation and TypesTool: Added support for add view actions.
   Type infos now have a new 'add_view_expr' property and implement IAction.
   'listActions' of the types tool includes type infos as 'add' actions.
@@ -193,6 +189,13 @@ Products.CMFCore Changelog
 - interfaces: Removed deprecated oldstyle interfaces.
 
 
+2.1.2 (2008-09-13)
+------------------
+
+- fiveactionstool: fix typo in a method name that isn't even used in the CMF 
+  or Plone.
+  (https://bugs.launchpad.net/zope-cmf/+bug/257259)
+
 2.1.2-beta (2008-08-26)
 -----------------------
 
@@ -209,7 +212,7 @@ Products.CMFCore Changelog
 
 
 2.1.1-beta (2007-12/29)
-----------------------
+-----------------------
 
 - Testing: Derive test layers from ZopeLite layer if available.
 
