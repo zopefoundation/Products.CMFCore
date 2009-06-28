@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- PortalFolder: Modified allowedContentTypes method to check 
+  isConstructionAllowed only for allowed types, not for all content types.
+
 - Fixed typo in the acquisition wrapping of the found utility in
   getToolByName.
 

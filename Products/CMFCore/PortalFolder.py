@@ -125,20 +125,14 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
             List type info objects for types which can be added in
             this folder.
         """
-        result = []
         portal_types = getToolByName(self, 'portal_types')
         myType = portal_types.getTypeInfo(self)
+        result = portal_types.listTypeInfo()
 
         if myType is not None:
-            for contentType in portal_types.listTypeInfo(self):
-                if myType.allowType( contentType.getId() ):
-                    result.append( contentType )
-        else:
-            result = portal_types.listTypeInfo()
+            return [t for t in result if myType.allowType(t.getId()) and t.isConstructionAllowed(self)]
 
-        return filter( lambda typ, container=self:
-                          typ.isConstructionAllowed( container )
-                     , result )
+        return [t for t in result if t.isConstructionAllowed(self)]
 
     def _filteredItems( self, ids, filt ):
         """
