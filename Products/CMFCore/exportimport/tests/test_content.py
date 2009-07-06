@@ -160,7 +160,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         site = _makeFolder('site', site_folder=True)
         site.title = 'AAA'
-        site.description = 'BBB'
+        site.description = 'DESCRIPTION'
         for id in ITEM_IDS:
             site._setObject(id, _makeItem(id))
 
@@ -186,7 +186,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser.readfp(StringIO(text))
 
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
-        self.assertEqual(parser.get('DEFAULT', 'description'), 'BBB')
+        self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
 
     def test_export_site_with_exportable_simple_items(self):
         self._setUpAdapters()
@@ -194,7 +194,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         site = _makeFolder('site', site_folder=True)
         site.title = 'AAA'
-        site.description = 'BBB'
+        site.description = 'DESCRIPTION'
         for id in ITEM_IDS:
             site._setObject(id, _makeINIAware(id))
 
@@ -227,7 +227,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser.readfp(StringIO(text))
 
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
-        self.assertEqual(parser.get('DEFAULT', 'description'), 'BBB')
+        self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
 
     def test_export_site_with_subfolders(self):
         self._setUpAdapters()
@@ -235,7 +235,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         site = _makeFolder('site', site_folder=True)
         site.title = 'AAA'
-        site.description = 'BBB'
+        site.description = 'DESCRIPTION'
         for id in FOLDER_IDS:
             folder = _makeFolder(id)
             folder.title = 'Title: %s' % id
@@ -282,7 +282,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser.readfp(StringIO(text))
 
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
-        self.assertEqual(parser.get('DEFAULT', 'description'), 'BBB')
+        self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
 
     def test_export_site_with_csvaware(self):
         self._setUpAdapters()
