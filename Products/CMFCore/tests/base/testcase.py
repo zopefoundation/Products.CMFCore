@@ -1,5 +1,6 @@
 import unittest
 from Testing import ZopeTestCase
+from Testing.ZopeTestCase.layer import ZopeLite
 
 import sys
 import time
@@ -80,12 +81,7 @@ class WarningInterceptor:
 
 class TransactionalTest(unittest.TestCase):
 
-    try:
-        from Testing.ZopeTestCase.layer import ZopeLite
-    except ImportError:
-        pass # Zope < 2.11
-    else:
-        layer = ZopeLite
+    layer = ZopeLite
 
     def setUp(self):
         transaction.begin()

@@ -6,7 +6,7 @@
   <configure package="Products.GenericSetup.browser">
 
     <browser:page
-        for="zope.app.container.interfaces.IAdding"
+        for="zope.browser.interfaces.IAdding"
         name="addAction.html"
         template="addWithPresettings.pt"
         class="Products.CMFCore.browser.actions.ActionAddView"
@@ -14,7 +14,7 @@
         />
 
     <browser:page
-        for="zope.app.container.interfaces.IAdding"
+        for="zope.browser.interfaces.IAdding"
         name="addActionCategory.html"
         template="addWithPresettings.pt"
         class="Products.CMFCore.browser.actions.ActionCategoryAddView"
@@ -22,7 +22,7 @@
         />
 
     <browser:page
-        for="zope.app.container.interfaces.IAdding"
+        for="zope.browser.interfaces.IAdding"
         name="addFactoryTypeInformation.html"
         template="addWithPresettings.pt"
         class="Products.CMFCore.browser.typeinfo.FactoryTypeInformationAddView"
@@ -30,7 +30,7 @@
         />
 
     <browser:page
-        for="zope.app.container.interfaces.IAdding"
+        for="zope.browser.interfaces.IAdding"
         name="addScriptableTypeInformation.html"
         template="addWithPresettings.pt"
         class="Products.CMFCore.browser.typeinfo.ScriptableTypeInformationAddView"

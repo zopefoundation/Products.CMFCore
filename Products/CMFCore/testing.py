@@ -17,12 +17,13 @@ $Id$
 
 from OFS.SimpleItem import SimpleItem
 from Products.Five import zcml
-from zope.app.component.hooks import setHooks
+from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import adapts
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.interface import implements
 from zope.interface.verify import verifyClass
 from zope.publisher.interfaces.http import IHTTPRequest
+from zope.site.hooks import setHooks
 from zope.testing import testrunner
 from zope.testing.cleanup import cleanUp
 
@@ -90,7 +91,7 @@ class BrowserLanguages(object):
         return ('test',)
 
 
-class EventZCMLLayer:
+class EventZCMLLayer(ZopeLite):
 
     @classmethod
     def testSetUp(cls):
@@ -106,7 +107,7 @@ class EventZCMLLayer:
         cleanUp()
 
 
-class TraversingZCMLLayer:
+class TraversingZCMLLayer(ZopeLite):
 
     @classmethod
     def testSetUp(cls):
@@ -121,7 +122,7 @@ class TraversingZCMLLayer:
         cleanUp()
 
 
-class TraversingEventZCMLLayer:
+class TraversingEventZCMLLayer(ZopeLite):
 
     @classmethod
     def testSetUp(cls):
@@ -138,7 +139,7 @@ class TraversingEventZCMLLayer:
         cleanUp()
 
 
-class FunctionalZCMLLayer:
+class FunctionalZCMLLayer(ZopeLite):
 
     @classmethod
     def setUp(cls):
@@ -193,7 +194,7 @@ class DummyWorkflowBodyAdapter(BodyAdapterBase):
     body = property(BodyAdapterBase._exportBody, BodyAdapterBase._importBody)
 
 
-class ExportImportZCMLLayer:
+class ExportImportZCMLLayer(ZopeLite):
 
     @classmethod
     def testSetUp(cls):
@@ -215,19 +216,6 @@ class ExportImportZCMLLayer:
     @classmethod
     def testTearDown(cls):
         cleanUp()
-
-
-# Derive from ZopeLite layer if available
-try:
-    from Testing.ZopeTestCase.layer import ZopeLite
-except ImportError:
-    pass # Zope < 2.11
-else:
-    EventZCMLLayer.__bases__ = (ZopeLite,)
-    TraversingZCMLLayer.__bases__ = (ZopeLite,)
-    TraversingEventZCMLLayer.__bases__ = (ZopeLite,)
-    FunctionalZCMLLayer.__bases__ = (ZopeLite,)
-    ExportImportZCMLLayer.__bases__ = (ZopeLite,)
 
 
 def run(test_suite):

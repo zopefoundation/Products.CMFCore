@@ -29,7 +29,7 @@ from OFS.SimpleItem import SimpleItem
 from Persistence import PersistentMapping
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
-from zope.app.container.interfaces import IObjectMovedEvent
+from zope.container.interfaces import IObjectMovedEvent
 from zope.interface import implements
 
 from Products.CMFCore.Expression import Expression

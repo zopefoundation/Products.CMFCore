@@ -28,7 +28,7 @@ from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 from OFS.interfaces import IObjectWillBeMovedEvent
 from zExceptions import Redirect
-from zope.app.container.interfaces import IObjectMovedEvent
+from zope.container.interfaces import IObjectMovedEvent
 from zope.interface import implements
 from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest

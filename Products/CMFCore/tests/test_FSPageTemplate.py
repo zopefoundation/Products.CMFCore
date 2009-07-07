@@ -64,7 +64,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
     def test_Call( self ):
         script = self._makeOne( 'testPT', 'testPT.pt' )
         script = script.__of__(self.app)
-        self.assertEqual(script()[:6], 'nohost') #BBB: Zope 2.11 adds \n
+        self.assertEqual(script(), 'nohost')
 
     def test_ContentType(self):
         script = self._makeOne( 'testXMLPT', 'testXMLPT.pt' )

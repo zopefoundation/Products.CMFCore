@@ -27,11 +27,11 @@ from App.special_dtml import DTMLFile
 from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from zope.app.container.contained import ObjectAddedEvent
-from zope.app.container.contained import notifyContainerModified
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
+from zope.container.contained import ObjectAddedEvent
+from zope.container.contained import notifyContainerModified
 from zope.event import notify
 from zope.i18nmessageid import Message
 from zope.interface import implements

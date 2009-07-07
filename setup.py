@@ -45,9 +45,9 @@ setup(name='Products.%s' % NAME,
       setup_requires=['eggtestinfo',
                      ],
       install_requires=[
-          #'Zope >= 2.10.4',
           'setuptools',
-          'five.localsitemanager>=0.3',
+          'Zope2 >= 2.12.0b3dev',
+          'five.localsitemanager >= 0.3',
           'Products.GenericSetup',
           ],
       tests_require=[

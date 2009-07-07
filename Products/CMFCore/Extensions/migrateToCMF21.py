@@ -18,8 +18,8 @@ $Id$
 """
 
 from zope.component import getSiteManager
-from zope.app.component.hooks import setSite
 from zope.dottedname.resolve import resolve
+from zope.site.hooks import setSite
 from logging import getLogger
 import sys
 import transaction

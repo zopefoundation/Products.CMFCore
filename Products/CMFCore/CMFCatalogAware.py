@@ -24,9 +24,9 @@ from App.special_dtml import DTMLFile
 from ExtensionClass import Base
 from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
-from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.container.interfaces import IObjectMovedEvent
 from zope.component import subscribers
+from zope.container.interfaces import IObjectAddedEvent
+from zope.container.interfaces import IObjectMovedEvent
 from zope.interface import implements
 from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent

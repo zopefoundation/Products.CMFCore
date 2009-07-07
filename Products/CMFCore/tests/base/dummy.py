@@ -21,10 +21,10 @@ from OFS.event import ObjectWillBeRemovedEvent
 from OFS.interfaces import IObjectManager
 from OFS.SimpleItem import Item
 from webdav.common import rfc1123_date
-from zope.app.container.contained import notifyContainerModified
-from zope.app.container.contained import ObjectAddedEvent
-from zope.app.container.contained import ObjectRemovedEvent
 from zope.component.factory import Factory
+from zope.container.contained import notifyContainerModified
+from zope.container.contained import ObjectAddedEvent
+from zope.container.contained import ObjectRemovedEvent
 from zope.event import notify
 from zope.interface import implements
 

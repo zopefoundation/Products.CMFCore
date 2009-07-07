@@ -12,7 +12,7 @@
 ##############################################################################
 """ Unit tests for FSDTMLMethod module.
 
-$Id: test_FSDTMLMethod.py 37061 2005-06-15 14:17:41Z tseaver $
+$Id$
 """
 
 import unittest
@@ -24,7 +24,7 @@ from Acquisition import aq_base
 from DateTime import DateTime
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
-from zope.app.component.hooks import setHooks
+from zope.site.hooks import setHooks
 
 from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.FSMetadata import FSMetadata

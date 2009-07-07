@@ -537,10 +537,10 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
 
     def test_events(self):
         from OFS.interfaces import IObjectWillBeAddedEvent
-        from zope.app.container.interfaces import IContainerModifiedEvent
-        from zope.app.container.interfaces import IObjectAddedEvent
         from zope.component import adapter
         from zope.component import provideHandler
+        from zope.container.interfaces import IContainerModifiedEvent
+        from zope.container.interfaces import IObjectAddedEvent
         from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 
@@ -609,10 +609,10 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
 
     def test_events(self):
         from OFS.interfaces import IObjectWillBeAddedEvent
-        from zope.app.container.interfaces import IContainerModifiedEvent
-        from zope.app.container.interfaces import IObjectAddedEvent
         from zope.component import adapter
         from zope.component import provideHandler
+        from zope.container.interfaces import IContainerModifiedEvent
+        from zope.container.interfaces import IObjectAddedEvent
         from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 
