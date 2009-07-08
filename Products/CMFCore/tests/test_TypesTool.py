@@ -20,51 +20,39 @@ import unittest
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
-class TypesToolTests(SecurityTest):
+class TypesToolTests(unittest.TestCase):
 
-    layer = FunctionalZCMLLayer
+    def _getTargetClass(self):
+        from Products.CMFCore.TypesTool import TypesTool
+        return TypesTool
 
     def _makeOne(self):
-        from Products.CMFCore.TypesTool import TypesTool
+        return self._getTargetClass()()
 
-        return TypesTool()
+    def test_class_conforms_to_IActionProvider(self):
+        from zope.interface.verify import verifyClass
+        from Products.CMFCore.interfaces import IActionProvider
+        verifyClass(IActionProvider, self._getTargetClass())
 
-    def setUp(self):
-        from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
-        from Products.CMFCore.tests.base.dummy import DummySite
-        from Products.CMFCore.tests.base.dummy import DummyUserFolder
-        from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-        SecurityTest.setUp(self)
-        self.site = DummySite('site').__of__(self.root)
-        self.acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
-        self.ttool = self.site._setObject( 'portal_types', self._makeOne() )
-        fti = FTIDATA_DUMMY[0].copy()
-        self.ttool._setObject( 'Dummy Content', FTI(**fti) )
-        
-        # setup workflow tool
-        # to test 'Instance creation conditions' of workflows
-        from Products.CMFCore.WorkflowTool import WorkflowTool
-        self.site._setObject( 'portal_workflow', WorkflowTool() )
-        wftool = self.site.portal_workflow
+    def test_instance_conforms_to_IActionProvider(self):
+        from zope.interface.verify import verifyObject
+        from Products.CMFCore.interfaces import IActionProvider
+        verifyObject(IActionProvider, self._makeOne())
 
-        from Products.DCWorkflow.DCWorkflow import DCWorkflowDefinition
-        wftool._setObject('wf', DCWorkflowDefinition('wf'))
-        wftool.setDefaultChain('wf')
-        wf = wftool.wf
-        wf.states.addState('initial')
-        wf.states.setInitialState('initial')
+    def test_class_conforms_to_ITypesTool(self):
+        from zope.interface.verify import verifyClass
+        from Products.CMFCore.interfaces import IActionProvider
+        verifyClass(IActionProvider, self._getTargetClass())
 
-        from Products.DCWorkflow.Guard import Guard
-        g = Guard()
-        wf.creation_guard = g
-        
+    def test_instance_conforms_to_ITypesTool(self):
+        from zope.interface.verify import verifyObject
+        from Products.CMFCore.interfaces import IActionProvider
+        verifyObject(IActionProvider, self._makeOne())
 
-    def tearDown(self):
-        SecurityTest.tearDown(self)
-
-    def _makeDummyTypeInfo(self):
+    def test_listActions_passes_all_context_information_to_TIs(self):
         from zope.interface import implements
         from Products.CMFCore.interfaces import ITypeInformation
+        from Products.CMFCore.tests.base.dummy import DummyContent
 
         class ActionTesterTypeInfo:
             implements(ITypeInformation)
@@ -75,42 +63,42 @@ class TypesToolTests(SecurityTest):
                 self._action_obj = obj
                 return ()
 
-        return ActionTesterTypeInfo()
-
-    def test_interfaces(self):
-        from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import ITypesTool
-        from Products.CMFCore.TypesTool import TypesTool
-        from zope.interface.verify import verifyClass
-
-        verifyClass(IActionProvider, TypesTool)
-        verifyClass(ITypesTool, TypesTool)
-
-    def test_listActions(self):
-        """test that a full set of context information is passed
-           by the types tool
-        """
-        from Products.CMFCore.tests.base.dummy import DummyContent
-        tool = self.ttool
-        ti = self._makeDummyTypeInfo()
+        ti = ActionTesterTypeInfo()
+        tool = self._makeOne()
         setattr( tool, 'Dummy Content', ti )
 
-        dummy = self.site._setObject('dummy', DummyContent('dummy'))
+        dummy = DummyContent('dummy')
         tool.listActions('fake_info', dummy)
 
         self.assertEqual(ti._action_info, 'fake_info')
         self.assertEqual(ti._action_obj, dummy)
 
+class TypesToolFunctionalTests(SecurityTest):
+
+    layer = FunctionalZCMLLayer
+
+    def _getTargetClass(self):
+        from Products.CMFCore.TypesTool import TypesTool
+        return TypesTool
+
+    def _makeOne(self):
+        return self._getTargetClass()()
+
+    def _makeSite(self):
+        from Products.CMFCore.tests.base.dummy import DummySite
+        from Products.CMFCore.tests.base.dummy import DummyUserFolder
+        site = DummySite('site')
+        site.acl_users = DummyUserFolder()
+        return site
+
     def test_allMetaTypes(self):
-        """
-        Test that everything returned by allMetaTypes can be
-        traversed to.
-        """
+        # everything returned by allMetaTypes can be traversed to.
         from Acquisition import aq_base
         from Products.PythonScripts.standard import html_quote
         from webdav.NullResource import NullResource
-        tool = self.ttool
-        meta_types={}
+        site = self._makeSite().__of__(self.root)
+        tool = self._makeOne().__of__(site)
+        meta_types = {}
         # Seems we get NullResource if the method couldn't be traverse to
         # so we check for that. If we've got it, something is b0rked.
         for factype in tool.all_meta_types():
@@ -124,68 +112,166 @@ class TypesToolTests(SecurityTest):
         self.failUnless(meta_types.has_key('Scriptable Type Information'))
         self.failUnless(meta_types.has_key('Factory-based Type Information'))
 
-    def test_constructContent(self):
+    def test_constructContent_simple_FTI(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
-        from AccessControl.unauthorized import Unauthorized
-        from Products.PythonScripts.PythonScript import PythonScript
+        from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
+        from Products.CMFCore.tests.base.dummy import DummyFolder
+        from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
+        site = self._makeSite().__of__(self.root)
+        acl_users = site.acl_users
+        setSecurityPolicy(self._oldPolicy)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        tool = self._makeOne().__of__(site)
+        fti = FTIDATA_DUMMY[0].copy()
+        tool._setObject('Dummy Content', FTI(**fti))
+        folder = DummyFolder(id='folder', fake_product=1).__of__(site)
+
+        tool.constructContent('Dummy Content', container=folder, id='page1')
+
+        self.assertEqual(folder.page1.portal_type, 'Dummy Content')
+
+    def test_constructContent_FTI_w_wftool_no_workflows(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
+        from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
+        from Products.CMFCore.tests.base.dummy import DummyFolder
+        from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
+        site = self._makeSite().__of__(self.root)
+        acl_users = site.acl_users
+        setSecurityPolicy(self._oldPolicy)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        tool = self._makeOne().__of__(site)
+        fti = FTIDATA_DUMMY[0].copy()
+        tool._setObject('Dummy Content', FTI(**fti))
+        folder = DummyFolder(id='folder', fake_product=1).__of__(site)
+        tool.portal_workflow = DummyWorkflowTool()
+
+        tool.constructContent('Dummy Content', container=folder, id='page1')
+
+        self.assertEqual(folder.page1.portal_type, 'Dummy Content')
+
+    def test_constructContent_FTI_w_wftool_w_workflow_no_guard(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
+        from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
+        from Products.CMFCore.tests.base.dummy import DummyFolder
+        from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
+        site = self._makeSite().__of__(self.root)
+        acl_users = site.acl_users
+        setSecurityPolicy(self._oldPolicy)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        tool = self._makeOne().__of__(site)
+        fti = FTIDATA_DUMMY[0].copy()
+        tool._setObject('Dummy Content', FTI(**fti))
+        folder = DummyFolder(id='folder', fake_product=1).__of__(site)
+        tool.portal_workflow = DummyWorkflowTool(object())
+
+        tool.constructContent('Dummy Content', container=folder, id='page1')
+
+        self.assertEqual(folder.page1.portal_type, 'Dummy Content')
+
+    def test_constructContent_FTI_w_wftool_w_workflow_w_guard_allows(self):
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
+        from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
+        from Products.CMFCore.tests.base.dummy import DummyFolder
+        from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
+        site = self._makeSite().__of__(self.root)
+        acl_users = site.acl_users
+        setSecurityPolicy(self._oldPolicy)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        tool = self._makeOne().__of__(site)
+        fti = FTIDATA_DUMMY[0].copy()
+        tool._setObject('Dummy Content', FTI(**fti))
+        folder = DummyFolder(id='folder', fake_product=1).__of__(site)
+        tool.portal_workflow = DummyWorkflowTool(DummyWorkflow(True))
+
+        tool.constructContent('Dummy Content', container=folder, id='page1')
+
+        self.assertEqual(folder.page1.portal_type, 'Dummy Content')
+
+    def test_constructContent_FTI_w_wftool_w_workflow_w_guard_denies(self):
+        from AccessControl import Unauthorized
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
+        from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
+        from Products.CMFCore.tests.base.dummy import DummyFolder
+        from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
+        site = self._makeSite().__of__(self.root)
+        acl_users = site.acl_users
+        setSecurityPolicy(self._oldPolicy)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        tool = self._makeOne().__of__(site)
+        fti = FTIDATA_DUMMY[0].copy()
+        tool._setObject('Dummy Content', FTI(**fti))
+        folder = DummyFolder(id='folder', fake_product=1).__of__(site)
+        tool.portal_workflow = DummyWorkflowTool(DummyWorkflow(False))
+
+        self.assertRaises(Unauthorized,
+                          tool.constructContent,
+                          'Dummy Content', container=folder, id='page1')
+
+    def test_constructContent_simple_STI(self):
+        from AccessControl import Unauthorized
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
         from Products.CMFCore.PortalFolder import PortalFolder
         from Products.CMFCore.TypesTool \
                 import ScriptableTypeInformation as STI
         from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
         from Products.CMFCore.tests.base.tidata import STI_SCRIPT
-
-        site = self.site
-        acl_users = self.acl_users
-        ttool = self.ttool
+        from Products.PythonScripts.PythonScript import PythonScript
+        site = self._makeSite().__of__(self.root)
+        acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
         newSecurityManager(None, acl_users.all_powerful_Oz)
-        self.site._owner = (['acl_users'], 'all_powerful_Oz')
+        tool = self._makeOne().__of__(site)
         sti_baz = STI('Baz',
                       permission='Add portal content',
                       constructor_path='addBaz')
-        ttool._setObject('Baz', sti_baz)
-        ttool._setObject( 'addBaz',  PythonScript('addBaz') )
-        s = ttool.addBaz
-        s.write(STI_SCRIPT)
+        tool._setObject('Baz', sti_baz)
+        script = PythonScript('addBaz')
+        script.write(STI_SCRIPT)
+        tool._setObject('addBaz',  script)
+        folder = site._setObject( 'folder', PortalFolder(id='folder') )
+        folder.manage_addProduct = {'FooProduct':
+                                        DummyFactoryDispatcher(folder) }
+        folder._owner = (['acl_users'], 'user_foo')
+        self.assertEqual( folder.getOwner(), acl_users.user_foo )
 
-        f = site._setObject( 'folder', PortalFolder(id='folder') )
-        f.manage_addProduct = { 'FooProduct' : DummyFactoryDispatcher(f) }
-        f._owner = (['acl_users'], 'user_foo')
-        self.assertEqual( f.getOwner(), acl_users.user_foo )
-
-        ttool.constructContent('Dummy Content', container=f, id='page1')
         try:
-            ttool.constructContent('Baz', container=f, id='page2')
+            tool.constructContent('Baz', container=folder, id='page2')
         except Unauthorized:
             self.fail('CMF Collector issue #165 (Ownership bug): '
                       'Unauthorized raised' )
 
-        wf = site.portal_workflow.wf
-        wf.creation_guard.changeFromProperties({'guard_expr':'python:False'})
-        try :
-            ttool.constructContent('Dummy Content', container=f, id='page3')
-        except Unauthorized, e :
-            self.assertEqual(str(e), "Cannot create Dummy Content")
-        else :
-            self.fail("workflow 'Instance creation conditions' does not work")
-        
-        wf.manager_bypass = 1
-        try :
-            ttool.constructContent('Dummy Content', container=f, id='page4')
-        except Unauthorized:
-            self.fail("manager may bypass 'Instance creation conditions'")
+        self.assertEqual(folder.page2.portal_type, 'Baz')
 
 
 class TypeInfoTests:
+    # Subclass must define _getTargetClass
+
+    def _makeOne(self, id='test', **kw):
+        return self._getTargetClass()(id, **kw)
 
     def _makeTypesTool(self):
         from Products.CMFCore.TypesTool import TypesTool
 
         return TypesTool()
 
+    def test_class_conforms_to_ITypeInformation(self):
+        from zope.interface.verify import verifyClass
+        from Products.CMFCore.interfaces import ITypeInformation
+        verifyClass(ITypeInformation, self._getTargetClass())
+
+    def test_instance_conforms_to_ITypeInformation(self):
+        from zope.interface.verify import verifyObject
+        from Products.CMFCore.interfaces import ITypeInformation
+        verifyObject(ITypeInformation, self._makeOne())
+
     def test_construction( self ):
-        ti = self._makeInstance( 'Foo'
+        ti = self._makeOne( 'Foo'
                                , description='Description'
                                , meta_type='Foo'
                                , icon='foo.gif'
@@ -197,14 +283,14 @@ class TypeInfoTests:
         self.assertEqual( ti.getIcon(), 'foo.gif' )
         self.assertEqual( ti.immediate_view, '' )
 
-        ti = self._makeInstance( 'Foo'
+        ti = self._makeOne( 'Foo'
                                , immediate_view='foo_view'
                                )
         self.assertEqual( ti.immediate_view, 'foo_view' )
 
     def _makeAndSetInstance(self, id, **kw):
         tool = self.tool
-        t = self._makeInstance(id, **kw)
+        t = self._makeOne(id, **kw)
         tool._setObject(id,t)
         return tool[id]
 
@@ -246,18 +332,18 @@ class TypeInfoTests:
         self.failUnless ( taf2.allowType( 'Not Hidden') )
 
     def test_allowDiscussion( self ):
-        ti = self._makeInstance( 'Foo' )
+        ti = self._makeOne( 'Foo' )
         self.failIf( ti.allowDiscussion() )
 
-        ti = self._makeInstance( 'Foo', allow_discussion=1 )
+        ti = self._makeOne( 'Foo', allow_discussion=1 )
         self.failUnless( ti.allowDiscussion() )
 
     def test_listActions( self ):
         from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
-        ti = self._makeInstance( 'Foo' )
+        ti = self._makeOne( 'Foo' )
         self.failIf( ti.listActions() )
 
-        ti = self._makeInstance( **FTIDATA_ACTIONS[0] )
+        ti = self._makeOne( **FTIDATA_ACTIONS[0] )
         actions = ti.listActions()
         self.failUnless( actions )
 
@@ -282,7 +368,7 @@ class TypeInfoTests:
 
     def test_MethodAliases_methods(self):
         from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
-        ti = self._makeInstance( **FTIDATA_CMF15[0] )
+        ti = self._makeOne( **FTIDATA_CMF15[0] )
         self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF15[0]['aliases'] )
         self.assertEqual( ti.queryMethodID('view'), 'dummy_view' )
         self.assertEqual( ti.queryMethodID('view.html'), 'dummy_view' )
@@ -300,7 +386,7 @@ class TypeInfoTests:
                    'icon_expr' : 'string:${portal_url}/foo_icon_expr.gif',
                    'add_view_expr': 'string:${folder_url}/foo_add_view',
                    'link_target': '_new'}
-        ti = self._makeInstance(**ti_data)
+        ti = self._makeOne(**ti_data)
         info_data = ti.getInfoData()
         self.assertEqual(len(info_data), 2)
 
@@ -327,7 +413,7 @@ class TypeInfoTests:
                    'description': 'Foo objects are just used for testing.',
                    'content_meta_type': 'Foo Content',
                    'factory' : 'cmf.foo'}
-        ti = self._makeInstance(**ti_data)
+        ti = self._makeOne(**ti_data)
         info_data = ti.getInfoData()
         self.assertEqual(len(info_data), 2)
 
@@ -385,51 +471,35 @@ class TypeInfoTests:
 
 class FTIDataTests( TypeInfoTests, unittest.TestCase ):
 
-    def _makeInstance(self, id, **kw):
+    def _getTargetClass(self):
         from Products.CMFCore.TypesTool import FactoryTypeInformation
-
-        return FactoryTypeInformation(id, **kw)
-
-    def test_interfaces(self):
-        from Products.CMFCore.interfaces import ITypeInformation
-        from Products.CMFCore.TypesTool import FactoryTypeInformation
-        from zope.interface.verify import verifyClass
-
-        verifyClass(ITypeInformation, FactoryTypeInformation)
+        return FactoryTypeInformation
 
     def test_properties( self ):
-        ti = self._makeInstance( 'Foo' )
+        ti = self._makeOne( 'Foo' )
         self.assertEqual( ti.product, '' )
         self.assertEqual( ti.factory, '' )
 
-        ti = self._makeInstance( 'Foo'
-                               , product='FooProduct'
-                               , factory='addFoo'
-                               )
+        ti = self._makeOne('Foo'
+                          , product='FooProduct'
+                          , factory='addFoo'
+                          )
         self.assertEqual( ti.product, 'FooProduct' )
         self.assertEqual( ti.factory, 'addFoo' )
 
 
 class STIDataTests( TypeInfoTests, unittest.TestCase ):
 
-    def _makeInstance(self, id, **kw):
+    def _getTargetClass(self):
         from Products.CMFCore.TypesTool import ScriptableTypeInformation
-
-        return ScriptableTypeInformation(id, **kw)
-
-    def test_interfaces(self):
-        from Products.CMFCore.interfaces import ITypeInformation
-        from Products.CMFCore.TypesTool import ScriptableTypeInformation
-        from zope.interface.verify import verifyClass
-
-        verifyClass(ITypeInformation, ScriptableTypeInformation)
+        return ScriptableTypeInformation
 
     def test_properties( self ):
-        ti = self._makeInstance( 'Foo' )
+        ti = self._makeOne( 'Foo' )
         self.assertEqual( ti.permission, '' )
         self.assertEqual( ti.constructor_path, '' )
 
-        ti = self._makeInstance( 'Foo'
+        ti = self._makeOne( 'Foo'
                                , permission='Add Foos'
                                , constructor_path='foo_add'
                                )
@@ -441,7 +511,6 @@ class FTIConstructionTestCase:
 
     def _getTargetClass(self):
         from Products.CMFCore.TypesTool import FactoryTypeInformation
-
         return FactoryTypeInformation
 
     def _makeOne(self, *args, **kw):
@@ -663,10 +732,27 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         self.failUnless(IContainerModifiedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f)
 
+class DummyWorkflowTool:
+
+    def __init__(self, *workflows):
+        self._workflows = workflows
+
+    def getWorkflowsFor(self, type_id):
+        return self._workflows
+
+class DummyWorkflow:
+
+    def __init__(self, allow):
+        self._allow = allow
+
+    def allowCreate(self, container, type_id):
+        return self._allow
+
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TypesToolTests),
+        unittest.makeSuite(TypesToolFunctionalTests),
         unittest.makeSuite(FTIDataTests),
         unittest.makeSuite(STIDataTests),
         unittest.makeSuite(FTIOldstyleConstructionTests),
