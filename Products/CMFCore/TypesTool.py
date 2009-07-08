@@ -504,7 +504,8 @@ class FactoryTypeInformation(TypeInformation):
                 for d in container.all_meta_types():
                     if d['name'] == self.content_meta_type:
                         sm = getSecurityManager()
-                        ti_check = sm.checkPermission(d['permission'], container)
+                        ti_check = sm.checkPermission(d['permission'],
+                                                      container)
                         break
 
         if not ti_check:
@@ -755,9 +756,10 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
                 rval.append(t)
             elif getattr(aq_base(t), '_isTypeInformation', 0):
                 # BBB
-                warn("The '_isTypeInformation' marker attribute is deprecated, "
-                     "and will be removed in CMF 2.3.  Please mark the "
-                     "instance with the 'ITypeInformation' interface instead.",
+                warn("The '_isTypeInformation' marker attribute is "
+                     "deprecated, and will be removed in CMF 2.3.  "
+                     "Please mark the instance with the 'ITypeInformation' "
+                     "interface instead.",
                      DeprecationWarning, stacklevel=2)
                 rval.append(t)
         # Skip items with no ID:  old signal for "not ready"
