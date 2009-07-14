@@ -253,6 +253,8 @@ class ActionInformation( SimpleItem ):
 
     implements(IAction)
 
+    link_target = ''
+
     __allow_access_to_unprotected_subobjects__ = 1
 
     security = ClassSecurityInfo()
