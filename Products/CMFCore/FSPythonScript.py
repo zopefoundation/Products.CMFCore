@@ -20,6 +20,7 @@ import new
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
+from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from ComputedAttribute import ComputedAttribute
@@ -146,7 +147,7 @@ class FSPythonScript(FSObject, Script):
 
         Calling a Python Script is an actual function invocation.
         """
-        # do caching
+        # Retrieve the value from the cache.
         keyset = None
         if self.ZCacheable_isCachingEnabled():
             # Prepare a cache key.
@@ -154,7 +155,7 @@ class FSPythonScript(FSObject, Script):
             asgns = self.getBindingAssignments()
             name_context = asgns.getAssignedName('name_context', None)
             if name_context:
-                keyset[name_context] = self.aq_parent.getPhysicalPath()
+                keyset[name_context] = aq_parent(self).getPhysicalPath()
             name_subpath = asgns.getAssignedName('name_subpath', None)
             if name_subpath:
                 keyset[name_subpath] = self._getTraverseSubpath()
@@ -165,10 +166,10 @@ class FSPythonScript(FSObject, Script):
                 # Got a cached value.
                 return result
 
-        # Prepare the function.
+        #__traceback_info__ = bound_names, args, kw, self.func_defaults
+
         f = self._v_f
         if f is None:
-            # The script has errors.
             __traceback_supplement__ = (
                 PythonScriptTracebackSupplement, self)
             raise RuntimeError, '%s has errors.' % self._filepath
@@ -177,17 +178,17 @@ class FSPythonScript(FSObject, Script):
         # In normal PythonScripts, every thread has its own
         # copy of the function.  But in FSPythonScripts
         # there is only one copy.  So here's another way.
-        new_globals = f.func_globals.copy()
-        new_globals['__traceback_supplement__'] = (
+        g = f.func_globals.copy()
+        if bound_names is not None:
+            g.update(bound_names)
+        g['__traceback_supplement__'] = (
             PythonScriptTracebackSupplement, self, -1)
-        new_globals['__file__'] = self._filepath
-        if bound_names:
-            new_globals.update(bound_names)
+        g['__file__'] = self._filepath
         if f.func_defaults:
-            f = new.function(f.func_code, new_globals, f.func_name,
+            f = new.function(f.func_code, g, f.func_name,
                              f.func_defaults)
         else:
-            f = new.function(f.func_code, new_globals, f.func_name)
+            f = new.function(f.func_code, g, f.func_name)
 
         # Execute the function in a new security context.
         security=getSecurityManager()
