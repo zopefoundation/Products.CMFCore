@@ -182,14 +182,17 @@ class FSPythonScript(FSObject, Script):
             g.update(bound_names)
         g['__traceback_supplement__'] = (
             PythonScriptTracebackSupplement, self, -1)
-        g['__file__'] = self._filepath
+        g['__file__'] = getattr(self, '_filepath', None) or self.get_filepath()
         if f.func_defaults:
             f = new.function(f.func_code, g, f.func_name,
                              f.func_defaults)
         else:
             f = new.function(f.func_code, g, f.func_name)
 
-        result = f(*args, **kw)
+        try:
+            result = f(*args, **kw)
+        except SystemExit:
+            raise ValueError('SystemExit cannot be raised within a PythonScript')
 
         if keyset is not None:
             # Store the result in the cache.
