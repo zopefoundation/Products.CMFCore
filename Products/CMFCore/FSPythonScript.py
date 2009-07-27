@@ -54,7 +54,7 @@ class CustomizedPythonScript(PythonScript):
     security = ClassSecurityInfo()
 
     def __init__(self, id, text):
-        self._setId(id)
+        super(CustomizedPythonScript, self).__init__(id)
         self.write(text)
         self.original_source = text
 
