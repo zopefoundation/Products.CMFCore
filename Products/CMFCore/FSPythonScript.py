@@ -25,6 +25,7 @@ from App.special_dtml import DTMLFile
 from ComputedAttribute import ComputedAttribute
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PythonScripts.PythonScript import PythonScript
+from Products.PythonScripts.PythonScript import PythonScriptTracebackSupplement
 from Shared.DC.Scripts.Script import Script
 
 from Products.CMFCore.DirectoryView import registerFileExtension
@@ -169,7 +170,7 @@ class FSPythonScript(FSObject, Script):
         if f is None:
             # The script has errors.
             __traceback_supplement__ = (
-                FSPythonScriptTracebackSupplement, self, 0)
+                PythonScriptTracebackSupplement, self)
             raise RuntimeError, '%s has errors.' % self._filepath
 
         # Updating func_globals directly is not thread safe here.
@@ -178,7 +179,7 @@ class FSPythonScript(FSObject, Script):
         # there is only one copy.  So here's another way.
         new_globals = f.func_globals.copy()
         new_globals['__traceback_supplement__'] = (
-            FSPythonScriptTracebackSupplement, self)
+            PythonScriptTracebackSupplement, self, -1)
         new_globals['__file__'] = self._filepath
         if bound_names:
             new_globals.update(bound_names)
@@ -307,20 +308,6 @@ class FSPythonScript(FSObject, Script):
         return self._bind_names
 
 InitializeClass(FSPythonScript)
-
-
-class FSPythonScriptTracebackSupplement:
-
-    """Implementation of ITracebackSupplement
-
-    Makes script-specific info available in exception tracebacks.
-    """
-
-    def __init__(self, script, line=-1):
-        self.object = script
-        # If line is set to -1, it means to use tb_lineno.
-        self.line = line
-
 
 registerFileExtension('py', FSPythonScript)
 registerMetaType('Script (Python)', FSPythonScript)
