@@ -16,16 +16,13 @@ $Id$
 """
 
 from difflib import unified_diff
-import new
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from ComputedAttribute import ComputedAttribute
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PythonScripts.PythonScript import PythonScript
-from Products.PythonScripts.PythonScript import PythonScriptTracebackSupplement
 from Shared.DC.Scripts.Script import Script
 
 from Products.CMFCore.DirectoryView import registerFileExtension
@@ -132,58 +129,7 @@ class FSPythonScript(FSObject, Script):
         self._updateFromFS()
         return Script.__call__(self, *args, **kw)
 
-    #### The following is mainly taken from PythonScript.py ###
-
-    def _exec(self, bound_names, args, kw):
-        """Call a Python Script
-
-        Calling a Python Script is an actual function invocation.
-        """
-        # Retrieve the value from the cache.
-        keyset = None
-        if self.ZCacheable_isCachingEnabled():
-            # Prepare a cache key.
-            keyset = kw.copy()
-            asgns = self.getBindingAssignments()
-            name_context = asgns.getAssignedName('name_context', None)
-            if name_context:
-                keyset[name_context] = aq_parent(self).getPhysicalPath()
-            name_subpath = asgns.getAssignedName('name_subpath', None)
-            if name_subpath:
-                keyset[name_subpath] = self._getTraverseSubpath()
-            # Note: perhaps we should cache based on name_ns also.
-            keyset['*'] = args
-            result = self.ZCacheable_get(keywords=keyset, default=_marker)
-            if result is not _marker:
-                # Got a cached value.
-                return result
-
-        #__traceback_info__ = bound_names, args, kw, self.func_defaults
-
-        ft = self._v_ft
-        if ft is None:
-            __traceback_supplement__ = (
-                PythonScriptTracebackSupplement, self)
-            raise RuntimeError, '%s %s has errors.' % (self.meta_type, self.id)
-
-        fcode, g, fadefs = ft
-        g = g.copy()
-        if bound_names is not None:
-            g.update(bound_names)
-        g['__traceback_supplement__'] = (
-            PythonScriptTracebackSupplement, self, -1)
-        g['__file__'] = getattr(self, '_filepath', None) or self.get_filepath()
-        f = new.function(fcode, g, None, fadefs)
-
-        try:
-            result = f(*args, **kw)
-        except SystemExit:
-            raise ValueError('SystemExit cannot be raised within a PythonScript')
-
-        if keyset is not None:
-            # Store the result in the cache.
-            self.ZCacheable_set(result, keywords=keyset)
-        return result
+    _exec = PythonScript._exec.im_func
 
     security.declareProtected(ViewManagementScreens, 'getModTime')
     # getModTime defined in FSObject
