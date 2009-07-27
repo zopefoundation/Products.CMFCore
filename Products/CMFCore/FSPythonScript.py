@@ -19,7 +19,6 @@ from difflib import unified_diff
 import new
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
@@ -190,17 +189,12 @@ class FSPythonScript(FSObject, Script):
         else:
             f = new.function(f.func_code, g, f.func_name)
 
-        # Execute the function in a new security context.
-        security=getSecurityManager()
-        security.addContext(self)
-        try:
-            result = f(*args, **kw)
-            if keyset is not None:
-                # Store the result in the cache.
-                self.ZCacheable_set(result, keywords=keyset)
-            return result
-        finally:
-            security.removeContext(self)
+        result = f(*args, **kw)
+
+        if keyset is not None:
+            # Store the result in the cache.
+            self.ZCacheable_set(result, keywords=keyset)
+        return result
 
     security.declareProtected(ViewManagementScreens, 'getModTime')
     # getModTime defined in FSObject
