@@ -39,12 +39,6 @@ from Products.CMFCore.utils import _dtmldir
 _marker = object()
 
 
-class bad_func_code:
-
-    co_varnames = ()
-    co_argcount = 0
-
-
 class CustomizedPythonScript(PythonScript):
 
     """ Subclass which captures the "source" version's text.
@@ -90,7 +84,6 @@ class FSPythonScript(FSObject, Script):
 
     meta_type = 'Filesystem Script (Python)'
     _params = _body = ''
-    _v_f = None
     _proxy_roles = ()
     _owner = None  # Unowned
 
@@ -167,27 +160,20 @@ class FSPythonScript(FSObject, Script):
 
         #__traceback_info__ = bound_names, args, kw, self.func_defaults
 
-        f = self._v_f
-        if f is None:
+        ft = self._v_ft
+        if ft is None:
             __traceback_supplement__ = (
                 PythonScriptTracebackSupplement, self)
-            raise RuntimeError, '%s has errors.' % self._filepath
+            raise RuntimeError, '%s %s has errors.' % (self.meta_type, self.id)
 
-        # Updating func_globals directly is not thread safe here.
-        # In normal PythonScripts, every thread has its own
-        # copy of the function.  But in FSPythonScripts
-        # there is only one copy.  So here's another way.
-        g = f.func_globals.copy()
+        fcode, g, fadefs = ft
+        g = g.copy()
         if bound_names is not None:
             g.update(bound_names)
         g['__traceback_supplement__'] = (
             PythonScriptTracebackSupplement, self, -1)
         g['__file__'] = getattr(self, '_filepath', None) or self.get_filepath()
-        if f.func_defaults:
-            f = new.function(f.func_code, g, f.func_name,
-                             f.func_defaults)
-        else:
-            f = new.function(f.func_code, g, f.func_name)
+        f = new.function(fcode, g, None, fadefs)
 
         try:
             result = f(*args, **kw)
@@ -259,16 +245,10 @@ class FSPythonScript(FSObject, Script):
         ps = PythonScript(self.id)
         ps.write(text)
         if compile:
-            ps._makeFunction(1)
-            self._v_f = f = ps._v_f
-            if f is not None:
-                self.func_code = f.func_code
-                self.func_defaults = f.func_defaults
-            else:
-                # There were errors in the compile.
-                # No signature.
-                self.func_code = bad_func_code()
-                self.func_defaults = None
+            ps._makeFunction()
+            self._v_ft = ps._v_ft
+            self.func_code = ps.func_code
+            self.func_defaults = ps.func_defaults
         self._body = ps._body
         self._params = ps._params
         self.title = ps.title
