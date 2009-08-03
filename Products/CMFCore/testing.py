@@ -112,9 +112,10 @@ class TraversingZCMLLayer(ZopeLite):
     @classmethod
     def testSetUp(cls):
         import Products.Five
+        import zope.traversing
 
         zcml.load_config('meta.zcml', Products.Five)
-        zcml.load_config('traversing.zcml', Products.Five)
+        zcml.load_config('configure.zcml', zope.traversing)
         setHooks()
 
     @classmethod

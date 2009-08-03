@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Changed testing.py to directly load zope.traversing's ZCML instead of going
+  via the Five traversing.zcml BBB shim.
+
 - moved the Zope dependency to version 2.12.0b3dev
 
 - PortalFolder: Modified allowedContentTypes method to check 
