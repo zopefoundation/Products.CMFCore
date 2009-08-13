@@ -29,7 +29,7 @@ from OFS.OrderSupport import OrderSupport
 from zope.component.factory import Factory
 from zope.interface import implements
 
-from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
+from Products.CMFCore.CMFCatalogAware import OpaqueItemManager
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import BadRequest
@@ -48,7 +48,7 @@ from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import getToolByName
 
 
-class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
+class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
     """Base class for portal folder.
     """
@@ -65,7 +65,6 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
                      + ({'label': 'Components Folder',
                          'action': '++etc++site/manage_main'},)
                      + Folder.manage_options[1:]
-                     + CMFCatalogAware.manage_options
                      )
 
     def __init__(self, id, title='', description=''):
@@ -117,7 +116,9 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
         """
         self.setTitle( title )
         self.setDescription( description )
-        self.reindexObject()
+        # BBB: for ICatalogAware subclasses
+        if getattr(self, 'reindexObject', None) is not None:
+            self.reindexObject()
 
     security.declarePublic('allowedContentTypes')
     def allowedContentTypes( self ):
@@ -256,21 +257,6 @@ class PortalFolderBase(DynamicType, CMFCatalogAware, Folder):
             WebDAV needs this to do the Right Thing (TM).
         """
         return None
-
-    # Ensure pure PortalFolders don't get cataloged.
-    # XXX We may want to revisit this.
-
-    def indexObject(self):
-        pass
-
-    def unindexObject(self):
-        pass
-
-    def reindexObject(self, idxs=[]):
-        pass
-
-    def reindexObjectSecurity(self, skip_self=False):
-        pass
 
     def PUT_factory( self, name, typ, body ):
         """ Factory for PUT requests to objects which do not yet exist.

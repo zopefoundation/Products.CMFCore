@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- PortalFolder: Removed unused ICatalogAware and IWorkflowAware methods.
+
 - CMFCatalogAware: Split up CMFCatalogAware mixin.
   CatalogAware, WorkflowAware and OpaqueItemManager are now separate mixins.
 
