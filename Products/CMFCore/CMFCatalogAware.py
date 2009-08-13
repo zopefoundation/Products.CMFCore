@@ -45,12 +45,12 @@ from Products.CMFCore.utils import getToolByName
 logger = logging.getLogger('CMFCore.CMFCatalogAware')
 
 
-class CMFCatalogAware(Base):
+class CatalogAware(Base):
 
-    """Mix-in for notifying portal_catalog and portal_workflow
+    """Mix-in for notifying the catalog tool.
     """
 
-    implements(ICatalogAware, IWorkflowAware, IOpaqueItemManager)
+    implements(ICatalogAware)
 
     security = ClassSecurityInfo()
 
@@ -122,6 +122,58 @@ class CMFCatalogAware(Base):
                                   update_metadata=0, uid=brain_path)
             if s is None: ob._p_deactivate()
 
+InitializeClass(CatalogAware)
+
+
+class WorkflowAware(Base):
+
+    """Mix-in for notifying the workflow tool.
+    """
+
+    implements(IWorkflowAware)
+
+    security = ClassSecurityInfo()
+
+    manage_options = ({'label': 'Workflows',
+                       'action': 'manage_workflowsTab'},)
+
+    _manage_workflowsTab = DTMLFile('zmi_workflows', _dtmldir)
+
+    #
+    #   ZMI methods
+    #
+    security.declareProtected(ManagePortal, 'manage_workflowsTab')
+    def manage_workflowsTab(self, REQUEST, manage_tabs_message=None):
+        """ Tab displaying the current workflows for the content object.
+        """
+        ob = self
+        wftool = self._getWorkflowTool()
+        # XXX None ?
+        if wftool is not None:
+            wf_ids = wftool.getChainFor(ob)
+            states = {}
+            chain = []
+            for wf_id in wf_ids:
+                wf = wftool.getWorkflowById(wf_id)
+                if wf is not None:
+                    # XXX a standard API would be nice
+                    if hasattr(wf, 'getReviewStateOf'):
+                        # Default Workflow
+                        state = wf.getReviewStateOf(ob)
+                    elif hasattr(wf, '_getWorkflowStateOf'):
+                        # DCWorkflow
+                        state = wf._getWorkflowStateOf(ob, id_only=1)
+                    else:
+                        state = '(Unknown)'
+                    states[wf_id] = state
+                    chain.append(wf_id)
+        return self._manage_workflowsTab(
+            REQUEST,
+            chain=chain,
+            states=states,
+            management_view='Workflows',
+            manage_tabs_message=manage_tabs_message)
+
     # The following method can be overridden using inheritance so that it's
     # possible to specify another workflow tool for a given content type
     def _getWorkflowTool(self):
@@ -137,6 +189,18 @@ class CMFCatalogAware(Base):
         wftool = self._getWorkflowTool()
         if wftool is not None:
             wftool.notifyCreated(self)
+
+InitializeClass(WorkflowAware)
+
+
+class OpaqueItemManager(Base):
+
+    """Mix-in for managing opaque items.
+    """
+
+    implements(IOpaqueItemManager)
+
+    security = ClassSecurityInfo()
 
     # Opaque subitems
     # ---------------
@@ -185,50 +249,13 @@ class CMFCatalogAware(Base):
         """
         return [t[1] for t in self.opaqueItems()]
 
-    # ZMI
-    # ---
+InitializeClass(OpaqueItemManager)
 
-    manage_options = ({'label': 'Workflows',
-                       'action': 'manage_workflowsTab',
-                       },
-                       )
 
-    _manage_workflowsTab = DTMLFile('zmi_workflows', _dtmldir)
+class CMFCatalogAware(CatalogAware, WorkflowAware, OpaqueItemManager):
 
-    security.declareProtected(ManagePortal, 'manage_workflowsTab')
-    def manage_workflowsTab(self, REQUEST, manage_tabs_message=None):
-        """
-            Tab displaying the current workflows for the content object.
-        """
-        ob = self
-        wftool = self._getWorkflowTool()
-        # XXX None ?
-        if wftool is not None:
-            wf_ids = wftool.getChainFor(ob)
-            states = {}
-            chain = []
-            for wf_id in wf_ids:
-                wf = wftool.getWorkflowById(wf_id)
-                if wf is not None:
-                    # XXX a standard API would be nice
-                    if hasattr(wf, 'getReviewStateOf'):
-                        # Default Workflow
-                        state = wf.getReviewStateOf(ob)
-                    elif hasattr(wf, '_getWorkflowStateOf'):
-                        # DCWorkflow
-                        state = wf._getWorkflowStateOf(ob, id_only=1)
-                    else:
-                        state = '(Unknown)'
-                    states[wf_id] = state
-                    chain.append(wf_id)
-        return self._manage_workflowsTab(
-            REQUEST,
-            chain=chain,
-            states=states,
-            management_view='Workflows',
-            manage_tabs_message=manage_tabs_message)
-
-InitializeClass(CMFCatalogAware)
+    """Mix-in for notifying catalog and workflow and managing opaque items.
+    """
 
 
 def handleContentishEvent(ob, event):

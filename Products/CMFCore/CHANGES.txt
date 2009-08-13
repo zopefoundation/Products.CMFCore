@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- CMFCatalogAware: Split up CMFCatalogAware mixin.
+  CatalogAware, WorkflowAware and OpaqueItemManager are now separate mixins.
+
 - Changed testing.py to directly load zope.traversing's ZCML instead of going
   via the Five traversing.zcml BBB shim.
 
