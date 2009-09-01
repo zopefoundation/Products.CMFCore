@@ -360,13 +360,13 @@ class MembershipTool(UniqueObject, Folder):
             user = self.wrapUser(user)
         return user
 
-    def _huntUserFolder(self, username, context):
+    def _huntUserFolder(self, member_id, context):
         """Find userfolder containing user in the hierarchy
            starting from context
         """
         uf = context.acl_users
         while uf is not None:
-            user = uf.getUserById(username)
+            user = uf.getUserById(member_id)
             if user is not None:
                 return uf
             container = aq_parent(aq_inner(uf))
@@ -374,13 +374,13 @@ class MembershipTool(UniqueObject, Folder):
             uf = getattr(parent, 'acl_users', None)
         return None
 
-    def _huntUser(self, username, context):
+    def _huntUser(self, member_id, context):
         """Find user in the hierarchy of userfolders
            starting from context
         """
-        uf = self._huntUserFolder(username, context)
+        uf = self._huntUserFolder(member_id, context)
         if uf is not None:
-            return uf.getUserById(username)
+            return uf.getUserById(member_id)
 
     def __getPUS(self):
         """ Retrieve the nearest user folder
