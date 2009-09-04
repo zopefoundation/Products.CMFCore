@@ -445,10 +445,7 @@ class MembershipTool(UniqueObject, Folder):
                     roles.append( member_role )
                     obj.manage_setLocalRoles( member_id, roles )
 
-        if reindex:
-            # It is assumed that all objects have the method
-            # reindexObjectSecurity, which is in CMFCatalogAware and
-            # thus PortalContent and PortalFolder.
+        if reindex and hasattr(aq_base(obj), 'reindexObjectSecurity'):
             obj.reindexObjectSecurity()
 
     security.declareProtected(View, 'deleteLocalRoles')
@@ -467,7 +464,7 @@ class MembershipTool(UniqueObject, Folder):
             for subobj in obj.contentValues():
                 self.deleteLocalRoles(subobj, member_ids, 0, 1)
 
-        if reindex:
+        if reindex and hasattr(aq_base(obj), 'reindexObjectSecurity'):
             # reindexObjectSecurity is always recursive
             obj.reindexObjectSecurity()
 

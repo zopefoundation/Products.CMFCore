@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Made calls to reindexObjectSecurity in the membership tool conditional
+  after the CMFCatalogAware refactoring.
+
 - PortalFolder: Removed unused ICatalogAware and IWorkflowAware methods.
 
 - CMFCatalogAware: Split up CMFCatalogAware mixin.
