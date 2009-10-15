@@ -262,6 +262,12 @@ class DirectoryViewFolderTests(FSDVTest):
         testfolder = self.ob.fake_skin.test_directory
         self.assertEqual(testfolder.title, 'test_directory Title')
 
+    def test_DirectoryViewMetadataOnPropertyManager(self):
+        # Test to determine if metadata shows up correctly on a
+        # FSDV that has a corresponding .metadata file
+        testfolder = self.ob.fake_skin.test_directory
+        self.assertEqual(testfolder.getProperty('title'), 'test_directory Title')
+
     def test_DirectoryViewFolderDefault(self):
         # Test that a folder inside the fake skin really is of type
         # DirectoryViewSurrogate
