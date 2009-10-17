@@ -469,7 +469,6 @@ class DirectoryView(Persistent):
 
     meta_type = 'Filesystem Directory View'
     _dirpath = None
-    _properties = None
     _objects = ()
 
     def __init__(self, id, reg_key='', fullname=None, properties=None):
@@ -480,7 +479,6 @@ class DirectoryView(Persistent):
 
         self.id = id
         self._dirpath = reg_key
-        self._properties = properties
 
     def __of__(self, parent):
         reg_key = self._dirpath
