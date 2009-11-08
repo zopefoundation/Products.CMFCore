@@ -375,6 +375,45 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         # Now copy/paste should raise a ValueError
         cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
         self.assertRaises( ValueError, sub2.manage_pasteObjects, cookie )
+        
+    def test_contentPasteFollowsWorkflowGuards(self):
+       #
+       # Copy/Paste should obey workflow guards
+       #
+       ttool = self.site._setObject( 'portal_types', TypesTool() )
+       fti = FTIDATA_DUMMY[0].copy()
+       ttool._setObject( 'Dummy Content', FTI(**fti) )
+       ttool._setObject( 'Folder', FTI(**fti) )
+       folder = self._makeOne('folder', 'Folder')
+       content = self._makeOne('content')
+       folder._setObject('content', content)
+
+       # Allow adding of Dummy Content
+       ttool.Folder.manage_changeProperties(filter_content_types=False)
+
+       # Copy/paste verification should work fine
+       folder._verifyObjectPaste( content )
+
+       # Add a workflow with a blocking guard
+       # Based on TypesTools tests
+       class DummyWorkflow:
+           
+           _allow = False
+
+           def allowCreate(self, container, type_id):
+               return self._allow
+       
+       class DummyWorkflowTool:
+
+           def __init__(self):
+               self._workflows = [DummyWorkflow()]
+
+           def getWorkflowsFor(self, type_id):
+               return self._workflows
+      
+       # Now copy/paste verification should raise a ValueError
+       self.site.portal_workflow = DummyWorkflowTool()
+       self.assertRaises( ValueError, folder._verifyObjectPaste, content )
 
     def test_setObjectRaisesBadRequest(self):
         #

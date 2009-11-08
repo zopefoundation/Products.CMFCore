@@ -423,6 +423,12 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
                     raise ValueError('Disallowed subobject type: %s'
                                         % type_name)
 
+                # Check for workflow guards
+                objType = pt.getTypeInfo(type_name)
+                if ( objType is not None and
+                     not objType._checkWorkflowAllowed(self) ):
+                    raise ValueError('Pasting not allowed in this workflow')
+
     security.setPermissionDefault(AddPortalContent, ('Owner','Manager'))
 
     security.declareProtected(AddPortalFolders, 'manage_addFolder')

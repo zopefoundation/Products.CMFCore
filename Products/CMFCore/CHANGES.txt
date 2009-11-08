@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- PortalFolder: Ensure that pasting an object into a folder takes 
+  workflow instance creation conditions into account.
+  (https://bugs.launchpad.net/zope-cmf/+bug/308947)
+
 - Made calls to reindexObjectSecurity in the membership tool conditional
   after the CMFCatalogAware refactoring.
 
