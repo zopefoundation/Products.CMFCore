@@ -1,6 +1,10 @@
 Products.CMFCore Changelog
 ==========================
 
+2.2.0-beta (unreleased)
+-----------------------
+
+
 2.2.0-alpha (2009-11-13)
 ------------------------
 
@@ -47,12 +51,12 @@ Products.CMFCore Changelog
   the environment variable "ZPT_PREFERRED_ENCODING"
   (https://bugs.launchpad.net/zope-cmf/+bug/322263)
 
-- Expose the ZMI manage view of the `_components ` object manager as
+- Expose the ZMI manage view of the "_components" object manager as
   a new "Components Folder" tab in the ZMI.
 
 - ActionsTool: The "Action Providers" tab in the ZMI did not render
   actions from the WorkflowTool correctly since those are not 
-  "new-style" actions.
+  'new-style' actions.
   (https://bugs.launchpad.net/zope-cmf/+bug/322300)
 
 - FSPageTemplate: Prevent reading the underlying file without doing 
