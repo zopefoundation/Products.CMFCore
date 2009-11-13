@@ -94,17 +94,12 @@ class DynamicType:
         """
         ti = self.getTypeInfo()
         if ti is not None:
-            icon = quote(ti.getIcon())
-            if icon:
-                if relative_to_portal:
+            if relative_to_portal:
+                icon = quote(ti.getIcon())
+                if icon:
                     return icon
-                else:
-                    # Relative to REQUEST['BASEPATH1']
-                    portal_url = getToolByName( self, 'portal_url' )
-                    res = portal_url(relative=1) + '/' + icon
-                    while res[:1] == '/':
-                        res = res[1:]
-                    return res
+            else:
+                return ti.getIcon(absolute=True)
         return 'misc_/OFSP/dtmldoc.gif'
 
     security.declarePublic('icon')

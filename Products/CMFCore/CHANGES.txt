@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Got rid of redundant icon related type info properties.
+  (https://bugs.launchpad.net/zope-cmf/+bug/397795)
+
 - PortalFolder: Ensure that pasting an object into a folder takes 
   workflow instance creation conditions into account.
   (https://bugs.launchpad.net/zope-cmf/+bug/308947)

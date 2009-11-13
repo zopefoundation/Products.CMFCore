@@ -40,7 +40,7 @@ from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import SecurityRequestTest
-from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
+from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
 
@@ -73,7 +73,7 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
     def setUp(self):
         self.site = DummySite('site')
         self.site._setObject( 'portal_types', TypesTool() )
-        fti = FTIDATA_CMF15[0].copy()
+        fti = FTIDATA_CMF[0].copy()
         self.site.portal_types._setObject( 'Dummy Content 15', FTI(**fti) )
         self.site._setObject( 'foo', DummyContent() )
         dummy_view = self.site._setObject( 'dummy_view', DummyObject() )
@@ -156,7 +156,7 @@ class DynamicTypeSecurityTests(SecurityRequestTest):
         self.site._setObject( 'portal_membership', DummyTool() )
         self.site._setObject( 'portal_types', TypesTool() )
         self.site._setObject( 'portal_url', DummyTool() )
-        fti = FTIDATA_CMF15[0].copy()
+        fti = FTIDATA_CMF[0].copy()
         self.site.portal_types._setObject( 'Dummy Content 15', FTI(**fti) )
         self.site._setObject( 'foo', DummyContent() )
 

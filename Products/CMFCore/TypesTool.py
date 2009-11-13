@@ -41,6 +41,7 @@ from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import BadRequest
 from Products.CMFCore.exceptions import zExceptions_Unauthorized
+from Products.CMFCore.Expression import getExprContext
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import IAction
 from Products.CMFCore.interfaces import ITypeInformation
@@ -147,9 +148,21 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             and kw.has_key('meta_type')):
             kw['content_meta_type'] = kw['meta_type']
 
-        if (not kw.has_key('content_icon')
-            and kw.has_key('icon')):
-            kw['content_icon'] = kw['icon']
+        if 'content_icon' in kw or 'icon' in kw:
+            if 'icon' in kw:
+                kw['content_icon'] = kw['icon']
+                warn('TypeInformation got a deprecated argument icon.'
+                     'Support for the icon argument will be removed in '
+                     'CMF 2.4. Please use the icon_expr argument instead.',
+                     DeprecationWarning, stacklevel=2)
+            else:
+                warn('TypeInformation got a deprecated argument content_icon.'
+                     'Support for the content_icon argument will be removed in '
+                     'CMF 2.4. Please use the icon_expr argument instead.',
+                     DeprecationWarning, stacklevel=2)
+
+            if 'icon_expr' not in kw:
+                kw['icon_expr'] = 'string:${portal_url}/%s' % kw['content_icon']
 
         self.manage_changeProperties(**kw)
 
@@ -230,11 +243,21 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         return self.content_meta_type
 
     security.declareProtected(View, 'getIcon')
-    def getIcon(self):
+    def getIcon(self, absolute=False):
         """
             Returns the icon for this content object.
         """
-        return self.content_icon
+        if self.content_icon:
+            return self.content_icon
+        icon_expr = getattr(self, 'icon_expr_object', None)
+        if icon_expr:
+            ec = getExprContext(self)
+            icon = icon_expr(ec)
+            if absolute:
+                return icon
+            if isinstance(icon, basestring):
+                return icon.split('/')[-1]
+        return ''
 
     security.declarePublic('allowType')
     def allowType( self, contentType ):

@@ -94,6 +94,41 @@ FTIDATA_CMF15 = (
     )
 
 
+FTIDATA_CMF = (
+      { 'id' : 'Dummy Content 15'
+      , 'meta_type' : 'Dummy'
+      , 'description' : (
+           'Dummy Content.')
+      , 'icon_expr' : 'string:${portal_url}/dummy_icon.gif'
+      , 'product' : 'FooProduct'
+      , 'factory' : 'addFoo'
+      , 'immediate_view' : 'metadata.html'
+      , 'aliases' : {
+           '(Default)':'dummy_view',
+           'view':'dummy_view',
+           'view.html':'dummy_view',
+           'edit.html':'dummy_edit_form',
+           'metadata.html':'metadata_edit_form',
+           'gethtml':'source_html'}
+      , 'actions' : (
+            { 'id':'view',
+              'title': 'View',
+              'action':'string:${object_url}/view.html',
+              'permissions':(View,) }
+          , { 'id':'edit',
+              'title': 'Edit',
+              'action':'string:${object_url}/edit.html',
+              'permissions':(ModifyPortalContent,) }
+          , { 'id':'metadata',
+              'title': 'Metadata',
+              'action':'string:${object_url}/metadata.html',
+              'permissions':(ModifyPortalContent,) }
+          )
+      }
+    ,
+    )
+
+
 STI_SCRIPT = """\
 ## Script (Python) "addBaz"
 ##bind container=container

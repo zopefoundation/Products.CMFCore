@@ -29,6 +29,7 @@ from Products.CMFCore.permissions import View
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.testing import ExportImportZCMLLayer
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.TypesTool import FactoryTypeInformation
 from Products.CMFCore.TypesTool import ScriptableTypeInformation
 from Products.CMFCore.TypesTool import TypesTool
@@ -281,7 +282,8 @@ _UPDATE_FOO_IMPORT = """\
 """
 
 
-class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
+class TypeInformationXMLAdapterTests(
+    BodyAdapterTestCase, unittest.TestCase, WarningInterceptor):
 
     layer = ExportImportZCMLLayer
 
@@ -320,9 +322,14 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     def setUp(self):
         self._obj = FactoryTypeInformation('foo_fti')
         self._BODY = _FTI_BODY
+        self._trap_warning_output()
+
+    def tearDown(self):
+        self._free_warning_output()
 
 
-class TypesToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
+class TypesToolXMLAdapterTests(
+    BodyAdapterTestCase, unittest.TestCase, WarningInterceptor):
 
     layer = ExportImportZCMLLayer
 
@@ -338,9 +345,20 @@ class TypesToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     def setUp(self):
         self._obj = TypesTool()
         self._BODY = _TYPESTOOL_BODY
+        self._trap_warning_output()
+
+    def tearDown(self):
+        self._free_warning_output()
 
 
-class _TypeInfoSetup(BaseRegistryTests):
+class _TypeInfoSetup(BaseRegistryTests, WarningInterceptor):
+
+    def setUp(self):
+        BaseRegistryTests.setUp(self)
+        self._trap_warning_output()
+
+    def tearDown(self):
+        self._free_warning_output()
 
     def _initSite(self, foo=0):
         self.root.site = Folder(id='site')

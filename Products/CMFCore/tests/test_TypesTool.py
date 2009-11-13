@@ -19,6 +19,7 @@ import unittest
 
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFCore.tests.base.testcase import WarningInterceptor
 
 class TypesToolTests(unittest.TestCase):
 
@@ -249,8 +250,14 @@ class TypesToolFunctionalTests(SecurityTest):
         self.assertEqual(folder.page2.portal_type, 'Baz')
 
 
-class TypeInfoTests:
+class TypeInfoTests(WarningInterceptor):
     # Subclass must define _getTargetClass
+
+    def setUp(self):
+        self._trap_warning_output()
+
+    def tearDown(self):
+        self._free_warning_output()
 
     def _makeOne(self, id='test', **kw):
         return self._getTargetClass()(id, **kw)
@@ -367,20 +374,19 @@ class TypeInfoTests:
         self.failIf( 'slot' in visible )
 
     def test_MethodAliases_methods(self):
-        from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
-        ti = self._makeOne( **FTIDATA_CMF15[0] )
-        self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF15[0]['aliases'] )
+        from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
+        ti = self._makeOne( **FTIDATA_CMF[0] )
+        self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF[0]['aliases'] )
         self.assertEqual( ti.queryMethodID('view'), 'dummy_view' )
         self.assertEqual( ti.queryMethodID('view.html'), 'dummy_view' )
 
         ti.setMethodAliases( ti.getMethodAliases() )
-        self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF15[0]['aliases'] )
+        self.assertEqual( ti.getMethodAliases(), FTIDATA_CMF[0]['aliases'] )
 
     def test_getInfoData(self):
         ti_data = {'id': 'foo',
                    'title': 'Foo',
                    'description': 'Foo objects are just used for testing.',
-                   'content_icon': 'foo_icon.gif',
                    'content_meta_type': 'Foo Content',
                    'factory' : 'cmf.foo',
                    'icon_expr' : 'string:${portal_url}/foo_icon_expr.gif',

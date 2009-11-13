@@ -43,7 +43,7 @@ from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
+from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
 from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
@@ -443,7 +443,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         test = self._makeOne('test')
         test._setPortalTypeName('Dummy Content 15')
         ttool = self.site._setObject('portal_types', TypesTool())
-        ttool._setObject('Dummy Content 15', FTI(**FTIDATA_CMF15[0]))
+        ttool._setObject('Dummy Content 15', FTI(**FTIDATA_CMF[0]))
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         test._checkId('view.html')
         newSecurityManager(None, acl_users.user_foo)
