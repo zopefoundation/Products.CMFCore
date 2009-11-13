@@ -1,8 +1,8 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.0 (unreleased)
-------------------
+2.2.0-alpha (2009-11-13)
+------------------------
 
 - Got rid of redundant icon related type info properties.
   (https://bugs.launchpad.net/zope-cmf/+bug/397795)
