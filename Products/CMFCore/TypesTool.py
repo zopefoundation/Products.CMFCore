@@ -41,7 +41,6 @@ from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import BadRequest
 from Products.CMFCore.exceptions import zExceptions_Unauthorized
-from Products.CMFCore.Expression import getExprContext
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import IAction
 from Products.CMFCore.interfaces import ITypeInformation
@@ -243,21 +242,22 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         return self.content_meta_type
 
     security.declareProtected(View, 'getIcon')
-    def getIcon(self, absolute=False):
+    def getIcon(self):
+        """ Returns the icon for this content object.
         """
-            Returns the icon for this content object.
+        warn('getIcon() is deprecated and provides only limited backwards '
+             'compatibility. It will be removed in CMF 2.4. Please use '
+             'getIconExprObject() instead.',
+             DeprecationWarning, stacklevel=2)
+        if self.icon_expr.startswith('string:${portal_url}/'):
+            return self.icon_expr[len('string:${portal_url}/'):]
+        return self.icon_expr
+
+    security.declarePrivate('getIconExprObject')
+    def getIconExprObject(self):
+        """ Get the expression object representing the icon for this type.
         """
-        if self.content_icon:
-            return self.content_icon
-        icon_expr = getattr(self, 'icon_expr_object', None)
-        if icon_expr:
-            ec = getExprContext(self)
-            icon = icon_expr(ec)
-            if absolute:
-                return icon
-            if isinstance(icon, basestring):
-                return icon.split('/')[-1]
-        return ''
+        return getattr(self, 'icon_expr_object', None)
 
     security.declarePublic('allowType')
     def allowType( self, contentType ):
@@ -396,10 +396,6 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             lazy_map['url'] = ''
         if self.icon_expr:
             lazy_map['icon'] = self.icon_expr_object
-            lazy_keys.append('icon')
-        elif self.content_icon:
-            lazy_map['icon'] = Expression('string:${portal_url}/%s'
-                                          % self.content_icon)
             lazy_keys.append('icon')
         else:
             lazy_map['icon'] = ''

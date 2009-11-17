@@ -40,7 +40,7 @@ from security import OmnipotentUser
 class DummyObject(Implicit):
     """
     A dummy callable object.
-    Comes with getIcon and restrictedTraverse
+    Comes with getIconURL and restrictedTraverse
     methods.
     """
     def __init__(self, id='dummy',**kw):
@@ -66,8 +66,11 @@ class DummyObject(Implicit):
 
         return parent
 
-    def getIcon(self, relative=0):
-        return 'Site: %s' % relative
+    def icon(self):
+        return '%s ICON' % self._id
+
+    def getIconURL(self):
+        return '%s ICON' % self._id
 
     def getId(self):
         return self._id
@@ -373,9 +376,6 @@ class DummyTool(Implicit,ActionProviderBase):
     def __init__(self, anon=1):
         self.anon = anon
 
-    def getIcon( self, relative=0 ):
-        return 'Tool: %s' % relative
-
     # IMembershipTool
     def getAuthenticatedMember(self):
         return DummyUser()
@@ -404,10 +404,8 @@ class DummyTool(Implicit,ActionProviderBase):
         return (self._type_id,)
 
     # IURLTool
-    root = 'DummyTool'
-
-    def __call__(self):
-        return self.root
+    def __call__(self, relative=0):
+        return self.getPortalObject().absolute_url()
 
     def getPortalObject(self):
         return aq_parent(aq_inner(self))

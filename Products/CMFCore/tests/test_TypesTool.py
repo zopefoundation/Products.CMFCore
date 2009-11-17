@@ -277,22 +277,19 @@ class TypeInfoTests(WarningInterceptor):
         from Products.CMFCore.interfaces import ITypeInformation
         verifyObject(ITypeInformation, self._makeOne())
 
-    def test_construction( self ):
-        ti = self._makeOne( 'Foo'
-                               , description='Description'
-                               , meta_type='Foo'
-                               , icon='foo.gif'
-                               )
+    def test_construction(self):
+        ti = self._makeOne('Foo', description='Description', meta_type='Foo',
+                           icon='foo.gif')
         self.assertEqual( ti.getId(), 'Foo' )
         self.assertEqual( ti.Title(), 'Foo' )
         self.assertEqual( ti.Description(), 'Description' )
         self.assertEqual( ti.Metatype(), 'Foo' )
+        self.assertEqual( ti.getIconExprObject().text,
+                          'string:${portal_url}/foo.gif' )
         self.assertEqual( ti.getIcon(), 'foo.gif' )
         self.assertEqual( ti.immediate_view, '' )
 
-        ti = self._makeOne( 'Foo'
-                               , immediate_view='foo_view'
-                               )
+        ti = self._makeOne('Foo', immediate_view='foo_view')
         self.assertEqual( ti.immediate_view, 'foo_view' )
 
     def _makeAndSetInstance(self, id, **kw):

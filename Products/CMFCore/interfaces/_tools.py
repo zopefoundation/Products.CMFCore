@@ -1398,8 +1398,8 @@ class ITypeInformation(Interface):
         o Individual objects may still disable discussion.
         """
 
-    def getIcon():
-        """ Return the portal-relative URL for the icon for this type.
+    def getIconExprObject():
+        """ Get the expression object representing the icon for this type.
         """
 
     def getMethodAliases():

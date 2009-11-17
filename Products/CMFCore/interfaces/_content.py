@@ -498,8 +498,8 @@ class IDynamicType(Interface):
         o Permission:  Public
         """
 
-    def getIcon(relative_to_portal=False):
-        """ Get the path to an object's icon.
+    def getIconURL():
+        """ Get the absolute URL of the icon for the object.
 
         o This method is used in the 'folder_contents' view to generate an
           appropriate icon for the items found in the folder.
@@ -507,10 +507,6 @@ class IDynamicType(Interface):
         o If the content item does not define an attribute named "icon"
           return a "default" icon path (e.g., '/misc_/dtmldoc.gif', which is
           the icon used for DTML Documents).
-
-        o If 'relative_to_portal' is True, return only the portion of
-          the icon's URL which finds it "within" the portal;  otherwise,
-          return it as an absolute URL.
 
         o Permission:  Public
         """

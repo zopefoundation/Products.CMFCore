@@ -4,6 +4,12 @@ Products.CMFCore Changelog
 2.2.0-beta (unreleased)
 -----------------------
 
+- DynamicType: Added 'getIconURL' method.
+  This replaces the now deprecated 'getIcon' method.
+
+- TypeInformation: Added 'getIconExprObject' method.
+  This replaces the now deprecated 'getIcon' method.
+
 
 2.2.0-alpha (2009-11-13)
 ------------------------

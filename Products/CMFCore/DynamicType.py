@@ -15,14 +15,13 @@
 $Id$
 """
 
-from urllib import quote
-
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from zope.app.publisher.browser import queryDefaultViewName
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 
+from Products.CMFCore.Expression import getExprContext
 from Products.CMFCore.interfaces import IDynamicType
 from Products.CMFCore.utils import getToolByName
 
@@ -48,6 +47,9 @@ class DynamicType:
         """
         self.portal_type = pt
 
+    #
+    #   'IDynamicType' interface methods
+    #
     security.declarePublic('getPortalTypeName')
     def getPortalTypeName(self):
         """ Get the portal type name that can be passed to portal_types.
@@ -83,27 +85,43 @@ class DynamicType:
                         action_chain, '/'.join(self.getPhysicalPath()))
             raise ValueError(msg)
 
-    # Support for dynamic icons
+    security.declarePublic('getIconURL')
+    def getIconURL(self):
+        """ Get the absolute URL of the icon for the object.
+        """
+        ti = self.getTypeInfo()
+        if ti is None:
+            utool = getToolByName(self, 'portal_url')
+            return '%s/misc_/OFSP/dtmldoc.gif' % utool()
+        icon_expr_object = ti.getIconExprObject()
+        if icon_expr_object is None:
+            return ''
+        ec = getExprContext(self)
+        return icon_expr_object(ec)
 
-    security.declarePublic('getIcon')
-    def getIcon(self, relative_to_portal=0):
+    #
+    #   'IItem' interface method
+    #
+    security.declarePublic('icon')
+    def icon(self, relative_to_portal=0):
         """
         Using this method allows the content class
         creator to grab icons on the fly instead of using a fixed
         attribute on the class.
         """
-        ti = self.getTypeInfo()
-        if ti is not None:
-            if relative_to_portal:
-                icon = quote(ti.getIcon())
-                if icon:
-                    return icon
-            else:
-                return ti.getIcon(absolute=True)
-        return 'misc_/OFSP/dtmldoc.gif'
+        utool = getToolByName(self, 'portal_url')
+        portal_url = utool()
+        icon = self.getIconURL()
+        if icon.startswith(portal_url):
+            icon = icon[len(portal_url)+1:]
+            if not relative_to_portal:
+                # Relative to REQUEST['BASEPATH1']
+                icon = '%s/%s' % (utool(relative=1), icon)
+        return icon
 
-    security.declarePublic('icon')
-    icon = getIcon  # For the ZMI
+    # deprecated alias
+    security.declarePublic('getIcon')
+    getIcon = icon
 
     def __before_publishing_traverse__(self, arg1, arg2=None):
         """ Pre-traversal hook.
