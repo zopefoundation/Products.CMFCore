@@ -53,7 +53,7 @@ class DummyObject(Implicit):
     def __call__(self):
         return self._id
 
-    def restrictedTraverse( self, path ):
+    def restrictedTraverse(self, path):
         if not path:
             return self
 
@@ -66,7 +66,7 @@ class DummyObject(Implicit):
 
         return parent
 
-    def getIcon( self, relative=0 ):
+    def getIcon(self, relative=0):
         return 'Site: %s' % relative
 
     def getId(self):
@@ -139,7 +139,7 @@ class DummyContent( PortalContent, Item ):
         self.before_delete_called = 1
 
     def absolute_url(self):
-       return self.url
+        return self.url
 
     def reset( self ):
         self.after_add_called = self.before_delete_called = 0
@@ -177,14 +177,14 @@ class DummyContent( PortalContent, Item ):
 
     def __call__(self):
         if self.view_id is None:
-           return DummyContent.inheritedAttribute('__call__')(self)
+            return DummyContent.inheritedAttribute('__call__')(self)
         else:
-           # view_id control for testing
-           template = getattr(self, self.view_id)
-           if getattr(aq_base(template), 'isDocTemp', 0):
-               return template(self, self.REQUEST, self.REQUEST['RESPONSE'])
-           else:
-               return template()
+            # view_id control for testing
+            template = getattr(self, self.view_id)
+            if getattr(aq_base(template), 'isDocTemp', 0):
+                return template(self, self.REQUEST, self.REQUEST['RESPONSE'])
+            else:
+                return template()
 
 DummyFactory = Factory(DummyContent)
 
@@ -426,14 +426,14 @@ class DummyTool(Implicit,ActionProviderBase):
 
 class DummyCachingManager:
 
-    def getHTTPCachingHeaders( self, content, view_name, keywords, time=None ):
-         return (
+    def getHTTPCachingHeaders(self, content, view_name, keywords, time=None):
+        return (
              ('foo', 'Foo'), ('bar', 'Bar'),
              ('test_path', '/'.join(content.getPhysicalPath())),
              )
 
-    def getModTimeAndETag(self, content, view_method, keywords, time=None ):
-         return (None, None, False)
+    def getModTimeAndETag(self, content, view_method, keywords, time=None):
+        return (None, None, False)
 
     def getPhysicalPath(self):
         return ('baz',)
@@ -447,16 +447,15 @@ class DummyCachingManagerWithPolicy(DummyCachingManager):
     #  - always set the last-modified date if available
     #  - calculate the date using the modified method on content
 
-    def getHTTPCachingHeaders( self, content, view_name, keywords, time=None ):
+    def getHTTPCachingHeaders(self, content, view_name, keywords, time=None):
+        # if the object has a modified method, add it as last-modified
+        if hasattr(content, 'modified'):
+            headers = ( ('Last-modified', rfc1123_date(content.modified()) ), )
+        return headers
 
-         # if the object has a modified method, add it as last-modified
-         if hasattr(content, 'modified'):
-             headers = ( ('Last-modified', rfc1123_date(content.modified()) ), )
-         return headers
-
-    def getModTimeAndETag(self, content, view_method, keywords, time=None ):
-         modified_date = None
-         if hasattr(content, 'modified'):
+    def getModTimeAndETag(self, content, view_method, keywords, time=None):
+        modified_date = None
+        if hasattr(content, 'modified'):
             modified_date = content.modified()
-         set_last_modified = (modified_date is not None)
-         return (modified_date, FAKE_ETAG, set_last_modified)
+        set_last_modified = (modified_date is not None)
+        return (modified_date, FAKE_ETAG, set_last_modified)
