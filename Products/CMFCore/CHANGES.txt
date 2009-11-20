@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.2.0-beta (unreleased)
 -----------------------
 
+- TypeInformation: Removed redundant 'content_icon' property.
+  For backwards compatibility old settings containing 'content_icon' instead
+  of 'icon_expr' are converted on import. CMFDefault provides the necessary
+  upgrade steps for migrating existing sites.
+
 - DynamicType: Added 'getIconURL' method.
   This replaces the now deprecated 'getIcon' method.
 

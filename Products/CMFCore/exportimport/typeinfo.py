@@ -59,12 +59,31 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             self._purgeAliases()
             self._purgeActions()
 
+        self._migrateProperties(node)
         self._initProperties(node)
         self._initAliases(node)
         self._initActions(node)
 
         obj_id = str(node.getAttribute('name'))
         self._logger.info('%r type info imported.' % obj_id)
+
+    def _migrateProperties(self, node):
+        # BBB: for CMF 2.1 icon settings
+        for child in node.childNodes:
+            if child.nodeName != 'property':
+                continue
+            if child.getAttribute('name') == 'icon_expr':
+                return
+        for child in node.childNodes:
+            if child.nodeName != 'property':
+                continue
+            if child.getAttribute('name') != 'content_icon':
+                continue
+            icon = 'string:${portal_url}/%s' % self._getNodeText(child)
+            new_child = self._doc.createElement('property')
+            new_child.setAttribute('name', 'icon_expr')
+            new_child.appendChild(self._doc.createTextNode(icon))
+            node.replaceChild(new_child, child)
 
     def _extractAliases(self):
         fragment = self._doc.createDocumentFragment()

@@ -88,8 +88,6 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
          'label':'Description'},
         {'id':'i18n_domain', 'type': 'string', 'mode':'w',
          'label':'I18n Domain'},
-        {'id':'content_icon', 'type': 'string', 'mode':'w',
-         'label':'Icon'},
         {'id': 'icon_expr', 'type': 'string', 'mode': 'w',
          'label': 'Icon (Expression)'},
         {'id':'content_meta_type', 'type': 'string', 'mode':'w',
@@ -122,7 +120,6 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     description = ''
     i18n_domain = ''
     content_meta_type = ''
-    content_icon = ''
     icon_expr = ''
     add_view_expr = ''
     immediate_view = ''
