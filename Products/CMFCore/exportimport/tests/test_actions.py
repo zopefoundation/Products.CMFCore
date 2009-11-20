@@ -22,7 +22,6 @@ from Acquisition import aq_parent
 from Acquisition import Implicit
 from OFS.OrderedFolder import OrderedFolder
 from zope.interface import implements
-from zope.interface import Interface
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IActionProvider
@@ -40,10 +39,10 @@ _ACTION_XML = """\
  <property name="title">Foo</property>
  <property name="description"></property>
  <property name="url_expr">string:${object_url}/foo</property>
+ <property name="link_target"></property>
  <property name="icon_expr"></property>
  <property name="available_expr">python:1</property>
  <property name="permissions"/>
- <property name="link_target"></property>
  <property name="visible">True</property>
 </object>
 """
@@ -55,10 +54,10 @@ _ACTIONCATEGORY_XML = """\
   <property name="title"></property>
   <property name="description"></property>
   <property name="url_expr"></property>
+  <property name="link_target"></property>
   <property name="icon_expr"></property>
   <property name="available_expr"></property>
   <property name="permissions"/>
-  <property name="link_target"></property>
   <property name="visible">True</property>
  </object>
 </object>
@@ -75,10 +74,10 @@ _ACTIONSTOOL_BODY = """\
    <property name="title" i18n:translate=""></property>
    <property name="description" i18n:translate=""></property>
    <property name="url_expr"></property>
+   <property name="link_target"></property>
    <property name="icon_expr"></property>
    <property name="available_expr"></property>
    <property name="permissions"/>
-   <property name="link_target"></property>
    <property name="visible">True</property>
   </object>
  </object>
@@ -156,10 +155,10 @@ _NEWSYTLE_EXPORT = """\
    <property name="title">Baz</property>
    <property name="description"></property>
    <property name="url_expr">string:${object_url}/baz</property>
+   <property name="link_target"></property>
    <property name="icon_expr"></property>
    <property name="available_expr">python:1</property>
    <property name="permissions"></property>
-   <property name="link_target"></property>
    <property name="visible">True</property>
   </object>
  </object>
@@ -177,10 +176,10 @@ _I18N_IMPORT = """\
    <property name="title" i18n:translate="">Foo</property>
    <property name="description" i18n:translate=""></property>
    <property name="url_expr">string:${object_url}/foo</property>
+   <property name="link_target"></property>
    <property name="icon_expr"></property>
    <property name="available_expr">python:1</property>
    <property name="permissions"></property>
-   <property name="link_target"></property>
    <property name="visible">True</property>
   </object>
  </object>

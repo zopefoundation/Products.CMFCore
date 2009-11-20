@@ -87,14 +87,14 @@ class Action(PropertyManager, SimpleItem):
          'label':'I18n Domain'},
         {'id': 'url_expr', 'type': 'string', 'mode': 'w',
          'label': 'URL (Expression)'},
+        {'id':'link_target', 'type': 'string', 'mode':'w',
+         'label':'Link Target'},
         {'id': 'icon_expr', 'type': 'string', 'mode': 'w',
          'label': 'Icon (Expression)'},
         {'id': 'available_expr', 'type': 'string', 'mode': 'w',
          'label': 'Condition (Expression)'},
         {'id': 'permissions', 'type': 'multiple selection', 'mode': 'w',
          'label': 'Permissions', 'select_variable': 'possible_permissions'},
-        {'id':'link_target', 'type': 'string', 'mode':'w',
-         'label':'Link Target'},
         {'id': 'visible', 'type': 'boolean', 'mode': 'w',
          'label': 'Visible?'},
         )
@@ -109,10 +109,10 @@ class Action(PropertyManager, SimpleItem):
         self._setPropValue( 'description', kw.get('description', '') )
         self._setPropValue( 'i18n_domain', kw.get('i18n_domain', '') )
         self._setPropValue( 'url_expr', kw.get('url_expr', '') )
+        self._setPropValue( 'link_target', kw.get('link_target', '') )
         self._setPropValue( 'icon_expr', kw.get('icon_expr', '') )
         self._setPropValue( 'available_expr', kw.get('available_expr', '') )
         self._setPropValue( 'permissions', kw.get('permissions', () ) )
-        self._setPropValue( 'link_target', kw.get('link_target', '') )
         self._setPropValue( 'visible', kw.get('visible', True) )
 
     def _setPropValue(self, id, value):
@@ -177,11 +177,11 @@ class ActionInfo(UserDict):
                 self.data.setdefault( 'title', self.data['name'] )
                 del self.data['name']
             self.data.setdefault( 'url', '' )
+            self.data.setdefault( 'link_target', '' )
             self.data.setdefault( 'icon', '' )
             self.data.setdefault( 'category', 'object' )
             self.data.setdefault( 'visible', True )
             self.data['available'] = True
-            self.data.setdefault('link_target', '')
         else:
             # if action isn't a dict, it has to implement IAction
             (lazy_map, lazy_keys) = action.getInfoData()
