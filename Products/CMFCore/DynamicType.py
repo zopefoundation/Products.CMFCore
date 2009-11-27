@@ -17,7 +17,7 @@ $Id$
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
-from zope.app.publisher.browser import queryDefaultViewName
+from zope.publisher.defaultview import queryDefaultViewName
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 
