@@ -165,8 +165,8 @@ _NORMAL_TOOL_EXPORT = """\
 <?xml version="1.0"?>
 <object name="portal_types" meta_type="CMF Types Tool">
  <property name="title"/>
- <object name="bar" meta_type="Scriptable Type Information"/>
  <object name="foo" meta_type="Factory-based Type Information"/>
+ <object name="bar" meta_type="Scriptable Type Information"/>
 </object>
 """
 
@@ -174,8 +174,8 @@ _FILENAME_EXPORT = """\
 <?xml version="1.0"?>
 <object name="portal_types" meta_type="CMF Types Tool">
  <property name="title"/>
- <object name="bar object" meta_type="Scriptable Type Information"/>
  <object name="foo object" meta_type="Factory-based Type Information"/>
+ <object name="bar object" meta_type="Scriptable Type Information"/>
 </object>
 """
 

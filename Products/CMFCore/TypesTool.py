@@ -24,7 +24,7 @@ from Acquisition import aq_base
 from Acquisition import aq_get
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-from OFS.Folder import Folder
+from OFS.OrderedFolder import OrderedFolder
 from OFS.ObjectManager import IFAwareObjectManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.component import getUtility
@@ -640,7 +640,7 @@ allowedTypes = [
     ]
 
 
-class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
+class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                 ActionProviderBase):
 
     """ Provides a configurable registry of portal content types.
@@ -654,13 +654,13 @@ class TypesTool(UniqueObject, IFAwareObjectManager, Folder,
 
     security = ClassSecurityInfo()
 
-    manage_options = ( Folder.manage_options[:1]
+    manage_options = ( OrderedFolder.manage_options[:1]
                      + ( {'label':'Aliases',
                           'action':'manage_aliases'}, )
                      + ActionProviderBase.manage_options
                      + ( {'label':'Overview',
                           'action':'manage_overview'}, )
-                     + Folder.manage_options[1:]
+                     + OrderedFolder.manage_options[1:]
                      )
 
     #

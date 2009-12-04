@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0-beta (unreleased)
 -----------------------
 
+- TypesTool: Made it an ordered container.
+  This allows to control the order of the add actions.
+
 - TypeInformation: Removed redundant 'content_icon' property.
   For backwards compatibility old settings containing 'content_icon' instead
   of 'icon_expr' are converted on import. CMFDefault provides the necessary
