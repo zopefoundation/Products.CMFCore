@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.0-beta (unreleased)
+2.2.0-beta (2009-12-06)
 -----------------------
 
 - TypesTool: Made it an ordered container.
