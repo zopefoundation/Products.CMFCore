@@ -30,7 +30,6 @@ from AccessControl.SecurityInfo import ModuleSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition.interfaces import IAcquirer
 from Acquisition import aq_get
-from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Acquisition import Implicit
 from App.class_init import InitializeClass
@@ -113,7 +112,7 @@ def getToolByName(obj, name, default=_marker):
             # behave in backwards-compatible way
             # fall through to old implementation
             pass
-    
+
     try:
         tool = aq_get(obj, name, default, 1)
     except AttributeError:
@@ -250,13 +249,13 @@ def _ac_inherited_permissions(ob, all=0):
     for p in perms: d[p[0]] = None
     r = gather_permissions(ob.__class__, [], d)
     if all:
-       if hasattr(ob, '_subobject_permissions'):
-           for p in ob._subobject_permissions():
-               pname=p[0]
-               if not d.has_key(pname):
-                   d[pname]=1
-                   r.append(p)
-       r = list(perms) + r
+        if hasattr(ob, '_subobject_permissions'):
+            for p in ob._subobject_permissions():
+                pname=p[0]
+                if not d.has_key(pname):
+                    d[pname]=1
+                    r.append(p)
+        r = list(perms) + r
     return r
 
 security.declarePrivate('_modifyPermissionMappings')
@@ -329,7 +328,8 @@ def parse_etags( text
                 value = m.group(2)
             else:
                 return result
-    finally: release()
+    finally:
+        release()
 
     if value:
         result.append(value)
@@ -399,9 +399,9 @@ def _checkConditionalGET(obj, extra_context):
         # understand the screwy date string as a lucky side effect
         # of the way they parse it).
         try:
-            if_modified_since=long(DateTime(if_modified_since).timeTime())
+            if_modified_since = long(DateTime(if_modified_since).timeTime())
         except:
-            if_mod_since=None
+            if_modified_since = None
 
     client_etags = None
     if if_none_match:
@@ -448,7 +448,7 @@ def _setCacheHeaders(obj, extra_context):
         call_count = getattr(REQUEST, SUBTEMPLATE, 1) - 1
         setattr(REQUEST, SUBTEMPLATE, call_count)
         if call_count != 0:
-           return
+            return
 
         # cleanup
         delattr(REQUEST, SUBTEMPLATE)
