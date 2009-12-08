@@ -93,12 +93,12 @@ class SkinnableObjectManager(ObjectManager):
         if sfn is not None:
             sf = getattr(self, sfn, None)
             if sf is not None:
-               if name is not None:
-                   skinob = sf.getSkinByName(name)
-               if skinob is None:
-                   skinob = sf.getSkinByName(sf.getDefaultSkin())
-                   if skinob is None:
-                       skinob = sf.getSkinByPath('')
+                if name is not None:
+                    skinob = sf.getSkinByName(name)
+                if skinob is None:
+                    skinob = sf.getSkinByName(sf.getDefaultSkin())
+                    if skinob is None:
+                        skinob = sf.getSkinByPath('')
         return skinob
 
     security.declarePublic('getSkinNameFromRequest')

@@ -368,7 +368,6 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         meta_types = getattr(self, 'all_meta_types', None)
 
         if mt is not None and meta_types is not None:
-            method_name = None
             mt_permission = None
 
             if callable(meta_types):
@@ -376,7 +375,6 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
             for d in meta_types:
                 if d['name'] == mt:
-                    method_name = d['action']
                     mt_permission = d.get('permission')
                     break
 

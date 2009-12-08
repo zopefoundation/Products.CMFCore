@@ -339,7 +339,6 @@ class MembershipTool(UniqueObject, Folder):
                  DeprecationWarning, stacklevel=2)
 
         if not self.isAnonymousUser():
-            acl_users = self.acl_users
             user = _getAuthenticatedUser(self)
             name = user.getUserName()
             # this really does need to be the user name, and not the user id,
@@ -423,7 +422,7 @@ class MembershipTool(UniqueObject, Folder):
         if _checkPermission(ManageUsers, obj):
             local_roles = self.getPortalRoles()
             if 'Manager' not in member_roles:
-                 local_roles.remove('Manager')
+                local_roles.remove('Manager')
         else:
             local_roles = [ role for role in member_roles
                             if role not in ('Member', 'Authenticated') ]
@@ -515,7 +514,7 @@ class MembershipTool(UniqueObject, Folder):
         # Delete members' home folders including all content items.
         if delete_memberareas:
             for member_id in member_ids:
-                 self.deleteMemberArea(member_id)
+                self.deleteMemberArea(member_id)
 
         # Delete members' local roles.
         if delete_localroles:
