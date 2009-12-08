@@ -37,7 +37,7 @@ _TESTS_PATH = os.path.split(__file__)[0]
 
 _DIRECTORYVIEW_XML = """\
 <object name="foo_directoryview" meta_type="Filesystem Directory View"
-   directory="CMFCore/exportimport/tests/one"/>
+   directory="Products.CMFCore.exportimport.tests:one"/>
 """
 
 _SKINSTOOL_BODY = """\
@@ -106,9 +106,9 @@ _FRAGMENT3_IMPORT = """\
 <?xml version="1.0"?>
 <object name="portal_skins" meta_type="Dummy Skins Tool">
  <object name="three" meta_type="Filesystem Directory View"
-    directory="CMFCore/exportimport/tests/three"/>
+    directory="Products.CMFCore.exportimport.tests:three"/>
  <object name="four" meta_type="Filesystem Directory View"
-    directory="CMFCore/exportimport/tests/four"/>
+    directory="Products.CMFCore.exportimport.tests:four"/>
  <skin-path name="*">
   <layer name="three" insert-before="*"/>
   <layer name="four" insert-after="*"/>
@@ -249,7 +249,7 @@ class DirectoryViewAdapterTests(_DVRegistrySetup,
         return DirectoryViewNodeAdapter
 
     def _populate(self, obj):
-        obj._dirpath = 'CMFCore/exportimport/tests/one'
+        obj._dirpath = 'Products.CMFCore.exportimport.tests:one'
 
     def setUp(self):
         from Products.CMFCore.DirectoryView import DirectoryView
@@ -279,14 +279,13 @@ class SkinsToolXMLAdapterTests(_DVRegistrySetup,
 
         obj._setObject('foo_directoryview',
                        DirectoryView('foo_directoryview',
-                                     'CMFCore/exportimport/tests/one'))
+                                   'Products.CMFCore.exportimport.tests:one'))
         obj.addSkinSelection('foo_path', 'one')
 
     def _verifyImport(self, obj):
         pass
 
     def setUp(self):
-        from Products.CMFCore import DirectoryView
         from Products.CMFCore.SkinsTool import SkinsTool
 
         _DVRegistrySetup.setUp(self)
@@ -303,8 +302,9 @@ class _SkinsSetup(_DVRegistrySetup, BaseRegistryTests):
         from Products.CMFCore.DirectoryView import DirectoryView
 
         site = DummySite()
-        fsdvs = [ (id, DirectoryView(id, 'CMFCore/exportimport/tests/%s' %
-                                         id)) for id in ids ]
+        fsdvs = [ (id, DirectoryView(id,
+                               'Products.CMFCore.exportimport.tests:%s' % id))
+                  for id in ids ]
         site._setObject('portal_skins', DummySkinsTool(selections, fsdvs))
 
         site.REQUEST = 'exists'

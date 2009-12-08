@@ -6,7 +6,10 @@ import sys
 import time
 import logging
 from os import chmod, curdir, mkdir, remove, stat, walk
-from os.path import join, abspath, dirname
+from os.path import abspath
+from os.path import basename
+from os.path import dirname
+from os.path import join
 from shutil import copytree, rmtree
 from stat import S_IREAD, S_IWRITE
 from tempfile import mktemp
@@ -124,29 +127,34 @@ else:
 _prefix = abspath(join(_prefix,'..'))
 
 
-class FSDVTest(unittest.TestCase, WarningInterceptor):
+class FSDVTest(unittest.TestCase):
 
     tempname = _sourceprefix = _prefix
     _skinname = 'fake_skins'
     _layername = 'fake_skin'
 
-    def _registerDirectory(self, object=None, ignore=None):
-        self._trap_warning_output()
-        from Products.CMFCore.DirectoryView import registerDirectory
-        from Products.CMFCore.DirectoryView import addDirectoryViews
+    def _registerDirectory(self, obj=None, ignore=None):
+        from Products.CMFCore.DirectoryView import _dirreg
+        from Products.CMFCore.DirectoryView import createDirectoryView
         if ignore is None:
             from Products.CMFCore.DirectoryView import ignore
-        registerDirectory(self._skinname, self.tempname, ignore=ignore)
-        if object is not None:
-            ob = self.ob = DummyFolder()
-            addDirectoryViews(ob, self._skinname, self.tempname)
+        filepath = join(self.tempname, self._skinname)
+        subpath = basename(self.tempname)
+        if subpath != 'tests':
+            # we have a temp dir in tests
+            subpath = 'tests/%s' % subpath
+        reg_key = 'Products.CMFCore:%s/%s' % (subpath, self._skinname)
+        _dirreg.registerDirectoryByKey(filepath, reg_key, ignore=ignore)
+        if obj is not None:
+            ob = obj.ob = DummyFolder()
+            info = _dirreg.getDirectoryInfo(reg_key)
+            for entry in info.getSubdirs():
+                entry_reg_key = '/'.join((reg_key, entry))
+                createDirectoryView(ob, entry_reg_key, entry)
 
     def setUp(self):
         # store the skin path name
         self.skin_path_name = join(self.tempname,self._skinname,self._layername)
-
-    def tearDown(self):
-        self._free_warning_output()
 
 
 class WritableFSDVTest(FSDVTest):

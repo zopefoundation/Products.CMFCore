@@ -1,3 +1,20 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors. All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+""" Unit tests for DirectoryView module.
+
+$Id$
+"""
+
 import unittest
 import Testing
 
@@ -32,7 +49,6 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
     """
 
     def setUp(self):
-        self._trap_warning_output()
         from Products.CMFCore.DirectoryView import registerDirectory
         from Products.CMFCore.DirectoryView import addDirectoryViews
         registerDirectory('fake_skins', _globals)
@@ -68,74 +84,8 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
-    # 1 - 7, in effect, test the pre CMF 1.5 backwards compatibility code in
-    # DirectoryView's __of__ method. See DirectoryView.py for details
-
-    # windows INSTANCE_HOME
-    def test_getDirectoryInfo1(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
-    # windows SOFTWARE_HOME
-    def test_getDirectoryInfo2(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties(
-                  r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
-    # *nix INSTANCE_HOME
-    def test_getDirectoryInfo3(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
-    # *nix SOFTWARE_HOME
-    def test_getDirectoryInfo4(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties(
-           '/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
-    # windows PRODUCTS_PATH
-    def test_getDirectoryInfo5(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties( mktemp() +
-                               r'\Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
-    # linux PRODUCTS_PATH
-    def test_getDirectoryInfo6(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties( mktemp() +
-                                '/Products/CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
-    # second 'Products' in path
-    def test_getDirectoryInfo7(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties(
-           r'C:\CoolProducts\Zope\Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
-    # Test pre CMF 2.1 backwards compatibility code in DirectoryView's __of__
-    # method.
-    def test_getDirectoryInfo8(self):
-        skin = self.ob.fake_skin
-        skin.manage_properties('CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
-                         self.ob.fake_skin.getDirPath() )
-
     # Test we do nothing if given a really wacky path
     def test_UnhandleableExpandPath( self ):
-        from tempfile import mktemp
         self._trap_warning_output()
         file = mktemp()
         self.ob.fake_skin.manage_properties(file)
@@ -146,14 +96,6 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         text = 'DirectoryView fake_skin refers to a non-existing path %r' % file
         self.assert_(text in warnings)
         self.failUnless(text in self._our_stderr_stream.getvalue())
-
-    def test_UnhandleableMinimalPath( self ):
-        from Products.CMFCore.utils import minimalpath, normalize
-        from tempfile import mktemp
-        weirdpath = mktemp()
-        # we need to normalize 'cos minimalpath does, btu we're not testing
-        # normalize in this unit test.
-        self.assertEqual( normalize(weirdpath), minimalpath(weirdpath) )
 
     # this test tests that registerDirectory creates keys in the right format.
     def test_registerDirectoryKeys(self):
