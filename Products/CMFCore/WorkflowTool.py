@@ -16,7 +16,6 @@ $Id$
 """
 
 import sys
-from warnings import warn
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
@@ -468,14 +467,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         wf = getattr(self, wf_id, None)
         if IWorkflowDefinition.providedBy(wf):
             return wf
-        if getattr(wf, '_isAWorkflow', False):
-            # BBB
-            warn("The '_isAWorkflow' marker attribute for workflow "
-                 "definitions is deprecated and will be removed in "
-                 "CMF 2.3;  please mark the definition with "
-                 "'IWorkflowDefinition' instead.",
-                 DeprecationWarning, stacklevel=2)
-            return wf
         else:
             return None
 
@@ -494,23 +485,12 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     security.declarePrivate('getWorkflowIds')
     def getWorkflowIds(self):
-
         """ Return the list of workflow ids.
         """
         wf_ids = []
-
         for obj_name, obj in self.objectItems():
             if IWorkflowDefinition.providedBy(obj):
                 wf_ids.append(obj_name)
-            elif getattr(obj, '_isAWorkflow', 0):
-                # BBB
-                warn("The '_isAWorkflow' marker attribute for workflow "
-                     "definitions is deprecated and will be removed in "
-                     "CMF 2.3;  please mark the definition with "
-                     "'IWorkflowDefinition' instead.",
-                     DeprecationWarning, stacklevel=2)
-                wf_ids.append(obj_name)
-
         return tuple(wf_ids)
 
     security.declareProtected(ManagePortal, 'getWorkflowsFor')

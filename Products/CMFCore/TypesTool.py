@@ -747,13 +747,6 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         ob = getattr( self, contentType, None )
         if ITypeInformation.providedBy(ob):
             return ob
-        if getattr(aq_base(ob), '_isTypeInformation', 0):
-            # BBB
-            warn("The '_isTypeInformation' marker attribute is deprecated, "
-                 "and will be removed in CMF 2.3.  Please mark the instance "
-                 "with the 'ITypeInformation' interface instead.",
-                 DeprecationWarning, stacklevel=2)
-            return ob
         else:
             return None
 
@@ -769,14 +762,6 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             # Filter out things that aren't TypeInformation and
             # types for which the user does not have adequate permission.
             if ITypeInformation.providedBy(t):
-                rval.append(t)
-            elif getattr(aq_base(t), '_isTypeInformation', 0):
-                # BBB
-                warn("The '_isTypeInformation' marker attribute is "
-                     "deprecated, and will be removed in CMF 2.3.  "
-                     "Please mark the instance with the 'ITypeInformation' "
-                     "interface instead.",
-                     DeprecationWarning, stacklevel=2)
                 rval.append(t)
         # Skip items with no ID:  old signal for "not ready"
         rval = [t for t in rval if t.getId()]

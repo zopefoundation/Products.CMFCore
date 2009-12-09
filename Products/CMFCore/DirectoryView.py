@@ -487,13 +487,6 @@ class DirectoryViewSurrogate(Folder):
         while ob:
             if IDirectoryView.providedBy(ob):
                 ob = aq_parent(ob)
-            elif getattr(ob, '_isDirectoryView', 0):
-                # BBB
-                warn("The '_isDirectoryView' marker attribute is deprecated, "
-                     "and will be removed in CMF 2.3.  Please mark the "
-                     "instance with the 'IDirectoryView' interface instead.",
-                     DeprecationWarning, stacklevel=2)
-                ob = aq_parent(ob)
             else:
                 break
         return ob

@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Tools and PortalFolder: Removed support for deprecated marker attributes.
+  '_isDirectoryView', '_isPortalRoot', '_isTypeInformation' and '_isAWorkflow'
+  are no longer supported.
+
 - utils: Removed deprecated functions.
   'getToolByInterfaceName', 'initializeBasesPhase1', 'initializeBasesPhase2',
   'expandpath' and 'minimalpath' are no longer available.

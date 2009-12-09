@@ -18,7 +18,6 @@ $Id$
 import base64
 import marshal
 import re
-from warnings import warn
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -335,14 +334,6 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
             ob = aq_inner(self)
             while ob is not None:
                 if ISiteRoot.providedBy(ob):
-                    break
-                # BBB
-                if getattr(ob, '_isPortalRoot', False):
-                    warn("The '_isPortalRoot' marker attribute for site "
-                         "roots is deprecated and will be removed in "
-                         "CMF 2.3;  please mark the root object with "
-                         "'ISiteRoot' instead.",
-                         DeprecationWarning, stacklevel=2)
                     break
                 ob = aq_parent(ob)
 
