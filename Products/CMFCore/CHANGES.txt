@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- DirectoryView: Removed support for deprecated old API.
+
 
 2.2.0-beta (2009-12-06)
 -----------------------

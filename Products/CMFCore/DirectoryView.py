@@ -37,7 +37,6 @@ from Products.CMFCore.interfaces import IDirectoryView
 from Products.CMFCore.permissions import AccessContentsInformation as ACI
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import normalize
 from Products.CMFCore.utils import getPackageName
 from Products.CMFCore.utils import getPackageLocation
 from Products.CMFCore.utils import ProductsPath
@@ -327,15 +326,8 @@ class DirectoryRegistry:
     def registerDirectory(self, name, _prefix, subdirs=1, ignore=ignore):
         # This what is actually called to register a
         # file system directory to become a FSDV.
-        if not isinstance(_prefix, basestring):
-            package = getPackageName(_prefix)
-            filepath = os.path.join(getPackageLocation(package), name)
-        else:
-            warn('registerDirectory() called with deprecated _prefix type. '
-                 'Support for paths will be removed in CMF 2.3. Please use '
-                 'globals instead.', DeprecationWarning, stacklevel=2)
-            filepath = os.path.join(_prefix, name)
-            (package, name) = _findProductForPath(_prefix, name)
+        package = getPackageName(_prefix)
+        filepath = os.path.join(getPackageLocation(package), name)
         reg_key = _generateKey(package, name)
         self.registerDirectoryByKey(filepath, reg_key, subdirs, ignore)
 
@@ -349,14 +341,6 @@ class DirectoryRegistry:
                 entry_reg_key = '/'.join((reg_key, entry))
                 self.registerDirectoryByKey(entry_filepath, entry_reg_key,
                                             subdirs, ignore)
-
-    def registerDirectoryByPath(self, filepath, subdirs=1, ignore=ignore):
-        warn('registerDirectoryByPath() is deprecated and will be removed in '
-             'CMF 2.3. Please use registerDirectoryByKey() instead.',
-             DeprecationWarning, stacklevel=2)
-        (package, subdir) = _findProductForPath(filepath)
-        reg_key = _generateKey(package, subdir)
-        self.registerDirectoryByKey(filepath, reg_key, subdirs, ignore)
 
     def reloadDirectory(self, reg_key):
         info = self.getDirectoryInfo(reg_key)
@@ -372,46 +356,6 @@ class DirectoryRegistry:
         dirs = self._directories.keys()
         dirs.sort()
         return dirs
-
-    def getCurrentKeyFormat(self, reg_key):
-        # BBB: method will be removed in CMF 2.3
-
-        if reg_key in self._directories:
-            return reg_key
-
-        # for DirectoryViews created with CMF versions before 2.1
-        # a path relative to Products/ was used
-        dirpath = reg_key.replace('\\', '/')
-        if dirpath.startswith('Products/'):
-            dirpath = dirpath[9:]
-        product = ['Products']
-        dirparts = dirpath.split('/')
-        while dirparts:
-            product.append(dirparts[0])
-            dirparts = dirparts[1:]
-            possible_key = _generateKey('.'.join(product), '/'.join(dirparts))
-            if possible_key in self._directories:
-                return possible_key
-
-        # for DirectoryViews created with CMF versions before 1.5
-        # this is basically the old minimalpath() code
-        dirpath = normalize(reg_key)
-        index = dirpath.rfind('Products')
-        if index == -1:
-            index = dirpath.rfind('products')
-        if index != -1:
-            dirpath = dirpath[index+len('products/'):]
-            product = ['Products']
-            dirparts = dirpath.split('/')
-            while dirparts:
-                product.append(dirparts[0])
-                dirparts = dirparts[1:]
-                possible_key = _generateKey('.'.join(product),
-                                            '/'.join(dirparts))
-                if possible_key in self._directories:
-                    return possible_key
-
-        raise ValueError('Unsupported key given: %s' % reg_key)
 
 
 _dirreg = DirectoryRegistry()
@@ -477,16 +421,11 @@ class DirectoryView(Persistent):
         reg_key = self._dirpath
         info = _dirreg.getDirectoryInfo(reg_key)
         if info is None:
-            try:
-                reg_key = self._dirpath = _dirreg.getCurrentKeyFormat(reg_key)
-                info = _dirreg.getDirectoryInfo(reg_key)
-            except ValueError:
-                # During GenericSetup a view will be created with an empty
-                # reg_key. This is expected behaviour, so do not warn about it.
-                if reg_key:
-                    warn('DirectoryView %s refers to a non-existing path %r' %
-                          (self.id, reg_key), UserWarning)
-        if info is None:
+            # During GenericSetup a view will be created with an empty
+            # reg_key. This is expected behaviour, so do not warn about it.
+            if reg_key:
+                warn('DirectoryView %s refers to a non-existing path %r' %
+                      (self.id, reg_key), UserWarning)
             data = {}
             objects = ()
         else:
@@ -585,14 +524,6 @@ manage_addDirectoryViewForm = HTMLFile('dtml/addFSDirView', globals())
 def createDirectoryView(parent, reg_key, id=None):
     """ Add either a DirectoryView or a derivative object.
     """
-    info = _dirreg.getDirectoryInfo(reg_key)
-    if info is None:
-        reg_key = _dirreg.getCurrentKeyFormat(reg_key)
-        info = _dirreg.getDirectoryInfo(reg_key)
-        warn('createDirectoryView() called with deprecated reg_key format. '
-             'Support for old key formats will be removed in CMF 2.3. Please '
-             'use the new key format <product>:<subdir> instead.',
-             DeprecationWarning, stacklevel=2)
     if not id:
         id = reg_key.split('/')[-1]
     else:
@@ -607,13 +538,7 @@ def addDirectoryViews(ob, name, _prefix):
     still needs to be called by product initialization code to satisfy
     persistence demands.
     """
-    if not isinstance(_prefix, basestring):
-        package = getPackageName(_prefix)
-    else:
-        warn('addDirectoryViews() called with deprecated _prefix type. '
-             'Support for paths will be removed in CMF 2.3. Please use '
-             'globals instead.', DeprecationWarning, stacklevel=2)
-        (package, name) = _findProductForPath(_prefix, name)
+    package = getPackageName(_prefix)
     reg_key = _generateKey(package, name)
     info = _dirreg.getDirectoryInfo(reg_key)
     if info is None:
