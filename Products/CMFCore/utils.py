@@ -43,7 +43,6 @@ from OFS.misc_ import misc_ as misc_images
 from OFS.misc_ import Misc_ as MiscImage
 from OFS.ObjectManager import UNIQUE
 from OFS.PropertyManager import PropertyManager
-from OFS.PropertySheets import PropertySheets
 from OFS.SimpleItem import SimpleItem
 from thread import allocate_lock
 from webdav.common import rfc1123_date
@@ -123,15 +122,6 @@ def getToolByName(obj, name, default=_marker):
         if tool is _marker:
             raise AttributeError, name
         return tool
-
-security.declarePublic('getToolByInterfaceName')
-def getToolByInterfaceName(dotted_name, default=_marker):
-    warn('getToolByInterfaceName() is deprecated and will be removed in CMF '
-         '2.3. Use getUtilityByInterfaceName instead.',
-         DeprecationWarning, stacklevel=2)
-
-    return getUtilityByInterfaceName(dotted_name, default)
-
 
 security.declarePublic('getUtilityByInterfaceName')
 def getUtilityByInterfaceName(dotted_name, default=_marker):
@@ -698,44 +688,6 @@ def manage_addContent( self, id, type, REQUEST=None ):
     if REQUEST is not None:
         return self.manage_main(self, REQUEST)
 
-
-def initializeBasesPhase1(base_classes, module):
-    """ Execute the first part of initialization of ZClass base classes.
-
-    Stuffs a _ZClass_for_x class in the module for each base.
-    """
-    warn('initializeBasesPhase1() is deprecated and will be removed in CMF '
-         '2.3. There is no replacement because ZClasses are also deprecated.',
-         DeprecationWarning, stacklevel=2)
-
-    rval = []
-    for base_class in base_classes:
-        d={}
-        zclass_name = '_ZClass_for_%s' % base_class.__name__
-        exec 'class %s: pass' % zclass_name in d
-        Z = d[ zclass_name ]
-        Z.propertysheets = PropertySheets()
-        Z._zclass_ = base_class
-        Z.manage_options = ()
-        Z.__module__ = module.__name__
-        setattr( module, zclass_name, Z )
-        rval.append(Z)
-    return rval
-
-def initializeBasesPhase2(zclasses, context):
-    """ Finishes ZClass base initialization.
-
-    o 'zclasses' is the list returned by initializeBasesPhase1().
-
-    o 'context' is a ProductContext object.
-    """
-    warn('initializeBasesPhase2() is deprecated and will be removed in CMF '
-         '2.3. There is no replacement because ZClasses are also deprecated.',
-         DeprecationWarning, stacklevel=2)
-
-    for zclass in zclasses:
-        context.registerZClass(zclass)
-
 def registerIcon(klass, iconspec, _prefix=None):
 
     """ Make an icon available for a given class.
@@ -798,49 +750,6 @@ def normalize(p):
 
 import Products
 ProductsPath = [ abspath(ppath) for ppath in Products.__path__ ]
-
-security.declarePublic('expandpath')
-def expandpath(p):
-    """ Convert minimal filepath to (expanded) filepath.
-
-    The (expanded) filepath is the valid absolute path on the current platform
-    and setup.
-    """
-    warn('expandpath() is deprecated and will be removed in CMF 2.3.',
-         DeprecationWarning, stacklevel=2)
-
-    p = os_path.normpath(p)
-    if os_path.isabs(p):
-        return p
-
-    for ppath in ProductsPath:
-        abs = os_path.join(ppath, p)
-        if os_path.exists(abs):
-            return abs
-
-    # return the last one, errors will happen else where as as result
-    # and be caught
-    return abs
-
-security.declarePublic('minimalpath')
-def minimalpath(p):
-    """ Convert (expanded) filepath to minimal filepath.
-
-    The minimal filepath is the cross-platform / cross-setup path stored in
-    persistent objects and used as key in the directory registry.
-
-    Returns a slash-separated path relative to the Products path. If it can't
-    be found, a normalized path is returned.
-    """
-    warn('minimalpath() is deprecated and will be removed in CMF 2.3.',
-         DeprecationWarning, stacklevel=2)
-
-    p = abspath(p)
-    for ppath in ProductsPath:
-        if p.startswith(ppath):
-            p = p[len(ppath)+1:]
-            break
-    return p.replace('\\','/')
 
 security.declarePrivate('getContainingPackage')
 def getContainingPackage(module):

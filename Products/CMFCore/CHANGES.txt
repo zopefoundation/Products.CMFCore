@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- utils: Removed deprecated functions.
+  'getToolByInterfaceName', 'initializeBasesPhase1', 'initializeBasesPhase2',
+  'expandpath' and 'minimalpath' are no longer available.
+
 - DirectoryView: Removed support for deprecated old API.
 
 
