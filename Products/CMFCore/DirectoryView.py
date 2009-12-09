@@ -117,9 +117,9 @@ class DirectoryInformation:
             self._walker = _walker(self.ignore)
         subdirs = []
         for entry in _filtered_listdir(self._filepath, ignore=self.ignore):
-           entry_filepath = os.path.join(self._filepath, entry)
-           if os.path.isdir(entry_filepath):
-               subdirs.append(entry)
+            entry_filepath = os.path.join(self._filepath, entry)
+            if os.path.isdir(entry_filepath):
+                subdirs.append(entry)
         self.subdirs = tuple(subdirs)
 
     def getSubdirs(self):
@@ -423,7 +423,6 @@ registerMetaType = _dirreg.registerMetaType
 def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
     if not hasattr(ob, 'objectValues'):
         return
-    values = ob.objectValues()
     for subob in ob.objectValues():
         base = getattr(subob, 'aq_base', subob)
         if getattr(base, 'isPrincipiaFolderish', 0):
