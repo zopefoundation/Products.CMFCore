@@ -20,7 +20,6 @@ $Id$
 
 import logging
 from thread import get_ident
-from warnings import warn
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
@@ -113,7 +112,7 @@ class SkinnableObjectManager(ObjectManager):
                 return REQUEST.get(sf.getRequestVarname(), None)
 
     security.declarePublic('changeSkin')
-    def changeSkin(self, skinname, REQUEST=_MARKER):
+    def changeSkin(self, skinname, REQUEST=None):
         '''Change the current skin.
 
         Can be called manually, allowing the user to change
@@ -123,11 +122,6 @@ class SkinnableObjectManager(ObjectManager):
         if skinobj is not None:
             tid = get_ident()
             SKINDATA[tid] = (skinobj, skinname, {}, {})
-            if REQUEST is _MARKER:
-                REQUEST = getattr(self, 'REQUEST', None)
-                warn("changeSkin should be called with 'REQUEST' as second "
-                     "argument. The BBB code will be removed in CMF 2.3.",
-                     DeprecationWarning, stacklevel=2)
             if REQUEST is not None:
                 REQUEST._hold(SkinDataCleanup(tid))
 
@@ -157,21 +151,14 @@ class SkinnableObjectManager(ObjectManager):
             del SKINDATA[tid]
 
     security.declarePublic('setupCurrentSkin')
-    def setupCurrentSkin(self, REQUEST=_MARKER):
+    def setupCurrentSkin(self, REQUEST=None):
         '''
         Sets up skindata so that __getattr__ can find it.
 
         Can NOT be called manually to change skins in the middle of a
         request! Use changeSkin for that.
         '''
-        if REQUEST is _MARKER:
-            REQUEST = getattr(self, 'REQUEST', None)
-            warn("setupCurrentSkin should be called with 'REQUEST' as "
-                 "argument. The BBB code will be removed in CMF 2.3.",
-                 DeprecationWarning, stacklevel=2)
         if REQUEST is None:
-            # self is not fully wrapped at the moment.  Don't
-            # change anything.
             return
         if SKINDATA.has_key(get_ident()):
             # Already set up for this request.

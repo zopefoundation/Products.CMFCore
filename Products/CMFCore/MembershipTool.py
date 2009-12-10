@@ -330,14 +330,6 @@ class MembershipTool(UniqueObject, Folder):
         Note that this call should *not* cause any change at all to user
         databases.
         '''
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
-        if REQUEST is None:
-            REQUEST = self.REQUEST
-            warn("credentialsChanged should be called with 'REQUEST' as "
-                 "second argument. The BBB code will be removed in CMF 2.3.",
-                 DeprecationWarning, stacklevel=2)
-
         if not self.isAnonymousUser():
             user = _getAuthenticatedUser(self)
             name = user.getUserName()
