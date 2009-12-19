@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Require new zope.traversing release including the BeforeTraverseEvent.
+
 - Skinnable and MembershipTool: Removed support for missing REQUEST argument.
   'changeSkin', 'setupCurrentSkin' and 'credentialsChanged' will no longer
   try to acquire the request if it is not passed in explicitly.

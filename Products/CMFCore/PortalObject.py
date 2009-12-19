@@ -18,10 +18,10 @@ $Id$
 from App.class_init import InitializeClass
 from five.localsitemanager.registry import PersistentComponents
 from Products.Five.component.interfaces import IObjectManagerSite
-from zope.app.publication.zopepublication import BeforeTraverseEvent
 from zope.component.interfaces import ComponentLookupError
 from zope.event import notify
 from zope.interface import implements
+from zope.traversing.interfaces import BeforeTraverseEvent
 
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.permissions import AddPortalMember

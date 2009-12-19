@@ -49,6 +49,7 @@ setup(name='Products.%s' % NAME,
           'Zope2 >= 2.12.0b4dev',
           'five.localsitemanager >= 0.3',
           'Products.GenericSetup',
+          'zope.traversing >= 3.9.0',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',
