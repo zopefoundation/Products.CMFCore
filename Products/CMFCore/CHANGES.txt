@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Added zope.app.testing as a testing dependency.
+
 - Require new zope.traversing release including the BeforeTraverseEvent.
 
 - Skinnable and MembershipTool: Removed support for missing REQUEST argument.
