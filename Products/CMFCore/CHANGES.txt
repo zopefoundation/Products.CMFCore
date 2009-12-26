@@ -6,7 +6,7 @@ Products.CMFCore Changelog
 
 - Added zope.app.testing as a testing dependency.
 
-- Require new zope.traversing release including the BeforeTraverseEvent.
+- Import BeforeTraverseEvent from new location if available.
 
 - Skinnable and MembershipTool: Removed support for missing REQUEST argument.
   'changeSkin', 'setupCurrentSkin' and 'credentialsChanged' will no longer

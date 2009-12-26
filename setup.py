@@ -12,7 +12,7 @@ def _package_doc(name):
     return f.read()
 
 _boundary = '\n' + ('-' * 60) + '\n\n'
-README = (_package_doc('README.txt')
+README = ( _package_doc('README.txt')
          + _boundary
          + _package_doc('CHANGES.txt')
          + _boundary
@@ -49,7 +49,6 @@ setup(name='Products.%s' % NAME,
           'Zope2 >= 2.12.0b4dev',
           'five.localsitemanager >= 0.3',
           'Products.GenericSetup',
-          'zope.traversing >= 3.9.0',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',
@@ -57,9 +56,8 @@ setup(name='Products.%s' % NAME,
           ],
       extras_require=dict(
         test=[
-          'zope.testing >= 3.7.0',
           'zope.app.testing',
-        ]),
+          ]),
       test_loader='zope.testing.testrunner.eggsupport:SkipLayers',
       test_suite='Products.%s' % NAME,
       entry_points="""
