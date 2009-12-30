@@ -215,7 +215,11 @@ def importTypesTool(context):
     """Import types tool and content types from XML files.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'portal_types')
+    tool = getToolByName(site, 'portal_types', None)
+    if tool is None:
+        logger = context.getLogger('types')
+        logger.debug('Nothing to import.')
+        return
 
     importObjects(tool, '', context)
 

@@ -27,7 +27,11 @@ def importMailHost(context):
     """Import mailhost settings from an XML file.
     """
     sm = getSiteManager(context.getSite())
-    tool = sm.getUtility(IMailHost)
+    tool = sm.queryUtility(IMailHost)
+    if tool is None:
+        logger = context.getLogger('mailhost')
+        logger.debug('Nothing to import.')
+        return
 
     importObjects(tool, '', context)
 

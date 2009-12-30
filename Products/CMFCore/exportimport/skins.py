@@ -220,7 +220,11 @@ def importSkinsTool(context):
     """Import skins tool FSDirViews and skin paths from an XML file.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'portal_skins')
+    tool = getToolByName(site, 'portal_skins', None)
+    if tool is None:
+        logger = context.getLogger('skins')
+        logger.debug('Nothing to import.')
+        return
 
     importObjects(tool, '', context)
 

@@ -121,7 +121,11 @@ def importWorkflowTool(context):
     """Import workflow tool and contained workflow definitions from XML files.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'portal_workflow')
+    tool = getToolByName(site, 'portal_workflow', None)
+    if tool is None:
+        logger = context.getLogger('workflow')
+        logger.debug('Nothing to import.')
+        return
 
     importObjects(tool, '', context)
 

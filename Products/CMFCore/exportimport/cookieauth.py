@@ -65,7 +65,7 @@ def importCookieCrumbler(context):
     tool = getToolByName(site, 'cookie_authentication', None)
     if tool is None:
         logger = context.getLogger('cookies')
-        logger.debug('Nothing cookie tool to import.')
+        logger.debug('Nothing to import.')
         return
 
     importObjects(tool, '', context)
