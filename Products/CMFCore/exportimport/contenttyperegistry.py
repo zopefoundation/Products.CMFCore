@@ -112,7 +112,11 @@ def importContentTypeRegistry(context):
     """Import content type registry settings from an XML file.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'content_type_registry')
+    tool = getToolByName(site, 'content_type_registry', None)
+    if tool is None:
+        logger = context.getLogger('contenttypes')
+        logger.debug('Nothing to import.')
+        return
 
     importObjects(tool, '', context)
 

@@ -260,7 +260,11 @@ def importActionProviders(context):
     """Import actions tool.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'portal_actions')
+    tool = getToolByName(site, 'portal_actions', None)
+    if tool is None:
+        logger = context.getLogger('actions')
+        logger.debug('Nothing to import.')
+        return
 
     importObjects(tool, '', context)
 

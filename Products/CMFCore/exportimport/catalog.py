@@ -25,7 +25,11 @@ def importCatalogTool(context):
     """Import catalog tool.
     """
     site = context.getSite()
-    tool = getToolByName(site, 'portal_catalog')
+    tool = getToolByName(site, 'portal_catalog', None)
+    if tool is None:
+        logger = context.getLogger('catalog')
+        logger.debug('Nothing to import.')
+        return
 
     importObjects(tool, '', context)
 
