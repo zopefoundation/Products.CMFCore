@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Added a permissions.zcml file defining our own permissions. This was
+  formerly done in Zope 2's Products.Five.
+
 - Changed GenericSetup import handlers to fail silently if they
   are called in a context that does not contain the items they 
   import.

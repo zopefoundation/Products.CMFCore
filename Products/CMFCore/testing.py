@@ -210,6 +210,7 @@ class ExportImportZCMLLayer(ZopeLite):
         zcml.load_config('permissions.zcml', Products.Five)
         zcml.load_config('meta.zcml', Products.GenericSetup)
         zcml.load_config('configure.zcml', Products.GenericSetup)
+        zcml.load_config('permissions.zcml', Products.CMFCore)
         zcml.load_config('tool.zcml', Products.CMFCore)
         zcml.load_config('configure.zcml', Products.CMFCore.exportimport)
         zcml.load_string(_DUMMY_ZCML)
