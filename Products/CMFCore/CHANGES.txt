@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.0 (unreleased)
+2.2.0 (2010-01-04)
 ------------------
 
 - Changed GenericSetup import handlers to fail silently if they
