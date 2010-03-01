@@ -149,6 +149,8 @@ class Action(PropertyManager, SimpleItem):
                     val = True
             elif id == 'i18n_domain':
                 continue
+            elif id == 'link_target':
+                val = val or None
             elif self.i18n_domain and id in ('title', 'description'):
                 val = Message(val, self.i18n_domain)
             lazy_map[id] = val
@@ -177,7 +179,7 @@ class ActionInfo(UserDict):
                 self.data.setdefault( 'title', self.data['name'] )
                 del self.data['name']
             self.data.setdefault( 'url', '' )
-            self.data.setdefault( 'link_target', '' )
+            self.data.setdefault( 'link_target', None )
             self.data.setdefault( 'icon', '' )
             self.data.setdefault( 'category', 'object' )
             self.data.setdefault( 'visible', True )
@@ -499,6 +501,9 @@ class ActionInformation( SimpleItem ):
         """
         lazy_keys = []
         lazy_map = self.getMapping()
+
+        if not lazy_map['link_target']:
+            lazy_map['link_target'] = None
 
         if lazy_map['action']:
             lazy_map['url'] = self._getActionObject()

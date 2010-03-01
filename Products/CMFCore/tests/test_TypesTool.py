@@ -430,7 +430,7 @@ class TypeInfoTests(WarningInterceptor):
         self.assertEqual(info_data[0]['visible'], True)
         self.assertEqual(info_data[0]['available'], ti._checkAvailable)
         self.assertEqual(info_data[0]['allowed'], ti._checkAllowed)
-        self.assertEqual(info_data[0]['link_target'], '')
+        self.assertEqual(info_data[0]['link_target'], None)
 
         self.assertEqual(set(info_data[1]), set(['available', 'allowed']))
 
