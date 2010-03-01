@@ -72,7 +72,7 @@ class ActionTests(unittest.TestCase):
     def test_getInfoData_empty(self):
         WANTED = ( {'available': True, 'category': '', 'description': '',
                     'id': 'foo', 'icon': '', 'permissions': (), 'title': '',
-                    'url': '', 'visible': True, 'link_target': ''}, [] )
+                    'url': '', 'visible': True, 'link_target': None}, [] )
         a = self._makeOne('foo')
         self.assertEqual( a.getInfoData(), WANTED )
 
@@ -148,7 +148,7 @@ class ActionInfoTests(unittest.TestCase):
 
         WANTED = {'allowed': True, 'available': True, 'category': '',
                   'description': '', 'icon': '', 'id': 'foo', 'title': '',
-                  'url': '', 'visible': True, 'link_target': ''}
+                  'url': '', 'visible': True, 'link_target': None}
 
         action = Action(id='foo')
         ec = None
@@ -169,7 +169,7 @@ class ActionInfoTests(unittest.TestCase):
 
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'description': '', 'id': 'foo', 'title': 'foo', 'url': '',
-                  'visible': True, 'icon': '', 'link_target': ''}
+                  'visible': True, 'icon': '', 'link_target': None}
 
         action = ActionInformation(id='foo')
         ec = None
@@ -189,7 +189,7 @@ class ActionInfoTests(unittest.TestCase):
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'id': 'foo', 'title': 'foo', 'url': '', 'visible': True,
-                  'icon': '' , 'link_target': ''}
+                  'icon': '' , 'link_target': None}
 
         action = {'name': 'foo', 'url': ''}
         ec = None
@@ -221,7 +221,7 @@ class ActionInfoSecurityTests(SecurityTest):
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'id': 'foo', 'title': 'foo', 'url': '', 'visible': True,
-                  'icon': '', 'link_target': ''}
+                  'icon': '', 'link_target': None}
 
         action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
         ec = createExprContext(self.site, self.site, None)
@@ -426,7 +426,7 @@ class ActionInformationTests(TransactionalTest):
         WANTED = ( {'available': True, 'category': 'object',
                     'description': '', 'id': 'foo', 'permissions': (),
                     'title': 'foo', 'url': '', 'visible': True, 'icon': '',
-                    'link_target': ''},[])
+                    'link_target': None},[])
         a = self._makeOne('foo')
         self.assertEqual( a.getInfoData(), WANTED )
 

@@ -396,7 +396,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             lazy_keys.append('icon')
         else:
             lazy_map['icon'] = ''
-        lazy_map['link_target'] = self.link_target
+        lazy_map['link_target'] = self.link_target or None
         lazy_map['visible'] = True
         lazy_map['available'] = self._checkAvailable
         lazy_map['allowed'] = self._checkAllowed
