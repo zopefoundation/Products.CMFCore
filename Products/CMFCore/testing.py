@@ -95,10 +95,14 @@ class EventZCMLLayer(ZopeLite):
 
     @classmethod
     def testSetUp(cls):
+        import OFS
         import Products
 
         zcml.load_config('meta.zcml', Products.Five)
-        zcml.load_config('event.zcml', Products.Five)
+        try:
+            zcml.load_config('event.zcml', OFS)
+        except IOError:  # Zope <= 2.12.x
+            zcml.load_config('event.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.CMFCore)
         setHooks()
 
