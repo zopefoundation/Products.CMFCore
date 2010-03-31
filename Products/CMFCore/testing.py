@@ -204,14 +204,27 @@ class ExportImportZCMLLayer(ZopeLite):
 
     @classmethod
     def testSetUp(cls):
+        import Zope2.App
+        import AccessControl
         import Products.Five
         import Products.GenericSetup
         import Products.CMFCore
         import Products.CMFCore.exportimport
 
+        try:
+            zcml.load_config('meta.zcml', Zope2.App)
+        except IOError:  # Zope <= 2.12.x
+            pass
+
         zcml.load_config('meta.zcml', Products.Five)
-        zcml.load_config('meta.zcml', Products.GenericSetup)
+
+        try:
+            zcml.load_config('permissions.zcml', AccessControl)
+        except IOError:  # Zope <= 2.12.x
+            pass
+
         zcml.load_config('permissions.zcml', Products.Five)
+
         zcml.load_config('meta.zcml', Products.GenericSetup)
         zcml.load_config('configure.zcml', Products.GenericSetup)
         zcml.load_config('permissions.zcml', Products.CMFCore)
