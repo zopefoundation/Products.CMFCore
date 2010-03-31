@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit test mixin classes and layers.
-
-$Id$
 """
 
 from OFS.SimpleItem import SimpleItem
