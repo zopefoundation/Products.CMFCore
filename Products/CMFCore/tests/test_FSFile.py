@@ -11,17 +11,10 @@
 #
 ##############################################################################
 """ Unit tests for FSFile module.
-
-$Id$
 """
-
 import unittest
-import Testing
 
-from os.path import join as path_join
 
-from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
-from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 
@@ -37,11 +30,12 @@ class FSFileTests(RequestTest, FSDVTest):
         FSDVTest.tearDown(self)
 
     def _makeOne( self, id, filename ):
+        import os
 
         from Products.CMFCore.FSFile import FSFile
         from Products.CMFCore.FSMetadata import FSMetadata
 
-        full_path = path_join(self.skin_path_name, filename)
+        full_path = os.path.join(self.skin_path_name, filename)
         metadata = FSMetadata(full_path)
         metadata.read()
         fsfile_ob = FSFile(id, full_path, properties=metadata.getProperties())
@@ -49,8 +43,9 @@ class FSFileTests(RequestTest, FSDVTest):
         return fsfile_ob
 
     def _extractFile( self, filename ):
+        import os
 
-        path = path_join(self.skin_path_name, filename)
+        path = os.path.join(self.skin_path_name, filename)
         f = open( path, 'rb' )
         try:
             data = f.read()
@@ -143,6 +138,8 @@ class FSFileTests(RequestTest, FSDVTest):
         self.assertEqual( self.RESPONSE.getStatus(), 200 )
 
     def test_index_html_with_304_from_cpm( self ):
+        from Products.CMFCore.tests.base.dummy \
+            import DummyCachingManagerWithPolicy
         self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
         path, ref = self._extractFile('test_file.swf')
 
@@ -166,6 +163,7 @@ class FSFileTests(RequestTest, FSDVTest):
 
     def test_index_html_200_with_cpm( self ):
         # should behave the same as without cpm installed
+        from Products.CMFCore.tests.base.dummy import DummyCachingManager
         self.root.caching_policy_manager = DummyCachingManager()
         path, ref = self._extractFile('test_file.swf')
 
@@ -190,6 +188,7 @@ class FSFileTests(RequestTest, FSDVTest):
                         , rfc1123_date( mod_time ) )
 
     def test_caching( self ):
+        from Products.CMFCore.tests.base.dummy import DummyCachingManager
         self.root.caching_policy_manager = DummyCachingManager()
         original_len = len(self.RESPONSE.headers)
         file = self._makeOne('test_file', 'test_file.swf')
@@ -231,7 +230,7 @@ class FSFileTests(RequestTest, FSDVTest):
         file = file.__of__(self.root)
         data = file.index_html(self.REQUEST, self.RESPONSE)
         self.assertEqual(self.RESPONSE.getHeader('content-type'),
-                         'application/x-javascript; charset=utf-8')
+                         'application/javascript; charset=utf-8')
 
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246
