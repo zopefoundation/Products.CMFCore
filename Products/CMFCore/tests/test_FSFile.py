@@ -225,12 +225,14 @@ class FSFileTests(RequestTest, FSDVTest):
                         , rfc1123_date( mod_time ) )
 
     def test_utf8charset_detection( self ):
+        import mimetypes
         file_name = 'testUtf8.js'
+        mtype, ignore_enc = mimetypes.guess_type(file_name)
         file = self._makeOne(file_name, file_name)
         file = file.__of__(self.root)
         data = file.index_html(self.REQUEST, self.RESPONSE)
         self.assertEqual(self.RESPONSE.getHeader('content-type'),
-                         'application/javascript; charset=utf-8')
+                         '%s; charset=utf-8' % mtype)
 
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246
