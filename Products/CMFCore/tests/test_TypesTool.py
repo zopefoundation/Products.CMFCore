@@ -471,6 +471,35 @@ class TypeInfoTests(WarningInterceptor):
         self.assertEqual(ti._actions[1].action.text, wanted_actions_text1)
         self.assertEqual(ti._actions[2].action.text, wanted_actions_text2)
 
+    def test_clearExprObjects(self):
+        """When a *_expr property is set, a *_expr_object attribute is
+        also set which should also be cleared when the *_expr is
+        cleared."""
+        ti_data = {'id': 'foo',
+                   'title': 'Foo',
+                   'description': 'Foo objects are just used for testing.',
+                   'content_meta_type': 'Foo Content',
+                   'factory': 'cmf.foo',
+                   'icon_expr': 'string:${portal_url}/foo_icon_expr.gif',
+                   'add_view_expr': 'string:${folder_url}/foo_add_view',
+                   'link_target': '_new'}
+        ti = self._makeOne(**ti_data)
+        info_data = ti.getInfoData()
+        self.failUnless(hasattr(ti, 'icon_expr_object'))
+        self.failUnless(info_data[0].get('icon'))
+        self.failUnless('icon' in info_data[1])
+        self.failUnless(hasattr(ti, 'add_view_expr_object'))
+        self.failUnless(info_data[0].get('url'))
+        self.failUnless('url' in info_data[1])
+        ti.manage_changeProperties(icon_expr='', add_view_expr='')
+        info_data = ti.getInfoData()
+        self.failIf(hasattr(ti, 'icon_expr_object'))
+        self.failIf(info_data[0].get('icon'))
+        self.failIf('icon' in info_data[1])
+        self.failIf(hasattr(ti, 'add_view_expr_object'))
+        self.failIf(info_data[0].get('url'))
+        self.failIf('url' in info_data[1])
+
 
 class FTIDataTests( TypeInfoTests, unittest.TestCase ):
 

@@ -118,6 +118,29 @@ class ActionTests(unittest.TestCase):
 
         self.failUnless('value=" Add "' in form_html)
 
+    def test_clearExprObjects(self):
+        """When a *_expr property is set, a *_expr_object attribute is
+        also set which should also be cleared when the *_expr is
+        cleared."""
+        a = self._makeOne('foo',
+                          title='Foo Title',
+                          description='Foo description.',
+                          url_expr='string:${object_url}/foo_url',
+                          icon_expr='string:foo_icon',
+                          available_expr='',
+                          permissions=('View',),
+                          visible=False,
+                          link_target='_top')
+        self.failUnless(hasattr(a, 'icon_expr_object'))
+        self.failUnless(hasattr(a, 'url_expr_object'))
+        self.failIf(hasattr(a, 'available_expr_object'))
+        a.manage_changeProperties(
+            icon_expr='', url_expr='', available_expr='')
+        self.failIf(hasattr(a, 'icon_expr_object'))
+        self.failIf(hasattr(a, 'url_expr_object'))
+        self.failIf(hasattr(a, 'available_expr_object'))
+
+
 class DummyRequest:
     def __init__(self):
         self._data = {}

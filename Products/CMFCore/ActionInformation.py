@@ -120,8 +120,12 @@ class Action(PropertyManager, SimpleItem):
         if isinstance(value, list):
             value = tuple(value)
         setattr(self, id, value)
-        if value and id.endswith('_expr'):
-            setattr( self, '%s_object' % id, Expression(value) )
+        if id.endswith('_expr'):
+            attr = '%s_object' % id
+            if value:
+                setattr(self, attr, Expression(value))
+            elif hasattr(self, attr):
+                delattr(self, attr)
 
     security.declarePrivate('getInfoData')
     def getInfoData(self):

@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.1-beta (unreleased)
 -----------------------
 
+- Actions and TypeInformation: Clear the compiled *_expr_object
+  property when the *_expr property is cleared.
+
 - Actions: Return None if 'link_target' is an empty string.
   This helps to avoid invalid empty 'target' attributes in HTML output.
 
