@@ -1,11 +1,15 @@
 Products.CMFCore Changelog
 ==========================
 
+2.2.2 (unreleased)
+------------------
+
+
 2.2.1 (2010-04-07)
 ------------------
 
-- Actions and TypeInformation: Clear the compiled *_expr_object
-  property when the *_expr property is cleared.
+- Actions and TypeInformation: Clear the compiled NNN_expr_object
+  property when the NNN_expr property is cleared.
 
 - Actions: Return None if 'link_target' is an empty string.
   This helps to avoid invalid empty 'target' attributes in HTML output.
@@ -264,7 +268,7 @@ Products.CMFCore Changelog
   (https://bugs.launchpad.net/zope-cmf/+bug/176328)
 
 
-2.1.1-beta (2007-12/29)
+2.1.1-beta (2007-12-29)
 -----------------------
 
 - Testing: Derive test layers from ZopeLite layer if available.
