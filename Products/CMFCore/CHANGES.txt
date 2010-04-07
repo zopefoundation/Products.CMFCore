@@ -1,8 +1,8 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.1-beta (unreleased)
------------------------
+2.2.1 (2010-04-07)
+------------------
 
 - Actions and TypeInformation: Clear the compiled *_expr_object
   property when the *_expr property is cleared.
