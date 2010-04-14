@@ -369,8 +369,7 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
     def test_before_traverse_hooks(self):
         from OFS.Folder import Folder
         container = Folder()
-        cc = self._makeOne()
-        cc._setId(self._CC_ID)
+        cc = self._makeOne(self._CC_ID)
 
         marker = []
         bt_before = getattr(container, '__before_traverse__', marker)

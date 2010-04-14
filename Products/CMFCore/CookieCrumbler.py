@@ -25,7 +25,8 @@ from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
-from OFS.Folder import Folder
+from OFS.SimpleItem import SimpleItem
+from OFS.PropertyManager import PropertyManager
 from OFS.interfaces import IObjectWillBeMovedEvent
 from zExceptions import Redirect
 from zope.container.interfaces import IObjectMovedEvent
@@ -34,6 +35,7 @@ from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest
 
 from Products.CMFCore.interfaces import ICookieCrumbler
+from Products.CMFCore.utils import UniqueObject
 
 
 # Constants.
@@ -51,12 +53,16 @@ class CookieCrumblerDisabled(Exception):
     """
 
 
-class CookieCrumbler(Folder):
+class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     """Reads cookies during traversal and simulates the HTTP auth headers.
     """
 
     implements(ICookieCrumbler)
+    
+    manage_options=(PropertyManager.manage_options
+                   + SimpleItem.manage_options
+                   )
 
     meta_type = 'Cookie Crumbler'
 
@@ -101,6 +107,10 @@ class CookieCrumbler(Folder):
     local_cookie_path = False
     cache_header_value = 'private'
     log_username = True
+    
+    def __init__(self, id=None):
+        if id is not None:
+            self.id = str(id)
 
     security.declarePrivate('delRequestVar')
     def delRequestVar(self, req, name):
