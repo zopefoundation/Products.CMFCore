@@ -13,6 +13,8 @@
 </dtml-let>
 <dtml-var manage_tabs>
 
+<dtml-if "not _.hasattr(this(), 'listTypeInfo')">
+
 <p>
     <span style="{Color:red}" class="form-label">DEPRECATION WARNING</span><br/>
     <span class="form-help">
@@ -22,6 +24,7 @@
     shown for tools provided by the CMF.
     </span>
 </p>
+</dtml-if>
 
 <form action="&dtml-absolute_url;" method="POST">
 
