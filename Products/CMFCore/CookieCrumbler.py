@@ -53,7 +53,7 @@ class CookieCrumblerDisabled(Exception):
     """
 
 
-class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
+class CookieCrumbler(PropertyManager, SimpleItem):
 
     """Reads cookies during traversal and simulates the HTTP auth headers.
     """
