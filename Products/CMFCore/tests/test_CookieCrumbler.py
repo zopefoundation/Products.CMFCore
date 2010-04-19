@@ -41,8 +41,6 @@ def makerequest(root, stdout, stdin=None):
 
 class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
 
-    _CC_ID = 'cookie_authentication'
-
     def _getTargetClass(self):
         from Products.CMFCore.CookieCrumbler  import CookieCrumbler
         return CookieCrumbler
@@ -92,7 +90,6 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         root._setObject(users.id, users)
 
         cc = self._makeOne()
-        cc.id = self._CC_ID
         root._setObject(cc.id, cc)
 
         index = DTMLMethod()
@@ -349,41 +346,24 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'isaac')
 
-    def testCreateForms(self):
-        # Verify the factory creates the login forms.
-        from Products.CMFCore.CookieCrumbler  import manage_addCC
-
-        if 'CMFCore' in self._getTargetClass().__module__:
-            # This test is disabled in CMFCore.
-            return
-
-        root, cc, req, credentials = self._makeSite()
-        root._delObject('cookie_authentication')
-        manage_addCC(root, 'login', create_forms=1)
-        ids = root.login.objectIds()
-        ids.sort()
-        self.assertEqual(tuple(ids), (
-            'index_html', 'logged_in', 'logged_out', 'login_form',
-            'standard_login_footer', 'standard_login_header'))
-
     def test_before_traverse_hooks(self):
         from OFS.Folder import Folder
         container = Folder()
-        cc = self._makeOne(self._CC_ID)
+        cc = self._makeOne()
 
         marker = []
         bt_before = getattr(container, '__before_traverse__', marker)
         self.failUnless(bt_before is marker)
 
-        container._setObject(self._CC_ID, cc)
+        container._setObject(cc.id, cc)
 
         bt_added = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_added.items()), 1)
         k, v = bt_added.items()[0]
         self.failUnless(k[1].startswith(self._getTargetClass().meta_type))
-        self.assertEqual(v.name, self._CC_ID)
+        self.assertEqual(v.name, cc.id)
 
-        container._delObject(self._CC_ID)
+        container._delObject(cc.id)
 
         bt_removed = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_removed.items()), 0)

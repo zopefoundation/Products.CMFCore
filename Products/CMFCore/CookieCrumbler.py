@@ -53,7 +53,7 @@ class CookieCrumblerDisabled(Exception):
     """
 
 
-class CookieCrumbler(PropertyManager, SimpleItem):
+class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     """Reads cookies during traversal and simulates the HTTP auth headers.
     """
@@ -101,29 +101,36 @@ class CookieCrumbler(PropertyManager, SimpleItem):
     name_cookie = '__ac_name'
     pw_cookie = '__ac_password'
     persist_cookie = '__ac_persistent'
-    auto_login_page = 'login_form'
-    unauth_page = ''
-    logout_page = 'logged_out'
     local_cookie_path = False
     cache_header_value = 'private'
     log_username = True
-    
-    def __init__(self, id=None):
-        if id is not None:
-            self.id = str(id)
+    # the following properties are deprecated and will be replaced by
+    # user actions
+    auto_login_page = 'login_form'
+    unauth_page = ''
+    logout_page = 'logged_out'
+    id = 'cookie_authentication'
 
     security.declarePrivate('delRequestVar')
     def delRequestVar(self, req, name):
         # No errors of any sort may propagate, and we don't care *what*
         # they are, even to log them.
-        try: del req.other[name]
-        except: pass
-        try: del req.form[name]
-        except: pass
-        try: del req.cookies[name]
-        except: pass
-        try: del req.environ[name]
-        except: pass
+        try: 
+            del req.other[name]
+        except: 
+            pass
+        try: 
+            del req.form[name]
+        except: 
+            pass
+        try: 
+            del req.cookies[name]
+        except: 
+            pass
+        try: 
+            del req.environ[name]
+        except: 
+            pass
 
     security.declarePublic('getCookiePath')
     def getCookiePath(self):
@@ -429,29 +436,22 @@ class ResponseCleanup:
         #
         # No errors of any sort may propagate, and we don't care *what*
         # they are, even to log them.
-        try: del self.resp.unauthorized
-        except: pass
-        try: del self.resp._unauthorized
-        except: pass
-        try: del self.resp
-        except: pass
+        try: 
+            del self.resp.unauthorized
+        except: 
+            pass
+        try: 
+            del self.resp._unauthorized
+        except: 
+            pass
+        try:
+            del self.resp
+        except:
+            pass
 
 
 manage_addCCForm = HTMLFile('dtml/addCC', globals())
 manage_addCCForm.__name__ = 'addCC'
-
-def _create_forms(ob):
-    ''' Create default forms inside ob '''
-    import os
-    from OFS.DTMLMethod import addDTMLMethod
-    dtmldir = os.path.join(os.path.dirname(__file__), 'dtml')
-    for fn in ('index_html', 'logged_in', 'logged_out', 'login_form',
-                'standard_login_footer', 'standard_login_header'):
-        filename = os.path.join(dtmldir, fn + '.dtml')
-        f = open(filename, 'rt')
-        try: data = f.read()
-        finally: f.close()
-        addDTMLMethod(ob, fn, file=data)
 
 def manage_addCC(dispatcher, id, create_forms=0, REQUEST=None):
     ' '

@@ -30,7 +30,7 @@ from Products.CMFCore.testing import ExportImportZCMLLayer
 
 _COOKIECRUMBLER_BODY = """\
 <?xml version="1.0"?>
-<object name="foo_cookiecrumbler" meta_type="Cookie Crumbler">
+<object name="cookie_authentication" meta_type="Cookie Crumbler">
  <property name="auth_cookie">__ac</property>
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
@@ -46,7 +46,7 @@ _COOKIECRUMBLER_BODY = """\
 
 _DEFAULT_EXPORT = """\
 <?xml version="1.0"?>
-<object name="foo_cookiecrumbler" meta_type="Cookie Crumbler">
+<object name="cookie_authentication" meta_type="Cookie Crumbler">
  <property name="auth_cookie">__ac</property>
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
@@ -62,7 +62,7 @@ _DEFAULT_EXPORT = """\
 
 _CHANGED_EXPORT = """\
 <?xml version="1.0"?>
-<object name="foo_cookiecrumbler" meta_type="Cookie Crumbler">
+<object name="cookie_authentication" meta_type="Cookie Crumbler">
  <property name="auth_cookie">value1</property>
  <property name="name_cookie">value3</property>
  <property name="pw_cookie">value5</property>
@@ -88,7 +88,7 @@ class CookieCrumblerXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         return CookieCrumblerXMLAdapter
 
     def setUp(self):
-        self._obj = CookieCrumbler('foo_cookiecrumbler')
+        self._obj = CookieCrumbler()
         self._BODY = _COOKIECRUMBLER_BODY
 
 
@@ -97,7 +97,7 @@ class _CookieCrumblerSetup(BaseRegistryTests):
     def _initSite(self, use_changed=False):
         self.root.site = Folder(id='site')
         site = self.root.site
-        cc = site.cookie_authentication = CookieCrumbler('foo_cookiecrumbler')
+        cc = site.cookie_authentication = CookieCrumbler()
 
         if use_changed:
             cc.auth_cookie = 'value1'
