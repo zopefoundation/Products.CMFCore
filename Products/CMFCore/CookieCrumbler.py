@@ -59,6 +59,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     """
 
     implements(ICookieCrumbler)
+    id = 'cookie_authentication'
     
     manage_options=(PropertyManager.manage_options
                    + SimpleItem.manage_options
@@ -109,7 +110,6 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     auto_login_page = 'login_form'
     unauth_page = ''
     logout_page = 'logged_out'
-    id = 'cookie_authentication'
 
     security.declarePrivate('delRequestVar')
     def delRequestVar(self, req, name):
