@@ -5,3 +5,4 @@
 *.egg-info
 ./.installed.cfg
 *.egg
+docs/_build
