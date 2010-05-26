@@ -107,7 +107,7 @@ class ActionTests(unittest.TestCase):
         request.set('manage_page_header', _header)
         request.set('manage_page_footer', _footer)
         request.set('BASEPATH1', '/one/two')
-        request.set('URL1', '/one/two')
+        setattr(request, 'URL1', '/one/two')
         request._steps = ['one', 'two']
 
         prd = {'ac_permissions': ('a', 'b')}
