@@ -229,9 +229,9 @@ class FSFileTests(RequestTest, FSDVTest):
         file_name = 'testUtf8.js'
         file = self._makeOne(file_name, file_name)
         file = file.__of__(self.root)
-        data = file.index_html(self.REQUEST, self.RESPONSE)
-        self.assertEqual(self.RESPONSE.getHeader('content-type'),
-                         'application/x-javascript; charset=utf-8')
+        file.index_html(self.REQUEST, self.RESPONSE)
+        mime = self.RESPONSE.getHeader('content-type')
+        self.failUnless(mime.endswith('; charset=utf-8'))
 
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246

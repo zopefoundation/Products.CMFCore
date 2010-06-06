@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.2 (unreleased)
 ------------------
 
+- Updated test to work with zope.contenttype >= 3.4.3.
+
 
 2.2.1 (2010-04-07)
 ------------------
