@@ -15,9 +15,8 @@
 $Id$
 """
 
+import doctest
 import unittest
-import Testing
-from zope.testing import doctest
 
 
 def test_registerDirectory():
@@ -25,7 +24,12 @@ def test_registerDirectory():
     Use the cmf:registerDirectory directive::
 
       >>> import Products.CMFCore
-      >>> from Products.Five import zcml
+      >>> # BBB for Zope 2.12
+      ... try:
+      ...    from Zope2.App import zcml
+      ... except ImportError:
+      ...    from Products.Five import zcml
+
       >>> configure_zcml = '''
       ... <configure xmlns:cmf="http://namespaces.zope.org/cmf">
       ...   <cmf:registerDirectory
@@ -68,6 +72,3 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

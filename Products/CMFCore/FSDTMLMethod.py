@@ -15,7 +15,6 @@
 $Id$
 """
 
-from AccessControl.DTML import RestrictedDTML
 from AccessControl.Role import RoleManager
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -33,6 +32,12 @@ from Products.CMFCore.permissions import ViewManagementScreens
 from Products.CMFCore.utils import _checkConditionalGET
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _setCacheHeaders
+
+# BBB for Zope 2.12
+try:
+    from DocumentTemplate.security import RestrictedDTML
+except ImportError:
+    from AccessControl.DTML import RestrictedDTML
 
 _marker = object()
 
