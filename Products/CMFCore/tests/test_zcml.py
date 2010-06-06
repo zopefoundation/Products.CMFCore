@@ -15,9 +15,8 @@
 $Id$
 """
 
+import doctest
 import unittest
-import Testing
-from zope.testing import doctest
 
 
 def test_registerDirectory():
@@ -73,6 +72,3 @@ def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

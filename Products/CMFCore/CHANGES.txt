@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Use the standard libraries doctest module.
+
 - Updated setDefaultRoles to use the addPermission API if available.
 
 - Added a permissions.zcml file defining our own permissions. This was
