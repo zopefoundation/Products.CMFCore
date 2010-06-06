@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.2 (unreleased)
 ------------------
 
+- Updated setDefaultRoles to use the addPermission API if available.
+
 - Updated test to work with zope.contenttype >= 3.4.3.
 
 
