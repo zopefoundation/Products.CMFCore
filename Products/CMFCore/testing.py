@@ -14,7 +14,6 @@
 """
 
 from OFS.SimpleItem import SimpleItem
-from Products.Five import zcml
 from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import adapts
 from zope.i18n.interfaces import IUserPreferredLanguages
@@ -27,6 +26,12 @@ from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.GenericSetup.utils import BodyAdapterBase
+
+# BBB for Zope 2.12
+try:
+    from Zope2.App import zcml
+except ImportError:
+    from Products.Five import zcml
 
 
 class ConformsToFolder:
