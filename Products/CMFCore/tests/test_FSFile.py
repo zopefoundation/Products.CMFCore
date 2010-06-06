@@ -230,7 +230,7 @@ class FSFileTests(RequestTest, FSDVTest):
         mtype, ignore_enc = mimetypes.guess_type(file_name)
         file = self._makeOne(file_name, file_name)
         file = file.__of__(self.root)
-        data = file.index_html(self.REQUEST, self.RESPONSE)
+        file.index_html(self.REQUEST, self.RESPONSE)
         self.assertEqual(self.RESPONSE.getHeader('content-type'),
                          '%s; charset=utf-8' % mtype)
 
