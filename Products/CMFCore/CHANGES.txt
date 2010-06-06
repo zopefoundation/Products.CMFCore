@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.2 (unreleased)
 ------------------
 
+- Backport test setup fixes for Zope 2.13 compatibility.
+
 - Use the standard libraries doctest module.
 
 - Updated setDefaultRoles to use the addPermission API if available.
