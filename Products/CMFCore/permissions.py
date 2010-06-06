@@ -55,20 +55,29 @@ View = Permissions.view
 security.declarePublic('ViewManagementScreens')
 ViewManagementScreens = Permissions.view_management_screens
 
+addPermission = None
+try:
+    from AccessControl.Permission import addPermission
+except ImportError:
+    pass
+
 security.declarePrivate('setDefaultRoles')
 def setDefaultRoles(permission, roles):
     '''
     Sets the defaults roles for a permission.
     '''
-    import Products
-    # XXX This ought to be in AccessControl.SecurityInfo.
-    registered = _registeredPermissions
-    if not registered.has_key(permission):
-        registered[permission] = 1
-        Products.__ac_permissions__=(
-            Products.__ac_permissions__+((permission,(),roles),))
-        mangled = pname(permission)
-        setattr(ApplicationDefaultPermissions, mangled, roles)
+    if addPermission is not None:
+        addPermission(permission, roles)
+    else:
+        # BBB This is in AccessControl starting in Zope 2.13
+        import Products
+        registered = _registeredPermissions
+        if not registered.has_key(permission):
+            registered[permission] = 1
+            Products.__ac_permissions__=(
+                Products.__ac_permissions__+((permission,(),roles),))
+            mangled = pname(permission)
+            setattr(ApplicationDefaultPermissions, mangled, roles)
 
 # Note that we can only use the default Zope roles in calls to
 # setDefaultRoles().  The default Zope roles are:
