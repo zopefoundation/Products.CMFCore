@@ -43,7 +43,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         return SetupTool('portal_setup')
 
     def _setUpAdapters(self):
-        from zope.app.testing import ztapi
+        from zope.component import provideAdapter
         #from OFS.Image import File
 
         from Products.GenericSetup.interfaces import IFilesystemExporter
@@ -62,35 +62,29 @@ class SiteStructureExporterTests(unittest.TestCase):
         #from Products.CMFCore.exportimport.content import \
         #        OFSFileAdapter
 
-        ztapi.provideAdapter(IFolderish,
-                             IFilesystemExporter,
-                             StructureFolderWalkingAdapter,
-                            )
+        provideAdapter(StructureFolderWalkingAdapter,
+                       (IFolderish,),
+                       IFilesystemExporter)
 
-        ztapi.provideAdapter(IFolderish,
-                             IFilesystemImporter,
-                             StructureFolderWalkingAdapter,
-                            )
+        provideAdapter(StructureFolderWalkingAdapter,
+                       (IFolderish,),
+                       IFilesystemImporter)
 
-        ztapi.provideAdapter(ICSVAware,
-                             IFilesystemExporter,
-                             CSVAwareFileAdapter,
-                            )
+        provideAdapter(CSVAwareFileAdapter,
+                       (ICSVAware,),
+                       IFilesystemExporter)
 
-        ztapi.provideAdapter(ICSVAware,
-                             IFilesystemImporter,
-                             CSVAwareFileAdapter,
-                            )
+        provideAdapter(CSVAwareFileAdapter,
+                       (ICSVAware,),
+                       IFilesystemImporter)
 
-        ztapi.provideAdapter(IINIAware,
-                             IFilesystemExporter,
-                             INIAwareFileAdapter,
-                            )
+        provideAdapter(INIAwareFileAdapter,
+                       (IINIAware,),
+                       IFilesystemExporter)
 
-        ztapi.provideAdapter(IINIAware,
-                             IFilesystemImporter,
-                             INIAwareFileAdapter,
-                            )
+        provideAdapter(INIAwareFileAdapter,
+                       (IINIAware,),
+                       IFilesystemImporter)
 
     def tearDown(self):
         cleanUp()

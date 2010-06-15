@@ -21,7 +21,7 @@ Products.CMFCore Changelog
   are called in a context that does not contain the items they 
   import.
 
-- Added zope.app.testing as a testing dependency.
+- Removed zope.app.testing dependency.
 
 - Import BeforeTraverseEvent from new location if available.
 
