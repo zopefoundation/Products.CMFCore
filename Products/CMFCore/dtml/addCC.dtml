@@ -21,18 +21,6 @@
     <input type="text" name="id" size="40" />
     </td>
   </tr>
-<!--
-  <tr>
-    <td align="left" valign="top">
-    <div class="form-label"><label for="cb_createpages">
-    Create login_form and logged_out DTML methods
-    </label></div>
-    </td>
-    <td align="left" valign="top">
-    <input type="checkbox" name="create_pages" value="1" id="cb_createpages" />
-    </td>
-  </tr>
--->
   <tr>
     <td align="left" valign="top">
     </td>

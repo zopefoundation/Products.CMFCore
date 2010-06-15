@@ -53,9 +53,21 @@ class CookieCrumblerXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
         if self.environ.shouldPurge():
             self._purgeProperties()
 
+        self._migrateProperties(node)
         self._initProperties(node)
 
         self._logger.info('Cookie crumbler imported.')
+
+    def _migrateProperties(self, node):
+        # BBB: for CMF 2.2 settings
+        for child in node.childNodes:
+            if child.nodeName != 'property':
+                continue
+            if child.getAttribute('name') not in ('auto_login_page',
+                                                'unauth_page', 'logout_page'):
+                continue
+            node.removeChild(child)
+            child.unlink()
 
 
 def importCookieCrumbler(context):

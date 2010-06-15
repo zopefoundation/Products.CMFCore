@@ -335,11 +335,12 @@ class MembershipTool(UniqueObject, Folder):
             name = user.getUserName()
             # this really does need to be the user name, and not the user id,
             # because we're dealing with authentication credentials
-            p = getattr(REQUEST, '_credentials_changed_path', None)
-            if p is not None:
-                # Use an interface provided by CookieCrumbler.
-                change = self.restrictedTraverse(p)
-                change(user, name, password)
+            try:
+                cctool = getToolByName(self, 'cookie_authentication')
+                cctool.credentialsChanged(user, name, password, REQUEST)
+            except AttributeError:
+                # No CookieCrumbler
+                pass
 
     security.declareProtected(ManageUsers, 'getMemberById')
     def getMemberById(self, id):

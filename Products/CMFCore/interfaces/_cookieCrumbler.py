@@ -28,9 +28,9 @@ class ICookieCrumbler(Interface):
         the parent URL if local_cookie_path is True otherwise /"""
         return path
 
-    def getCookieMethod(name, default=None):
-        """ Allow overridable cookie set/expiration methods."""
-        return getattr(name, default)
+    def getCookieMethod(name, default):
+        """Get the cookie handler.
+        The cookie handler maybe overridden by acquisition."""
 
     def defaultSetAuthCookie(resp, cookie_name, cookie_value):
         """Set the authorisation cookie"""
@@ -55,30 +55,16 @@ class ICookieCrumbler(Interface):
     def __call__(container, req):
         """The __before_publishing_traverse__ hook."""
 
-    def credentialsChanged(user, name, pw):
-        """# XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST """
-
-    def _cleanupResponse():
-        """# XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST"""
-
-    def unauthorized():
-        """Remove authentication cookies and redirect to standard unauthorized"""
-
-    def _unauthorized():
-        """Remove authentication cookies and redirect to standard _unauthorized"""
-
-    def getUnauthorizedURL():
+    def credentialsChanged(user, name, pw, request):
         """
-        Redirects to the login page.
-        """
-
-    def logout():
-        """
-        Logs out the user and redirects to the logout page.
+        Updates cookie credentials if user details are changed.
         """
 
     def propertyLabel(id):
         """Return a label for the given property id
         """
+        
+    def logout(response):
+        """
+        Deprecated
+        Log the user out"""

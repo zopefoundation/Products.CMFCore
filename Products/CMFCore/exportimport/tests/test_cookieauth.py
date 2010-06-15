@@ -35,9 +35,6 @@ _COOKIECRUMBLER_BODY = """\
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
  <property name="persist_cookie">__ac_persistent</property>
- <property name="auto_login_page">login_form</property>
- <property name="logout_page">logged_out</property>
- <property name="unauth_page"></property>
  <property name="local_cookie_path">False</property>
  <property name="cache_header_value">private</property>
  <property name="log_username">True</property>
@@ -51,9 +48,6 @@ _DEFAULT_EXPORT = """\
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
  <property name="persist_cookie">__ac_persistent</property>
- <property name="auto_login_page">login_form</property>
- <property name="logout_page">logged_out</property>
- <property name="unauth_page"></property>
  <property name="local_cookie_path">False</property>
  <property name="cache_header_value">private</property>
  <property name="log_username">True</property>
@@ -63,6 +57,19 @@ _DEFAULT_EXPORT = """\
 _CHANGED_EXPORT = """\
 <?xml version="1.0"?>
 <object name="cookie_authentication" meta_type="Cookie Crumbler">
+ <property name="auth_cookie">value1</property>
+ <property name="name_cookie">value3</property>
+ <property name="pw_cookie">value5</property>
+ <property name="persist_cookie">value4</property>
+ <property name="local_cookie_path">True</property>
+ <property name="cache_header_value">value2</property>
+ <property name="log_username">False</property>
+</object>
+"""
+
+_CMF22_IMPORT = """\
+<?xml version="1.0"?>
+<object name="foo_cookiecrumbler" meta_type="Cookie Crumbler">
  <property name="auth_cookie">value1</property>
  <property name="name_cookie">value3</property>
  <property name="pw_cookie">value5</property>
@@ -107,9 +114,6 @@ class _CookieCrumblerSetup(BaseRegistryTests):
             cc.persist_cookie = 'value4'
             cc.pw_cookie = 'value5'
             cc.local_cookie_path = 1
-            cc.auto_login_page = 'value6'
-            cc.unauth_page = 'value7'
-            cc.logout_page = 'value8'
 
         return site
 
@@ -169,9 +173,25 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual( cc.persist_cookie, 'value4' )
         self.assertEqual( cc.pw_cookie, 'value5' )
         self.assertEqual( cc.local_cookie_path, 1 )
-        self.assertEqual( cc.auto_login_page, 'value6' )
-        self.assertEqual( cc.unauth_page, 'value7' )
-        self.assertEqual( cc.logout_page, 'value8' )
+
+    def test_migration(self):
+        from Products.CMFCore.exportimport.cookieauth \
+                import importCookieCrumbler
+
+        site = self._initSite()
+        cc = site.cookie_authentication
+
+        context = DummyImportContext(site)
+        context._files['cookieauth.xml'] = _CMF22_IMPORT
+        importCookieCrumbler(context)
+
+        self.assertEqual( cc.auth_cookie, 'value1' )
+        self.assertEqual( cc.cache_header_value, 'value2' )
+        self.assertEqual( cc.name_cookie, 'value3' )
+        self.assertEqual( cc.log_username, 0 )
+        self.assertEqual( cc.persist_cookie, 'value4' )
+        self.assertEqual( cc.pw_cookie, 'value5' )
+        self.assertEqual( cc.local_cookie_path, 1 )
 
 
 def test_suite():

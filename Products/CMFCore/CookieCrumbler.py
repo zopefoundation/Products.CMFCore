@@ -28,14 +28,13 @@ from DateTime.DateTime import DateTime
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from OFS.interfaces import IObjectWillBeMovedEvent
-from zExceptions import Redirect
 from zope.container.interfaces import IObjectMovedEvent
 from zope.interface import implements
 from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest
 
 from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.utils import UniqueObject
+from Products.CMFCore.utils import UniqueObject, getToolByName
 
 
 # Constants.
@@ -84,12 +83,6 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                     'label':'User password form variable'},
                    {'id':'persist_cookie', 'type': 'string', 'mode':'w',
                     'label':'User name persistence form variable'},
-                   {'id':'auto_login_page', 'type': 'string', 'mode':'w',
-                    'label':'Login page ID'},
-                   {'id':'logout_page', 'type': 'string', 'mode':'w',
-                    'label':'Logout page ID'},
-                   {'id':'unauth_page', 'type': 'string', 'mode':'w',
-                    'label':'Failed authorization page ID'},
                    {'id':'local_cookie_path', 'type': 'boolean', 'mode':'w',
                     'label':'Use cookie paths to limit scope'},
                    {'id':'cache_header_value', 'type': 'string', 'mode':'w',
@@ -100,16 +93,11 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     auth_cookie = '__ac'
     name_cookie = '__ac_name'
-    pw_cookie = '__ac_password'
+    pw_cookie = '__ac_password' # not used as cookie, just as request key
     persist_cookie = '__ac_persistent'
     local_cookie_path = False
     cache_header_value = 'private'
     log_username = True
-    # the following properties are deprecated and will be replaced by
-    # user actions
-    auto_login_page = 'login_form'
-    unauth_page = ''
-    logout_page = 'logged_out'
 
     security.declarePrivate('delRequestVar')
     def delRequestVar(self, req, name):
@@ -258,15 +246,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             attempt = self.modifyRequest(req, resp)
         except CookieCrumblerDisabled:
             return
-        if req.get('disable_cookie_login__', 0):
-            return
 
-        if (self.unauth_page or
-            attempt == ATTEMPT_LOGIN or attempt == ATTEMPT_NONE):
-            # Modify the "unauthorized" response.
-            req._hold(ResponseCleanup(resp))
-            resp.unauthorized = self.unauthorized
-            resp._unauthorized = self._unauthorized
         if attempt != ATTEMPT_NONE:
             # Trying to log in or resume a session
             if self.cache_header_value:
@@ -276,126 +256,39 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 resp.setHeader('X-Cache-Control-Hdr-Modified-By',
                                'CookieCrumbler')
             phys_path = self.getPhysicalPath()
-            if self.logout_page:
-                # Cookies are in use.
-                page = getattr(container, self.logout_page, None)
-                if page is not None:
-                    # Provide a logout page.
-                    req._logout_path = phys_path + ('logout',)
-            req._credentials_changed_path = (
-                phys_path + ('credentialsChanged',))
+            # Cookies are in use.
+            # Provide a logout page.
+            req._logout_path = phys_path + ('logout',)
 
     security.declarePublic('credentialsChanged')
-    def credentialsChanged(self, user, name, pw):
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
+    def credentialsChanged(self, user, name, pw, request=None):
+        """
+        Updates cookie credentials if user details are changed.
+        """
+        if request is None:
+            request = self.REQUEST # BBB for Membershiptool
+        reponse = request['RESPONSE']
         ac = encodestring('%s:%s' % (name, pw)).rstrip()
-        method = self.getCookieMethod( 'setAuthCookie'
-                                       , self.defaultSetAuthCookie )
-        resp = self.REQUEST['RESPONSE']
-        method( resp, self.auth_cookie, quote( ac ) )
-
-    def _cleanupResponse(self):
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
-        resp = self.REQUEST['RESPONSE']
-        # No errors of any sort may propagate, and we don't care *what*
-        # they are, even to log them.
-        try: del resp.unauthorized
-        except: pass
-        try: del resp._unauthorized
-        except: pass
-        return resp
-
-    security.declarePrivate('unauthorized')
-    def unauthorized(self):
-        resp = self._cleanupResponse()
-        # If we set the auth cookie before, delete it now.
-        if resp.cookies.has_key(self.auth_cookie):
-            del resp.cookies[self.auth_cookie]
-        # Redirect if desired.
-        url = self.getUnauthorizedURL()
-        if url is not None:
-            raise Redirect, url
-        # Fall through to the standard unauthorized() call.
-        resp.unauthorized()
-
-    def _unauthorized(self):
-        resp = self._cleanupResponse()
-        # If we set the auth cookie before, delete it now.
-        if resp.cookies.has_key(self.auth_cookie):
-            del resp.cookies[self.auth_cookie]
-        # Redirect if desired.
-        url = self.getUnauthorizedURL()
-        if url is not None:
-            resp.redirect(url, lock=1)
-            # We don't need to raise an exception.
-            return
-        # Fall through to the standard _unauthorized() call.
-        resp._unauthorized()
-
-    security.declarePublic('getUnauthorizedURL')
-    def getUnauthorizedURL(self):
-        '''
-        Redirects to the login page.
-        '''
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
-        req = self.REQUEST
-        resp = req['RESPONSE']
-        attempt = getattr(req, '_cookie_auth', ATTEMPT_NONE)
-        if attempt == ATTEMPT_NONE:
-            # An anonymous user was denied access to something.
-            page_id = self.auto_login_page
-            retry = ''
-        elif attempt == ATTEMPT_LOGIN:
-            # The login attempt failed.  Try again.
-            page_id = self.auto_login_page
-            retry = '1'
-        else:
-            # An authenticated user was denied access to something.
-            page_id = self.unauth_page
-            retry = ''
-        if page_id:
-            page = self.restrictedTraverse(page_id, None)
-            if page is not None:
-                came_from = req.get('came_from', None)
-                if came_from is None:
-                    came_from = req.get('ACTUAL_URL')
-                    query = req.get('QUERY_STRING')
-                    if query:
-                        # Include the query string in came_from
-                        if not query.startswith('?'):
-                            query = '?' + query
-                        came_from = came_from + query
-                url = '%s?came_from=%s&retry=%s&disable_cookie_login__=1' % (
-                    page.absolute_url(), quote(came_from), retry)
-                return url
-        return None
-
-    # backward compatible alias
-    getLoginURL = getUnauthorizedURL
+        method = self.getCookieMethod('setAuthCookie',
+                                       self.defaultSetAuthCookie)
+        method(reponse, self.auth_cookie, quote(ac))
 
     security.declarePublic('logout')
-    def logout(self):
-        '''
-        Logs out the user and redirects to the logout page.
-        '''
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
-        req = self.REQUEST
-        resp = req['RESPONSE']
-        method = self.getCookieMethod( 'expireAuthCookie'
-                                     , self.defaultExpireAuthCookie )
-        method( resp, cookie_name=self.auth_cookie )
-        if self.logout_page:
-            page = self.restrictedTraverse(self.logout_page, None)
-            if page is not None:
-                resp.redirect('%s?disable_cookie_login__=1'
-                              % page.absolute_url())
-                return ''
-        # We should not normally get here.
-        return 'Logged out.'
+    def logout(self, response=None):
+        """
+        Logs out the user
+        """
+        target = None
+        if response is None:
+            response = self.REQUEST['RESPONSE'] # BBB for App.Management
+            atool = getToolByName(self, 'portal_actions')
+            target = atool.getActionInfo('user/logout')['url']
+        method = self.getCookieMethod('expireAuthCookie',
+                                       self.defaultExpireAuthCookie)
+        method(response, cookie_name=self.auth_cookie)
+        # BBB for App.Management
+        if target is not None:
+            response.redirect(target)
 
     security.declarePublic('propertyLabel')
     def propertyLabel(self, id):
@@ -427,39 +320,15 @@ def handleCookieCrumblerEvent(ob, event):
             handle = ob.meta_type + '/' + ob.getId()
             BeforeTraverse.unregisterBeforeTraverse(event.oldParent, handle)
 
-class ResponseCleanup:
-    def __init__(self, resp):
-        self.resp = resp
-
-    def __del__(self):
-        # Free the references.
-        #
-        # No errors of any sort may propagate, and we don't care *what*
-        # they are, even to log them.
-        try: 
-            del self.resp.unauthorized
-        except: 
-            pass
-        try: 
-            del self.resp._unauthorized
-        except: 
-            pass
-        try:
-            del self.resp
-        except:
-            pass
-
 
 manage_addCCForm = HTMLFile('dtml/addCC', globals())
 manage_addCCForm.__name__ = 'addCC'
 
-def manage_addCC(dispatcher, id, create_forms=0, REQUEST=None):
+def manage_addCC(dispatcher, id, REQUEST=None):
     ' '
     ob = CookieCrumbler()
     ob.id = id
     dispatcher._setObject(ob.getId(), ob)
     ob = getattr(dispatcher.this(), ob.getId())
-    if create_forms:
-        _create_forms(ob)
     if REQUEST is not None:
         return dispatcher.manage_main(dispatcher, REQUEST)
