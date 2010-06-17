@@ -19,8 +19,8 @@ from zope.component import adapts
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.interface import Interface
+from zope.location.interfaces import LocationError
 from zope.traversing.interfaces import ITraversable
-from zope.traversing.interfaces import TraversalError
 
 from interfaces import IFolderish
 from utils import getToolByName
@@ -50,4 +50,4 @@ class AddViewTraverser(object):
                 add_view.__name__ = ti.factory
                 return add_view.__of__(self.context)
 
-        raise TraversalError(self.context, name)
+        raise LocationError(self.context, name)
