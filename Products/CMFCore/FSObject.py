@@ -18,7 +18,12 @@ $Id$
 import os
 
 from AccessControl.Permission import Permission
-from AccessControl.Role import RoleManager
+
+try:
+    from OFS.role import RoleManager
+except ImportError:
+    # BBB for Zope < 2.13
+    from AccessControl.Role import RoleManager
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from Acquisition import aq_inner
