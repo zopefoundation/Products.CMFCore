@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.2 (unreleased)
+2.2.2 (2010-07-04)
 ------------------
 
 - Backport test setup fixes for Zope 2.13 compatibility.
