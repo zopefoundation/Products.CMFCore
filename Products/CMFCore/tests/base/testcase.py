@@ -102,7 +102,7 @@ RequestTest = TransactionalTest
 
 class SecurityTest(TransactionalTest):
 
-    layer = OFSZCMLLayer
+    layer = ZopeLite
 
     def setUp(self):
         TransactionalTest.setUp(self)
