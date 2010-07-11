@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Added dependency on the new ``Products.ZSQLMethod`` distribution and updated
+  Zope2 requirement accordingly.
+
 - CookieCrumbler: Removed redirect support.
   The Unauthorized handling and redirects are now part of CMFDefault.
 
