@@ -49,7 +49,7 @@ setup(name='Products.%s' % NAME,
           'Zope2 > 2.12.8',
           'five.localsitemanager',
           'Products.GenericSetup',
-          'Products.ZSQLMethod',
+          'Products.ZSQLMethods',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',
