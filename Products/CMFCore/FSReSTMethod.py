@@ -76,8 +76,7 @@ class FSReSTMethod(FSObject):
     output_encoding = 'utf8'
 
     manage_options=({'label' : 'Customize','action' : 'manage_main'},
-                    {'label' : 'View','action' : '',
-                     'help' : ('OFSP' ,'DTML-DocumentOrMethod_View.stx')},
+                    {'label' : 'View','action' : ''},
                    )
 
     security = ClassSecurityInfo()

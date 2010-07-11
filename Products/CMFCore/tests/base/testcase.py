@@ -23,6 +23,7 @@ from dummy import DummyFolder
 from security import AnonymousUser
 from security import PermissiveSecurityPolicy
 from Products.CMFCore.utils import getPackageLocation
+from Products.CMFCore.testing import OFSZCMLLayer
 
 
 class LogInterceptor:
@@ -100,6 +101,8 @@ RequestTest = TransactionalTest
 
 
 class SecurityTest(TransactionalTest):
+
+    layer = OFSZCMLLayer
 
     def setUp(self):
         TransactionalTest.setUp(self)

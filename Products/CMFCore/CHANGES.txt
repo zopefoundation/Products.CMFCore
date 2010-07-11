@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Get most tests working under Zope 2.13.0a2.
+
 - Added dependency on the new ``Products.ZSQLMethods`` distribution and updated
   Zope2 requirement accordingly.
 
