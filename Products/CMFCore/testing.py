@@ -100,7 +100,7 @@ class BrowserLanguages(object):
 class OFSZCMLLayer(ZopeLite):
 
     @classmethod
-    def testSetUp(cls):
+    def setUp(cls):
         import zope.component
         import OFS
         import Products.Five
@@ -110,11 +110,12 @@ class OFSZCMLLayer(ZopeLite):
             zcml.load_config('configure.zcml', OFS)
         except IOError:  # Zope <= 2.13.0a2
             zcml.load_config('meta.zcml', Products.Five)
+        # In Zope 2.12 this does an implicit commit
         installPackage('OFS')
         setHooks()
 
     @classmethod
-    def testTearDown(cls):
+    def tearDown(cls):
         cleanUp()
 
 
