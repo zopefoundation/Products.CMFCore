@@ -14,7 +14,6 @@
 """
 
 from OFS.SimpleItem import SimpleItem
-from Testing.ZopeTestCase import installPackage
 from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import adapts
 from zope.i18n.interfaces import IUserPreferredLanguages
@@ -93,28 +92,6 @@ class BrowserLanguages(object):
 
     def getPreferredLanguages(self):
         return ('test',)
-
-
-class OFSZCMLLayer(ZopeLite):
-
-    @classmethod
-    def setUp(cls):
-        import zope.component
-        import OFS
-        import Products.Five
-        zcml.load_config('meta.zcml', zope.component)
-        try:
-            zcml.load_config('meta.zcml', OFS)
-            zcml.load_config('configure.zcml', OFS)
-        except IOError:  # Zope <= 2.13.0a2
-            zcml.load_config('meta.zcml', Products.Five)
-        # In Zope 2.12 this does an implicit commit
-        installPackage('OFS')
-        setHooks()
-
-    @classmethod
-    def tearDown(cls):
-        cleanUp()
 
 
 class EventZCMLLayer(ZopeLite):
