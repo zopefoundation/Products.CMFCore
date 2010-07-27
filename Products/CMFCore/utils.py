@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Utility functions.
-
-$Id$
 """
 
 import re
@@ -481,15 +479,16 @@ class ImmutableId(Base):
 
     """ Base class for objects which cannot be renamed.
     """
-    def _setId(self, id):
 
+    def _setId(self, id):
         """ Never allow renaming!
         """
         if id != self.getId():
-            raise MessageDialog(
+            raise ValueError(MessageDialog(
                 title='Invalid Id',
                 message='Cannot change the id of this object',
-                action ='./manage_main',)
+                action='./manage_main'))
+
 
 class UniqueObject (ImmutableId):
 
