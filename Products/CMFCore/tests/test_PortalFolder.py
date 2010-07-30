@@ -758,112 +758,130 @@ class ContentFilterTests(unittest.TestCase):
 
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( created=DateTime( '2001/01/01' )
+        creation_date = DateTime('2001/01/01')
+        tz = creation_date.timezone()
+        cfilter = ContentFilter( created=creation_date
                                , created_usage='range:min' )
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Created since: 2001/01/01'
+        self.assertEquals(len(lines), 1)
+        self.assertEquals( lines[0]
+                         , 'Created since: 2001/01/01 00:00:00 %s' % tz
+                         )
 
     def test_created2( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( created=DateTime( '2001/01/01' )
+        creation_date = DateTime('2001/01/01')
+        tz = creation_date.timezone()
+        cfilter = ContentFilter( created=creation_date
                                , created_usage='range:max' )
 
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Created before: 2001/01/01'
+        self.assertEquals(len(lines), 1)
+        self.assertEquals( lines[0]
+                         , 'Created before: 2001/01/01 00:00:00 %s' % tz
+                         )
 
     def test_modified( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
 
+        creation_date = DateTime('2001/01/01')
+        tz = creation_date.timezone()
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
                                , modified_usage='range:min' )
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.modified_date = DateTime( '2000/12/31' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/12/31' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/01/01' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Modified since: 2001/01/01'
+        self.assertEquals(len(lines), 1)
+        self.assertEquals( lines[0]
+                         , 'Modified since: 2001/01/01 00:00:00 %s' % tz
+                         )
 
     def test_modified2( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
 
+        creation_date = DateTime('2001/01/01')
+        tz = creation_date.timezone()
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
                                , modified_usage='range:max' )
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.modified_date = DateTime( '2000/12/31' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/12/31' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/01/01' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Modified before: 2001/01/01'
+        self.assertEquals(len(lines), 1)
+        self.assertEquals( lines[0]
+                         , 'Modified before: 2001/01/01 00:00:00 %s' % tz
+                         )
 
     def test_mixed( self ):
 
         from Products.CMFCore.PortalFolder import ContentFilter
 
+        creation_date = DateTime('2001/01/01')
+        tz = creation_date.timezone()
         cfilter = ContentFilter( created=DateTime( '2001/01/01' )
                                , created_usage='range:max'
                                , Title='foo'
                                )
 
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
 
         dummy.title = 'ohsofoolish'
         del dummy.created_date
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        assert not cfilter( dummy )
+        self.failIf(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        assert cfilter( dummy )
+        self.failUnless(cfilter(dummy))
 
         desc = str( cfilter )
         lines = desc.split('; ')
-        assert len( lines ) == 2, lines
-        assert 'Created before: 2001/01/01' in lines
-        assert 'Title: foo' in lines
+        self.assertEquals(len(lines), 2)
+        self.failUnless('Created before: 2001/01/01 00:00:00 %s' % tz in lines)
+        self.failUnless('Title: foo' in lines)
 
 
 #------------------------------------------------------------------------------
