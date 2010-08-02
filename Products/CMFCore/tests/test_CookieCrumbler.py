@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """CookieCrumbler tests.
-
-$Id$
 """
 
 import unittest
@@ -72,17 +70,12 @@ class CookieCrumblerTests(unittest.TestCase):
 
     def _makeSite(self):
         import base64
-        from cStringIO import StringIO
         import urllib
+        from cStringIO import StringIO
 
-        try:
-            from OFS.userfolder import UserFolder
-        except ImportError:
-            # BBB for Zope < 2.13
-            from AccessControl.User import UserFolder
-        
-        from OFS.Folder import Folder
         from OFS.DTMLMethod import DTMLMethod
+        from OFS.Folder import Folder
+        from OFS.userfolder import UserFolder
 
         root = Folder()
         root.isTopLevelPrincipiaApplicationObject = 1  # User folder needs this
@@ -252,6 +245,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(CookieCrumblerTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
