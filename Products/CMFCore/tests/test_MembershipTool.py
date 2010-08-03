@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for MembershipTool module.
-
-$Id$
 """
 
 import unittest
@@ -273,6 +271,3 @@ def test_suite():
         unittest.makeSuite(MembershipToolTests),
         unittest.makeSuite(MembershipToolSecurityTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

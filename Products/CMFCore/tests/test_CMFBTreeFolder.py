@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for CMFBTreeFolder module.
-
-$Id$
 """
 
 import unittest
@@ -47,6 +45,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(CMFBTreeFolderTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

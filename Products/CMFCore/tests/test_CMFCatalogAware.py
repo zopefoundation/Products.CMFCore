@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Unit tests for CMFCatalogAware.
-
-$Id$
 """
 
 import unittest
@@ -339,7 +337,3 @@ def test_suite():
         unittest.makeSuite(CMFCatalogAwareTests),
         unittest.makeSuite(CMFCatalogAware_CopySupport_Tests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

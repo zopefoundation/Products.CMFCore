@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for DirectoryView module.
-
-$Id$
 """
 
 import unittest
@@ -306,6 +304,3 @@ def test_suite():
     if Globals.DevelopmentMode:
         tests.append(unittest.makeSuite(DebugModeTests))
     return unittest.TestSuite(tests)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

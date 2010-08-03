@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Catalog tool setup handler unit tests.
-
-$Id$
 """
 
 import unittest
@@ -225,7 +223,3 @@ def test_suite():
         unittest.makeSuite(exportCatalogToolTests),
         unittest.makeSuite(importCatalogToolTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

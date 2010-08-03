@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for MemberDataTool module.
-
-$Id$
 """
 
 import unittest
@@ -180,6 +178,3 @@ def test_suite():
         unittest.makeSuite(MemberDataToolTests),
         unittest.makeSuite(MemberDataTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

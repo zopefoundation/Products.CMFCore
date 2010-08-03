@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Skins tool xml adapter and setup handler unit tests.
-
-$Id$
 """
 
 import unittest
@@ -660,23 +658,9 @@ class importSkinsToolTests(_SkinsSetup):
 
 
 def test_suite():
-    # reimport to make sure tests are run from Products
-    from Products.CMFCore.exportimport.tests.test_skins \
-            import DirectoryViewAdapterTests
-    from Products.CMFCore.exportimport.tests.test_skins \
-            import exportSkinsToolTests
-    from Products.CMFCore.exportimport.tests.test_skins \
-            import importSkinsToolTests
-    from Products.CMFCore.exportimport.tests.test_skins \
-            import SkinsToolXMLAdapterTests
-
     return unittest.TestSuite((
         unittest.makeSuite(DirectoryViewAdapterTests),
         unittest.makeSuite(SkinsToolXMLAdapterTests),
         unittest.makeSuite(exportSkinsToolTests),
         unittest.makeSuite(importSkinsToolTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

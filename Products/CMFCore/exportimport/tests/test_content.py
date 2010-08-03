@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Filesystem exporter / importer adapter unit tests.
-
-$Id$
 """
 
 import unittest
@@ -782,6 +780,3 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SiteStructureExporterTests))
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

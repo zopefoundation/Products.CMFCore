@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for IOpaqueItems implementations.
-
-$Id$
 """
 
 import unittest
@@ -276,7 +274,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ManageBeforeAfterTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

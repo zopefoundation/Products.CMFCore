@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for DynamicType module.
-
-$Id$
 """
 
 import unittest
@@ -189,6 +187,3 @@ def test_suite():
         unittest.makeSuite(DynamicTypeDefaultTraversalTests),
         unittest.makeSuite(DynamicTypeSecurityTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

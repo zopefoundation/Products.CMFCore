@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for ContentTypeRegistry module.
-
-$Id$
 """
 
 import unittest
@@ -235,6 +233,3 @@ def test_suite():
         unittest.makeSuite(NameRegexPredicateTests),
         unittest.makeSuite(ContentTypeRegistryTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

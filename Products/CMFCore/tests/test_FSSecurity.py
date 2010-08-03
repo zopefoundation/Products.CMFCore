@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for security on FS* modules.
-
-$Id$
 """
 
 import unittest
@@ -171,13 +169,10 @@ class DebugModeTests( FSSecurityBase ):
         # test
         self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
+
 def test_suite():
     import Globals # for data
     tests = [unittest.makeSuite(FSSecurityTests)]
     if Globals.DevelopmentMode:
         tests.append(unittest.makeSuite(DebugModeTests))
-
     return unittest.TestSuite(tests)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

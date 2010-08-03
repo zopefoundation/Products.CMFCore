@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for PortalContent module.
-
-$Id$
 """
 
 import unittest
@@ -141,7 +139,3 @@ def test_suite():
         unittest.makeSuite(PortalContentTests),
         unittest.makeSuite(TestContentCopyPaste),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

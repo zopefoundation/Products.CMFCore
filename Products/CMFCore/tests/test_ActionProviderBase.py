@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for ActionProviderBase module.
-
-$Id$
 """
 
 import unittest
@@ -291,6 +289,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ActionProviderBaseTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

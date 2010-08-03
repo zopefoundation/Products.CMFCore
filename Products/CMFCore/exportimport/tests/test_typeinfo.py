@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Types tool xml adapter and setup handler unit tests.
-
-$Id$
 """
 
 import unittest
@@ -682,7 +680,3 @@ def test_suite():
         unittest.makeSuite(exportTypesToolTests),
         unittest.makeSuite(importTypesToolTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

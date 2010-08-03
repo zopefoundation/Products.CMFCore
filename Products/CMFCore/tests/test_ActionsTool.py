@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for ActionsTool module.
-
-$Id$
 """
 
 import unittest
@@ -183,6 +181,3 @@ def test_suite():
         unittest.makeSuite(ActionsToolTests),
         unittest.makeSuite(ActionsToolSecurityRequestTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

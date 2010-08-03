@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for FSPythonScript module.
-
-$Id$
 """
 
 import unittest
@@ -317,6 +315,3 @@ def test_suite():
         unittest.makeSuite(CustomizedPythonScriptTests),
         unittest.makeSuite(FSPythonScriptWarningsTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

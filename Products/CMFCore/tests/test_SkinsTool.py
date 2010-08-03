@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for SkinsTool module.
-
-$Id$
 """
 
 import unittest
@@ -115,6 +113,3 @@ def test_suite():
         unittest.makeSuite(SkinsToolTests),
         unittest.makeSuite(SkinnableTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

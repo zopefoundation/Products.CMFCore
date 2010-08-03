@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for RegistrationTool module.
-
-$Id$
 """
 
 import unittest
@@ -43,6 +41,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(RegistrationToolTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

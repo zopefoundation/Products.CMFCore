@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for PortalFolder module.
-
-$Id$
 """
 
 import unittest
@@ -1308,7 +1306,3 @@ def test_suite():
         unittest.makeSuite(ContentFilterTests),
         unittest.makeSuite(PortalFolderCopySupportTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

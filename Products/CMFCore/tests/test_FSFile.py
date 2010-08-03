@@ -12,8 +12,8 @@
 ##############################################################################
 """ Unit tests for FSFile module.
 """
-import unittest
 
+import unittest
 
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
@@ -271,6 +271,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(FSFileTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

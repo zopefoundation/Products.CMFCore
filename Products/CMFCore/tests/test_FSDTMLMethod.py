@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for FSDTMLMethod module.
-
-$Id$
 """
 
 import unittest
@@ -188,6 +186,3 @@ def test_suite():
         unittest.makeSuite(FSDTMLMethodTests),
         unittest.makeSuite(FSDTMLMethodCustomizationTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

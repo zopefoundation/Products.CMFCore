@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Actions tool node adapter unit tests.
-
-$Id$
 """
 
 import unittest
@@ -622,7 +620,3 @@ def test_suite():
         unittest.makeSuite(exportActionProvidersTests),
         unittest.makeSuite(importActionProvidersTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

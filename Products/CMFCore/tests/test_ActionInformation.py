@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for ActionInformation module.
-
-$Id$
 """
 
 import unittest
@@ -481,7 +479,3 @@ def test_suite():
         unittest.makeSuite(ActionInfoSecurityTests),
         unittest.makeSuite(ActionInformationTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

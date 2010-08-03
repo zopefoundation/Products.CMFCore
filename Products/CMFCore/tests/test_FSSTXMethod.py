@@ -11,9 +11,8 @@
 #
 ##############################################################################
 """ Unit tests for FSSTXMethod module.
-
-$Id$
 """
+
 import unittest
 import Testing
 
@@ -308,7 +307,3 @@ def test_suite():
         unittest.makeSuite(FSSTXMethodTests),
         unittest.makeSuite(FSSTXMethodCustomizationTests),
         ))
-
-if __name__ == '__main__':
-    from Products.CMFCore.testing import run
-    run(test_suite())

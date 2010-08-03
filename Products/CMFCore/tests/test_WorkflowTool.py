@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit tests for WorkflowTool module.
-
-$Id$
 """
 
 import unittest
@@ -459,6 +457,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(WorkflowToolTests),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
