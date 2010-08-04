@@ -97,7 +97,11 @@ class CoreUtilsTests(unittest.TestCase):
 class CoreUtilsSecurityTests(SecurityTest):
 
     def _makeSite(self):
-        from AccessControl.Owned import Owned
+        try:
+            from OFS.owner import Owned
+        except ImportError:
+            # BBB: for Zope < 2.13
+            from AccessControl.Owned import Owned
         from Products.CMFCore.tests.base.dummy import DummySite
         from Products.CMFCore.tests.base.dummy import DummyUserFolder
         from Products.CMFCore.tests.base.dummy import DummyObject
