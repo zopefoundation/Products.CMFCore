@@ -15,7 +15,12 @@
 $Id$
 """
 
-from AccessControl.Role import RoleManager
+try:
+    from OFS.role import RoleManager
+except ImportError:
+    # BBB for Zope < 2.13
+    from AccessControl.Role import RoleManager
+
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import InitializeClass

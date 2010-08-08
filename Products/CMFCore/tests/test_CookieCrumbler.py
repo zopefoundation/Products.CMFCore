@@ -76,7 +76,12 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         from cStringIO import StringIO
         import urllib
 
-        from AccessControl.User import UserFolder
+        try:
+            from OFS.userfolder import UserFolder
+        except ImportError:
+            # BBB for Zope < 2.13
+            from AccessControl.User import UserFolder
+        
         from OFS.Folder import Folder
         from OFS.DTMLMethod import DTMLMethod
 
