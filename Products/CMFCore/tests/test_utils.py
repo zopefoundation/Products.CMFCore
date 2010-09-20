@@ -77,6 +77,16 @@ class CoreUtilsTests(unittest.TestCase):
                 'Products.CMFCore')
         self.assertEqual(getContainingPackage('zope.interface.verify'),
                 'zope.interface')
+    
+    def test_ImmutableId(self):
+        from Products.CMFCore.utils import ImmutableId
+        class Foo(ImmutableId):
+            def getId(self):
+                return 'foo'
+        
+        foo = Foo()
+        foo._setId('foo')
+        self.assertRaises(ValueError, foo._setId, 'bar')
 
 
 class CoreUtilsSecurityTests(SecurityTest):
