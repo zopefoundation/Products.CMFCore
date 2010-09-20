@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.3 (unreleased)
 ------------------
 
+- Make the error raised when trying to rename an instance of ImmutableId
+  indicate the id of the object.
+
 - DateTime 2.12.5 does away with a special case representing
   DateTime values for midnight (00:00:00) without their time and
   time zone values. So DateTimes formerly rendered as

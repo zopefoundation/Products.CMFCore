@@ -30,12 +30,10 @@ from AccessControl.SecurityInfo import ModuleSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition.interfaces import IAcquirer
 from Acquisition import aq_get
-from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Acquisition import Implicit
 from App.class_init import InitializeClass
 from App.Common import package_home
-from App.Dialogs import MessageDialog
 from App.ImageFile import ImageFile
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
@@ -401,7 +399,7 @@ def _checkConditionalGET(obj, extra_context):
         try:
             if_modified_since=long(DateTime(if_modified_since).timeTime())
         except:
-            if_mod_since=None
+            if_modified_since=None
 
     client_etags = None
     if if_none_match:
@@ -496,10 +494,8 @@ class ImmutableId(Base):
         """ Never allow renaming!
         """
         if id != self.getId():
-            raise ValueError(MessageDialog(
-                title='Invalid Id',
-                message='Cannot change the id of this object',
-                action='./manage_main'))
+            raise ValueError('Changing the id of this object is forbidden: %s'
+                             % self.getId())
 
 
 class UniqueObject (ImmutableId):
