@@ -40,11 +40,6 @@
       id="cmf.ListPortalMembers"
       title="List portal members"
       />
-      
-    <permission
-     id="cmf.ManageUsers"
-     title="Manage portal members"
-     />
 
     <permission
       id="cmf.AddPortalFolders"
