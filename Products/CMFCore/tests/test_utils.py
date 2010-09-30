@@ -164,6 +164,31 @@ class CoreUtilsSecurityTests(SecurityTest):
         # The values on the object itself should still the the same
         self.assertEqual(len(obj.get_local_roles_for_userid('dummyuser1')), 2)
 
+    def test_FakeExecutableObject(self):
+        from AccessControl import getSecurityManager
+        from AccessControl.ImplPython import ZopeSecurityPolicy
+        from AccessControl.Permission import Permission
+        from AccessControl.SecurityManagement import newSecurityManager
+        from AccessControl.SecurityManager import setSecurityPolicy
+        from Products.CMFCore.utils import FakeExecutableObject
+
+        setSecurityPolicy(ZopeSecurityPolicy())
+        site = self._makeSite()
+        newSecurityManager(None, site.acl_users.user_foo)
+        obj = site.bar_dummy
+        Permission('FOO', (), obj).setRoles(('FOO_ROLE',))
+        sm = getSecurityManager()
+        self.assertFalse(sm.checkPermission('FOO', obj))
+
+        eo = FakeExecutableObject(('FOO_ROLE',))
+        sm.addContext(eo)
+        try:
+            self.assertTrue(sm.checkPermission('FOO', obj))
+        finally:
+            sm.removeContext(eo)
+
+        self.assertFalse(sm.checkPermission('FOO', obj))
+
 
 def test_suite():
     return unittest.TestSuite((

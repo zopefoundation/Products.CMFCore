@@ -284,6 +284,20 @@ def _modifyPermissionMappings(ob, map):
     return something_changed
 
 
+class FakeExecutableObject:
+
+    """Fake ExecutableObject used to set proxy roles in trusted code.
+    """
+
+    def __init__(self, proxy_roles):
+        self._proxy_roles = tuple(proxy_roles)
+
+    def getOwner(self):
+        return None
+
+    getWrappedOwner = getOwner
+
+
 # Parse a string of etags from an If-None-Match header
 # Code follows ZPublisher.HTTPRequest.parse_cookie
 parse_etags_lock=allocate_lock()
