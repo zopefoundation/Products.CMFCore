@@ -1359,7 +1359,11 @@ class ISyndicationInfo(Interface):
         Objects that can be syndicated provide the ISyndicatable interface
         """
         )
-
+    
+    def revert():
+        """
+        Remove any folderish specific syndication settings.
+        """
     
     def enable():
         """ Enable syndication for an object """
