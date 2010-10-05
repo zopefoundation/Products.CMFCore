@@ -1289,6 +1289,15 @@ class ISyndicationTool(Interface):
         o falls back to retrieving the site-wide syndication flag
         """
 
+    def getSyndicationInfo(obj):
+        """ Return a dictionary of syndication information for an
+        an object:
+        * period
+        * frequency
+        * base as a DateTime object
+        * max_items
+        """
+
     def getUpdatePeriod(obj=None):
         """ Return the update period for the syndicated feed
 
@@ -1317,6 +1326,7 @@ class ISyndicationTool(Interface):
         """
 
     def getHTML4UpdateBase(obj=None):
+        ### Deprecated
         """ return the HTML-formatted feed publishing base date
 
         o falls back to the site-wide value if no object is passed in
