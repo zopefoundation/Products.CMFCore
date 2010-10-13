@@ -46,14 +46,22 @@ setup(name='Products.%s' % NAME,
                      ],
       install_requires=[
           'setuptools',
-          'Zope2 >= 2.12.11dev',
+          'Zope2 >= 2.12.11',
           'five.localsitemanager',
+#          'Products.BTreeFolder2', # BBB: disabled for Zope 2.12
           'Products.GenericSetup',
+#          'Products.MailHost', # BBB: disabled for Zope 2.12
+#          'Products.PythonScripts', # BBB: disabled for Zope 2.12
           'Products.ZSQLMethods',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',
+#          'Products.StandardCacheManagers', # BBB: disabled for Zope 2.12
           ],
+      extras_require=dict(
+        test=[
+#          'Products.StandardCacheManagers', # BBB: disabled for Zope 2.12
+          ]),
       test_loader='zope.testing.testrunner.eggsupport:SkipLayers',
       test_suite='Products.%s' % NAME,
       entry_points="""
