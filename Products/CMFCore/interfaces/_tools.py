@@ -1864,6 +1864,10 @@ class IWorkflowDefinition(Interface):
     """Plugin interface for workflow definitions managed by IWorkflowTool.
     """
 
+    def getId():
+        """ Return the id of the workflow definition.
+        """
+
     def getCatalogVariablesFor(ob):
         """ Return a mapping of attributes relevant to this workflow.
 
@@ -2033,6 +2037,22 @@ class IWorkflowDefinition(Interface):
 
         o Permission:  Private (Python only)
         """
+
+
+class IWorkflowStatus(Interface):
+
+    def get():
+        """Return the current workflow status or None
+        """
+
+    def set(status):
+        """Update the current workflow status to `status`
+        """
+
+
+class IWorkflowHistory(Interface):
+    """A sequence of workflow status dictionaries
+    """
 
 
 class ILinebreakNormalizer(Interface):

@@ -41,4 +41,8 @@
       name="MemberData"
       />
 
+  <adapter factory=".WorkflowTool.DefaultWorkflowStatus" />
+
+  <adapter factory=".WorkflowTool.default_workflow_history" />
+
 </configure>

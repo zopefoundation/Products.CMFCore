@@ -140,6 +140,7 @@ class TraversingEventZCMLLayer(ZopeLite):
         zcml.load_config('configure.zcml', zope.traversing)
         zcml.load_config('event.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.CMFCore)
+        zcml.load_config('tool.zcml', Products.CMFCore)
         setHooks()
 
     @classmethod

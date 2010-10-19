@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- notifyWorkflowCreated only to IWorkflowAware, possibly following adaption on
+  IObjectAddedEvent.
+
+- Adapterize workflow storage lookups.
+
 - utils: Added FakeExecutableObject.
   It can be used to set proxy roles in trusted code.
 

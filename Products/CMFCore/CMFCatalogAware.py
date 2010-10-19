@@ -262,7 +262,9 @@ def handleContentishEvent(ob, event):
     """ Event subscriber for (IContentish, IObjectEvent) events.
     """
     if IObjectAddedEvent.providedBy(event):
-        ob.notifyWorkflowCreated()
+        wfaware = IWorkflowAware(ob, None)
+        if wfaware is not None:
+            wfaware.notifyWorkflowCreated()
         ob.indexObject()
 
     elif IObjectMovedEvent.providedBy(event):

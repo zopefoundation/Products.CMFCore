@@ -27,10 +27,18 @@ from OFS.ObjectManager import IFAwareObjectManager
 from Persistence import PersistentMapping
 from zope.event import notify
 from zope.interface import implements
+from zope.interface import implementer
+from zope.component import adapts
+from zope.component import adapter
+from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
+from Products.CMFCore.interfaces import IWorkflowAware
 from Products.CMFCore.interfaces import IWorkflowDefinition
+from Products.CMFCore.interfaces import IWorkflowHistory
+from Products.CMFCore.interfaces import IWorkflowStatus
 from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
@@ -321,39 +329,26 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
     def getHistoryOf(self, wf_id, ob):
         """ Get the history of an object for a given workflow.
         """
-        if hasattr(aq_base(ob), 'workflow_history'):
-            wfh = ob.workflow_history
-            return wfh.get(wf_id, None)
-        return ()
+        wf = self.getWorkflowById(wf_id)
+        return queryMultiAdapter((ob, wf), IWorkflowHistory, default=())
 
     security.declarePrivate('getStatusOf')
     def getStatusOf(self, wf_id, ob):
         """ Get the last element of a workflow history for a given workflow.
         """
-        wfh = self.getHistoryOf(wf_id, ob)
-        if wfh:
-            return wfh[-1]
+        wf = self.getWorkflowById(wf_id)
+        wfs = queryMultiAdapter((ob, wf), IWorkflowStatus, default=None)
+        if wfs is not None:
+            return wfs.get()
         return None
 
     security.declarePrivate('setStatusOf')
     def setStatusOf(self, wf_id, ob, status):
         """ Append a record to the workflow history of a given workflow.
         """
-        wfh = None
-        has_history = 0
-        if hasattr(aq_base(ob), 'workflow_history'):
-            history = ob.workflow_history
-            if history is not None:
-                has_history = 1
-                wfh = history.get(wf_id, None)
-                if wfh is not None:
-                    wfh = list(wfh)
-        if not wfh:
-            wfh = []
-        wfh.append(status)
-        if not has_history:
-            ob.workflow_history = PersistentMapping()
-        ob.workflow_history[wf_id] = tuple(wfh)
+        wf = self.getWorkflowById(wf_id)
+        wfs = getMultiAdapter((ob, wf), IWorkflowStatus)
+        wfs.set(status)
 
     #
     #   'IConfigurableWorkflowTool' interface methods
@@ -622,3 +617,34 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             ob.reindexObjectSecurity()
 
 InitializeClass(WorkflowTool)
+
+
+class DefaultWorkflowStatus(object):
+    implements(IWorkflowStatus)
+    adapts(IWorkflowAware, IWorkflowDefinition)
+
+    def __init__(self, context, workflow):
+        self.context = aq_base(context)
+        self.wf_id = workflow.getId()
+
+    def get(self):
+        history = getattr(self.context, 'workflow_history', {})
+        wfh = history.get(self.wf_id)
+        if wfh:
+            return wfh[-1]
+        return None
+
+    def set(self, status):
+        history = getattr(self.context, 'workflow_history', None)
+        if history is None:
+            history = self.context.workflow_history = PersistentMapping()
+        wfh = list(history.get(self.wf_id, ()))
+        wfh.append(status)
+        history[self.wf_id] = tuple(wfh)
+
+
+@implementer(IWorkflowHistory)
+@adapter(IWorkflowAware, IWorkflowDefinition)
+def default_workflow_history(context, workflow):
+        history = getattr(aq_base(context), 'workflow_history', {})
+        return history.get(workflow.getId(), ())
