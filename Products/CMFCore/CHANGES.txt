@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Load permissions.zcml from Products.Five in the test to fix tests
+  with Zope 2.12.
+
 - notifyWorkflowCreated only to IWorkflowAware, possibly following adaption on
   IObjectAddedEvent.
 
