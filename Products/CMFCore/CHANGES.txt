@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.3 (unreleased)
+2.2.3 (2010-10-31)
 ------------------
 
 - Make the error raised when trying to rename an instance of ImmutableId
