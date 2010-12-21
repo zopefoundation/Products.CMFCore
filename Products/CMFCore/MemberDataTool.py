@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Basic member data tool.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -366,7 +364,7 @@ class MemberData(SimpleItem):
         if domains is None:
             domains = u.getDomains()
 
-        u.userFolderEditUser(u.getUserName(), password, roles, domains)
+        u.userFolderEditUser(u.getId(), password, roles, domains)
 
     def __str__(self):
         return self.getMemberId()

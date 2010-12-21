@@ -914,7 +914,8 @@ class _AllowedUser( Implicit ):
     def getId( self ):
         return 'unit_tester'
 
-    getUserName = getId
+    def getUserName(self):
+        return 'Unit Tester'
 
     def allowed( self, object, object_roles=None ):
         return self._lambdas[ 0 ]( object, object_roles )

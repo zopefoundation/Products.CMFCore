@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit test security.
-
-$Id$
 """
 
 from AccessControl.PermissionRole import rolesForPermissionOn
@@ -58,7 +56,8 @@ class OmnipotentUser( Implicit ):
     def getId( self ):
         return 'all_powerful_Oz'
 
-    getUserName = getId
+    def getUserName(self):
+        return 'All Powerful Oz'
 
     def getRoles(self):
         return ('Manager',)
@@ -84,7 +83,8 @@ class UserWithRoles( Implicit ):
     def getId( self ):
         return 'high_roller'
 
-    getUserName = getId
+    def getUserName(self):
+        return 'High Roller'
 
     def getRoles(self):
         return self._roles
@@ -97,14 +97,16 @@ class UserWithRoles( Implicit ):
                 return 1
         return 0
 
+
 class AnonymousUser( Implicit ):
     """
       Anonymous USer for unit testing purposes.
     """
     def getId( self ):
-        return 'Anonymous User'
+        return None
 
-    getUserName = getId
+    def getUserName(self):
+        return 'Anonymous User'
 
     def has_permission(self, permission, obj):
         # For types tool tests dealing with filtered_meta_types

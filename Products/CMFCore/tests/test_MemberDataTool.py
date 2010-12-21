@@ -29,7 +29,7 @@ class DummyUserFolder(Acquisition.Implicit):
         self._users = {}
 
     def _addUser(self, user):
-        self._users[user.getUserName()] = user
+        self._users[user.getId()] = user
 
     def userFolderEditUser(self, name, password, roles, domains):
         user = self._users[name]
@@ -55,7 +55,7 @@ class DummyUser(Acquisition.Implicit):
         return self.name
 
     def getUserName(self):
-        return self.name
+        return 'name of %s' % self.getId()
 
     def getRoles(self):
         return self.roles + ('Authenticated',)

@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Unit test dummies.
-
-$Id$
 """
 
 from Acquisition import Implicit, aq_base, aq_inner, aq_parent
@@ -324,7 +322,8 @@ class DummyUser(Implicit):
     def getId(self):
         return self.id
 
-    getUserName = getId
+    def getUserName(self):
+        return 'name of %s' % self.getId()
 
     def allowed(self, object, object_roles=None):
         if object_roles is None or 'Anonymous' in object_roles:
