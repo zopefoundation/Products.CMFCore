@@ -29,7 +29,7 @@ from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Products.CMFCore.tests.base.testcase import SecurityTest
 
 
 class PortalContentTests(unittest.TestCase):
@@ -81,7 +81,7 @@ class PortalContentTests(unittest.TestCase):
         self.assertEqual( ob(), 'dummy' )
 
 
-class TestContentCopyPaste(SecurityRequestTest):
+class TestContentCopyPaste(SecurityTest):
 
     # Tests related to http://www.zope.org/Collectors/CMF/205
     # Copy/pasting a content item must set ownership to pasting user
@@ -89,7 +89,7 @@ class TestContentCopyPaste(SecurityRequestTest):
     layer = TraversingEventZCMLLayer
 
     def setUp(self):
-        SecurityRequestTest.setUp(self)
+        SecurityTest.setUp(self)
 
         self.root._setObject('site', DummySite('site'))
         self.site = self.root.site

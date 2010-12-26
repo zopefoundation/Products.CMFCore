@@ -26,7 +26,7 @@ from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.MembershipTool import MembershipTool
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.URLTool import URLTool
 
@@ -112,7 +112,7 @@ class ActionsToolTests(unittest.TestCase, WarningInterceptor):
         self.assertRaises(ValueError, tool.getActionObject, 'wrong_format')
 
 
-class ActionsToolSecurityRequestTests(SecurityRequestTest):
+class ActionsToolSecurityTests(SecurityTest):
 
     def _getTargetClass(self):
         from Products.CMFCore.ActionsTool import ActionsTool
@@ -123,7 +123,7 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
         return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        SecurityRequestTest.setUp(self)
+        SecurityTest.setUp(self)
 
         root = self.root
         sm = getSiteManager()
@@ -173,11 +173,11 @@ class ActionsToolSecurityRequestTests(SecurityRequestTest):
 
     def tearDown(self):
         cleanUp()
-        SecurityRequestTest.tearDown(self)
+        SecurityTest.tearDown(self)
 
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ActionsToolTests),
-        unittest.makeSuite(ActionsToolSecurityRequestTests),
+        unittest.makeSuite(ActionsToolSecurityTests),
         ))

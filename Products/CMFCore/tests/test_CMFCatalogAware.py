@@ -20,7 +20,6 @@ import transaction
 from AccessControl.SecurityManagement import newSecurityManager
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
-
 from zope.interface import implements
 
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
@@ -28,10 +27,10 @@ from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.testing import TraversingZCMLLayer
+from Products.CMFCore.tests.base.testcase import LogInterceptor
+from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.test_PortalFolder import _AllowedUser
 from Products.CMFCore.tests.test_PortalFolder import _SensitiveSecurityPolicy
-from Products.CMFCore.tests.base.testcase import LogInterceptor
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 
 CMF_SECURITY_INDEXES = CMFCatalogAware._cmf_security_indexes
 
@@ -215,7 +214,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
     # FIXME: more tests needed
 
 
-class CMFCatalogAware_CopySupport_Tests(SecurityRequestTest):
+class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
     layer = EventZCMLLayer
 

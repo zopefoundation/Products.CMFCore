@@ -21,7 +21,7 @@ from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
 
 #
@@ -59,18 +59,18 @@ class DummyAction:
                )
 
 
-class ActionProviderBaseTests(SecurityRequestTest, WarningInterceptor):
+class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
 
     def setUp(self):
         self._trap_warning_output()
-        SecurityRequestTest.setUp(self)
+        SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
         utool = self.site._setObject( 'portal_url', DummyTool() )
         mtool = self.site._setObject( 'portal_membership', DummyTool() )
 
     def tearDown(self):
         cleanUp()
-        SecurityRequestTest.tearDown(self)
+        SecurityTest.tearDown(self)
         self._free_warning_output()
 
     def _makeProvider( self, dummy=0 ):

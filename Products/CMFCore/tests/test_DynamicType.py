@@ -37,7 +37,7 @@ from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
@@ -146,10 +146,10 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
         self.assertEqual( r.response.base, '/foo/' )
 
 
-class DynamicTypeSecurityTests(SecurityRequestTest):
+class DynamicTypeSecurityTests(SecurityTest):
 
     def setUp(self):
-        SecurityRequestTest.setUp(self)
+        SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
         self.site._setObject( 'portal_membership', DummyTool() )
         self.site._setObject( 'portal_types', TypesTool() )
@@ -160,7 +160,7 @@ class DynamicTypeSecurityTests(SecurityRequestTest):
 
     def tearDown(self):
         cleanUp()
-        SecurityRequestTest.tearDown(self)
+        SecurityTest.tearDown(self)
 
     def test_getTypeInfo(self):
         foo = self.site.foo

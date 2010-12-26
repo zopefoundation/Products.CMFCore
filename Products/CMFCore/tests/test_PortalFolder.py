@@ -29,8 +29,8 @@ from zope.component.interfaces import IFactory
 from zope.interface import implements
 from zope.interface.verify import verifyClass
 
-from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import ConformsToFolder
 from Products.CMFCore.testing import FunctionalZCMLLayer
@@ -39,14 +39,12 @@ from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyUserFolder
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
 from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
 from Products.CMFCore.WorkflowTool import WorkflowTool
-from types import TupleType
 
 def extra_meta_types():
     return [{'name': 'Dummy', 'action': 'manage_addFolder',
@@ -74,7 +72,7 @@ class DummyCatalogTool:
         return len(self.paths)
 
 def has_path(catalog, path):
-    if type(path) is TupleType:
+    if isinstance(path, tuple):
         path = '/'.join(path)
     return path in catalog.paths
 
@@ -140,7 +138,20 @@ class PortalFolderFactoryTests(SecurityTest):
         self.assertRaises(ValueError, f.invokeFactory, 'Dummy Content', 'foo')
 
 
-class PortalFolderTests(ConformsToFolder, SecurityTest):
+class PortalFolderTests(ConformsToFolder, unittest.TestCase):
+
+    def _getTargetClass(self):
+        from Products.CMFCore.PortalFolder import PortalFolder
+
+        return PortalFolder
+
+    def test_interfaces(self):
+        from OFS.interfaces import IOrderedContainer
+
+        verifyClass(IOrderedContainer, self._getTargetClass())
+
+
+class PortalFolderSecurityTests(SecurityTest):
 
     layer = FunctionalZCMLLayer
 
@@ -156,11 +167,6 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
-
-    def test_interfaces(self):
-        from OFS.interfaces import IOrderedContainer
-
-        verifyClass(IOrderedContainer, self._getTargetClass())
 
     def test_contents_methods(self):
         ttool = self.site._setObject( 'portal_types', TypesTool() )
@@ -922,7 +928,7 @@ class _AllowedUser( Implicit ):
         return self._lambdas[ 0 ]( object, object_roles )
 
 
-class PortalFolderCopySupportTests(SecurityRequestTest):
+class PortalFolderCopySupportTests(SecurityTest):
 
     layer = FunctionalZCMLLayer
 
@@ -1304,6 +1310,7 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(PortalFolderFactoryTests),
         unittest.makeSuite(PortalFolderTests),
+        unittest.makeSuite(PortalFolderSecurityTests),
         unittest.makeSuite(PortalFolderMoveTests),
         unittest.makeSuite(ContentFilterTests),
         unittest.makeSuite(PortalFolderCopySupportTests),
