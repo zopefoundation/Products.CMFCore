@@ -20,16 +20,18 @@ ZopeTestCase.installProduct('PageTemplates', 1)
 
 from os.path import join as path_join
 
+from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
 from zope.tales.tales import Undefined
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.FSPageTemplate import FSPageTemplate
 from Products.CMFCore.FSMetadata import FSMetadata
+from Products.CMFCore.FSPageTemplate import FSPageTemplate
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -163,6 +165,7 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
     def setUp(self):
         FSPTMaker.setUp(self)
         SecurityTest.setUp(self)
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
         self.skins = self.root.portal_skins

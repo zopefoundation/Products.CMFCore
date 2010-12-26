@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- tests base: Tightened security for anonymous test user.
+
 - Load permissions.zcml from Products.Five in the test to fix tests
   with Zope 2.12.
 

@@ -19,10 +19,12 @@ import Testing
 import os
 import re
 
+from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.testing import TraversingZCMLLayer
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -154,6 +156,7 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
         SecurityTest.setUp(self)
         FSReSTMaker.setUp(self)
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
         self.skins = self.root.portal_skins

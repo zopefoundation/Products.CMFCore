@@ -26,13 +26,13 @@ from zope.container.contained import ObjectRemovedEvent
 from zope.event import notify
 from zope.interface import implements
 
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.interfaces import ITypeInformation
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.PortalContent import PortalContent
-
-from security import OmnipotentUser
+from Products.CMFCore.tests.base.security import DummyUser
+from Products.CMFCore.tests.base.security import OmnipotentUser
 
 
 class DummyObject(Implicit):
@@ -310,34 +310,6 @@ class DummySite(DummyFolder):
 
     def getProperty(self, id, default=None):
         return getattr(self, id, default)
-
-
-class DummyUser(Implicit):
-    """ A dummy User.
-    """
-
-    def __init__(self, id='dummy'):
-        self.id = id
-
-    def getId(self):
-        return self.id
-
-    def getUserName(self):
-        return 'name of %s' % self.getId()
-
-    def allowed(self, object, object_roles=None):
-        if object_roles is None or 'Anonymous' in object_roles:
-            return 1
-        for role in object_roles:
-            if role in self.getRolesInContext(object):
-                return 1
-        return 0
-
-    def getRolesInContext(self, object):
-        return ('Authenticated', 'Dummy', 'Member')
-
-    def _check_context(self, object):
-        return 1
 
 
 class DummyUserFolder(Implicit):

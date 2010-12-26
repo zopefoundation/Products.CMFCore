@@ -19,11 +19,13 @@ ZopeTestCase.installProduct('ZSQLMethods', 1)
 
 from os.path import join
 
+from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from OFS.Folder import Folder
 
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSZSQLMethod import FSZSQLMethod
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
@@ -59,9 +61,10 @@ class FSZSQLMethodTests(FSDVTest):
 
 class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
 
-    def setUp( self ):
+    def setUp(self):
         FSZSQLMaker.setUp(self)
-        SecurityTest.setUp( self )
+        SecurityTest.setUp(self)
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
         self.skins = self.root.portal_skins

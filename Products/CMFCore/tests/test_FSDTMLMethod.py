@@ -18,6 +18,7 @@ import Testing
 
 from os.path import join as path_join
 
+from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from DateTime import DateTime
 from OFS.Folder import Folder
@@ -28,10 +29,11 @@ from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
+from Products.CMFCore.tests.base.dummy import DummyContent
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.dummy import DummyContent
 
 
 class FSDTMLMaker(FSDVTest):
@@ -104,11 +106,13 @@ class FSDTMLMethodTests(RequestTest, FSDTMLMaker):
         self.assertEqual( data, '' )
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
+
 class FSDTMLMethodCustomizationTests( SecurityTest, FSDTMLMaker ):
 
-    def setUp( self ):
+    def setUp(self):
         FSDTMLMaker.setUp(self)
-        SecurityTest.setUp( self )
+        SecurityTest.setUp(self)
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
 
         self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
         self.skins = self.root.portal_skins
@@ -123,6 +127,10 @@ class FSDTMLMethodCustomizationTests( SecurityTest, FSDTMLMaker ):
                              , self._makeOne( 'testDTML', 'testDTML.dtml' ) )
 
         self.fsDTML = self.fsdir.testDTML
+
+    def tearDown(self):
+        SecurityTest.tearDown(self)
+        FSDTMLMaker.tearDown(self)
 
     def test_customize( self ):
 
@@ -175,10 +183,6 @@ class FSDTMLMethodCustomizationTests( SecurityTest, FSDTMLMaker ):
         custom_pt = self.custom.testDTML
 
         self.assertEqual(custom_pt.ZCacheable_getManagerId(), cache_id)
-
-    def tearDown(self):
-        SecurityTest.tearDown(self)
-        FSDTMLMaker.tearDown(self)
 
 
 def test_suite():

@@ -169,6 +169,9 @@ class PortalFolderSecurityTests(SecurityTest):
         self.site = DummySite('site').__of__(self.root)
 
     def test_contents_methods(self):
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         f = self._makeOne('foo')
         self.assertEqual( f.objectValues(), [] )
@@ -205,6 +208,8 @@ class PortalFolderSecurityTests(SecurityTest):
         self.assertEqual( f.listDAVObjects(), [f.sub1, f.hidden_sub2] )
 
     def test_deletePropagation(self):
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         foo = DummyContent('foo')
         foo.reset()
@@ -227,6 +232,8 @@ class PortalFolderSecurityTests(SecurityTest):
         self.failIf( foo.before_delete_called )
 
     def test_manageDelObjects(self):
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         foo = DummyContent('foo')
 
@@ -241,6 +248,8 @@ class PortalFolderSecurityTests(SecurityTest):
         # Test is a new object does get cataloged upon _setObject
         # and uncataloged upon manage_deleteObjects
         #
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
@@ -278,6 +287,8 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         from Products.CMFCore.PortalFolder import PortalFolder
 
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
@@ -305,6 +316,8 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         from Products.CMFCore.PortalFolder import PortalFolder
 
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
 
         ttool = self.site._setObject( 'portal_types', TypesTool() )
@@ -385,6 +398,8 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         # Copy/Paste should obey workflow guards
         #
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         ttool = self.site._setObject('portal_types', TypesTool())
         fti = FTIDATA_DUMMY[0].copy()
         ttool._setObject('Dummy Content', FTI(**fti))
@@ -424,6 +439,8 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         #   _setObject() should raise BadRequest on duplicate id
         #
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         test._setObject('foo', DummyContent('foo'))
         self.assertRaises(BadRequest, test._setObject, 'foo',
@@ -433,11 +450,15 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         #   _checkId() should raise BadRequest on duplicate id
         #
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         test._setObject('foo', DummyContent('foo'))
         self.assertRaises(BadRequest, test._checkId, 'foo')
 
     def test__checkId_PortalRoot(self):
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         test._checkId('acl_users')
@@ -445,6 +466,8 @@ class PortalFolderSecurityTests(SecurityTest):
         self.assertRaises(BadRequest, test._checkId, 'acl_users')
 
     def test__checkId_MethodAlias(self):
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         test._setPortalTypeName('Dummy Content 15')
         ttool = self.site._setObject('portal_types', TypesTool())
@@ -481,6 +504,8 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         #   checkIdAvailable() should catch BadRequest
         #
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         test._setObject('foo', DummyContent('foo'))
         self.failIf(test.checkIdAvailable('foo'))
@@ -506,6 +531,8 @@ class PortalFolderMoveTests(SecurityTest):
         #
         from Products.CMFCore.PortalFolder import PortalFolder
 
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
         self.assertEqual( len(ctool), 0 )
@@ -551,6 +578,8 @@ class PortalFolderMoveTests(SecurityTest):
         #
         #   Does copy / paste work?
         #
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
         ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_DUMMY[0].copy()

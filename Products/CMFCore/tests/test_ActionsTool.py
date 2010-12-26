@@ -16,6 +16,7 @@
 import unittest
 import Testing
 
+from AccessControl.SecurityManagement import newSecurityManager
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
@@ -26,6 +27,7 @@ from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.MembershipTool import MembershipTool
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.URLTool import URLTool
@@ -155,6 +157,8 @@ class ActionsToolSecurityTests(SecurityTest):
                                 visible=1)
             ,
             )
+
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
         self.assertEqual(tool.listFilteredActionsFor(root.foo),
                          {'workflow': [],
                           'user': [],

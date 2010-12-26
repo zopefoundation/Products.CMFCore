@@ -15,20 +15,23 @@
 
 import unittest
 
+from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
 
 class FSPOTests(SecurityTest, FSDVTest):
 
-    def setUp( self ):
+    def setUp(self):
         FSDVTest.setUp(self)
-        SecurityTest.setUp( self )
+        SecurityTest.setUp(self)
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
 
-    def tearDown( self ):
-        SecurityTest.tearDown( self )
+    def tearDown(self):
+        SecurityTest.tearDown(self)
         FSDVTest.tearDown(self)
 
     def _getTargetClass( self ):

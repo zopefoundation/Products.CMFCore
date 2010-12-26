@@ -15,9 +15,12 @@
 
 import unittest
 
+from AccessControl.Permission import Permission
+
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
+
 
 class TypesToolTests(unittest.TestCase):
 
@@ -71,6 +74,7 @@ class TypesToolTests(unittest.TestCase):
 
         self.assertEqual(ti._action_info, 'fake_info')
         self.assertEqual(ti._action_obj, dummy)
+
 
 class TypesToolFunctionalTests(SecurityTest):
 
@@ -618,13 +622,16 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
         from AccessControl.SecurityManagement import newSecurityManager
         from Products.CMFCore.tests.base.dummy import DummyFolder
         from Products.CMFCore.tests.base.security import UserWithRoles
+
         self.f = DummyFolder(fake_product=1)
+        Permission('addFoo', (), self.f).setRoles(('Manager', 'FooAdder'))
         self.ti = self._makeOne('Foo', product='FooProduct', factory='addFoo')
         newSecurityManager(None, UserWithRoles('FooAdder').__of__(self.f))
 
     def tearDown(self):
         from AccessControl.SecurityManagement import noSecurityManager
         from zope.testing.cleanup import cleanUp
+
         cleanUp()
         noSecurityManager()
 
@@ -692,17 +699,20 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         from Products.CMFCore.tests.base.dummy import DummyFactory
         from Products.CMFCore.tests.base.dummy import DummyFolder
         from Products.CMFCore.tests.base.security import UserWithRoles
+
         SecurityTest.setUp(self)
         sm = getSiteManager()
         sm.registerUtility(DummyFactory, IFactory, 'test.dummy')
 
         self.f = DummyFolder()
+        Permission('addFoo', (), self.f).setRoles(('Manager', 'FooAdder'))
         self.ti = self._makeOne('Foo', meta_type='Dummy',
                                 factory='test.dummy')
         newSecurityManager(None, UserWithRoles('FooAdder').__of__(self.f))
 
     def tearDown(self):
         from zope.testing.cleanup import cleanUp
+
         cleanUp()
         SecurityTest.tearDown(self)
 
@@ -762,6 +772,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         self.failUnless(IContainerModifiedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f)
 
+
 class DummyWorkflowTool:
 
     def __init__(self, *workflows):
@@ -769,6 +780,7 @@ class DummyWorkflowTool:
 
     def getWorkflowsFor(self, type_id):
         return self._workflows
+
 
 class DummyWorkflow:
 

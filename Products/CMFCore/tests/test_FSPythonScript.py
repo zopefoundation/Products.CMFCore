@@ -22,6 +22,7 @@ from sys import exc_info
 from thread import start_new_thread
 from time import sleep
 
+from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
@@ -29,6 +30,7 @@ from Products.StandardCacheManagers import RAMCacheManager
 
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSPythonScript import FSPythonScript
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
@@ -83,9 +85,10 @@ class FSPythonScriptTests(FSPSMaker):
 
 class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
 
-    def setUp( self ):
+    def setUp(self):
         FSPSMaker.setUp(self)
-        SecurityTest.setUp( self )
+        SecurityTest.setUp(self)
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
 
     def tearDown(self):
         SecurityTest.tearDown(self)

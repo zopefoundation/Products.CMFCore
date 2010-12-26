@@ -18,9 +18,10 @@ from Acquisition import Implicit
 
 
 class PermissiveSecurityPolicy:
+
+    """Very permissive security policy for unit testing purposes.
     """
-        Very permissive security policy for unit testing purposes.
-    """
+
     #
     #   Standard SecurityPolicy interface
     #
@@ -39,87 +40,77 @@ class PermissiveSecurityPolicy:
             return True
 
     def checkPermission(self, permission, object, context):
-        if permission == 'forbidden permission':
-            return 0
-        if permission == 'addFoo':
-            return context.user.allowed(object, ['FooAdder'])
         roles = rolesForPermissionOn(permission, object)
         if isinstance(roles, basestring):
-            roles=[roles]
+            roles = [roles]
         return context.user.allowed(object, roles)
 
 
-class OmnipotentUser( Implicit ):
-    """
-      Omnipotent User for unit testing purposes.
-    """
-    def getId( self ):
-        return 'all_powerful_Oz'
+class _BaseUser(Implicit):
+
+    def getId(self):
+        return self._id
 
     def getUserName(self):
-        return 'All Powerful Oz'
+        return self._name
 
     def getRoles(self):
-        return ('Manager',)
-
-    def allowed( self, object, object_roles=None ):
-        return 1
+        return self._roles
 
     def getRolesInContext(self, object):
-        return ('Manager',)
+        return self._roles
+
+    def allowed(self, object, object_roles=None):
+        if object_roles is None or 'Anonymous' in object_roles:
+            return True
+        return any( r in self._roles for r in object_roles )
 
     def _check_context(self, object):
         return True
 
 
-class UserWithRoles( Implicit ):
+class OmnipotentUser(_BaseUser):
+
+    """Omnipotent user for unit testing purposes.
     """
-      User with roles specified in constructor
-      for unit testing purposes.
+
+    _id = 'all_powerful_Oz'
+    _name = 'All Powerful Oz'
+    _roles = ('Manager',)
+
+    def allowed(self, object, object_roles=None):
+        return True
+
+
+class UserWithRoles(_BaseUser):
+
+    """User with roles specified in constructor for unit testing purposes.
     """
-    def __init__( self, *roles ):
+
+    _id = 'high_roller'
+    _name = 'High Roller'
+
+    def __init__(self, *roles):
         self._roles = roles
 
-    def getId( self ):
-        return 'high_roller'
 
-    def getUserName(self):
-        return 'High Roller'
+class DummyUser(_BaseUser):
 
-    def getRoles(self):
-        return self._roles
-
-    def allowed( self, object, object_roles=None ):
-        if object_roles is None:
-            object_roles=()
-        for orole in object_roles:
-            if orole in self._roles:
-                return 1
-        return 0
-
-
-class AnonymousUser( Implicit ):
+    """ A dummy User.
     """
-      Anonymous USer for unit testing purposes.
+
+    _roles = ('Authenticated', 'Dummy', 'Member')
+
+    def __init__(self, id='dummy'):
+        self._id = id
+        self._name = 'name of %s' % id
+
+
+class AnonymousUser(_BaseUser):
+
+    """Anonymous user for unit testing purposes.
     """
-    def getId( self ):
-        return None
 
-    def getUserName(self):
-        return 'Anonymous User'
-
-    def has_permission(self, permission, obj):
-        # For types tool tests dealing with filtered_meta_types
-        return 1
-
-    def allowed( self, object, object_roles=None ):
-        # for testing permissions on actions
-        if object.getId() == 'actions_dummy':
-            if 'Anonymous' in object_roles:
-                return 1
-            else:
-                return 0
-        return 1
-
-    def getRoles(self):
-        return ('Anonymous',)
+    _id = None
+    _name = 'Anonymous User'
+    _roles = ('Anonymous',)
