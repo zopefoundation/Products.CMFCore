@@ -56,30 +56,31 @@ class DummyCatalogTool:
     implements(ICatalogTool)
 
     def __init__(self):
-       self.paths = []
-       self.ids = []
+        self.paths = []
+        self.ids = []
 
     def indexObject(self, object):
-       self.paths.append( '/'.join(object.getPhysicalPath()) )
-       self.ids.append( object.getId() )
+        self.paths.append('/'.join(object.getPhysicalPath()))
+        self.ids.append(object.getId())
 
     def unindexObject(self, object):
-       self.paths.remove( '/'.join(object.getPhysicalPath()) )
-       self.ids.append( object.getId() )
+        self.paths.remove('/'.join(object.getPhysicalPath()))
+        self.ids.append(object.getId())
 
     def reindexObject(self, object):
-       pass
+        pass
 
     def __len__(self):
-       return len(self.paths)
+        return len(self.paths)
 
 def has_path(catalog, path):
     if type(path) is TupleType:
-       path = '/'.join(path)
+        path = '/'.join(path)
     return path in catalog.paths
 
 def has_id(catalog, id):
     return id in catalog.ids
+
 
 class PortalFolderFactoryTests(SecurityTest):
 
@@ -373,45 +374,45 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         # Now copy/paste should raise a ValueError
         cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
         self.assertRaises( ValueError, sub2.manage_pasteObjects, cookie )
-        
+
     def test_contentPasteFollowsWorkflowGuards(self):
-       #
-       # Copy/Paste should obey workflow guards
-       #
-       ttool = self.site._setObject( 'portal_types', TypesTool() )
-       fti = FTIDATA_DUMMY[0].copy()
-       ttool._setObject( 'Dummy Content', FTI(**fti) )
-       ttool._setObject( 'Folder', FTI(**fti) )
-       folder = self._makeOne('folder', 'Folder')
-       content = self._makeOne('content')
-       folder._setObject('content', content)
+        #
+        # Copy/Paste should obey workflow guards
+        #
+        ttool = self.site._setObject('portal_types', TypesTool())
+        fti = FTIDATA_DUMMY[0].copy()
+        ttool._setObject('Dummy Content', FTI(**fti))
+        ttool._setObject('Folder', FTI(**fti))
+        folder = self._makeOne('folder', 'Folder')
+        content = self._makeOne('content')
+        folder._setObject('content', content)
 
-       # Allow adding of Dummy Content
-       ttool.Folder.manage_changeProperties(filter_content_types=False)
+        # Allow adding of Dummy Content
+        ttool.Folder.manage_changeProperties(filter_content_types=False)
 
-       # Copy/paste verification should work fine
-       folder._verifyObjectPaste( content )
+        # Copy/paste verification should work fine
+        folder._verifyObjectPaste(content)
 
-       # Add a workflow with a blocking guard
-       # Based on TypesTools tests
-       class DummyWorkflow:
-           
-           _allow = False
+        # Add a workflow with a blocking guard
+        # Based on TypesTools tests
+        class DummyWorkflow:
 
-           def allowCreate(self, container, type_id):
-               return self._allow
-       
-       class DummyWorkflowTool:
+            _allow = False
 
-           def __init__(self):
-               self._workflows = [DummyWorkflow()]
+            def allowCreate(self, container, type_id):
+                return self._allow
 
-           def getWorkflowsFor(self, type_id):
-               return self._workflows
-      
-       # Now copy/paste verification should raise a ValueError
-       self.site.portal_workflow = DummyWorkflowTool()
-       self.assertRaises( ValueError, folder._verifyObjectPaste, content )
+        class DummyWorkflowTool:
+
+            def __init__(self):
+                self._workflows = [DummyWorkflow()]
+
+            def getWorkflowsFor(self, type_id):
+                return self._workflows
+
+        # Now copy/paste verification should raise a ValueError
+        self.site.portal_workflow = DummyWorkflowTool()
+        self.assertRaises(ValueError, folder._verifyObjectPaste, content)
 
     def test_setObjectRaisesBadRequest(self):
         #
