@@ -188,6 +188,54 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
         self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
 
+    def test_export_site_with_exportable_simple_items_encoded_string(self):
+        self._setUpAdapters()
+        ITEM_IDS = ('foo', 'bar', 'baz')
+
+        site = _makeFolder('site', site_folder=True)
+        site.title = 'AAA'
+        site.description = 'DESCRIPTION'
+        ITEMS_TITLE = u'Actualit\xe9'
+        ITEMS_DESCRIPTION = u'Actualit\xe9 r\xe9centes'
+        for id in ITEM_IDS:
+            site._setObject(id, _makeINIAware(id))
+            item = getattr(site, id)
+            item.setTitle(ITEMS_TITLE.encode('utf8'))
+            item.setDescription(ITEMS_DESCRIPTION.encode('utf8'))
+
+        context = DummyExportContext(site)
+        exporter = self._getExporter()
+        exporter(context)
+
+        self.assertEqual(len(context._wrote), 2 + len(ITEM_IDS))
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'structure/.objects')
+        self.assertEqual(content_type, 'text/comma-separated-values')
+
+        objects = [x for x in reader(StringIO(text))]
+        self.assertEqual(len(objects), 3)
+        for index in range(len(ITEM_IDS)):
+            self.assertEqual(objects[index][0], ITEM_IDS[index])
+            self.assertEqual(objects[index][1], TEST_INI_AWARE)
+
+            filename, text, content_type = context._wrote[index+2]
+            self.assertEqual(filename, 'structure/%s.ini' % ITEM_IDS[index])
+            object = site._getOb(ITEM_IDS[index])
+            self.assertEqual(text.strip(),
+                             object.as_ini().strip())
+            self.assertEqual(content_type, 'text/plain')
+
+        filename, text, content_type = context._wrote[1]
+        self.assertEqual(filename, 'structure/.properties')
+        self.assertEqual(content_type, 'text/plain')
+        parser = ConfigParser()
+        parser.readfp(StringIO(text))
+
+        self.assertEqual(parser.get('DEFAULT', 'title'),
+            ITEMS_TITLE.encode('utf8'))
+        self.assertEqual(parser.get('DEFAULT', 'description'),
+            ITEMS_DESCRIPTION.encode('utf8'))
+
     def test_export_site_with_exportable_simple_items(self):
         self._setUpAdapters()
         ITEM_IDS = ('foo', 'bar', 'baz')
