@@ -37,6 +37,16 @@ def importSiteStructure(context):
     IFilesystemImporter(context.getSite()).import_(context, 'structure', True)
 
 
+def encode_if_needed(text, encoding):
+    if isinstance(text, unicode):
+        result = text.encode(encoding)
+    else:
+        # no need to encode;
+        # let's avoid double encoding in case of encoded string
+        result = text
+    return result
+
+
 #
 #   Filesystem export/import adapters
 #
@@ -76,6 +86,8 @@ class StructureFolderWalkingAdapter(object):
     def export(self, export_context, subdir, root=False):
         """ See IFilesystemExporter.
         """
+        self._encoding = self.context.getProperty('default_charset', 'utf-8')
+
         # Enumerate exportable children
         exportable = self.context.contentItems()
         exportable = [x + (IFilesystemExporter(x, None),) for x in exportable]
@@ -98,8 +110,14 @@ class StructureFolderWalkingAdapter(object):
 
         parser = ConfigParser()
 
-        parser.set('DEFAULT', 'Title', self.context.Title())
-        parser.set('DEFAULT', 'Description', self.context.Description())
+        title = self.context.Title()
+        description = self.context.Description()
+        # encode if needed; ConfigParser does not support unicode !
+        title_str = encode_if_needed(title, self._encoding)
+        description_str = encode_if_needed(description, self._encoding)
+        parser.set('DEFAULT', 'Title', title_str)
+        parser.set('DEFAULT', 'Description', description_str)
+
         stream = StringIO()
         parser.write(stream)
 

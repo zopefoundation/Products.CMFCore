@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Fix content exportimport when Title or Description are unicode (merge from
+  2.2 branch).
+  
 - tests base: Tightened security for anonymous test user.
 
 - Load permissions.zcml from Products.Five in the test to fix tests
