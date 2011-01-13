@@ -101,15 +101,9 @@ class StructureFolderWalkingAdapter(object):
         parser = ConfigParser()
 
         title = self.context.Title()
-        if isinstance(title, unicode):
-            title_str = title.encode(self._encoding)
-        else:
-            title_str = title
+        title_str = title.encode(self._encoding)
         description = self.context.Description()
-        if isinstance(description, unicode):
-            description_str = description.encode(self._encoding)
-        else:
-            description_str = description
+        description_str = description.encode(self._encoding)
         parser.set('DEFAULT', 'Title', title_str)
         parser.set('DEFAULT', 'Description', description_str)
 
