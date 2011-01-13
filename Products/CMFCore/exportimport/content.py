@@ -76,6 +76,8 @@ class StructureFolderWalkingAdapter(object):
     def export(self, export_context, subdir, root=False):
         """ See IFilesystemExporter.
         """
+        self._encoding = self.context.getProperty('default_charset', 'utf-8')
+
         # Enumerate exportable children
         exportable = self.context.contentItems()
         exportable = [x + (IFilesystemExporter(x, None),) for x in exportable]
@@ -98,8 +100,19 @@ class StructureFolderWalkingAdapter(object):
 
         parser = ConfigParser()
 
-        parser.set('DEFAULT', 'Title', self.context.Title())
-        parser.set('DEFAULT', 'Description', self.context.Description())
+        title = self.context.Title()
+        if isinstance(title, unicode):
+            title_str = title.encode(self._encoding)
+        else:
+            title_str = title
+        description = self.context.Description()
+        if isinstance(description, unicode):
+            description_str = description.encode(self._encoding)
+        else:
+            description_str = description
+        parser.set('DEFAULT', 'Title', title_str)
+        parser.set('DEFAULT', 'Description', description_str)
+
         stream = StringIO()
         parser.write(stream)
 
