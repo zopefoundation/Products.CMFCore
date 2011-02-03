@@ -21,13 +21,14 @@ from os import remove, mkdir, rmdir
 from os.path import join
 from tempfile import mktemp
 
+from App.config import getConfiguration
+
+from Products.CMFCore.DirectoryView import DirectoryView
 from Products.CMFCore.tests import _globals
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.tests.base.testcase import WritableFSDVTest
-
-from Products.CMFCore.DirectoryView import DirectoryView
 
 
 class DummyDirectoryView(DirectoryView):
@@ -233,6 +234,8 @@ class DebugModeTests(WritableFSDVTest):
 
     def setUp( self ):
         WritableFSDVTest.setUp(self)
+        self.saved_cfg_debug_mode = getConfiguration().debug_mode
+        getConfiguration().debug_mode = True
         self.test1path = join(self.skin_path_name,'test1.py')
         self.test2path = join(self.skin_path_name,'test2.py')
         self.test3path = join(self.skin_path_name,'test3')
@@ -248,6 +251,10 @@ class DebugModeTests(WritableFSDVTest):
 
         # add a new folder
         mkdir(self.test3path)
+
+    def tearDown(self):
+        getConfiguration().debug_mode = self.saved_cfg_debug_mode
+        WritableFSDVTest.tearDown(self)
 
     def test_AddNewMethod( self ):
         # See if a method added to the skin folder can be found
@@ -295,12 +302,10 @@ class DebugModeTests(WritableFSDVTest):
 
 
 def test_suite():
-    import Globals # for data
-    tests = [unittest.makeSuite(DirectoryViewPathTests),
-             unittest.makeSuite(DirectoryViewTests),
-             unittest.makeSuite(DirectoryViewIgnoreTests),
-             unittest.makeSuite(DirectoryViewFolderTests),
-            ]
-    if Globals.DevelopmentMode:
-        tests.append(unittest.makeSuite(DebugModeTests))
-    return unittest.TestSuite(tests)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(DirectoryViewPathTests))
+    suite.addTest(unittest.makeSuite(DirectoryViewTests))
+    suite.addTest(unittest.makeSuite(DirectoryViewIgnoreTests))
+    suite.addTest(unittest.makeSuite(DirectoryViewFolderTests))
+    suite.addTest(unittest.makeSuite(DebugModeTests))
+    return suite

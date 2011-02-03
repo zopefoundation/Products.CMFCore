@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Views of filesystem directories as folders.
-
-$Id$
 """
 
 import logging
@@ -24,6 +22,7 @@ from warnings import warn
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_inner, aq_parent
 from App.class_init import InitializeClass
+from App.config import getConfiguration
 from App.special_dtml import DTMLFile
 from App.special_dtml import HTMLFile
 from OFS.Folder import Folder
@@ -154,8 +153,7 @@ class DirectoryInformation:
         return types
 
     def _changed(self):
-        import Globals  # for data
-        if not Globals.DevelopmentMode:
+        if not getConfiguration().debug_mode:
             return 0
         mtime=0
         try:
