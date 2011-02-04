@@ -11,6 +11,8 @@
 #
 ##############################################################################
 """ Views of filesystem directories as folders.
+
+$Id: DirectoryView.py 110418 2010-04-01 17:10:54Z tseaver $
 """
 
 import logging
@@ -105,6 +107,7 @@ def _findProductForPath(path, subdir=None):
 class DirectoryInformation:
     data = None
     _v_last_read = 0
+    _v_last_filelist = [] # Only used on Win32
 
     def __init__(self, filepath, reg_key, ignore=ignore):
         self._filepath = filepath
@@ -156,13 +159,23 @@ class DirectoryInformation:
         if not getConfiguration().debug_mode:
             return 0
         mtime=0
+        filelist=[]
         try:
             mtime = os.stat(self._filepath)[8]
+            if platform == 'win32':
+                # some Windows directories don't change mtime
+                # when a file is added to or deleted from them :-(
+                # So keep a list of files as well, and see if that
+                # changes
+                os.path.walk(self._filepath, self._walker, filelist)
+                filelist.sort()
         except:
             logger.exception("Error checking for directory modification")
 
-        if mtime != self._v_last_read:
+        if mtime != self._v_last_read or filelist != self._v_last_filelist:
             self._v_last_read = mtime
+            self._v_last_filelist = filelist
+
             return 1
 
         return 0

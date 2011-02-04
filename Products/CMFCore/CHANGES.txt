@@ -74,8 +74,6 @@ Products.CMFCore Changelog
 
 - DirectoryView: Removed support for deprecated old API.
 
-- DirectoryView: Removed os.path.walk call in windows development mode
-
 
 2.2.0-beta (2009-12-06)
 -----------------------
