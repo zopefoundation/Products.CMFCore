@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- DirectoryView: Modernized debug mode lookup.
+  Now getConfiguration().debug_mode is used instead of Globals.DevelopmentMode.
+
 - Fix content exportimport when Title or Description are unicode (merge from
   2.2 branch).
   

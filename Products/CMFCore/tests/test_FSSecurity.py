@@ -16,9 +16,8 @@
 import unittest
 import Testing
 
-from time import sleep
-
 from AccessControl.Permission import Permission
+from App.config import getConfiguration
 
 from Products.CMFCore.tests.base.testcase import LogInterceptor
 from Products.CMFCore.tests.base.testcase import RequestTest
@@ -101,7 +100,17 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
+
 class DebugModeTests( FSSecurityBase ):
+
+    def setUp(self):
+        FSSecurityBase.setUp(self)
+        self.saved_cfg_debug_mode = getConfiguration().debug_mode
+        getConfiguration().debug_mode = True
+
+    def tearDown(self):
+        getConfiguration().debug_mode = self.saved_cfg_debug_mode
+        FSSecurityBase.tearDown(self)
 
     def test_addPRM( self ):
         # Test adding of a .metadata
@@ -127,11 +136,6 @@ class DebugModeTests( FSSecurityBase ):
 
     def test_editPRM( self ):
         # Test editing a .metadata
-        # we need to wait a second here or the mtime will actually
-        # have the same value as set in the last test.
-        # Maybe someone brainier than me can figure out a way to make this
-        # suck less :-(
-        sleep(1)
 
         # baseline
         self._writeFile('test5.py.metadata',
@@ -152,11 +156,6 @@ class DebugModeTests( FSSecurityBase ):
         self._deleteFile('test5.py.metadata')
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
-        # we need to wait a second here or the mtime will actually
-        # have the same value, no human makes two edits in less
-        # than a second ;-)
-        sleep(1)
-
         # add back
         self._writeFile('test5.py.metadata',
                         '[security]\nView = 0:Manager,Anonymous')
@@ -171,8 +170,7 @@ class DebugModeTests( FSSecurityBase ):
 
 
 def test_suite():
-    import Globals # for data
-    tests = [unittest.makeSuite(FSSecurityTests)]
-    if Globals.DevelopmentMode:
-        tests.append(unittest.makeSuite(DebugModeTests))
-    return unittest.TestSuite(tests)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(FSSecurityTests))
+    suite.addTest(unittest.makeSuite(DebugModeTests))
+    return suite

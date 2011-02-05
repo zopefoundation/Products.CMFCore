@@ -11,15 +11,13 @@
 #
 ##############################################################################
 """ Customizable properties that come from the filesystem.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
 from App.class_init import InitializeClass
+from App.config import getConfiguration
 from App.special_dtml import DTMLFile
-import Globals  # for data
 from OFS.Folder import Folder
 from OFS.PropertyManager import PropertyManager
 from ZPublisher.Converters import get_converter
@@ -86,7 +84,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
             setattr(obj, p['id'], getattr(self, p['id']))
             map.append({'id': p['id'],
                         'type': p['type'],
-                        'mode': 'wd',})
+                        'mode': 'wd', })
         obj._properties = tuple(map)
 
         return obj
@@ -101,7 +99,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
             file.close()
 
         map = []
-        lino=0
+        lino = 0
 
         for line in lines:
 
@@ -112,14 +110,14 @@ class FSPropertiesObject(FSObject, PropertyManager):
                 continue
 
             try:
-                propname, proptv = line.split(':',1)
+                propname, proptv = line.split(':', 1)
                 #XXX multi-line properties?
-                proptype, propvstr = proptv.split( '=', 1 )
+                proptype, propvstr = proptv.split('=', 1)
                 propname = propname.strip()
                 proptype = proptype.strip()
                 propvstr = propvstr.strip()
-                converter = get_converter( proptype, lambda x: x )
-                propvalue = converter( propvstr )
+                converter = get_converter(proptype, lambda x: x)
+                propvalue = converter(propvstr)
                 # Should be safe since we're loading from
                 # the filesystem.
                 setattr(self, propname, propvalue)
@@ -129,11 +127,11 @@ class FSPropertiesObject(FSObject, PropertyManager):
                             'default_value':propvalue,
                             })
             except:
-                raise ValueError, ( 'Error processing line %s of %s:\n%s'
-                                  % (lino,self._filepath,line) )
+                raise ValueError('Error processing line %s of %s:\n%s'
+                                 % (lino, self._filepath, line))
         self._properties = tuple(map)
 
-    if Globals.DevelopmentMode:
+    if getConfiguration().debug_mode:
         # Provide an opportunity to update the properties.
         def __of__(self, parent):
             self = ImplicitAcquisitionWrapper(self, parent)

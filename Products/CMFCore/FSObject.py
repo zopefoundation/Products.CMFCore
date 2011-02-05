@@ -11,14 +11,11 @@
 #
 ##############################################################################
 """ Customizable objects that come from the filesystem (base class).
-
-$Id$
 """
 
 import os
 
 from AccessControl.Permission import Permission
-
 try:
     from OFS.role import RoleManager
 except ImportError:
@@ -30,6 +27,7 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Acquisition import Implicit
 from App.class_init import InitializeClass
+from App.config import getConfiguration
 from App.special_dtml import HTML
 from DateTime.DateTime import DateTime
 from OFS.Cache import Cacheable
@@ -76,9 +74,9 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         self._filepath = filepath
 
         try:
-             self._file_mod_time = os.stat(filepath)[8]
+            self._file_mod_time = os.stat(filepath)[8]
         except:
-             pass
+            pass
         self._readFile(0)
 
     security.declareProtected(ViewManagementScreens, 'manage_doCustomize')
@@ -95,8 +93,8 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
 
         # Preserve cache manager associations
         cachemgr_id = self.ZCacheable_getManagerId()
-        if ( cachemgr_id and
-             getattr(obj, 'ZCacheable_setManagerId', None) is not None ):
+        if cachemgr_id and \
+                getattr(obj, 'ZCacheable_setManagerId', None) is not None:
             obj.ZCacheable_setManagerId(cachemgr_id)
 
         # If there are proxy roles we preserve them
@@ -128,7 +126,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             skins_tool_name = 'portal_skins'
 
         id = obj.getId()
-        fpath = tuple( folder_path.split('/') )
+        fpath = tuple(folder_path.split('/'))
         if root is None:
             portal_skins = getToolByName(self, skins_tool_name)
         else:
@@ -172,9 +170,8 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     # Refresh our contents from the filesystem if that is newer and we are
     # running in debug mode.
     def _updateFromFS(self):
-        import Globals # for data
         parsed = self._parsed
-        if not parsed or Globals.DevelopmentMode:
+        if not parsed or getConfiguration().debug_mode:
             try:
                 mtime = os.stat(self._filepath)[8]
             except:
@@ -237,8 +234,8 @@ class BadFile(FSObject):
 
     manage_options = ({'label':'Error', 'action':'manage_showError'},)
 
-    def __init__( self, id, filepath, exc_str=''
-                , fullname=None, properties=None):
+    def __init__(self, id, filepath, exc_str='', fullname=None,
+                 properties=None):
         id = fullname or id # Use the whole filename.
         self.exc_str = exc_str
         self.file_contents = ''
@@ -246,12 +243,13 @@ class BadFile(FSObject):
 
     security = ClassSecurityInfo()
 
-    showError = HTML( BAD_FILE_VIEW )
+    showError = HTML(BAD_FILE_VIEW)
+
     security.declareProtected(ManagePortal, 'manage_showError')
-    def manage_showError( self, REQUEST ):
+    def manage_showError(self, REQUEST):
         """
         """
-        return self.showError( self, REQUEST )
+        return self.showError(self, REQUEST)
 
     security.declarePrivate('_readFile')
     def _readFile(self, reparse):
@@ -267,19 +265,19 @@ class BadFile(FSObject):
             data = self.file_contents = None #give up
         return data
 
-    security.declarePublic( 'getFileContents' )
-    def getFileContents( self ):
+    security.declarePublic('getFileContents')
+    def getFileContents(self):
         """
             Return the contents of the file, if we could read it.
         """
         return self.file_contents
 
-    security.declarePublic( 'getExceptionText' )
-    def getExceptionText( self ):
+    security.declarePublic('getExceptionText')
+    def getExceptionText(self):
         """
             Return the exception thrown while reading or parsing
             the file.
         """
         return self.exc_str
 
-InitializeClass( BadFile )
+InitializeClass(BadFile)

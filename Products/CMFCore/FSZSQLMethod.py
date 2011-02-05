@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Customizable ZSQL methods that come from the filesystem.
-
-$Id$
 """
 
 import logging
@@ -20,8 +18,8 @@ import logging
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
 from App.class_init import InitializeClass
+from App.config import getConfiguration
 from App.special_dtml import DTMLFile
-import Globals # for data
 from Products.ZSQLMethods.SQL import SQL
 
 from Products.CMFCore.DirectoryView import registerFileExtension
@@ -43,7 +41,7 @@ class FSZSQLMethod(SQL, FSObject):
 
     manage_options = ({'label':'Customize', 'action':'manage_customise'},
                       {'label':'Test', 'action':'manage_testForm',
-                       'help':('ZSQLMethods','Z-SQL-Method_Test.stx')},
+                       'help':('ZSQLMethods', 'Z-SQL-Method_Test.stx')},
                      )
 
     security = ClassSecurityInfo()
@@ -54,7 +52,7 @@ class FSZSQLMethod(SQL, FSObject):
     security.declarePrivate('manage_edit')
     security.declarePrivate('manage_advanced')
     security.declarePrivate('manage_advancedForm')
-    manage=None
+    manage = None
 
     security.declareProtected(ViewManagementScreens, 'manage_customise')
     manage_customise = DTMLFile('custzsql', _dtmldir)
@@ -90,7 +88,7 @@ class FSZSQLMethod(SQL, FSObject):
             file.close()
 
         # parse parameters
-        parameters={}
+        parameters = {}
         start = data.find('<dtml-comment>')
         end   = data.find('</dtml-comment>')
         if start==-1 or end==-1 or start>end:
@@ -134,8 +132,7 @@ class FSZSQLMethod(SQL, FSObject):
 
         # do we need to do anything on reparse?
 
-
-    if Globals.DevelopmentMode:
+    if getConfiguration().debug_mode:
         # Provide an opportunity to update the properties.
         def __of__(self, parent):
             try:

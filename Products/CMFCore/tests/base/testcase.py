@@ -10,7 +10,9 @@ from os.path import abspath
 from os.path import basename
 from os.path import dirname
 from os.path import join
-from shutil import copytree, rmtree
+from shutil import copytree
+from shutil import rmtree
+from shutil import ignore_patterns
 from stat import S_IREAD, S_IWRITE
 from tempfile import mktemp
 
@@ -19,9 +21,9 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.SecurityManager import setSecurityPolicy
 
-from dummy import DummyFolder
-from security import AnonymousUser
-from security import PermissiveSecurityPolicy
+from Products.CMFCore.tests.base.dummy import DummyFolder
+from Products.CMFCore.tests.base.security import AnonymousUser
+from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy
 from Products.CMFCore.utils import getPackageLocation
 
 
@@ -64,7 +66,7 @@ class WarningInterceptor:
     _old_stderr = None
     _our_stderr_stream = None
 
-    def _trap_warning_output( self ):
+    def _trap_warning_output(self):
 
         if self._old_stderr is not None:
             return
@@ -74,7 +76,7 @@ class WarningInterceptor:
         self._old_stderr = sys.stderr
         self._our_stderr_stream = sys.stderr = StringIO()
 
-    def _free_warning_output( self ):
+    def _free_warning_output(self):
 
         if self._old_stderr is None:
             return
@@ -89,7 +91,7 @@ class TransactionalTest(unittest.TestCase):
     def setUp(self):
         transaction.begin()
         self.app = self.root = ZopeTestCase.app()
-        self.REQUEST  = self.app.REQUEST
+        self.REQUEST = self.app.REQUEST
         self.RESPONSE = self.app.REQUEST.RESPONSE
 
     def tearDown(self):
@@ -126,7 +128,7 @@ else:
     # Test was called by another test.
     _prefix = abspath(dirname(__file__))
 
-_prefix = abspath(join(_prefix,'..'))
+_prefix = abspath(join(_prefix, '..'))
 
 
 class FSDVTest(unittest.TestCase):
@@ -156,7 +158,8 @@ class FSDVTest(unittest.TestCase):
 
     def setUp(self):
         # store the skin path name
-        self.skin_path_name = join(self.tempname,self._skinname,self._layername)
+        self.skin_path_name = join(self.tempname, self._skinname,
+                                   self._layername)
 
 
 class WritableFSDVTest(FSDVTest):
@@ -171,20 +174,20 @@ class WritableFSDVTest(FSDVTest):
             dir_mtime = stat(self.skin_path_name)[8]
         except:  # XXX Why bare except?
             dir_mtime = 0
-        thePath = join(self.skin_path_name,filename)
+        thePath = join(self.skin_path_name, filename)
         try:
             mtime1 = stat(thePath)[8]
         except:  # XXX Why bare except?
             mtime1 = 0
         mtime2 = mtime1
-        while mtime2==mtime1:
-            f = open(thePath,'w')
+        while mtime2 == mtime1:
+            f = open(thePath, 'w')
             f.write(stuff)
             f.close()
             mtime2 = stat(thePath)[8]
         self._addedOrRemoved(dir_mtime)
 
-    def _deleteFile(self,filename):
+    def _deleteFile(self, filename):
         try:
             dir_mtime = stat(self.skin_path_name)[8]
         except:  # XXX Why bare except?
@@ -210,7 +213,7 @@ class WritableFSDVTest(FSDVTest):
                 raise RuntimeError(
                     "This platform (%s) does not update directory mod times "
                     "reliably." % sys.platform)
-            time.sleep(0.1)
+            time.sleep(0.02)
             fn = join(self.skin_path_name, '.touch')
             f = open(fn, 'w')
             f.write('Temporary file')
@@ -224,14 +227,13 @@ class WritableFSDVTest(FSDVTest):
         # create the temporary folder
         mkdir(self.tempname)
         # copy the source fake skin to the new location
-        copytree(join(self._sourceprefix,
-                      self._skinname),
-                 join(self.tempname,
-                      self._skinname))
+        copytree(join(self._sourceprefix, self._skinname),
+                 join(self.tempname, self._skinname),
+                 ignore=ignore_patterns('.svn'))
         # make sure we have a writable copy
         for root, dirs, files in walk(self.tempname):
             for name in files:
-                chmod(join(root, name), S_IREAD+S_IWRITE)
+                chmod(join(root, name), S_IREAD + S_IWRITE)
         FSDVTest.setUp(self)
 
     def tearDown(self):
