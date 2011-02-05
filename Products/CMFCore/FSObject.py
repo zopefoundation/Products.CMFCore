@@ -74,7 +74,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         self._filepath = filepath
 
         try:
-            self._file_mod_time = os.stat(filepath)[8]
+            self._file_mod_time = os.stat(filepath).st_mtime
         except:
             pass
         self._readFile(0)
@@ -173,12 +173,12 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         parsed = self._parsed
         if not parsed or getConfiguration().debug_mode:
             try:
-                mtime = os.stat(self._filepath)[8]
+                mtime = os.stat(self._filepath).st_mtime
             except:
-                mtime = 0
+                mtime = 0.0
             if not parsed or mtime != self._file_mod_time:
                 self._readFile(1)
-                if mtime != self._file_mod_time or mtime == 0:
+                if mtime != self._file_mod_time or mtime == 0.0:
                     self.ZCacheable_invalidate()
                     self._file_mod_time = mtime
                 self._parsed = 1

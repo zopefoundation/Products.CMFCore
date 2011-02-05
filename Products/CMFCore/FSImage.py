@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Customizable image objects that come from the filesystem.
-
-$Id$
 """
 
 import os
@@ -75,13 +73,13 @@ class FSImage(FSObject):
 
         if reparse or self.content_type == 'unknown/unknown':
             try:
-                mtime = os.stat(self._filepath)[8]
+                mtime = os.stat(self._filepath).st_mtime
             except:
-                mtime = 0
-            if mtime != self._file_mod_time or mtime == 0:
+                mtime = 0.0
+            if mtime != self._file_mod_time or mtime == 0.0:
                 self.ZCacheable_invalidate()
                 self._file_mod_time = mtime
-            ct, width, height = getImageInfo( data )
+            ct, width, height = getImageInfo(data)
             self.content_type = ct
             self.width = width
             self.height = height
@@ -157,7 +155,7 @@ class FSImage(FSObject):
             Return the size of the image.
         """
         self._updateFromFS()
-        return self._data and len( self._data ) or 0
+        return self._data and len(self._data) or 0
 
     security.declareProtected(FTPAccess, 'manage_FTPget')
     manage_FTPget = index_html

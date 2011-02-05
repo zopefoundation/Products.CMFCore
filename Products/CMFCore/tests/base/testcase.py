@@ -171,27 +171,27 @@ class WritableFSDVTest(FSDVTest):
         # make sure the file's modification time has changed
         # also make sure the skin folder mod time has changed
         try:
-            dir_mtime = stat(self.skin_path_name)[8]
+            dir_mtime = stat(self.skin_path_name).st_mtime
         except:  # XXX Why bare except?
-            dir_mtime = 0
+            dir_mtime = 0.0
         thePath = join(self.skin_path_name, filename)
         try:
-            mtime1 = stat(thePath)[8]
+            mtime1 = stat(thePath).st_mtime
         except:  # XXX Why bare except?
-            mtime1 = 0
+            mtime1 = 0.0
         mtime2 = mtime1
         while mtime2 == mtime1:
             f = open(thePath, 'w')
             f.write(stuff)
             f.close()
-            mtime2 = stat(thePath)[8]
+            mtime2 = stat(thePath).st_mtime
         self._addedOrRemoved(dir_mtime)
 
     def _deleteFile(self, filename):
         try:
-            dir_mtime = stat(self.skin_path_name)[8]
+            dir_mtime = stat(self.skin_path_name).st_mtime
         except:  # XXX Why bare except?
-            dir_mtime = 0
+            dir_mtime = 0.0
         remove(join(self.skin_path_name, filename))
         self._addedOrRemoved(dir_mtime)
 
@@ -219,7 +219,7 @@ class WritableFSDVTest(FSDVTest):
             f.write('Temporary file')
             f.close()
             remove(fn)
-            new_mtime = stat(self.skin_path_name)[8]
+            new_mtime = stat(self.skin_path_name).st_mtime
 
     def setUp(self):
         # store the place where the skin copy will be created

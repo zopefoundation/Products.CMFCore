@@ -70,7 +70,7 @@ class _walker:
                      in names
                      if name not in self.ignore and not ignore_re.match(name) ]
         # append with stat info
-        results = [ (name, os.stat(os.path.join(dirname,name))[8])
+        results = [ (name, os.stat(os.path.join(dirname,name)).st_mtime)
                     for name in names ]
         dirlist.extend(results)
 
@@ -156,10 +156,10 @@ class DirectoryInformation:
     def _changed(self):
         if not getConfiguration().debug_mode:
             return 0
-        mtime=0
-        filelist=[]
+        mtime = 0.0
+        filelist = []
         try:
-            mtime = os.stat(self._filepath)[8]
+            mtime = os.stat(self._filepath).st_mtime
             if platform == 'win32':
                 # some Windows directories don't change mtime
                 # when a file is added to or deleted from them :-(
