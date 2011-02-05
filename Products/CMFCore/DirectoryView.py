@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Views of filesystem directories as folders.
-
-$Id: DirectoryView.py 110418 2010-04-01 17:10:54Z tseaver $
 """
 
 import logging
