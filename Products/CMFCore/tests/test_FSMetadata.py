@@ -16,10 +16,15 @@
 import unittest
 import Testing
 
-from test_FSSecurity import FSSecurityBase
+from Products.CMFCore.tests.base.testcase import FSDVTest
+from Products.CMFCore.tests.test_FSSecurity import MetadataChecker
 
 
-class FSMetadata(FSSecurityBase):
+class FSMetadata(FSDVTest, MetadataChecker):
+
+    def setUp(self):
+        FSDVTest.setUp(self)
+        self._registerDirectory(self)
 
     def _checkProxyRoles(self, obj, roles):
         # Test proxy roles on the object
