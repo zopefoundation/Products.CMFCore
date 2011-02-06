@@ -48,60 +48,61 @@ class FSSecurityBase(RequestTest, WritableFSDVTest, LogInterceptor):
             raise ValueError("'%s' not found in inherited permissions."
                              % permissionname)
 
-    def setUp( self ):
+    def setUp(self):
         # initialise skins
         WritableFSDVTest.setUp(self)
         self._registerDirectory(self)
         # set up ZODB
         RequestTest.setUp(self)
         # put object in ZODB
-        root=self.root
+        root = self.root
         try: root._delObject('fake_skin')
         except AttributeError: pass
-        root._setObject( 'fake_skin', self.ob.fake_skin )
+        root._setObject('fake_skin', self.ob.fake_skin)
 
-    def tearDown( self ):
+    def tearDown(self):
         RequestTest.tearDown(self)
         WritableFSDVTest.tearDown(self)
         self._ignore_log_errors()
         self._ignore_log_errors(subsystem='CMFCore.DirectoryView')
 
 
-class FSSecurityTests( FSSecurityBase, LogInterceptor ):
+class FSSecurityTests(FSSecurityBase, LogInterceptor):
 
-    def test_basicPermissions( self ):
+    def test_basicPermissions(self):
         # Test basic FS permissions
         # check a normal method is as we'd expect
-        self._checkSettings(self.ob.fake_skin.test1,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test1, 'View', 1, [])
         # now do some checks on the method with FS permissions
         self._checkSettings(self.ob.fake_skin.test4,
-                            'View',1,['Manager','Owner'])
+                            'View', 1, ['Manager', 'Owner'])
         self._checkSettings(self.ob.fake_skin.test4,
-                            'Access contents information',0,[])
+                            'Access contents information', 0, [])
 
-    def test_invalidPermissionNames( self ):
+    def test_invalidPermissionNames(self):
         import logging
-        self._catch_log_errors(logging.ERROR,subsystem='CMFCore.DirectoryView')
+        self._catch_log_errors(logging.ERROR,
+                               subsystem='CMFCore.DirectoryView')
         # Test for an invalid permission name
         # baseline
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         # add .rpm with dodgy permission name
         self._writeFile('test5.py.metadata',
                         '[security]\nAccess stoopid contents = 0:')
         # check baseline
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
 
-    def test_invalidAcquireNames( self ):
+    def test_invalidAcquireNames(self):
         # Test for an invalid spelling of acquire
         # baseline
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         # add dodgy .rpm
-        self._writeFile('test5.py.metadata','[security]\nView = aquire:')
+        self._writeFile('test5.py.metadata', '[security]\nView = aquire:')
         # check baseline
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
 
 
-class DebugModeTests( FSSecurityBase ):
+class DebugModeTests(FSSecurityBase):
 
     def setUp(self):
         FSSecurityBase.setUp(self)
@@ -112,61 +113,61 @@ class DebugModeTests( FSSecurityBase ):
         getConfiguration().debug_mode = self.saved_cfg_debug_mode
         FSSecurityBase.tearDown(self)
 
-    def test_addPRM( self ):
+    def test_addPRM(self):
         # Test adding of a .metadata
         # baseline
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         # add
         self._writeFile('test5.py.metadata',
                         '[security]\nView = 1:Manager')
         # test
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, ['Manager'])
 
-    def test_delPRM( self ):
+    def test_delPRM(self):
         # Test deleting of a .metadata
         # baseline
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         self._writeFile('test5.py.metadata',
                         '[security]\nView = 1:Manager')
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, ['Manager'])
         # delete
         self._deleteFile('test5.py.metadata')
         # test
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
 
-    def test_editPRM( self ):
+    def test_editPRM(self):
         # Test editing a .metadata
 
         # baseline
         self._writeFile('test5.py.metadata',
                         '[security]\nView = 0:Manager,Anonymous')
         self._checkSettings(self.ob.fake_skin.test5,
-                            'View',0,['Manager','Anonymous'])
+                            'View', 0, ['Manager', 'Anonymous'])
         # edit
         self._writeFile('test5.py.metadata',
                         '[security]\nView = 1:Manager')
         # test
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, ['Manager'])
 
-    def test_DelAddEditPRM( self ):
+    def test_DelAddEditPRM(self):
         # Test deleting, then adding, then editing a .metadata file
         # baseline
-        self._writeFile('test5.py.metadata','[security]\nView = 0:Manager')
+        self._writeFile('test5.py.metadata', '[security]\nView = 0:Manager')
         # delete
         self._deleteFile('test5.py.metadata')
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
 
         # add back
         self._writeFile('test5.py.metadata',
                         '[security]\nView = 0:Manager,Anonymous')
         self._checkSettings(self.ob.fake_skin.test5,
-                            'View',0,['Manager','Anonymous'])
+                            'View', 0, ['Manager', 'Anonymous'])
 
         # edit
         self._writeFile('test5.py.metadata',
                         '[security]\nView = 1:Manager')
         # test
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
+        self._checkSettings(self.ob.fake_skin.test5, 'View', 1, ['Manager'])
 
 
 def test_suite():
