@@ -172,12 +172,12 @@ class WritableFSDVTest(FSDVTest):
         # also make sure the skin folder mod time has changed
         try:
             dir_mtime = stat(self.skin_path_name).st_mtime
-        except:  # XXX Why bare except?
+        except OSError:
             dir_mtime = 0.0
         thePath = join(self.skin_path_name, filename)
         try:
             mtime1 = stat(thePath).st_mtime
-        except:  # XXX Why bare except?
+        except OSError:
             mtime1 = 0.0
         mtime2 = mtime1
         while mtime2 == mtime1:
@@ -190,7 +190,7 @@ class WritableFSDVTest(FSDVTest):
     def _deleteFile(self, filename):
         try:
             dir_mtime = stat(self.skin_path_name).st_mtime
-        except:  # XXX Why bare except?
+        except OSError:
             dir_mtime = 0.0
         remove(join(self.skin_path_name, filename))
         self._addedOrRemoved(dir_mtime)
