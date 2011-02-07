@@ -53,10 +53,6 @@ class MetadataChecker(object):
 
 class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
 
-    def _forceReload(self, reg_key):
-        from Products.CMFCore.DirectoryView import _dirreg
-        _dirreg.getDirectoryInfo(reg_key).data = None
-
     def setUp(self):
         WritableFSDVTest.setUp(self)
         self._registerDirectory(self)
@@ -78,10 +74,12 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
 
     def test_invalidPermissionNames(self):
         # Test for an invalid permission name
+        from Products.CMFCore.DirectoryView import _dirreg
+
         self._catch_log_errors(logging.ERROR,
                                subsystem='CMFCore.DirectoryView')
         # baseline
-        self._forceReload(self.ob.fake_skin._dirpath)
+        _dirreg.reloadDirectory(self.ob.fake_skin._dirpath)
         self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         self.assertEqual(self.logged, None)
         # add
@@ -89,7 +87,7 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
         f.write('[security]\nAccess stoopid contents = 0:')
         f.close()
         # test
-        self._forceReload(self.ob.fake_skin._dirpath)
+        _dirreg.reloadDirectory(self.ob.fake_skin._dirpath)
         self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         self.assertEqual(len(self.logged), 1)
         self.assertEqual(self.logged[0].getMessage(),
@@ -97,10 +95,12 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
 
     def test_invalidAcquireNames(self):
         # Test for an invalid spelling of acquire
+        from Products.CMFCore.DirectoryView import _dirreg
+
         self._catch_log_errors(logging.ERROR,
                                subsystem='CMFCore.FSMetadata')
         # baseline
-        self._forceReload(self.ob.fake_skin._dirpath)
+        _dirreg.reloadDirectory(self.ob.fake_skin._dirpath)
         self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         self.assertEqual(self.logged, None)
         # add
@@ -108,7 +108,7 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
         f.write('[security]\nView = aquire:')
         f.close()
         # test
-        self._forceReload(self.ob.fake_skin._dirpath)
+        _dirreg.reloadDirectory(self.ob.fake_skin._dirpath)
         self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         self.assertEqual(len(self.logged), 1)
         self.assertEqual(self.logged[0].getMessage(),
