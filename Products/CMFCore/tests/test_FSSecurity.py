@@ -153,6 +153,7 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, [])
 
     def DISABLED_test_editPRM(self):
+        # see https://bugs.launchpad.net/zope-cmf/+bug/714525
         # Test editing a .metadata
         # baseline
         self._checkSettings(self.ob.fake_skin.test4,
@@ -165,6 +166,7 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, ['Manager'])
 
     def DISABLED_test_DelAddEditPRM(self):
+        # see https://bugs.launchpad.net/zope-cmf/+bug/714525
         # Test deleting, then adding, then editing a .metadata file
         # baseline
         self._checkSettings(self.ob.fake_skin.test4,
