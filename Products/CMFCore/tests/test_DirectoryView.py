@@ -233,6 +233,8 @@ class DirectoryViewFolderTests(FSDVTest):
 class DebugModeTests(WritableFSDVTest):
 
     def setUp( self ):
+        from Products.CMFCore.DirectoryView import _dirreg
+
         WritableFSDVTest.setUp(self)
         self.saved_cfg_debug_mode = getConfiguration().debug_mode
         getConfiguration().debug_mode = True
@@ -251,6 +253,10 @@ class DebugModeTests(WritableFSDVTest):
 
         # add a new folder
         mkdir(self.test3path)
+
+        info = _dirreg.getDirectoryInfo(self.ob.fake_skin._dirpath)
+        info.reload()
+        self.use_dir_mtime = info.use_dir_mtime
 
     def tearDown(self):
         getConfiguration().debug_mode = self.saved_cfg_debug_mode
@@ -284,13 +290,15 @@ class DebugModeTests(WritableFSDVTest):
         self.failIf(hasattr(self.ob.fake_skin,'test2'))
 
         # add method back to the fake skin folder
-        self._writeFile(self.test2path, "return 'test2.2'")
+        self._writeFile(self.test2path, "return 'test2.2'",
+                        self.use_dir_mtime)
 
         # check
         self.assertEqual(self.ob.fake_skin.test2(),'test2.2')
 
         # edit method
-        self._writeFile(self.test2path, "return 'test2.3'")
+        self._writeFile(self.test2path, "return 'test2.3'",
+                        self.use_dir_mtime)
 
         # check
         self.assertEqual(self.ob.fake_skin.test2(),'test2.3')

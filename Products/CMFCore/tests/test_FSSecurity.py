@@ -118,8 +118,12 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
 class DebugModeTests(WritableFSDVTest, MetadataChecker):
 
     def setUp(self):
+        from Products.CMFCore.DirectoryView import _dirreg
+
         WritableFSDVTest.setUp(self)
         self._registerDirectory(self)
+        info = _dirreg.getDirectoryInfo(self.ob.fake_skin._dirpath)
+        self.use_dir_mtime = info.use_dir_mtime
         self.saved_cfg_debug_mode = getConfiguration().debug_mode
         getConfiguration().debug_mode = True
 
@@ -133,7 +137,8 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         self._checkSettings(self.ob.fake_skin.test5, 'View', 1, [])
         # add
         self._writeFile('test5.py.metadata',
-                        '[security]\nView = 1:Manager')
+                        '[security]\nView = 1:Manager',
+                        self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test5, 'View', 1, ['Manager'])
 
@@ -143,7 +148,7 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         self._checkSettings(self.ob.fake_skin.test4,
                             'View', 1, ['Manager', 'Owner'])
         # delete
-        self._deleteFile('test4.py.metadata')
+        self._deleteFile('test4.py.metadata', self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, [])
 
@@ -154,7 +159,8 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
                             'View', 1, ['Manager', 'Owner'])
         # edit
         self._writeFile('test4.py.metadata',
-                        '[security]\nView = 1:Manager')
+                        '[security]\nView = 1:Manager',
+                        self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, ['Manager'])
 
@@ -164,16 +170,18 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         self._checkSettings(self.ob.fake_skin.test4,
                             'View', 1, ['Manager', 'Owner'])
         # delete
-        self._deleteFile('test4.py.metadata')
+        self._deleteFile('test4.py.metadata', self.use_dir_mtime)
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, [])
         # add back
         self._writeFile('test4.py.metadata',
-                        '[security]\nView = 0:Manager,Anonymous')
+                        '[security]\nView = 0:Manager,Anonymous',
+                        self.use_dir_mtime)
         self._checkSettings(self.ob.fake_skin.test4,
                             'View', 0, ['Manager', 'Anonymous'])
         # edit
         self._writeFile('test4.py.metadata',
-                        '[security]\nView = 1:Manager')
+                        '[security]\nView = 1:Manager',
+                        self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, ['Manager'])
 
