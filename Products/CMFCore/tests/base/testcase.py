@@ -170,10 +170,7 @@ class WritableFSDVTest(FSDVTest):
         # write some stuff to a file on disk
         # make sure the file's modification time has changed
         # also make sure the skin folder mod time has changed
-        try:
-            dir_mtime = stat(self.skin_path_name).st_mtime
-        except OSError:
-            dir_mtime = 0.0
+        dir_mtime = stat(self.skin_path_name).st_mtime
         thePath = join(self.skin_path_name, filename)
         try:
             mtime1 = stat(thePath).st_mtime
@@ -188,10 +185,7 @@ class WritableFSDVTest(FSDVTest):
         self._addedOrRemoved(dir_mtime)
 
     def _deleteFile(self, filename):
-        try:
-            dir_mtime = stat(self.skin_path_name).st_mtime
-        except OSError:
-            dir_mtime = 0.0
+        dir_mtime = stat(self.skin_path_name).st_mtime
         remove(join(self.skin_path_name, filename))
         self._addedOrRemoved(dir_mtime)
 
@@ -204,7 +198,7 @@ class WritableFSDVTest(FSDVTest):
             # workaround does not rely on directory mod times.
             return
         limit = time.time() + 60  # If it takes 60 seconds, give up.
-        new_mtime = old_mtime
+        new_mtime = stat(self.skin_path_name).st_mtime
         while new_mtime == old_mtime:
             # Many systems have a granularity of 1 second.
             # Add/remove a file until it actually changes the
@@ -213,7 +207,7 @@ class WritableFSDVTest(FSDVTest):
                 raise RuntimeError(
                     "This platform (%s) does not update directory mod times "
                     "reliably." % sys.platform)
-            time.sleep(0.02)
+            time.sleep(0.1)
             fn = join(self.skin_path_name, '.touch')
             f = open(fn, 'w')
             f.write('Temporary file')
