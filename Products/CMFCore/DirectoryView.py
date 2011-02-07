@@ -113,8 +113,13 @@ class DirectoryInformation:
         self._reg_key = reg_key
         self.ignore = base_ignore + tuple(ignore)
         if platform == 'win32':
-            self.use_dir_mtime = False
-            self._walker = _walker(self.ignore)
+            try:
+                ntfs_detected = bool(os.stat(self._filepath).st_mtime % 1)
+            except OSError:
+                ntfs_detected = False
+            if not ntfs_detected:
+                self.use_dir_mtime = False
+                self._walker = _walker(self.ignore)
         subdirs = []
         for entry in _filtered_listdir(self._filepath, ignore=self.ignore):
             entry_filepath = os.path.join(self._filepath, entry)

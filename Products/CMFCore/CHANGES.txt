@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- DirectoryView: Improved debug mode speed on NTFS partitions.
+  The much faster non-Windows implementation is now used on Windows as well if
+  non-FAT32 time stamps are detected. In rare cases that heuristic approach
+  might fail to detected NTFS partitions.
+
 - DirectoryView: Modernized debug mode lookup.
   Now getConfiguration().debug_mode is used instead of Globals.DevelopmentMode.
 
