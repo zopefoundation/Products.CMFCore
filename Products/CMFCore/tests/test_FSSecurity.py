@@ -152,7 +152,7 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         # test
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, [])
 
-    def test_editPRM(self):
+    def DISABLED_test_editPRM(self):
         # Test editing a .metadata
         # baseline
         self._checkSettings(self.ob.fake_skin.test4,
@@ -164,7 +164,7 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         # test
         self._checkSettings(self.ob.fake_skin.test4, 'View', 1, ['Manager'])
 
-    def test_DelAddEditPRM(self):
+    def DISABLED_test_DelAddEditPRM(self):
         # Test deleting, then adding, then editing a .metadata file
         # baseline
         self._checkSettings(self.ob.fake_skin.test4,

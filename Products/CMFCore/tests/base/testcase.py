@@ -170,14 +170,15 @@ class WritableFSDVTest(FSDVTest):
         # write some stuff to a file on disk
         # make sure the file's modification time has changed
         # also make sure the skin folder mod time has changed
-        if use_dir_mtime:
-            dir_mtime = stat(self.skin_path_name).st_mtime
         thePath = join(self.skin_path_name, filename)
         try:
-            mtime1 = stat(thePath).st_mtime
+            mtime2 = mtime1 = stat(thePath).st_mtime
+            # editing existing files doesn't change the folder
+            use_dir_mtime = False
         except OSError:
-            mtime1 = 0.0
-        mtime2 = mtime1
+            mtime2 = mtime1 = 0.0
+        if use_dir_mtime:
+            dir_mtime = stat(self.skin_path_name).st_mtime
         while mtime2 == mtime1:
             f = open(thePath, 'w')
             f.write(stuff)
