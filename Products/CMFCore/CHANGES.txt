@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- DirectoryView: Added 'bobobase_modification_time' method to FSObject.
+  The "Contents" tab in the ZMI now shows useful 'Last Modified' values.
+
 - DirectoryView: Changed debug mode behavior.
   No additional subdirs are registered in debug mode. If you add new subdirs,
   you have to restart your instance.

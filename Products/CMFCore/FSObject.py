@@ -197,6 +197,12 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         self._updateFromFS()
         return DateTime(self._file_mod_time)
 
+    security.declareProtected(View, 'bobobase_modification_time')
+    def bobobase_modification_time(self):
+        """Get the modification time the file did have last time it was read.
+        """
+        return DateTime(self._file_mod_time)
+
     security.declareProtected(ViewManagementScreens, 'getObjectFSPath')
     def getObjectFSPath(self):
         """Return the path of the file we represent"""

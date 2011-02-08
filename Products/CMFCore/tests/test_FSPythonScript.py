@@ -17,6 +17,7 @@ import unittest
 from Testing import ZopeTestCase
 ZopeTestCase.installProduct('PythonScripts', 1)
 
+import os
 from os.path import join
 from sys import exc_info
 from thread import start_new_thread
@@ -24,6 +25,7 @@ from time import sleep
 
 from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
+from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 from Products.StandardCacheManagers import RAMCacheManager
@@ -47,10 +49,23 @@ class FSPSMaker(FSDVTest):
 
 class FSPythonScriptTests(FSPSMaker):
 
-    def test_get_size( self ):
+    def test_get_size(self):
         # Test get_size returns correct value
         script = self._makeOne('test1', 'test1.py')
-        self.assertEqual(len(script.read()),script.get_size())
+        self.assertEqual(len(script.read()), script.get_size())
+
+    def test_getModTime(self):
+        script = self._makeOne('test1', 'test1.py')
+        self.assertTrue(isinstance(script.getModTime(), DateTime))
+        self.assertEqual(script.getModTime(),
+                         DateTime(os.stat(script._filepath).st_mtime))
+
+    def test_bobobase_modification_time(self):
+        script = self._makeOne('test1', 'test1.py')
+        self.assertTrue(isinstance(script.bobobase_modification_time(),
+                                   DateTime))
+        self.assertEqual(script.bobobase_modification_time(),
+                         DateTime(os.stat(script._filepath).st_mtime))
 
     def test_initialization_race_condition(self):
         # Tries to exercise a former race condition where
