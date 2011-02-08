@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- DirectoryView: Changed debug mode behavior.
+  No additional subdirs are registered in debug mode. If you add new subdirs,
+  you have to restart your instance.
+  (https://bugs.launchpad.net/zope-cmf/+bug/271027)
+
 - DirectoryView: Improved debug mode speed on NTFS partitions.
   The much faster non-Windows implementation is now used on Windows as well if
   non-FAT32 time stamps are detected. In rare cases that heuristic approach

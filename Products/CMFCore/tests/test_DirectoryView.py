@@ -240,7 +240,7 @@ class DebugModeTests(WritableFSDVTest):
         getConfiguration().debug_mode = True
         self.test1path = join(self.skin_path_name,'test1.py')
         self.test2path = join(self.skin_path_name,'test2.py')
-        self.test3path = join(self.skin_path_name,'test3')
+        self.testdpath = join(self.skin_path_name,'test_directory')
 
         # initialise skins
         self._registerDirectory(self)
@@ -252,7 +252,7 @@ class DebugModeTests(WritableFSDVTest):
         self._writeFile(self.test1path, "return 'new test1'")
 
         # add a new folder
-        mkdir(self.test3path)
+        mkdir(join(self.skin_path_name,'test3'))
 
         info = _dirreg.getDirectoryInfo(self.ob.fake_skin._dirpath)
         info.reload()
@@ -269,13 +269,6 @@ class DebugModeTests(WritableFSDVTest):
     def test_EditMethod( self ):
         # See if an edited method exhibits its new behaviour
         self.assertEqual(self.ob.fake_skin.test1(),'new test1')
-
-    def test_NewFolder( self ):
-        # See if a new folder shows up
-        from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
-        self.failUnless(isinstance(self.ob.fake_skin.test3,
-                                   DirectoryViewSurrogate))
-        self.ob.fake_skin.test3.objectIds()
 
     def test_DeleteMethod( self ):
         # Make sure a deleted method goes away
@@ -303,10 +296,15 @@ class DebugModeTests(WritableFSDVTest):
         # check
         self.assertEqual(self.ob.fake_skin.test2(),'test2.3')
 
-    def test_DeleteFolder( self ):
+    def test_NewFolder(self):
+        # See if a new folder shows up
+        self.failIf(hasattr(self.ob.fake_skin, 'test3'))
+
+    def test_DeleteFolder(self):
         # Make sure a deleted folder goes away
-        rmdir(self.test3path)
-        self.failIf(hasattr(self.ob.fake_skin,'test3'))
+        self.failUnless(hasattr(self.ob.fake_skin, 'test_directory'))
+        rmdir(self.testdpath)
+        self.failIf(hasattr(self.ob.fake_skin, 'test_directory'))
 
 
 def test_suite():

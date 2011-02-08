@@ -189,8 +189,7 @@ class DirectoryInformation:
         changed = self._changed()
         if self.data is None or changed:
             try:
-                self.data, self.objects = self.prepareContents(registry,
-                    register_subdirs=changed)
+                self.data, self.objects = self.prepareContents(registry)
             except:
                 logger.exception("Error during prepareContents")
                 self.data = {}
@@ -198,7 +197,7 @@ class DirectoryInformation:
 
         return self.data, self.objects
 
-    def prepareContents(self, registry, register_subdirs=0):
+    def prepareContents(self, registry):
         # Creates objects for each file.
         data = {}
         objects = []
@@ -208,15 +207,9 @@ class DirectoryInformation:
                 continue
             entry_filepath = os.path.join(self._filepath, entry)
             if os.path.isdir(entry_filepath):
-                # Add a subdirectory only if it was previously registered,
-                # unless register_subdirs is set.
+                # Add a subdirectory only if it was previously registered.
                 entry_reg_key = '/'.join((self._reg_key, entry))
                 info = registry.getDirectoryInfo(entry_reg_key)
-                if info is None and register_subdirs:
-                    # Register unknown subdirs
-                    registry.registerDirectoryByKey(entry_filepath,
-                                                    entry_reg_key)
-                    info = registry.getDirectoryInfo(entry_reg_key)
                 if info is not None:
                     # Folders on the file system have no extension or
                     # meta_type, as a crutch to enable customizing what gets
