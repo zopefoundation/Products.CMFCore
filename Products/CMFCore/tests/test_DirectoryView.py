@@ -239,18 +239,15 @@ class DebugModeTests(WritableFSDVTest):
         WritableFSDVTest.setUp(self)
         self.saved_cfg_debug_mode = getConfiguration().debug_mode
         getConfiguration().debug_mode = True
-        self.test1path = join(self.skin_path_name,'test1.py')
-        self.test2path = join(self.skin_path_name,'test2.py')
-        self.testdpath = join(self.skin_path_name,'test_directory')
 
         # initialise skins
         self._registerDirectory(self)
 
         # add a method to the fake skin folder
-        self._writeFile(self.test2path, "return 'test2'")
+        self._writeFile('test2.py', "return 'test2'")
 
         # edit the test1 method
-        self._writeFile(self.test1path, "return 'new test1'")
+        self._writeFile('test1.py', "return 'new test1'")
 
         # add a new folder
         mkdir(join(self.skin_path_name,'test3'))
@@ -273,25 +270,25 @@ class DebugModeTests(WritableFSDVTest):
 
     def test_DeleteMethod( self ):
         # Make sure a deleted method goes away
-        remove(self.test2path)
+        remove(join(self.skin_path_name, 'test2.py'))
         self.failIf(hasattr(self.ob.fake_skin,'test2'))
 
     def test_DeleteAddEditMethod( self ):
         # Check that if we delete a method, then add it back,
         # then edit it, the DirectoryView notices.
         # This exercises yet another Win32 mtime weirdity.
-        remove(self.test2path)
+        remove(join(self.skin_path_name, 'test2.py'))
         self.failIf(hasattr(self.ob.fake_skin,'test2'))
 
         # add method back to the fake skin folder
-        self._writeFile(self.test2path, "return 'test2.2'",
+        self._writeFile('test2.py', "return 'test2.2'",
                         self.use_dir_mtime)
 
         # check
         self.assertEqual(self.ob.fake_skin.test2(),'test2.2')
 
         # edit method
-        self._writeFile(self.test2path, "return 'test2.3'",
+        self._writeFile('test2.py', "return 'test2.3'",
                         self.use_dir_mtime)
 
         # check
@@ -304,7 +301,7 @@ class DebugModeTests(WritableFSDVTest):
     def test_DeleteFolder(self):
         # Make sure a deleted folder goes away
         self.failUnless(hasattr(self.ob.fake_skin, 'test_directory'))
-        self._deleteDirectory('test_directory')
+        self._deleteDirectory('test_directory', self.use_dir_mtime)
         self.failIf(hasattr(self.ob.fake_skin, 'test_directory'))
 
 
