@@ -17,7 +17,8 @@ import unittest
 import Testing
 
 import sys
-from os import remove, mkdir, rmdir
+from os import mkdir
+from os import remove
 from os.path import join
 from tempfile import mktemp
 
@@ -303,7 +304,7 @@ class DebugModeTests(WritableFSDVTest):
     def test_DeleteFolder(self):
         # Make sure a deleted folder goes away
         self.failUnless(hasattr(self.ob.fake_skin, 'test_directory'))
-        rmdir(self.testdpath)
+        self._deleteDirectory('test_directory')
         self.failIf(hasattr(self.ob.fake_skin, 'test_directory'))
 
 

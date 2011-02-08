@@ -6,6 +6,7 @@ import sys
 import time
 import logging
 from os import chmod, curdir, mkdir, remove, stat, walk
+from os import rmdir
 from os.path import abspath
 from os.path import basename
 from os.path import dirname
@@ -191,6 +192,13 @@ class WritableFSDVTest(FSDVTest):
         if use_dir_mtime:
             dir_mtime = stat(self.skin_path_name).st_mtime
         remove(join(self.skin_path_name, filename))
+        if use_dir_mtime:
+            self._addedOrRemoved(dir_mtime)
+
+    def _deleteDirectory(self, subdirname, use_dir_mtime=False):
+        if use_dir_mtime:
+            dir_mtime = stat(self.skin_path_name).st_mtime
+        rmdir(join(self.skin_path_name, subdirname))
         if use_dir_mtime:
             self._addedOrRemoved(dir_mtime)
 
