@@ -1,16 +1,14 @@
 """CookieCrumbler provides cookie based authenticaion
-
-$Id$
-
 """
 
 from zope.interface import Interface, Attribute
+
 
 class ICookieCrumbler(Interface):
 
     """Reads cookies during traversal and simulates the HTTP auth headers.
     """
-    
+
     auth_cookie = Attribute("""The key of the authorisation cookie""")
     name_cookie = Attribute("""They key of the authorised user cookie""")
     pw_cookie = Attribute("""The key of the password cookie""")
@@ -18,10 +16,10 @@ class ICookieCrumbler(Interface):
     local_cookie_path = Attribute("""If True, the cookie tied to the local path?""")
     cache_header_value = Attribute("""If present, the login page will not be cached""")
     log_username = Attribute("""If True, the username will in appear in Zope's log""")
-    
+
     def delRequestVar(req, name):
-         """No errors of any sort may propagate, and we don't care *what*
-          they are, even to log them."""
+        """No errors of any sort may propagate, and we don't care *what*
+        they are, even to log them."""
 
     def getCookiePath():
         """Get the path for the cookie
@@ -63,7 +61,7 @@ class ICookieCrumbler(Interface):
     def propertyLabel(id):
         """Return a label for the given property id
         """
-        
+
     def logout(response):
         """
         Deprecated

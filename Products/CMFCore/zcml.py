@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """CMFCore ZCML directives.
-
-$Id$
 """
 
 from os import path
@@ -68,16 +66,16 @@ def registerDirectory(_context, name, directory=None, recursive=False,
         subdir = 'skins/%s' % str(name)
         filepath = path.join(_context.package.__path__[0], 'skins', str(name))
     else:
-        subdir = str(directory[len(_context.package.__path__[0])+1:])
+        subdir = str(directory[len(_context.package.__path__[0]) + 1:])
         filepath = str(directory)
 
     reg_key = _generateKey(_context.package.__name__, subdir)
     _directory_regs.append(reg_key)
 
     _context.action(
-        discriminator = ('registerDirectory', reg_key),
-        callable = _dirreg.registerDirectoryByKey,
-        args = (filepath, reg_key, int(recursive), ignore)
+        discriminator=('registerDirectory', reg_key),
+        callable=_dirreg.registerDirectoryByKey,
+        args=(filepath, reg_key, int(recursive), ignore)
         )
 
 
@@ -86,7 +84,7 @@ def cleanUp():
     for reg_key in _directory_regs:
         for key in _dirreg._directories.keys():
             if key.startswith(reg_key):
-               del _dirreg._directories[key]
+                del _dirreg._directories[key]
     _directory_regs = []
 
 from zope.testing.cleanup import addCleanUp

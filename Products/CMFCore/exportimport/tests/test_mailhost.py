@@ -52,10 +52,10 @@ class _MailHostSetup(BaseRegistryTests):
         sm.registerUtility(site.MailHost, IMailHost)
  
         if use_changed:
-           mh.smtp_port='1'
-           mh.smtp_pwd="value1"
-           mh.smtp_host="value2"
-           mh.smtp_uid="value3"
+            mh.smtp_port='1'
+            mh.smtp_pwd="value1"
+            mh.smtp_host="value2"
+            mh.smtp_uid="value3"
 
         return site
 
