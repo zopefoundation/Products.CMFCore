@@ -173,6 +173,7 @@ def tuplize( valueName, value ):
 #
 #   Security utilities, callable only from unrestricted code.
 #
+# deprecated alias
 security.declarePrivate('_getAuthenticatedUser')
 def _getAuthenticatedUser(self):
     return getSecurityManager().getUser()
@@ -187,7 +188,7 @@ security.declarePrivate('_limitGrantedRoles')
 def _limitGrantedRoles(roles, context, special_roles=()):
     # Only allow a user to grant roles already possessed by that user,
     # with the exception that all special_roles can also be granted.
-    user = _getAuthenticatedUser(context)
+    user = getSecurityManager().getUser()
     if user is None:
         user_roles = ()
     else:

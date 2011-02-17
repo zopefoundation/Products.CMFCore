@@ -11,13 +11,12 @@
 #
 ##############################################################################
 """ Base class for catalog aware content items.
-
-$Id$
 """
 
 import logging
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
@@ -39,7 +38,6 @@ from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _getAuthenticatedUser
 from Products.CMFCore.utils import getToolByName
 
 logger = logging.getLogger('CMFCore.CMFCatalogAware')
@@ -288,7 +286,7 @@ def handleDynamicTypeCopiedEvent(ob, event):
     """
     # Make sure owner local role is set after pasting
     # The standard Zope mechanisms take care of executable ownership
-    current_user = _getAuthenticatedUser(ob)
+    current_user = getSecurityManager().getUser()
     if current_user is None:
         return
 

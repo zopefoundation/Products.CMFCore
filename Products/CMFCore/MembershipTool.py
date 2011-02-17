@@ -11,15 +11,14 @@
 #
 ##############################################################################
 """ Basic membership tool.
-
-$Id$
 """
 
 import logging
 from warnings import warn
 
-from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from AccessControl.User import nobody
 from Acquisition import aq_base
 from Acquisition import aq_inner
@@ -46,7 +45,6 @@ from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _getAuthenticatedUser
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
 
@@ -113,7 +111,7 @@ class MembershipTool(UniqueObject, Folder):
         Returns the currently authenticated member object
         or the Anonymous User.  Never returns None.
         '''
-        u = _getAuthenticatedUser(self)
+        u = getSecurityManager().getUser()
         if u is None:
             u = nobody
         return self.wrapUser(u)
@@ -253,7 +251,7 @@ class MembershipTool(UniqueObject, Folder):
             return None
         # Note: We can't use getAuthenticatedMember() and getMemberById()
         # because they might be wrapped by MemberDataTool.
-        user = _getAuthenticatedUser(self)
+        user = getSecurityManager().getUser()
         user_id = user.getId()
         if member_id in ('', user_id):
             member = user
@@ -307,7 +305,7 @@ class MembershipTool(UniqueObject, Folder):
         '''
         Returns 1 if the user is not logged in.
         '''
-        u = _getAuthenticatedUser(self)
+        u = getSecurityManager().getUser()
         if u is None or u.getUserName() == 'Anonymous User':
             return 1
         return 0
@@ -331,7 +329,7 @@ class MembershipTool(UniqueObject, Folder):
         databases.
         '''
         if not self.isAnonymousUser():
-            user = _getAuthenticatedUser(self)
+            user = getSecurityManager().getUser()
             name = user.getUserName()
             # this really does need to be the user name, and not the user id,
             # because we're dealing with authentication credentials

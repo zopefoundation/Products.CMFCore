@@ -11,11 +11,10 @@
 #
 ##############################################################################
 """ Basic undo tool.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
@@ -27,7 +26,6 @@ from Products.CMFCore.permissions import ListUndoableChanges
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _getAuthenticatedUser
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
@@ -74,7 +72,7 @@ class UndoTool(UniqueObject, SimpleItem):
             t['id'] = t['id'].replace('\n', '')
         if not _checkPermission(ManagePortal, object):
             # Filter out transactions done by other members of the portal.
-            user_id = _getAuthenticatedUser(self).getId()
+            user_id = getSecurityManager().getUser().getId()
             transactions = filter(
                 lambda record, user_id=user_id:
                 record['user_name'].split()[-1] == user_id,

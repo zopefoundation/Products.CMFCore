@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Basic portal catalog.
-
-$Id$
 """
 
 from AccessControl.PermissionRole import rolesForPermissionOn
@@ -42,7 +40,6 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _getAuthenticatedUser
 from Products.CMFCore.utils import _mergedLocalRoles
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
@@ -180,7 +177,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             Calls ZCatalog.searchResults with extra arguments that
             limit the results to what the user is allowed to see.
         """
-        user = _getAuthenticatedUser(self)
+        user = getSecurityManager().getUser()
         kw[ 'allowedRolesAndUsers' ] = self._listAllowedRolesAndUsers( user )
 
         if not _checkPermission( AccessInactivePortalContent, self ):
