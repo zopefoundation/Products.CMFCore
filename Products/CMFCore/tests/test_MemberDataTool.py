@@ -70,27 +70,29 @@ class DummyMemberDataTool(Acquisition.Implicit):
 
 class MemberDataToolTests(unittest.TestCase):
 
-    def _makeOne(self, *args, **kw):
+    def _getTargetClass(self):
         from Products.CMFCore.MemberDataTool import MemberDataTool
 
-        return MemberDataTool(*args, **kw)
+        return MemberDataTool
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def tearDown(self):
         cleanUp()
 
     def test_interfaces(self):
         from Products.CMFCore.interfaces import IMemberDataTool
-        from Products.CMFCore.MemberDataTool import MemberDataTool
 
-        verifyClass(IMemberDataTool, MemberDataTool)
+        verifyClass(IMemberDataTool, self._getTargetClass())
 
     def test_deleteMemberData(self):
         tool = self._makeOne()
         tool.registerMemberData('Dummy', 'user_foo')
-        self.failUnless( tool._members.has_key('user_foo') )
-        self.failUnless( tool.deleteMemberData('user_foo') )
-        self.failIf( tool._members.has_key('user_foo') )
-        self.failIf( tool.deleteMemberData('user_foo') )
+        self.assertTrue(tool._members.has_key('user_foo'))
+        self.assertTrue(tool.deleteMemberData('user_foo'))
+        self.assertFalse(tool._members.has_key('user_foo'))
+        self.assertFalse(tool.deleteMemberData('user_foo'))
 
     def test_pruneMemberData(self):
         # This needs a tad more setup
@@ -104,9 +106,7 @@ class MemberDataToolTests(unittest.TestCase):
 
         # Create some members
         for i in range(20):
-            tool.registerMemberData( 'Dummy_%i' % i
-                                   , 'user_foo_%i' % i
-                                   )
+            tool.registerMemberData('Dummy_%i' % i, 'user_foo_%i' % i)
 
         # None of these fake members are in the user folder, which means
         # there are 20 members and 20 "orphans"
@@ -141,16 +141,18 @@ class MemberDataToolTests(unittest.TestCase):
 
 class MemberDataTests(unittest.TestCase):
 
-    def _makeOne(self, *args, **kw):
+    def _getTargetClass(self):
         from Products.CMFCore.MemberDataTool import MemberData
 
-        return MemberData(*args, **kw)
+        return MemberData
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def test_interfaces(self):
         from Products.CMFCore.interfaces import IMemberData
-        from Products.CMFCore.MemberDataTool import MemberData
 
-        verifyClass(IMemberData, MemberData)
+        verifyClass(IMemberData, self._getTargetClass())
 
     def test_setSecurityProfile(self):
         mdtool = DummyMemberDataTool()
