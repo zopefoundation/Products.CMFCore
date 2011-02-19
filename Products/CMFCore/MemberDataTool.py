@@ -224,21 +224,6 @@ InitializeClass(MemberDataTool)
 registerToolInterface('portal_memberdata', IMemberDataTool)
 
 
-class CleanupTemp:
-
-    """Used to cleanup _v_temps at the end of the request."""
-
-    def __init__(self, tool):
-        self._tool = tool
-
-    def __del__(self):
-        try:
-            del self._tool._v_temps
-        except (AttributeError, KeyError):
-            # The object has already been deactivated.
-            pass
-
-
 class MemberData(SimpleItem):
 
     implements(IMember)
