@@ -150,9 +150,13 @@ class MemberDataTests(unittest.TestCase):
         return self._getTargetClass()(*args, **kw)
 
     def test_interfaces(self):
+        from AccessControl.interfaces import IUser
+        from Products.CMFCore.interfaces import IMember
         from Products.CMFCore.interfaces import IMemberData
 
+        verifyClass(IMember, self._getTargetClass())
         verifyClass(IMemberData, self._getTargetClass())
+        verifyClass(IUser, self._getTargetClass())
 
     def test_setSecurityProfile(self):
         mdtool = DummyMemberDataTool()

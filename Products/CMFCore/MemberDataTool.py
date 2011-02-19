@@ -27,7 +27,7 @@ from zope.interface import implements
 from ZPublisher.Converters import type_converters
 
 from Products.CMFCore.exceptions import BadRequest
-from Products.CMFCore.interfaces import IMemberData
+from Products.CMFCore.interfaces import IMember
 from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import SetOwnProperties
@@ -241,7 +241,7 @@ class CleanupTemp:
 
 class MemberData(SimpleItem):
 
-    implements(IMemberData)
+    implements(IMember)
 
     security = ClassSecurityInfo()
 
@@ -313,8 +313,6 @@ class MemberData(SimpleItem):
         # Hopefully we can later make notifyModified() implicit.
         self.notifyModified()
 
-    # XXX: s.b., getPropertyForMember(member, id, default)?
-
     security.declarePublic('getProperty')
     def getProperty(self, id, default=_marker):
 
@@ -369,35 +367,37 @@ class MemberData(SimpleItem):
     def __str__(self):
         return self.getMemberId()
 
-    ### User object interface ###
+    #
+    #   'IUser' interface methods
+    #
+    security.declarePublic('getId')
+    def getId(self):
+        """Get the ID of the user.
+        """
+        return self.getUser().getId()
 
     security.declarePublic('getUserName')
     def getUserName(self):
-        """Return the username of a user"""
+        """Get the name used by the user to log into the system.
+        """
         return self.getUser().getUserName()
-
-    security.declarePublic('getId')
-    def getId(self):
-        """Get the ID of the user. The ID can be used, at least from
-        Python, to get the user from the user's
-        UserDatabase"""
-        return self.getUser().getId()
 
     security.declarePublic('getRoles')
     def getRoles(self):
-        """Return the list of roles assigned to a user."""
+        """Get a sequence of the global roles assigned to the user.
+        """
         return self.getUser().getRoles()
 
     security.declarePublic('getRolesInContext')
     def getRolesInContext(self, object):
-        """Return the list of roles assigned to the user,
-           including local roles assigned in context of
-           the passed in object."""
+        """Get a sequence of the roles assigned to the user in a context.
+        """
         return self.getUser().getRolesInContext(object)
 
     security.declarePublic('getDomains')
     def getDomains(self):
-        """Return the list of domain restrictions for a user"""
+        """Get a sequence of the domain restrictions for the user.
+        """
         return self.getUser().getDomains()
 
     security.declarePublic('has_role')

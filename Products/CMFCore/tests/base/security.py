@@ -13,8 +13,10 @@
 """ Unit test security.
 """
 
+from AccessControl.interfaces import IUser
 from AccessControl.PermissionRole import rolesForPermissionOn
 from Acquisition import Implicit
+from zope.interface import implements
 
 
 class PermissiveSecurityPolicy:
@@ -47,6 +49,8 @@ class PermissiveSecurityPolicy:
 
 
 class _BaseUser(Implicit):
+
+    implements(IUser)
 
     def getId(self):
         return self._id

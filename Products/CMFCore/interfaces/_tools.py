@@ -13,8 +13,9 @@
 """ CMFCore tool interfaces.
 """
 
-from zope.interface import Interface
+from AccessControl.interfaces import IUser
 from zope.interface import Attribute
+from zope.interface import Interface
 
 _marker = object()
 
@@ -534,7 +535,7 @@ class IMemberDataTool(Interface):
             )
 
     def wrapUser(user):
-        """Returns an IMemberData instance for the given user object.
+        """Returns an IMember instance for the given user object.
 
         o Permission:  Private (Python-only)
         """
@@ -622,6 +623,12 @@ class IMemberData(Interface):
 
         o Permission:  Set own properties
         """
+
+
+class IMember(IUser, IMemberData):
+
+    """ Member interface.
+    """
 
 
 #
@@ -729,7 +736,7 @@ class IMembershipTool(Interface):
         """
 
     def getMemberById(id):
-        """ Returns the IMemberData instance corresponding to the given id.
+        """ Returns the IMember instance corresponding to the given id.
 
         o Permission:  Manage users
         """
@@ -744,7 +751,7 @@ class IMembershipTool(Interface):
         """
 
     def listMembers():
-        """ Return a sequence of all IMemberData instances.
+        """ Return a sequence of all IMember instances.
 
         o This may eventually be replaced with a set of methods for querying
           pieces of the list rather than the entire list at once.

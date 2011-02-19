@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- interfaces: Added 'IMember' interface.
+
 - permissions: Marked 'setDefaultRoles' as deprecated.
 
 - Require at least Zope 2.13.4.
