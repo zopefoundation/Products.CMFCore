@@ -11,16 +11,15 @@
 #
 ##############################################################################
 """ CMFCore product permissions.
-
-$Id$
 """
 
 from AccessControl import Permissions
-from AccessControl.Permission import _registeredPermissions
-from AccessControl.Permission import ApplicationDefaultPermissions
-from AccessControl.Permission import pname
+from AccessControl.Permission import addPermission
 from AccessControl.SecurityInfo import ModuleSecurityInfo
+from zope.deferredimport import deprecated
 
+deprecated("Please use addPermission from AccessControl.Permission.",
+    setDefaultRoles='AccessControl.Permission:addPermission')
 
 security = ModuleSecurityInfo('Products.CMFCore.permissions')
 
@@ -55,32 +54,9 @@ View = Permissions.view
 security.declarePublic('ViewManagementScreens')
 ViewManagementScreens = Permissions.view_management_screens
 
-addPermission = None
-try:
-    from AccessControl.Permission import addPermission
-except ImportError:
-    pass
-
-security.declarePrivate('setDefaultRoles')
-def setDefaultRoles(permission, roles):
-    '''
-    Sets the defaults roles for a permission.
-    '''
-    if addPermission is not None:
-        addPermission(permission, roles)
-    else:
-        # BBB This is in AccessControl starting in Zope 2.13
-        import Products
-        registered = _registeredPermissions
-        if not registered.has_key(permission):
-            registered[permission] = 1
-            Products.__ac_permissions__=(
-                Products.__ac_permissions__+((permission,(),roles),))
-            mangled = pname(permission)
-            setattr(ApplicationDefaultPermissions, mangled, roles)
 
 # Note that we can only use the default Zope roles in calls to
-# setDefaultRoles().  The default Zope roles are:
+# addPermission().  The default Zope roles are:
 # Anonymous, Manager, and Owner.
 
 #
@@ -89,63 +65,63 @@ def setDefaultRoles(permission, roles):
 
 security.declarePublic('ListFolderContents')
 ListFolderContents = 'List folder contents'
-setDefaultRoles( ListFolderContents, ( 'Manager', 'Owner' ) )
+addPermission(ListFolderContents, ('Manager', 'Owner'))
 
 security.declarePublic('ListUndoableChanges')
 ListUndoableChanges = 'List undoable changes'
-setDefaultRoles( ListUndoableChanges, ('Manager',) )  # + Member
+addPermission(ListUndoableChanges, ('Manager',))  # + Member
 
 security.declarePublic('AccessInactivePortalContent')
 AccessInactivePortalContent = 'Access inactive portal content'
-setDefaultRoles(AccessInactivePortalContent, ('Manager',))
+addPermission(AccessInactivePortalContent, ('Manager',))
 
 security.declarePublic('ModifyCookieCrumblers')
 ModifyCookieCrumblers = 'Modify Cookie Crumblers'
-setDefaultRoles(ModifyCookieCrumblers, ('Manager',))
+addPermission(ModifyCookieCrumblers, ('Manager',))
 
 security.declarePublic('ReplyToItem')
 ReplyToItem = 'Reply to item'
-setDefaultRoles(ReplyToItem, ('Manager',))  # + Member
+addPermission(ReplyToItem, ('Manager',))  # + Member
 
 security.declarePublic('ManagePortal')
 ManagePortal = 'Manage portal'
-setDefaultRoles(ManagePortal, ('Manager',))
+addPermission(ManagePortal, ('Manager',))
 
 security.declarePublic('ModifyPortalContent')
 ModifyPortalContent = 'Modify portal content'
-setDefaultRoles(ModifyPortalContent, ('Manager',))
+addPermission(ModifyPortalContent, ('Manager',))
 
 security.declarePublic('ListPortalMembers')
 ListPortalMembers = 'List portal members'
-setDefaultRoles( ListPortalMembers, ('Manager',) )  # + Member
+addPermission(ListPortalMembers, ('Manager',))  # + Member
 
 security.declarePublic('AddPortalFolders')
 AddPortalFolders = 'Add portal folders'
-setDefaultRoles(AddPortalFolders, ('Owner','Manager'))  # + Member
+addPermission(AddPortalFolders, ('Owner', 'Manager'))  # + Member
 
 security.declarePublic('AddPortalContent')
 AddPortalContent = 'Add portal content'
-setDefaultRoles(AddPortalContent, ('Owner','Manager',))  # + Member
+addPermission(AddPortalContent, ('Owner', 'Manager',))  # + Member
 
 security.declarePublic('AddPortalMember')
 AddPortalMember = 'Add portal member'
-setDefaultRoles(AddPortalMember, ('Anonymous', 'Manager',))
+addPermission(AddPortalMember, ('Anonymous', 'Manager',))
 
 security.declarePublic('SetOwnPassword')
 SetOwnPassword = 'Set own password'
-setDefaultRoles(SetOwnPassword, ('Manager',))  # + Member
+addPermission(SetOwnPassword, ('Manager',))  # + Member
 
 security.declarePublic('SetOwnProperties')
 SetOwnProperties = 'Set own properties'
-setDefaultRoles(SetOwnProperties, ('Manager',))  # + Member
+addPermission(SetOwnProperties, ('Manager',))  # + Member
 
 security.declarePublic('ChangeLocalRoles')
 ChangeLocalRoles = 'Change local roles'
-setDefaultRoles(ChangeLocalRoles, ('Owner', 'Manager'))
+addPermission(ChangeLocalRoles, ('Owner', 'Manager'))
 
 security.declarePublic('MailForgottenPassword')
 MailForgottenPassword = 'Mail forgotten password'
-setDefaultRoles(MailForgottenPassword, ('Anonymous', 'Manager',))
+addPermission(MailForgottenPassword, ('Anonymous', 'Manager',))
 
 
 #
@@ -154,9 +130,8 @@ setDefaultRoles(MailForgottenPassword, ('Anonymous', 'Manager',))
 
 security.declarePublic('RequestReview')
 RequestReview = 'Request review'
-setDefaultRoles(RequestReview, ('Owner', 'Manager',))
+addPermission(RequestReview, ('Owner', 'Manager',))
 
 security.declarePublic('ReviewPortalContent')
 ReviewPortalContent = 'Review portal content'
-setDefaultRoles(ReviewPortalContent, ('Manager',))  # + Reviewer
-
+addPermission(ReviewPortalContent, ('Manager',))  # + Reviewer

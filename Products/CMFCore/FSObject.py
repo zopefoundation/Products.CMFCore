@@ -16,11 +16,6 @@
 import os
 
 from AccessControl.Permission import Permission
-try:
-    from OFS.role import RoleManager
-except ImportError:
-    # BBB for Zope < 2.13
-    from AccessControl.Role import RoleManager
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from Acquisition import aq_inner
@@ -31,6 +26,7 @@ from App.config import getConfiguration
 from App.special_dtml import HTML
 from DateTime.DateTime import DateTime
 from OFS.Cache import Cacheable
+from OFS.role import RoleManager
 from OFS.SimpleItem import Item
 from Products.PythonScripts.standard import html_quote
 

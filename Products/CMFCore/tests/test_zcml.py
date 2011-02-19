@@ -22,12 +22,7 @@ def test_registerDirectory():
     Use the cmf:registerDirectory directive::
 
       >>> import Products.CMFCore
-      >>> # BBB for Zope 2.12
-      ... try:
-      ...    from Zope2.App import zcml
-      ... except ImportError:
-      ...    from Products.Five import zcml
-
+      >>> from Zope2.App import zcml
       >>> configure_zcml = '''
       ... <configure xmlns:cmf="http://namespaces.zope.org/cmf">
       ...   <cmf:registerDirectory

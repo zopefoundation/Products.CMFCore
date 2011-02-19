@@ -22,15 +22,10 @@ from zope.interface.verify import verifyClass
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.site.hooks import setHooks
 from zope.testing.cleanup import cleanUp
+from Zope2.App import zcml
 
 from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.GenericSetup.utils import BodyAdapterBase
-
-# BBB for Zope 2.12
-try:
-    from Zope2.App import zcml
-except ImportError:
-    from Products.Five import zcml
 
 
 class ConformsToFolder:
@@ -101,10 +96,7 @@ class EventZCMLLayer(ZopeLite):
         import Products
 
         zcml.load_config('meta.zcml', Products.Five)
-        try:
-            zcml.load_config('event.zcml', OFS)
-        except IOError:  # Zope <= 2.12.x
-            zcml.load_config('event.zcml', Products.Five)
+        zcml.load_config('event.zcml', OFS)
         zcml.load_config('event.zcml', Products.CMFCore)
         setHooks()
 
@@ -140,8 +132,6 @@ class TraversingEventZCMLLayer(ZopeLite):
         zcml.load_config('configure.zcml', zope.traversing)
         zcml.load_config('event.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.CMFCore)
-        # BBB Next line needed for Zope 2.12:
-        zcml.load_config('permissions.zcml', Products.Five)
         zcml.load_config('tool.zcml', Products.CMFCore)
         setHooks()
 
@@ -216,20 +206,10 @@ class ExportImportZCMLLayer(ZopeLite):
         import Products.CMFCore
         import Products.CMFCore.exportimport
 
-        try:
-            zcml.load_config('meta.zcml', Zope2.App)
-        except IOError:  # Zope <= 2.12.x
-            pass
-
+        zcml.load_config('meta.zcml', Zope2.App)
         zcml.load_config('meta.zcml', Products.Five)
-
-        try:
-            zcml.load_config('permissions.zcml', AccessControl)
-        except IOError:  # Zope <= 2.12.x
-            pass
-
+        zcml.load_config('permissions.zcml', AccessControl)
         zcml.load_config('permissions.zcml', Products.Five)
-
         zcml.load_config('meta.zcml', Products.GenericSetup)
         zcml.load_config('configure.zcml', Products.GenericSetup)
         zcml.load_config('permissions.zcml', Products.CMFCore)

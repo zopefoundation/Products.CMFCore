@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- permissions: Marked 'setDefaultRoles' as deprecated.
+
+- Require at least Zope 2.13.4.
+
 - DirectoryView: Added 'bobobase_modification_time' method to FSObject.
   The "Contents" tab in the ZMI now shows useful 'Last Modified' values.
 
@@ -40,8 +44,6 @@ Products.CMFCore Changelog
 
 - testing: Removed broken run function.
   Unit test modules are no longer directly executable.
-
-- Require at least Zope 2.12.11.
 
 - DateTime 2.12.5 does away with a special case representing
   DateTime values for midnight (00:00:00) without their time and

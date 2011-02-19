@@ -11,22 +11,16 @@
 #
 ##############################################################################
 """ Customizable DTML methods that come from the filesystem.
-
-$Id$
 """
-
-try:
-    from OFS.role import RoleManager
-except ImportError:
-    # BBB for Zope < 2.13
-    from AccessControl.Role import RoleManager
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from App.special_dtml import HTML
+from DocumentTemplate.security import RestrictedDTML
 from OFS.DTMLMethod import DTMLMethod, decapitate, guess_content_type
+from OFS.role import RoleManager
 
 from Products.CMFCore.DirectoryView import registerFileExtension
 from Products.CMFCore.DirectoryView import registerMetaType
@@ -37,12 +31,6 @@ from Products.CMFCore.permissions import ViewManagementScreens
 from Products.CMFCore.utils import _checkConditionalGET
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _setCacheHeaders
-
-# BBB for Zope 2.12
-try:
-    from DocumentTemplate.security import RestrictedDTML
-except ImportError:
-    from AccessControl.DTML import RestrictedDTML
 
 _marker = object()
 
