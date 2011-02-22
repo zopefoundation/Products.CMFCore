@@ -13,13 +13,19 @@
 """ Basic member data tool.
 """
 
+from AccessControl.interfaces import IUser
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from Acquisition import aq_inner, aq_parent, aq_base
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from BTrees.OOBTree import OOBTree
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
+from Persistence import Persistent
+from zope.component import adapts
+from zope.component import getMultiAdapter
 from zope.component import queryUtility
 from zope.component.factory import Factory
 from zope.component.interfaces import IFactory
@@ -191,17 +197,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         If possible, returns the Member object that corresponds
         to the given User object.
         '''
-        id = u.getId()
-        members = self._members
-        if not id in members:
-            member_factory = queryUtility(IFactory, u'MemberData')
-            if member_factory is None:
-                member_factory = MemberData
-            base = aq_base(self)
-            members[id] = member_factory(base, id)
-        # Return a wrapper with self as containment and
-        # the user as context.
-        return members[id].__of__(self).__of__(u)
+        return getMultiAdapter((u, self), IMember)
 
     security.declarePrivate('registerMemberData')
     def registerMemberData(self, m, id):
@@ -224,39 +220,50 @@ InitializeClass(MemberDataTool)
 registerToolInterface('portal_memberdata', IMemberDataTool)
 
 
-class MemberData(SimpleItem):
+class MemberData(Persistent):
 
+    def __init__(self, id):
+        self.id = id
+
+memberFactory = Factory(MemberData)
+
+
+class MemberAdapter(object):
+
+    """Member data adapter.
+    """
+
+    adapts(IUser, IMemberDataTool)
     implements(IMember)
 
     security = ClassSecurityInfo()
 
-    def __init__(self, tool, id):
-        self.id = id
+    def __init__(self, user, tool):
+        self._user = user
+        self._tool = tool
+        self.__parent__ = aq_parent(aq_inner(user))
+
+        id = user.getId()
+        members = tool._members
+        if not id in members:
+            member_factory = queryUtility(IFactory, u'MemberData')
+            if member_factory is None:
+                member_factory = MemberData
+            members[id] = member_factory(id)
+        self._md = members[id]
 
     security.declarePrivate('notifyModified')
     def notifyModified(self):
         # Links self to parent for full persistence.
-        self.getTool().registerMemberData(self, self.getId())
+        self._tool.registerMemberData(self._md, self.getId())
 
     security.declarePublic('getUser')
     def getUser(self):
-        # The user object is our context, but it's possible for
-        # restricted code to strip context while retaining
-        # containment.  Therefore we need a simple security check.
-        parent = aq_parent(self)
-        bcontext = aq_base(parent)
-        bcontainer = aq_base(aq_parent(aq_inner(self)))
-        if bcontext is bcontainer or not hasattr(bcontext, 'getUserName'):
-            raise 'MemberDataError', "Can't find user data"
-        # Return the user object, which is our context.
-        return parent
-
-    def getTool(self):
-        return aq_parent(aq_inner(self))
+        return self._user
 
     security.declarePublic('getMemberId')
     def getMemberId(self):
-        return self.getUser().getId()
+        return self._user.getId()
 
     security.declareProtected(SetOwnProperties, 'setProperties')
     def setProperties(self, properties=None, **kw):
@@ -268,8 +275,8 @@ class MemberData(SimpleItem):
         # it depends on a non-utility tool
         if properties is None:
             properties = kw
-        membership = getToolByName(self, 'portal_membership')
-        registration = getToolByName(self, 'portal_registration', None)
+        membership = getToolByName(self._tool, 'portal_membership')
+        registration = getToolByName(self._tool, 'portal_registration', None)
         if not membership.isAnonymousUser():
             member = membership.getAuthenticatedMember()
             if registration:
@@ -285,33 +292,29 @@ class MemberData(SimpleItem):
         '''Sets the properties of the member.
         '''
         # Sets the properties given in the MemberDataTool.
-        tool = self.getTool()
+        tool = self._tool
         for id in tool.propertyIds():
             if mapping.has_key(id):
-                if not self.__class__.__dict__.has_key(id):
+                if not self._md.__class__.__dict__.has_key(id):
                     value = mapping[id]
-                    if type(value)==type(''):
+                    if isinstance(value, str):
                         proptype = tool.getPropertyType(id) or 'string'
                         if type_converters.has_key(proptype):
                             value = type_converters[proptype](value)
-                    setattr(self, id, value)
+                    setattr(self._md, id, value)
         # Hopefully we can later make notifyModified() implicit.
         self.notifyModified()
 
     security.declarePublic('getProperty')
     def getProperty(self, id, default=_marker):
-
-        tool = self.getTool()
-        base = aq_base( self )
-
         # First, check the wrapper (w/o acquisition).
-        value = getattr( base, id, _marker )
+        value = getattr(self._md, id, _marker)
         if value is not _marker:
             return value
 
         # Then, check the tool and the user object for a value.
-        tool_value = tool.getProperty( id, _marker )
-        user_value = getattr( self.getUser(), id, _marker )
+        tool_value = self._tool.getProperty(id, _marker)
+        user_value = getattr(self._user, id, _marker)
 
         # If the tool doesn't have the property, use user_value or default
         if tool_value is _marker:
@@ -332,12 +335,12 @@ class MemberData(SimpleItem):
     security.declarePrivate('getPassword')
     def getPassword(self):
         """Return the password of the user."""
-        return self.getUser()._getPassword()
+        return self._user._getPassword()
 
     security.declarePrivate('setSecurityProfile')
     def setSecurityProfile(self, password=None, roles=None, domains=None):
         """Set the user's basic security profile"""
-        u = self.getUser()
+        u = self._user
 
         # The Zope User API is stupid, it should check for None.
         if roles is None:
@@ -350,7 +353,7 @@ class MemberData(SimpleItem):
         u.userFolderEditUser(u.getId(), password, roles, domains)
 
     def __str__(self):
-        return self.getMemberId()
+        return self._user.getId()
 
     #
     #   'IUser' interface methods
@@ -359,40 +362,38 @@ class MemberData(SimpleItem):
     def getId(self):
         """Get the ID of the user.
         """
-        return self.getUser().getId()
+        return self._user.getId()
 
     security.declarePublic('getUserName')
     def getUserName(self):
         """Get the name used by the user to log into the system.
         """
-        return self.getUser().getUserName()
+        return self._user.getUserName()
 
     security.declarePublic('getRoles')
     def getRoles(self):
         """Get a sequence of the global roles assigned to the user.
         """
-        return self.getUser().getRoles()
+        return self._user.getRoles()
 
     security.declarePublic('getRolesInContext')
     def getRolesInContext(self, object):
         """Get a sequence of the roles assigned to the user in a context.
         """
-        return self.getUser().getRolesInContext(object)
+        return self._user.getRolesInContext(object)
 
     security.declarePublic('getDomains')
     def getDomains(self):
         """Get a sequence of the domain restrictions for the user.
         """
-        return self.getUser().getDomains()
+        return self._user.getDomains()
 
     security.declarePublic('has_role')
     def has_role(self, roles, object=None):
         """Check to see if a user has a given role or roles."""
-        return self.getUser().has_role(roles, object)
+        return self._user.has_role(roles, object)
 
     # There are other parts of the interface but they are
     # deprecated for use with CMF applications.
 
-InitializeClass(MemberData)
-
-memberFactory = Factory(MemberData)
+InitializeClass(MemberAdapter)

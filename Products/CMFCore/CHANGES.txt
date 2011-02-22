@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- MemberDataTool: Split up MemberData class.
+  The old MemberData API is now provided by the new MemberAdapter. The
+  persistent MemberData objects are just used for storing member data.
+
 - interfaces: Added 'IMember' interface.
 
 - permissions: Marked 'setDefaultRoles' as deprecated.

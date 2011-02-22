@@ -65,7 +65,8 @@ class DummyUser(Acquisition.Implicit):
 
 
 class DummyMemberDataTool(Acquisition.Implicit):
-    pass
+
+    _members = {}
 
 
 class MemberDataToolTests(unittest.TestCase):
@@ -77,9 +78,6 @@ class MemberDataToolTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
-
-    def tearDown(self):
-        cleanUp()
 
     def test_interfaces(self):
         from Products.CMFCore.interfaces import IMemberDataTool
@@ -123,31 +121,23 @@ class MemberDataToolTests(unittest.TestCase):
         self.assertEqual(info_dict['member_count'], 0)
         self.assertEqual(info_dict['orphan_count'], 0)
 
-    def test_switching_memberdata_factory(self):
-        from Products.CMFCore.MemberDataTool import MemberData
-        tool = self._makeOne()
-        user = DummyUser('dummy', '', [], [])
-        member = Acquisition.aq_base(tool.wrapUser(user))
-        self.assertEquals(getattr(member, 'iamnew', None), None)
 
-        class NewMemberData(MemberData):
-            iamnew = 'yes'
-        provideUtility(NewMemberData, IFactory, 'MemberData')
-
-        user = DummyUser('dummy2', '', [], [])
-        member = Acquisition.aq_base(tool.wrapUser(user))
-        self.assertEquals(getattr(member, 'iamnew', None), 'yes')
-
-
-class MemberDataTests(unittest.TestCase):
+class MemberAdapterTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.MemberDataTool import MemberData
+        from Products.CMFCore.MemberDataTool import MemberAdapter
 
-        return MemberData
+        return MemberAdapter
 
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
+
+    def setUp(self):
+        self.mdtool = DummyMemberDataTool()
+        self.aclu = DummyUserFolder()
+
+    def tearDown(self):
+        cleanUp()
 
     def test_interfaces(self):
         from AccessControl.interfaces import IUser
@@ -159,12 +149,10 @@ class MemberDataTests(unittest.TestCase):
         verifyClass(IUser, self._getTargetClass())
 
     def test_setSecurityProfile(self):
-        mdtool = DummyMemberDataTool()
-        aclu = DummyUserFolder()
         user = DummyUser('bob', 'pw', ['Role'], ['domain'])
-        aclu._addUser(user)
-        user = user.__of__(aclu)
-        member = self._makeOne(None, 'bob').__of__(mdtool).__of__(user)
+        self.aclu._addUser(user)
+        user = user.__of__(self.aclu)
+        member = self._makeOne(user, self.mdtool)
         member.setSecurityProfile(password='newpw')
         self.assertEqual(user.__, 'newpw')
         self.assertEqual(list(user.roles), ['Role'])
@@ -178,9 +166,24 @@ class MemberDataTests(unittest.TestCase):
         self.assertEqual(list(user.roles), ['NewRole'])
         self.assertEqual(list(user.domains), ['newdomain'])
 
+    def test_switching_memberdata_factory(self):
+        from Products.CMFCore.MemberDataTool import MemberData
+
+        user1 = DummyUser('dummy', '', [], []).__of__(self.aclu)
+        member = self._makeOne(user1, self.mdtool)
+        self.assertEqual(getattr(member._md, 'iamnew', None), None)
+
+        class NewMemberData(MemberData):
+            iamnew = 'yes'
+        provideUtility(NewMemberData, IFactory, 'MemberData')
+
+        user2 = DummyUser('dummy2', '', [], []).__of__(self.aclu)
+        member = self._makeOne(user2, self.mdtool)
+        self.assertEqual(getattr(member._md, 'iamnew', None), 'yes')
+
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(MemberDataToolTests),
-        unittest.makeSuite(MemberDataTests),
+        unittest.makeSuite(MemberAdapterTests),
         ))
