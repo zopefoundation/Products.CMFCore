@@ -15,6 +15,7 @@
 
 from AccessControl.interfaces import IUser
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
@@ -273,19 +274,16 @@ class MemberAdapter(object):
         '''
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool
+        if self._user.getId() != getSecurityManager().getUser().getId():
+            raise BadRequest(u'Only own properties can be set.')
         if properties is None:
             properties = kw
-        membership = getToolByName(self._tool, 'portal_membership')
-        registration = getToolByName(self._tool, 'portal_registration', None)
-        if not membership.isAnonymousUser():
-            member = membership.getAuthenticatedMember()
-            if registration:
-                failMessage = registration.testPropertiesValidity(properties, member)
-                if failMessage is not None:
-                    raise BadRequest(failMessage)
-            member.setMemberProperties(properties)
-        else:
-            raise BadRequest('Not logged in.')
+        rtool = getToolByName(self._tool, 'portal_registration', None)
+        if rtool is not None:
+            failMessage = rtool.testPropertiesValidity(properties, self)
+            if failMessage is not None:
+                raise BadRequest(failMessage)
+        self.setMemberProperties(properties)
 
     security.declarePrivate('setMemberProperties')
     def setMemberProperties(self, mapping):
