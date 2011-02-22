@@ -27,9 +27,6 @@ from OFS.SimpleItem import SimpleItem
 from Persistence import Persistent
 from zope.component import adapts
 from zope.component import getMultiAdapter
-from zope.component import queryUtility
-from zope.component.factory import Factory
-from zope.component.interfaces import IFactory
 from zope.interface import implements
 from ZPublisher.Converters import type_converters
 
@@ -226,8 +223,6 @@ class MemberData(Persistent):
     def __init__(self, id):
         self.id = id
 
-memberFactory = Factory(MemberData)
-
 
 class MemberAdapter(object):
 
@@ -243,15 +238,8 @@ class MemberAdapter(object):
         self._user = user
         self._tool = tool
         self.__parent__ = aq_parent(aq_inner(user))
-
         id = user.getId()
-        members = tool._members
-        if not id in members:
-            member_factory = queryUtility(IFactory, u'MemberData')
-            if member_factory is None:
-                member_factory = MemberData
-            members[id] = member_factory(id)
-        self._md = members[id]
+        self._md = tool._members.setdefault(id, MemberData(id))
 
     security.declarePrivate('notifyModified')
     def notifyModified(self):

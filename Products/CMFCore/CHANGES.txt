@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- MemberDataTool: Removed obsolete MemberData factory lookup.
+  This feature was added in CMF 2.2, but now the MemberAdapter should be
+  overridden instead.
+
 - MemberDataTool: Split up MemberData class.
   The old MemberData API is now provided by the new MemberAdapter. The
   persistent MemberData objects are just used for storing member data.

@@ -17,10 +17,7 @@ import unittest
 import Testing
 
 import Acquisition
-from zope.component import provideUtility
-from zope.component.interfaces import IFactory
 from zope.interface.verify import verifyClass
-from zope.testing.cleanup import cleanUp
 
 
 class DummyUserFolder(Acquisition.Implicit):
@@ -136,9 +133,6 @@ class MemberAdapterTests(unittest.TestCase):
         self.mdtool = DummyMemberDataTool()
         self.aclu = DummyUserFolder()
 
-    def tearDown(self):
-        cleanUp()
-
     def test_interfaces(self):
         from AccessControl.interfaces import IUser
         from Products.CMFCore.interfaces import IMember
@@ -165,21 +159,6 @@ class MemberAdapterTests(unittest.TestCase):
         self.assertEqual(user.__, 'newpw')
         self.assertEqual(list(user.roles), ['NewRole'])
         self.assertEqual(list(user.domains), ['newdomain'])
-
-    def test_switching_memberdata_factory(self):
-        from Products.CMFCore.MemberDataTool import MemberData
-
-        user1 = DummyUser('dummy', '', [], []).__of__(self.aclu)
-        member = self._makeOne(user1, self.mdtool)
-        self.assertEqual(getattr(member._md, 'iamnew', None), None)
-
-        class NewMemberData(MemberData):
-            iamnew = 'yes'
-        provideUtility(NewMemberData, IFactory, 'MemberData')
-
-        user2 = DummyUser('dummy2', '', [], []).__of__(self.aclu)
-        member = self._makeOne(user2, self.mdtool)
-        self.assertEqual(getattr(member._md, 'iamnew', None), 'yes')
 
 
 def test_suite():

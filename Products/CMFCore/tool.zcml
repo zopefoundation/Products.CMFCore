@@ -36,11 +36,6 @@
       global="False"
       />
 
-  <utility
-      component=".MemberDataTool.memberFactory"
-      name="MemberData"
-      />
-
   <adapter factory=".MemberDataTool.MemberAdapter"/>
 
   <adapter factory=".WorkflowTool.DefaultWorkflowStatus" />
