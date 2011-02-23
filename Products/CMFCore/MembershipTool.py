@@ -249,22 +249,15 @@ class MembershipTool(UniqueObject, Folder):
             return None
         if self.isAnonymousUser():
             return None
-        # Note: We can't use getAuthenticatedMember() and getMemberById()
-        # because they might be wrapped by MemberDataTool.
-        user = getSecurityManager().getUser()
-        user_id = user.getId()
-        if member_id in ('', user_id):
-            member = user
-            member_id = user_id
-        else:
-            if _checkPermission(ManageUsers, self):
-                uf = self._huntUserFolder(member_id, self)
-                if uf:
-                    member = uf.getUserById(member_id).__of__(uf)
-                else:
-                    raise ValueError('Member %s does not exist' % member_id)
-            else:
+        if member_id:
+            if not self.isMemberAccessAllowed(member_id):
                 return None
+            member = self.getMemberById(member_id)
+            if member is None:
+                return None
+        else:
+            member = self.getAuthenticatedMember()
+            member_id = member.getId()
         if hasattr( aq_base(members), member_id ):
             return None
         else:
