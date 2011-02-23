@@ -17,7 +17,12 @@ import unittest
 import Testing
 
 import Acquisition
+from AccessControl.SecurityManagement import newSecurityManager
+from DateTime.DateTime import DateTime
 from zope.interface.verify import verifyClass
+
+from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.tests.base.security import DummyUser as BaseDummyUser
 
 
 class DummyUserFolder(Acquisition.Implicit):
@@ -33,37 +38,20 @@ class DummyUserFolder(Acquisition.Implicit):
         if password is not None:
             user.__ = password
         # Emulate AccessControl.User's stupid behavior (should test None)
-        user.roles = tuple(roles)
-        user.domains = tuple(domains)
+        user._roles = tuple(roles)
+        user._domains = tuple(domains)
 
     def getUsers(self):
         return self._users.values()
 
 
-class DummyUser(Acquisition.Implicit):
+class DummyUser(BaseDummyUser):
 
     def __init__(self, name, password, roles, domains):
-        self.name = name
+        self._id = self._name = name
         self.__ = password
-        self.roles = tuple(roles)
-        self.domains = tuple(domains)
-
-    def getId(self):
-        return self.name
-
-    def getUserName(self):
-        return 'name of %s' % self.getId()
-
-    def getRoles(self):
-        return self.roles + ('Authenticated',)
-
-    def getDomains(self):
-        return self.domains
-
-
-class DummyMemberDataTool(Acquisition.Implicit):
-
-    _members = {}
+        self._roles = tuple(roles)
+        self._domains = tuple(domains)
 
 
 class MemberDataToolTests(unittest.TestCase):
@@ -130,8 +118,14 @@ class MemberAdapterTests(unittest.TestCase):
         return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        self.mdtool = DummyMemberDataTool()
-        self.aclu = DummyUserFolder()
+        from OFS.Folder import Folder
+        from Products.CMFCore.MemberDataTool import MemberDataTool
+        from Products.CMFCore.MembershipTool import MembershipTool
+
+        self.site = Folder('test')
+        self.site._setObject('portal_memberdata', MemberDataTool())
+        self.site._setObject('portal_membership', MembershipTool())
+        self.site._setObject('acl_users', DummyUserFolder())
 
     def test_interfaces(self):
         from AccessControl.interfaces import IUser
@@ -142,23 +136,44 @@ class MemberAdapterTests(unittest.TestCase):
         verifyClass(IMemberData, self._getTargetClass())
         verifyClass(IUser, self._getTargetClass())
 
+    def test_setProperties(self):
+        user = DummyUser('bob', 'pw', ['Role'], [])
+        user = user.__of__(self.site.acl_users)
+        member = self._makeOne(user, self.site.portal_memberdata)
+        self.assertRaises(BadRequest, member.setProperties)
+
+        newSecurityManager(None, DummyUser('john', 'pw', ['Role'], []))
+        self.assertRaises(BadRequest, member.setProperties)
+
+        newSecurityManager(None, user)
+        member.setProperties()
+        self.assertEqual(member.getProperty('email'), '')
+        # MemberDataTool is initialized with a string date
+        self.assertEqual(member.getProperty('login_time'), '2000/01/01')
+
+        member.setProperties({'email': 'BOB@EXAMPLE.ORG',
+                              'login_time': '2000/02/02'})
+        self.assertEqual(member.getProperty('email'), 'BOB@EXAMPLE.ORG')
+        self.assertEqual(member.getProperty('login_time'),
+                         DateTime('2000/02/02 00:00:00'))
+
     def test_setSecurityProfile(self):
         user = DummyUser('bob', 'pw', ['Role'], ['domain'])
-        self.aclu._addUser(user)
-        user = user.__of__(self.aclu)
-        member = self._makeOne(user, self.mdtool)
+        self.site.acl_users._addUser(user)
+        user = user.__of__(self.site.acl_users)
+        member = self._makeOne(user, self.site.portal_memberdata)
         member.setSecurityProfile(password='newpw')
         self.assertEqual(user.__, 'newpw')
-        self.assertEqual(list(user.roles), ['Role'])
-        self.assertEqual(list(user.domains), ['domain'])
+        self.assertEqual(list(user.getRoles()), ['Role'])
+        self.assertEqual(list(user.getDomains()), ['domain'])
         member.setSecurityProfile(roles=['NewRole'])
         self.assertEqual(user.__, 'newpw')
-        self.assertEqual(list(user.roles), ['NewRole'])
-        self.assertEqual(list(user.domains), ['domain'])
+        self.assertEqual(list(user.getRoles()), ['NewRole'])
+        self.assertEqual(list(user.getDomains()), ['domain'])
         member.setSecurityProfile(domains=['newdomain'])
         self.assertEqual(user.__, 'newpw')
-        self.assertEqual(list(user.roles), ['NewRole'])
-        self.assertEqual(list(user.domains), ['newdomain'])
+        self.assertEqual(list(user.getRoles()), ['NewRole'])
+        self.assertEqual(list(user.getDomains()), ['newdomain'])
 
 
 def test_suite():

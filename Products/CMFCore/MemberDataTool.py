@@ -262,7 +262,8 @@ class MemberAdapter(object):
         '''
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool
-        if self._user.getId() != getSecurityManager().getUser().getId():
+        mtool = getToolByName(self._tool, 'portal_membership')
+        if not mtool.isMemberAccessAllowed(self._user.getId()):
             raise BadRequest(u'Only own properties can be set.')
         if properties is None:
             properties = kw

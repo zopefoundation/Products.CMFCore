@@ -64,6 +64,9 @@ class _BaseUser(Implicit):
     def getRolesInContext(self, object):
         return self._roles
 
+    def getDomains(self):
+        return self._domains
+
     def allowed(self, object, object_roles=None):
         if object_roles is None or 'Anonymous' in object_roles:
             return True

@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- MemberDataTool: Modified 'setProperties' method.
+  It now can be used by user managers as well.
+
 - MembershipTool: Added 'isMemberAccessAllowed' method.
   If you don't have the 'Manage users' permission for the membership tool, you
   shouldn't have write access to other members.
