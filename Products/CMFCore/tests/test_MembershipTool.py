@@ -155,6 +155,21 @@ class MembershipToolSecurityTests(SecurityTest):
         mtool.createMemberArea( LOCAL_USER_ID )
         self.failUnless( hasattr(members.aq_self, LOCAL_USER_ID ) )
 
+    def test_isMemberAccessAllowed(self):
+        site = self._makeSite()
+        mtool = site.portal_membership
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+        self.assertFalse(mtool.isMemberAccessAllowed('user_foo'))
+
+        newSecurityManager(None, acl_users.user_bar)
+        self.assertFalse(mtool.isMemberAccessAllowed('user_foo'))
+
+        newSecurityManager(None, acl_users.user_foo)
+        self.assertTrue(mtool.isMemberAccessAllowed('user_foo'))
+
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        self.assertTrue(mtool.isMemberAccessAllowed('user_foo'))
+
     def test_deleteMembers(self):
         site = self._makeSite()
         sm = getSiteManager()

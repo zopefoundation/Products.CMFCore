@@ -684,6 +684,13 @@ class IMembershipTool(Interface):
         o Permission:  Public
         """
 
+    def isMemberAccessAllowed(member_id):
+        """Check if the authenticated user is this member or an user manager.
+
+        If you don't have the 'Manage users' permission for the membership
+        tool, you shouldn't have write access to other members.
+        """
+
     def credentialsChanged(password, REQUEST=None):
         """ Notify the authentication mechanism that this user has
             changed passwords.

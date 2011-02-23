@@ -320,6 +320,18 @@ class MembershipTool(UniqueObject, Folder):
             object = getattr(object, subobjectName)
         return _checkPermission(permissionName, object)
 
+    security.declareProtected(ManageUsers, 'isMemberAccessAllowed')
+    def isMemberAccessAllowed(self, member_id):
+        """Check if the authenticated user is this member or an user manager.
+        """
+        sm = getSecurityManager()
+        user = sm.getUser()
+        if user is None:
+            return False
+        if member_id == user.getId():
+            return True
+        return sm.checkPermission(ManageUsers, self)
+
     security.declarePublic('credentialsChanged')
     def credentialsChanged(self, password, REQUEST=None):
         '''

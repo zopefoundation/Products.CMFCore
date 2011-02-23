@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- MembershipTool: Added 'isMemberAccessAllowed' method.
+  If you don't have the 'Manage users' permission for the membership tool, you
+  shouldn't have write access to other members.
+
 - MemberDataTool: Removed obsolete MemberData factory lookup.
   This feature was added in CMF 2.2, but now the MemberAdapter should be
   overridden instead.
