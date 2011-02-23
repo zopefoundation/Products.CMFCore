@@ -375,7 +375,7 @@ class MembershipTool(UniqueObject, Folder):
         """
         uf = self._huntUserFolder(member_id, context)
         if uf is not None:
-            return uf.getUserById(member_id)
+            return uf.getUserById(member_id).__of__(uf)
 
     def __getPUS(self):
         """ Retrieve the nearest user folder
