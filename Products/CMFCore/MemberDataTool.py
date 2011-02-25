@@ -86,8 +86,8 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         self._updateProperty('email', '')
         self._updateProperty('portal_skin', '')
         self._updateProperty('listed', '')
-        self._updateProperty('login_time', '2000/01/01')
-        self._updateProperty('last_login_time', '2000/01/01')
+        self._updateProperty('login_time', '1970/01/01 00:00:00 UTC') # epoch
+        self._updateProperty('last_login_time', '1970/01/01 00:00:00 UTC') # epoch
 
     #
     #   'portal_memberdata' interface methods

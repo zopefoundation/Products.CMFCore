@@ -75,9 +75,9 @@ class MemberDataToolTests(unittest.TestCase):
         self.assertEqual(tool.getProperty('portal_skin'), '')
         self.assertEqual(tool.getProperty('listed'), False)
         self.assertEqual(tool.getProperty('login_time'),
-                         DateTime('2000/01/01 00:00:00'))
+                         DateTime('1970/01/01 00:00:00 UTC'))
         self.assertEqual(tool.getProperty('last_login_time'),
-                         DateTime('2000/01/01 00:00:00'))
+                         DateTime('1970/01/01 00:00:00 UTC'))
 
     def test_deleteMemberData(self):
         tool = self._makeOne()
@@ -159,7 +159,7 @@ class MemberAdapterTests(unittest.TestCase):
         member.setProperties()
         self.assertEqual(member.getProperty('email'), '')
         self.assertEqual(member.getProperty('login_time'),
-                         DateTime('2000/01/01 00:00:00'))
+                         DateTime('1970/01/01 00:00:00 UTC'))
 
         member.setProperties({'email': 'BOB@EXAMPLE.ORG',
                               'login_time': '2000/02/02'})

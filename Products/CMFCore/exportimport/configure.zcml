@@ -29,6 +29,8 @@
 
   <adapter factory=".cookieauth.CookieCrumblerXMLAdapter"/>
 
+  <adapter factory=".memberdata.MemberDataToolXMLAdapter"/>
+
   <adapter factory=".properties.PropertiesXMLAdapter"/>
 
   <adapter factory=".skins.DirectoryViewNodeAdapter"/>
@@ -129,6 +131,20 @@
       title="MailHost"
       description="Export the mailhost's settings and properties"
       handler="Products.CMFCore.exportimport.mailhost.exportMailHost"
+      />
+
+  <genericsetup:importStep
+      name="memberdata"
+      title="Member Data Tool"
+      description="Import member data tool settings."
+      handler="Products.CMFCore.exportimport.memberdata.importMemberDataTool"
+      />
+
+  <genericsetup:exportStep
+      name="memberdata"
+      title="Member Data Tool"
+      description="Export member data tool settings."
+      handler="Products.CMFCore.exportimport.memberdata.exportMemberDataTool"
       />
 
   <genericsetup:importStep
