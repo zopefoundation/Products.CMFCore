@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- MemberDataTool: Fixed tool initialization.
+  The default boolean and date property values were not set correctly.
+
 - MemberDataTool: Modified 'setProperties' method.
   It now can be used by user managers as well.
 

@@ -69,6 +69,16 @@ class MemberDataToolTests(unittest.TestCase):
 
         verifyClass(IMemberDataTool, self._getTargetClass())
 
+    def test_new(self):
+        tool = self._makeOne()
+        self.assertEqual(tool.getProperty('email'), '')
+        self.assertEqual(tool.getProperty('portal_skin'), '')
+        self.assertEqual(tool.getProperty('listed'), False)
+        self.assertEqual(tool.getProperty('login_time'),
+                         DateTime('2000/01/01 00:00:00'))
+        self.assertEqual(tool.getProperty('last_login_time'),
+                         DateTime('2000/01/01 00:00:00'))
+
     def test_deleteMemberData(self):
         tool = self._makeOne()
         tool.registerMemberData('Dummy', 'user_foo')
@@ -148,8 +158,8 @@ class MemberAdapterTests(unittest.TestCase):
         newSecurityManager(None, user)
         member.setProperties()
         self.assertEqual(member.getProperty('email'), '')
-        # MemberDataTool is initialized with a string date
-        self.assertEqual(member.getProperty('login_time'), '2000/01/01')
+        self.assertEqual(member.getProperty('login_time'),
+                         DateTime('2000/01/01 00:00:00'))
 
         member.setProperties({'email': 'BOB@EXAMPLE.ORG',
                               'login_time': '2000/02/02'})

@@ -15,7 +15,6 @@
 
 from AccessControl.interfaces import IUser
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
@@ -53,7 +52,13 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
     id = 'portal_memberdata'
     meta_type = 'CMF Member Data Tool'
-    _properties = ()
+    _properties = (
+        {'id': 'email', 'type': 'string', 'mode': 'wd'},
+        {'id': 'portal_skin', 'type': 'string', 'mode': 'wd'},
+        {'id': 'listed', 'type': 'boolean', 'mode': 'wd'},
+        {'id': 'login_time', 'type': 'date', 'mode': 'wd'},
+        {'id': 'last_login_time', 'type': 'date', 'mode': 'wd'},
+        )
 
     security = ClassSecurityInfo()
 
@@ -78,11 +83,11 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
     def __init__(self):
         self._members = OOBTree()
         # Create the default properties.
-        self._setProperty('email', '', 'string')
-        self._setProperty('portal_skin', '', 'string')
-        self._setProperty('listed', '', 'boolean')
-        self._setProperty('login_time', '2000/01/01', 'date')
-        self._setProperty('last_login_time', '2000/01/01', 'date')
+        self._updateProperty('email', '')
+        self._updateProperty('portal_skin', '')
+        self._updateProperty('listed', '')
+        self._updateProperty('login_time', '2000/01/01')
+        self._updateProperty('last_login_time', '2000/01/01')
 
     #
     #   'portal_memberdata' interface methods
