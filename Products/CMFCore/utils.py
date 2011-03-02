@@ -26,16 +26,18 @@ from AccessControl.Role import gather_permissions
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityInfo import ModuleSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from Acquisition.interfaces import IAcquirer
 from Acquisition import aq_get
 from Acquisition import aq_parent
 from Acquisition import Implicit
+from Acquisition.interfaces import IAcquirer
 from App.class_init import InitializeClass
 from App.Common import package_home
+from App.Common import rfc1123_date
 from App.Dialogs import MessageDialog
 from App.ImageFile import ImageFile
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
+from DateTime.interfaces import DateTimeError
 from ExtensionClass import Base
 from OFS.misc_ import misc_ as misc_images
 from OFS.misc_ import Misc_ as MiscImage
@@ -43,7 +45,6 @@ from OFS.ObjectManager import UNIQUE
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from thread import allocate_lock
-from webdav.common import rfc1123_date
 from zope.component import getUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
@@ -370,8 +371,8 @@ def _checkConditionalGET(obj, extra_context):
     if call_count != 0:
         return False
 
-    if_modified_since = REQUEST.get_header('If-Modified-Since', None)
-    if_none_match = REQUEST.get_header('If-None-Match', None)
+    if_modified_since = REQUEST.getHeader('If-Modified-Since', None)
+    if_none_match = REQUEST.getHeader('If-None-Match', None)
 
     if if_modified_since is None and if_none_match is None:
         # not a conditional GET
@@ -800,7 +801,7 @@ def _OldCacheHeaders(obj):
         return False
 
     RESPONSE = REQUEST.RESPONSE
-    header = REQUEST.get_header('If-Modified-Since', None)
+    header = REQUEST.getHeader('If-Modified-Since', None)
     last_mod = long(obj.modified().timeTime())
 
     if header is not None:
@@ -814,7 +815,7 @@ def _OldCacheHeaders(obj):
         try:
             mod_since=DateTime(header)
             mod_since=long(mod_since.timeTime())
-        except TypeError:
+        except (TypeError, DateTimeError):
             mod_since=None
 
         if mod_since is not None:
@@ -834,7 +835,7 @@ def _FSCacheHeaders(obj):
         return False
 
     RESPONSE = REQUEST.RESPONSE
-    header = REQUEST.get_header('If-Modified-Since', None)
+    header = REQUEST.getHeader('If-Modified-Since', None)
     last_mod = obj._file_mod_time
 
     if header is not None:
@@ -848,7 +849,7 @@ def _FSCacheHeaders(obj):
         try:
             mod_since=DateTime(header)
             mod_since=long(mod_since.timeTime())
-        except TypeError:
+        except (TypeError, DateTimeError):
             mod_since=None
 
         if mod_since is not None:

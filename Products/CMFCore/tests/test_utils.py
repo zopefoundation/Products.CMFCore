@@ -16,7 +16,11 @@
 import unittest
 import Testing
 
+from Acquisition import Implicit
+from App.Common import rfc1123_date
+from DateTime.DateTime import DateTime
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Testing.makerequest import makerequest
 
 
 class CoreUtilsTests(unittest.TestCase):
@@ -92,6 +96,65 @@ class CoreUtilsTests(unittest.TestCase):
                 'Products.CMFCore')
         self.assertEqual(getContainingPackage('zope.interface.verify'),
                 'zope.interface')
+
+    def test__OldCacheHeaders(self):
+        from Products.CMFCore.utils import _OldCacheHeaders
+
+        _FILE_MOD_TIME = 1000000000
+        _FILE_RFC_DATE = rfc1123_date(_FILE_MOD_TIME)
+
+        class Obj(Implicit):
+            def modified(self):
+                return DateTime(_FILE_MOD_TIME)
+
+        # date < _file_mod_time
+        env = {'HTTP_IF_MODIFIED_SINCE': rfc1123_date(_FILE_MOD_TIME - 1)}
+        obj = makerequest(Obj(), environ=env)
+        _OldCacheHeaders(obj)
+        self.assertEqual(obj.REQUEST.RESPONSE.getHeader('Last-Modified'),
+                         _FILE_RFC_DATE)
+
+        # date > _file_mod_time
+        env = {'HTTP_IF_MODIFIED_SINCE': rfc1123_date(_FILE_MOD_TIME + 1)}
+        obj = makerequest(Obj(), environ=env)
+        _OldCacheHeaders(obj)
+        self.assertEqual(obj.REQUEST.RESPONSE.getHeader('Last-Modified'), None)
+
+        # invalid date
+        env = {'HTTP_IF_MODIFIED_SINCE': 'Fri, 37 Feb 3121 29:64:46'}
+        obj = makerequest(Obj(), environ=env)
+        _OldCacheHeaders(obj)
+        self.assertEqual(obj.REQUEST.RESPONSE.getHeader('Last-Modified'),
+                         _FILE_RFC_DATE)
+
+    def test__FSCacheHeaders(self):
+        from Products.CMFCore.utils import _FSCacheHeaders
+
+        _FILE_MOD_TIME = 1000000000
+        _FILE_RFC_DATE = rfc1123_date(_FILE_MOD_TIME)
+
+        class Obj(Implicit):
+            _file_mod_time = _FILE_MOD_TIME
+
+        # date < _file_mod_time
+        env = {'HTTP_IF_MODIFIED_SINCE': rfc1123_date(_FILE_MOD_TIME - 1)}
+        obj = makerequest(Obj(), environ=env)
+        _FSCacheHeaders(obj)
+        self.assertEqual(obj.REQUEST.RESPONSE.getHeader('Last-Modified'),
+                         _FILE_RFC_DATE)
+
+        # date > _file_mod_time
+        env = {'HTTP_IF_MODIFIED_SINCE': rfc1123_date(_FILE_MOD_TIME + 1)}
+        obj = makerequest(Obj(), environ=env)
+        _FSCacheHeaders(obj)
+        self.assertEqual(obj.REQUEST.RESPONSE.getHeader('Last-Modified'), None)
+
+        # invalid date
+        env = {'HTTP_IF_MODIFIED_SINCE': 'Fri, 37 Feb 3121 29:64:46'}
+        obj = makerequest(Obj(), environ=env)
+        _FSCacheHeaders(obj)
+        self.assertEqual(obj.REQUEST.RESPONSE.getHeader('Last-Modified'),
+                         _FILE_RFC_DATE)
 
 
 class CoreUtilsSecurityTests(SecurityTest):
