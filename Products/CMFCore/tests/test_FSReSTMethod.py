@@ -21,6 +21,7 @@ import re
 
 from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
+from App.Common import rfc1123_date
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.testing import TraversingZCMLLayer
@@ -124,7 +125,6 @@ class FSReSTMethodTests(RequestTest, FSReSTMaker):
     def test_304_response_from_cpm( self ):
         # test that we get a 304 response from the cpm via this template
         from DateTime import DateTime
-        from webdav.common import rfc1123_date
         from Products.CMFCore.tests.base.dummy \
             import DummyCachingManagerWithPolicy
 

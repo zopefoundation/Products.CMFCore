@@ -20,6 +20,7 @@ from os.path import join as path_join
 
 from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
+from App.Common import rfc1123_date
 from DateTime import DateTime
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
@@ -89,9 +90,6 @@ class FSDTMLMethodTests(RequestTest, FSDTMLMaker):
 
     def test_304_response_from_cpm( self ):
         # test that we get a 304 response from the cpm via this template
-
-        from webdav.common import rfc1123_date
-
         mod_time = DateTime()
         self._setupCachingPolicyManager(DummyCachingManagerWithPolicy())
         content = DummyContent(id='content')
@@ -140,9 +138,6 @@ class FSDTMLMethodCustomizationTests( SecurityTest, FSDTMLMaker ):
         self.failUnless( 'testDTML' in self.custom.objectIds() )
 
     def test_customize_alternate_root( self ):
-
-        from OFS.Folder import Folder
-
         self.root.other = Folder('other')
 
         self.fsDTML.manage_doCustomize( folder_path='other', root=self.root )
@@ -158,9 +153,6 @@ class FSDTMLMethodCustomizationTests( SecurityTest, FSDTMLMaker ):
         self.failUnless( 'testDTML' in self.skins.objectIds() )
 
     def test_customize_manual_clone( self ):
-
-        from OFS.Folder import Folder
-
         clone = Folder('testDTML')
 
         self.fsDTML.manage_doCustomize( folder_path='custom', obj=clone )

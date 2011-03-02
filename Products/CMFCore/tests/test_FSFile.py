@@ -15,6 +15,10 @@
 
 import unittest
 
+import os
+from App.Common import rfc1123_date
+
+from Products.CMFCore.tests.base.dummy import FAKE_ETAG
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 
@@ -30,8 +34,6 @@ class FSFileTests(RequestTest, FSDVTest):
         FSDVTest.tearDown(self)
 
     def _makeOne( self, id, filename ):
-        import os
-
         from Products.CMFCore.FSFile import FSFile
         from Products.CMFCore.FSMetadata import FSMetadata
 
@@ -43,8 +45,6 @@ class FSFileTests(RequestTest, FSDVTest):
         return fsfile_ob
 
     def _extractFile( self, filename ):
-        import os
-
         path = os.path.join(self.skin_path_name, filename)
         f = open( path, 'rb' )
         try:
@@ -71,12 +71,7 @@ class FSFileTests(RequestTest, FSDVTest):
         self.assertEqual( len(str(file)), len( ref ) )
 
     def test_index_html( self ):
-
         path, ref = self._extractFile('test_file.swf')
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file.swf' )
@@ -95,12 +90,7 @@ class FSFileTests(RequestTest, FSDVTest):
                         , rfc1123_date( mod_time ) )
 
     def test_index_html_with_304( self ):
-
         path, ref = self._extractFile('test_file.swf')
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file.swf' )
@@ -118,12 +108,7 @@ class FSFileTests(RequestTest, FSDVTest):
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
     def test_index_html_without_304( self ):
-
         path, ref = self._extractFile('test_file.swf')
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file.swf' )
@@ -142,11 +127,6 @@ class FSFileTests(RequestTest, FSDVTest):
             import DummyCachingManagerWithPolicy
         self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
         path, ref = self._extractFile('test_file.swf')
-
-        import os
-        from webdav.common import rfc1123_date
-        from base.dummy import FAKE_ETAG
-        
         file = self._makeOne( 'test_file', 'test_file.swf' )
         file = file.__of__( self.root )
 
@@ -166,10 +146,6 @@ class FSFileTests(RequestTest, FSDVTest):
         from Products.CMFCore.tests.base.dummy import DummyCachingManager
         self.root.caching_policy_manager = DummyCachingManager()
         path, ref = self._extractFile('test_file.swf')
-
-        import os
-        from webdav.common import rfc1123_date
-        
         file = self._makeOne( 'test_file', 'test_file.swf' )
         file = file.__of__( self.root )
 
@@ -201,12 +177,7 @@ class FSFileTests(RequestTest, FSDVTest):
         self.assertEqual(headers['test_path'], '/test_file')
 
     def test_forced_content_type( self ):
-
         path, ref = self._extractFile('test_file_two.swf')
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file_two.swf' )

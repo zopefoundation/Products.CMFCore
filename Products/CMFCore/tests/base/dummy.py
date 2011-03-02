@@ -14,11 +14,11 @@
 """
 
 from Acquisition import Implicit, aq_base, aq_inner, aq_parent
+from App.Common import rfc1123_date
 from OFS.event import ObjectWillBeAddedEvent
 from OFS.event import ObjectWillBeRemovedEvent
 from OFS.interfaces import IObjectManager
 from OFS.SimpleItem import Item
-from webdav.common import rfc1123_date
 from zope.component.factory import Factory
 from zope.container.contained import notifyContainerModified
 from zope.container.contained import ObjectAddedEvent

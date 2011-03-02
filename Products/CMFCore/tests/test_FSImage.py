@@ -16,10 +16,14 @@
 import unittest
 import Testing
 
+import os
 from os.path import join as path_join
+
+from App.Common import rfc1123_date
 
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
+from Products.CMFCore.tests.base.dummy import FAKE_ETAG
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 
@@ -62,12 +66,7 @@ class FSImageTests(RequestTest, FSDVTest):
         self.assertEqual( image._data, ref )
 
     def test_index_html( self ):
-
         path, ref = self._extractFile()
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         image = self._makeOne( 'test_image', 'test_image.gif' )
@@ -86,12 +85,7 @@ class FSImageTests(RequestTest, FSDVTest):
                         , rfc1123_date( mod_time ) )
 
     def test_index_html_with_304( self ):
-
         path, ref = self._extractFile()
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         image = self._makeOne( 'test_image', 'test_image.gif' )
@@ -109,12 +103,7 @@ class FSImageTests(RequestTest, FSDVTest):
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
     def test_index_html_without_304( self ):
-
         path, ref = self._extractFile()
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         image = self._makeOne( 'test_image', 'test_image.gif' )
@@ -131,11 +120,6 @@ class FSImageTests(RequestTest, FSDVTest):
     def test_index_html_with_304_from_cpm( self ):
         self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
         path, ref = self._extractFile()
-
-        import os
-        from webdav.common import rfc1123_date
-        from base.dummy import FAKE_ETAG
-        
         file = self._makeOne( 'test_file', 'test_image.gif' )
         file = file.__of__( self.root )
 
@@ -165,10 +149,6 @@ class FSImageTests(RequestTest, FSDVTest):
     def test_index_html_200_with_cpm( self ):
         self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
         path, ref = self._extractFile()
-
-        import os
-        from webdav.common import rfc1123_date
-        
         file = self._makeOne( 'test_file', 'test_image.gif' )
         file = file.__of__( self.root )
 
@@ -188,15 +168,10 @@ class FSImageTests(RequestTest, FSDVTest):
                         , rfc1123_date( mod_time ) )
 
     def test_index_html_with_304_and_caching( self ):
-
         # See collector #355
         self.root.caching_policy_manager = DummyCachingManager()
         original_len = len(self.RESPONSE.headers)
         path, ref = self._extractFile()
-
-        import os
-        from webdav.common import rfc1123_date
-
         mod_time = os.stat( path )[ 8 ]
 
         image = self._makeOne( 'test_image', 'test_image.gif' )
