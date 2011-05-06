@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Fixed types tool test to only test creation for type infos.
+
 - utils: Fixed '_OldCacheHeaders' and '_FSCacheHeaders' methods.
   DateTimeErrors caused by invalid HTTP headers were not caught.
 

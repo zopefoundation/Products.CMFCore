@@ -95,9 +95,9 @@ class TypesToolFunctionalTests(SecurityTest):
         return site
 
     def test_allMetaTypes(self):
-        # everything returned by allMetaTypes can be traversed to.
+        # all typeinfo's returned by allMetaTypes can be traversed to.
         from Acquisition import aq_base
-        from Products.PythonScripts.standard import html_quote
+        from Products.CMFCore.interfaces import ITypeInformation
         from webdav.NullResource import NullResource
         site = self._makeSite().__of__(self.root)
         tool = self._makeOne().__of__(site)
@@ -105,10 +105,10 @@ class TypesToolFunctionalTests(SecurityTest):
         # Seems we get NullResource if the method couldn't be traverse to
         # so we check for that. If we've got it, something is b0rked.
         for factype in tool.all_meta_types():
-            meta_types[factype['name']]=1
-            # The html_quote below is necessary 'cos of the one in
-            # main.dtml. Could be removed once that is gone.
-            act = tool.unrestrictedTraverse(html_quote(factype['action']))
+            if not ITypeInformation in factype['interfaces']:
+                continue
+            meta_types[factype['name']] = 1
+            act = tool.unrestrictedTraverse(factype['action'])
             self.failIf(type(aq_base(act)) is NullResource)
 
         # Check the ones we're expecting are there
