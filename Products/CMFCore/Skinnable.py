@@ -63,7 +63,9 @@ class SkinnableObjectManager(ObjectManager):
 
         This should be fast, flexible, and predictable.
         '''
-        if not name.startswith('_') and not name.startswith('aq_'):
+        if not name:
+            raise AttributeError(name)
+        if name[0] not in ('_', '@', '+') and not name.startswith('aq_'):
             sd = SKINDATA.get(get_ident())
             if sd is not None:
                 ob, skinname, ignore, resolve = sd
@@ -80,7 +82,7 @@ class SkinnableObjectManager(ObjectManager):
                         return retval
                     else:
                         ignore[name] = 1
-        raise AttributeError, name
+        raise AttributeError(name)
 
     security.declarePrivate('getSkin')
     def getSkin(self, name=None):

@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- Optimize `SkinnableObjectManager.__getattr__` to short circuit view (`@`) and
+  traverser (`+`) lookup in addition to `_` and `aq_`.
+
 - Avoid a shallow dependency on `Products.ZReST`.
 
 - Fixed types tool test to only test creation for type infos.
