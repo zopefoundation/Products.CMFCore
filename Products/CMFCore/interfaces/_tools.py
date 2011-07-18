@@ -919,8 +919,6 @@ class IMetadataTool(Interface):
             o Must be set to 'portal_metadata'.
             """)
 
-    id = Attribute('id', 'Must be set to "portal_metadata"')
-
     #
     #   Site-wide queries, specific to Dublin Core metadata.
     #
