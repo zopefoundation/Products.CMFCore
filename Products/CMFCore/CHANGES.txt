@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- setup handlers: Improved content type registry handler.
+  The 'insert-before' and 'insert-after' directives are now supported.
+
 - Optimize `SkinnableObjectManager.__getattr__` to short circuit view (`@`) and
   traverser (`+`) lookup in addition to `_` and `aq_`.
 

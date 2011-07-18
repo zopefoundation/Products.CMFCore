@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Content type registry xml adapters and setup handlers.
-
-$Id$
 """
 
 from zope.component import adapts
@@ -80,18 +78,28 @@ class ContentTypeRegistryXMLAdapter(XMLAdapterBase):
             parent = self.context
 
             predicate_id = str(child.getAttribute('name'))
-            predicate_type = str(child.getAttribute('predicate_type'))
-            content_type_name = str(child.getAttribute('content_type_name'))
             if predicate_id not in parent.predicate_ids:
+                predicate_type = str(child.getAttribute('predicate_type'))
                 parent.addPredicate(predicate_id, predicate_type)
+
+            if child.hasAttribute('content_type_name'):
+                content_type_name = str(child.getAttribute('content_type_name'))
+                parent.assignTypeName(predicate_id, content_type_name)
+
+            if child.hasAttribute('insert-before'):
+                insert_before = child.getAttribute('insert-before')
+                self._movePredicate(predicate_id, insert_before, 0)
+            elif child.hasAttribute('insert-after'):
+                insert_after = child.getAttribute('insert-after')
+                self._movePredicate(predicate_id, insert_after, 1)
 
             arguments = []
             for sub in child.childNodes:
                 if sub.nodeName != 'argument':
                     continue
                 arguments.append(str(sub.getAttribute('value')))
-            parent.getPredicate(predicate_id).edit(*arguments)
-            parent.assignTypeName(predicate_id, content_type_name)
+            if arguments:
+                parent.getPredicate(predicate_id).edit(*arguments)
 
     _KNOWN_PREDICATE_TYPES = {
         'major_minor': lambda x: (','.join(x.major or ()),
@@ -107,6 +115,19 @@ class ContentTypeRegistryXMLAdapter(XMLAdapterBase):
             return cracker(predicate)
         return ()  # XXX:  raise?
 
+    def _movePredicate(self, id, position_id, delta=0):
+        predicate_ids = list(self.context.predicate_ids)
+        if position_id == '*':
+            position_id = predicate_ids[-delta]
+        if position_id == id:
+            return
+        try:
+            predicate_ids.remove(id)
+            position = predicate_ids.index(position_id)
+            predicate_ids.insert(position + delta, id)
+        except ValueError:
+            return
+        self.context.predicate_ids = tuple(predicate_ids)
 
 def importContentTypeRegistry(context):
     """Import content type registry settings from an XML file.

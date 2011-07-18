@@ -55,6 +55,22 @@ _CTR_BODY = """\
 </object>
 """
 
+_FRAGMENT1_IMPORT = """\
+<?xml version="1.0"?>
+<object name="content_type_registry">
+ <predicate name="plain_text" insert-after="*"/>
+ <predicate name="logfiles" insert-before="*"/>
+</object>
+"""
+
+_FRAGMENT2_IMPORT = """\
+<?xml version="1.0"?>
+<object name="content_type_registry">
+ <predicate name="plain_text" insert-after="stylesheets"/>
+ <predicate name="logfiles" insert-before="images"/>
+</object>
+"""
+
 
 class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase,
                                          unittest.TestCase,
@@ -202,6 +218,9 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
 
     layer = ExportImportZCMLLayer
 
+    _FRAGMENT1_IMPORT = _FRAGMENT1_IMPORT
+    _FRAGMENT2_IMPORT = _FRAGMENT2_IMPORT
+
     def test_normal(self):
         from Products.CMFCore.exportimport.contenttyperegistry \
                 import importContentTypeRegistry
@@ -236,6 +255,42 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
         self.assertEqual(predicate.PREDICATE_TYPE, 'name_regex')
         self.assertEqual(content_type_name, self.NAME_REGEX_TYPENAME)
         self.assertEqual(predicate.pattern.pattern, self.NAME_REGEX)
+
+    def test_fragment1_skip_purge(self):
+        from Products.CMFCore.exportimport.contenttyperegistry \
+                import importContentTypeRegistry
+
+        site = self._initSite(mit_predikat=True)
+        ctr = site.content_type_registry
+        self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))
+        self.assertEqual(ctr.predicate_ids, ('plain_text', 'stylesheets',
+                                             'images', 'logfiles'))
+
+        context = DummyImportContext(site, False)
+        context._files['contenttyperegistry.xml'] = self._FRAGMENT1_IMPORT
+        importContentTypeRegistry(context)
+
+        self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))
+        self.assertEqual(ctr.predicate_ids, ('logfiles', 'stylesheets',
+                                             'images', 'plain_text'))
+
+    def test_fragment2_skip_purge(self):
+        from Products.CMFCore.exportimport.contenttyperegistry \
+                import importContentTypeRegistry
+
+        site = self._initSite(mit_predikat=True)
+        ctr = site.content_type_registry
+        self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))
+        self.assertEqual(ctr.predicate_ids, ('plain_text', 'stylesheets',
+                                             'images', 'logfiles'))
+
+        context = DummyImportContext(site, False)
+        context._files['contenttyperegistry.xml'] = self._FRAGMENT2_IMPORT
+        importContentTypeRegistry(context)
+
+        self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))
+        self.assertEqual(ctr.predicate_ids, ('stylesheets', 'plain_text',
+                                             'logfiles', 'images'))
 
 
 def test_suite():
