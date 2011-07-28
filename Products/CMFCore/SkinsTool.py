@@ -311,7 +311,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         utool = getToolByName(self, 'portal_url')
         member = mtool.getAuthenticatedMember()
         if hasattr(aq_base(member), 'getProperty'):
-            mskin = member.getProperty('portal_skin', None)
+            mskin = member.getProperty('portal_skin')
             if mskin:
                 req = self.REQUEST
                 cookie = req.cookies.get(self.request_varname, None)
