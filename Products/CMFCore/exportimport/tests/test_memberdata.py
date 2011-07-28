@@ -30,36 +30,37 @@ from Products.CMFCore.testing import ExportImportZCMLLayer
 _MEMBERDATATOOL_BODY = """\
 <?xml version="1.0"?>
 <object name="portal_memberdata" meta_type="CMF Member Data Tool">
- <property name="email" type="string"></property>
- <property name="portal_skin" type="string"></property>
- <property name="listed" type="boolean">False</property>
- <property name="login_time" type="date">1970/01/01 00:00:00 UTC</property>
- <property name="last_login_time"
-    type="date">1970/01/01 00:00:00 UTC</property>
+ <property name="email"></property>
+ <property name="portal_skin"></property>
+ <property name="listed">False</property>
+ <property name="login_time">1970/01/01 00:00:00 UTC</property>
+ <property name="last_login_time">1970/01/01 00:00:00 UTC</property>
+ <property name="fullname"></property>
 </object>
 """
 
 _DEFAULT_EXPORT = """\
 <?xml version="1.0"?>
 <object name="portal_memberdata" meta_type="CMF Member Data Tool">
- <property name="email" type="string"></property>
- <property name="portal_skin" type="string"></property>
- <property name="listed" type="boolean">False</property>
- <property name="login_time" type="date">1970/01/01 00:00:00 UTC</property>
- <property name="last_login_time"
-    type="date">1970/01/01 00:00:00 UTC</property>
+ <property name="email"></property>
+ <property name="portal_skin"></property>
+ <property name="listed">False</property>
+ <property name="login_time">1970/01/01 00:00:00 UTC</property>
+ <property name="last_login_time">1970/01/01 00:00:00 UTC</property>
+ <property name="fullname"></property>
 </object>
 """
 
 _CHANGED_EXPORT = """\
 <?xml version="1.0"?>
 <object name="portal_memberdata" meta_type="CMF Member Data Tool">
- <property name="email" type="string">value1</property>
- <property name="portal_skin" type="string">value2</property>
- <property name="listed" type="boolean">True</property>
- <property name="login_time" type="date">2010/01/01 00:00:00</property>
- <property name="last_login_time" type="date">2010/01/01 00:00:00</property>
- <property name="fullname" type="string"></property>
+ <property name="email">value1</property>
+ <property name="portal_skin">value2</property>
+ <property name="listed">True</property>
+ <property name="login_time">2010/01/01 00:00:00</property>
+ <property name="last_login_time">2010/01/01 00:00:00</property>
+ <property name="fullname">value3</property>
+ <property name="home_page" type="string"></property>
 </object>
 """
 
@@ -92,7 +93,8 @@ class _MemberDataToolSetup(BaseRegistryTests):
             mdtool._updateProperty('listed', 'True')
             mdtool._updateProperty('login_time', '2010/01/01')
             mdtool._updateProperty('last_login_time', '2010/01/01')
-            mdtool.manage_addProperty('fullname', '', 'string')
+            mdtool._updateProperty('fullname', 'value3')
+            mdtool.manage_addProperty('home_page', '', 'string')
 
         return site
 

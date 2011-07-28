@@ -21,6 +21,7 @@ from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from BTrees.OOBTree import OOBTree
+from DateTime.DateTime import DateTime
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from Persistence import Persistent
@@ -53,12 +54,19 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
     id = 'portal_memberdata'
     meta_type = 'CMF Member Data Tool'
     _properties = (
-        {'id': 'email', 'type': 'string', 'mode': 'wd'},
-        {'id': 'portal_skin', 'type': 'string', 'mode': 'wd'},
-        {'id': 'listed', 'type': 'boolean', 'mode': 'wd'},
-        {'id': 'login_time', 'type': 'date', 'mode': 'wd'},
-        {'id': 'last_login_time', 'type': 'date', 'mode': 'wd'},
+        {'id': 'email', 'type': 'string', 'mode': 'w'},
+        {'id': 'portal_skin', 'type': 'string', 'mode': 'w'},
+        {'id': 'listed', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'login_time', 'type': 'date', 'mode': 'w'},
+        {'id': 'last_login_time', 'type': 'date', 'mode': 'w'},
+        {'id': 'fullname', 'type': 'string', 'mode': 'w'},
         )
+    email = ''
+    fullname = ''
+    last_login_time = DateTime('1970/01/01 00:00:00 UTC') # epoch
+    listed = False
+    login_time = DateTime('1970/01/01 00:00:00 UTC') # epoch
+    portal_skin = ''
 
     security = ClassSecurityInfo()
 
@@ -82,12 +90,6 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
     def __init__(self):
         self._members = OOBTree()
-        # Create the default properties.
-        self._updateProperty('email', '')
-        self._updateProperty('portal_skin', '')
-        self._updateProperty('listed', '')
-        self._updateProperty('login_time', '1970/01/01 00:00:00 UTC') # epoch
-        self._updateProperty('last_login_time', '1970/01/01 00:00:00 UTC') # epoch
 
     #
     #   'portal_memberdata' interface methods
