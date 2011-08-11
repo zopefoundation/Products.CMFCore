@@ -70,7 +70,7 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
         self._checkSettings(self.ob.fake_skin.test4,
                             'View', 1, ['Manager', 'Owner'])
         self._checkSettings(self.ob.fake_skin.test4,
-                            'Access contents information', 0, [])
+                            'View management screens', 1, [])
 
     def test_invalidPermissionNames(self):
         # Test for an invalid permission name

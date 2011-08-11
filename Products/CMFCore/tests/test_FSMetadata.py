@@ -38,11 +38,6 @@ class FSMetadata(FSDVTest, MetadataChecker):
         assert(self.ob.fake_skin.test6.title == 'Test object')
         self._checkSettings(
             self.ob.fake_skin.test6,
-            'Access contents information',
-            1,
-            ['Manager','Anonymous'])
-        self._checkSettings(
-            self.ob.fake_skin.test6,
             'View management screens',
             0,
             ['Manager'])
@@ -56,11 +51,6 @@ class FSMetadata(FSDVTest, MetadataChecker):
         assert(test_image.title == 'Test image')
         self._checkSettings(
             test_image,
-            'Access contents information',
-            1,
-            ['Manager','Anonymous'])
-        self._checkSettings(
-            test_image,
             'View management screens',
             0,
             ['Manager'])
@@ -69,11 +59,6 @@ class FSMetadata(FSDVTest, MetadataChecker):
         # Test basic FS permissions on File
         test_file = getattr(self.ob.fake_skin, 'test_file.swf')
         assert(test_file.title == 'Test file')
-        self._checkSettings(
-            test_file,
-            'Access contents information',
-            1,
-            ['Manager','Anonymous'])
         self._checkSettings(
             test_file,
             'View management screens',
