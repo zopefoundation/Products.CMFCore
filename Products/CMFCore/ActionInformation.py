@@ -23,6 +23,7 @@ from OFS.OrderedFolder import OrderedFolder
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
+from zope.component.interfaces import ComponentLookupError
 from zope.i18nmessageid import Message
 from zope.interface import implements
 
@@ -572,7 +573,11 @@ class oai:
 
     def __init__( self, tool, folder, object=None ):
         self.portal = portal = aq_parent(aq_inner(tool))
-        mtool = getUtility(IMembershipTool)
+        try:
+            mtool = getUtility(IMembershipTool)
+        except ComponentLookupError:
+            # BBB: fallback for CMF 2.2 instances
+            mtool = getToolByName(tool, 'portal_membership')
         self.isAnonymous = mtool.isAnonymousUser()
         self.user_id = mtool.getAuthenticatedMember().getId()
         self.portal_url = portal.absolute_url()
