@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Expressions in a web-configurable workflow.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -23,7 +21,9 @@ from App.class_init import InitializeClass
 from Persistence import Persistent
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
+from zope.component import getUtility
 
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.utils import getToolByName
 
 
@@ -89,15 +89,15 @@ def createExprContext(folder, portal, object):
     '''
     An expression context provides names for TALES expressions.
     '''
-    pm = getToolByName(portal, 'portal_membership')
+    mtool = getUtility(IMembershipTool)
     if object is None:
         object_url = ''
     else:
         object_url = object.absolute_url()
-    if pm.isAnonymousUser():
+    if mtool.isAnonymousUser():
         member = None
     else:
-        member = pm.getAuthenticatedMember()
+        member = mtool.getAuthenticatedMember()
     data = {
         'object_url':   object_url,
         'folder_url':   folder.absolute_url(),

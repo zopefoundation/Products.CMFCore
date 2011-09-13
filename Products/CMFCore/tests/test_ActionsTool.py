@@ -25,6 +25,7 @@ from Products.CMFCore.ActionInformation import Action
 from Products.CMFCore.ActionInformation import ActionCategory
 from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.MembershipTool import MembershipTool
 from Products.CMFCore.tests.base.security import OmnipotentUser
@@ -127,20 +128,22 @@ class ActionsToolSecurityTests(SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
 
-        root = self.root
         sm = getSiteManager()
-        sm.registerUtility(root, ISiteRoot)
-        root._setObject( 'portal_actions', self._makeOne() )
-        root._setObject( 'portal_url', URLTool() )
-        root._setObject( 'foo', URLTool() )
-        root._setObject('portal_membership', MembershipTool())
-        self.tool = root.portal_actions
+        sm.registerUtility(self.app, ISiteRoot)
+        self.app._setObject('portal_actions', self._makeOne())
+        self.app._setObject('portal_url', URLTool())
+        self.app._setObject('foo', URLTool())
+        sm.registerUtility(MembershipTool(), IMembershipTool)
+        self.tool = self.app.portal_actions
         self.tool.action_providers = ('portal_actions',)
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
 
     def test_listActionInformationActions(self):
         # Check that listFilteredActionsFor works for objects that return
         # ActionInformation objects
-        root = self.root
         tool = self.tool
         tool._actions = (
               ActionInformation(id='folderContents',
@@ -159,7 +162,7 @@ class ActionsToolSecurityTests(SecurityTest):
             )
 
         newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
-        self.assertEqual(tool.listFilteredActionsFor(root.foo),
+        self.assertEqual(tool.listFilteredActionsFor(self.app.foo),
                          {'workflow': [],
                           'user': [],
                           'object': [],
@@ -174,10 +177,6 @@ class ActionsToolSecurityTests(SecurityTest):
                                       'category': 'folder',
                                       'link_target': '_top'}],
                           'global': []})
-
-    def tearDown(self):
-        cleanUp()
-        SecurityTest.tearDown(self)
 
 
 def test_suite():

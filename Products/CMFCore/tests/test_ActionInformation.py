@@ -18,10 +18,13 @@ import Testing
 
 from OFS.Folder import manage_addFolder
 from Products.PythonScripts.PythonScript import manage_addPythonScript
+from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.Expression import createExprContext
 from Products.CMFCore.Expression import Expression
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -231,8 +234,13 @@ class ActionInfoSecurityTests(SecurityTest):
 
     def setUp(self):
         SecurityTest.setUp(self)
-        self.site = DummySite('site').__of__(self.root)
-        self.site._setObject( 'portal_membership', DummyMembershipTool() )
+        self.site = DummySite('site').__of__(self.app)
+        sm = getSiteManager()
+        sm.registerUtility(DummyMembershipTool(), IMembershipTool)
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
 
     def _makeOne(self, *args, **kw):
         from Products.CMFCore.ActionInformation import ActionInfo
@@ -345,12 +353,16 @@ class ActionInformationTests(TransactionalTest):
     def setUp(self):
         TransactionalTest.setUp(self)
 
-        root = self.root
-        root._setObject('portal', DummyContent('portal', 'url_portal'))
-        portal = self.portal = root.portal
-        portal.portal_membership = DummyMembershipTool()
+        self.app._setObject('portal', DummyContent('portal'))
+        self.portal = self.app.portal
+        sm = getSiteManager()
+        sm.registerUtility(DummyMembershipTool(), IMembershipTool)
         self.folder = DummyContent('foo', 'url_foo')
         self.object = DummyContent('bar', 'url_bar')
+
+    def tearDown(self):
+        getSiteManager().unregisterUtility(provided=IMembershipTool)
+        TransactionalTest.tearDown(self)
 
     def _makeOne(self, *args, **kw):
         from Products.CMFCore.ActionInformation import ActionInformation
@@ -389,7 +401,6 @@ class ActionInformationTests(TransactionalTest):
         self.assertEqual(ai.getPermissions(), ())
 
     def test_setActionExpression_with_string_prefix(self):
-        from Products.CMFCore.Expression import Expression
         ai = self._makeOne(id='view', category='folder')
         ai.setActionExpression('string:blah')
         self.failUnless(isinstance(ai.action,Expression))
@@ -430,8 +441,8 @@ class ActionInformationTests(TransactionalTest):
         portal = self.portal
         folder = self.folder
         object = self.object
-        manage_addPythonScript(self.root, 'test_script')
-        script = self.root.test_script
+        manage_addPythonScript(self.app, 'test_script')
+        script = self.app.test_script
         script.ZPythonScript_edit('', 'return context.getId()')
         ai = self._makeOne( id='view',
                             title='View',

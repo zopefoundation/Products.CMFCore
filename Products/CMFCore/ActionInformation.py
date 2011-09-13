@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Information about customizable actions.
-
-$Id$
 """
 
 from UserDict import UserDict
@@ -24,6 +22,7 @@ from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
+from zope.component import getUtility
 from zope.i18nmessageid import Message
 from zope.interface import implements
 
@@ -31,6 +30,7 @@ from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import IAction
 from Products.CMFCore.interfaces import IActionCategory
 from Products.CMFCore.interfaces import IActionInfo
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import getToolByName
@@ -572,9 +572,9 @@ class oai:
 
     def __init__( self, tool, folder, object=None ):
         self.portal = portal = aq_parent(aq_inner(tool))
-        membership = getToolByName(tool, 'portal_membership')
-        self.isAnonymous = membership.isAnonymousUser()
-        self.user_id = membership.getAuthenticatedMember().getId()
+        mtool = getUtility(IMembershipTool)
+        self.isAnonymous = mtool.isAnonymousUser()
+        self.user_id = mtool.getAuthenticatedMember().getId()
         self.portal_url = portal.absolute_url()
         if folder is not None:
             self.folder_url = folder.absolute_url()

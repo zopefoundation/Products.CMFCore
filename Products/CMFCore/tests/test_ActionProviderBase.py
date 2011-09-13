@@ -16,9 +16,11 @@
 import unittest
 import Testing
 
+from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -65,8 +67,8 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
         self._trap_warning_output()
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
-        utool = self.site._setObject( 'portal_url', DummyTool() )
-        mtool = self.site._setObject( 'portal_membership', DummyTool() )
+        self.site._setObject('portal_url', DummyTool())
+        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
     def tearDown(self):
         cleanUp()

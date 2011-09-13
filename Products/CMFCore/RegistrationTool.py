@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Basic user registration tool.
-
-$Id$
 """
 
 from random import choice
@@ -23,8 +21,10 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
+from zope.component import getUtility
 from zope.interface import implements
 
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import IRegistrationTool
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import MailForgottenPassword
@@ -32,8 +32,8 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _limitGrantedRoles
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import Message as _
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 
@@ -140,8 +140,6 @@ class RegistrationTool(UniqueObject, SimpleItem):
         role that can always be granted); these conditions should be
         detected before the fact so that a cleaner message can be printed.
         '''
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
         if not self.isMemberIdAllowed(id):
             raise ValueError(_(u'The login name you selected is already in '
                                u'use or is not valid. Please choose another.'))
@@ -159,10 +157,10 @@ class RegistrationTool(UniqueObject, SimpleItem):
         # Anyone is always allowed to grant the 'Member' role.
         _limitGrantedRoles(roles, self, ('Member',))
 
-        membership = getToolByName(self, 'portal_membership')
-        membership.addMember(id, password, roles, domains, properties)
+        mtool = getUtility(IMembershipTool)
+        mtool.addMember(id, password, roles, domains, properties)
 
-        member = membership.getMemberById(id)
+        member = mtool.getMemberById(id)
         self.afterAdd(member, id, password, properties)
         return member
 
@@ -170,14 +168,12 @@ class RegistrationTool(UniqueObject, SimpleItem):
     def isMemberIdAllowed(self, id):
         '''Returns 1 if the ID is not in use and is not reserved.
         '''
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
         if len(id) < 1 or id == 'Anonymous User':
             return 0
         if not self._ALLOWED_MEMBER_ID_PATTERN.match( id ):
             return 0
-        membership = getToolByName(self, 'portal_membership')
-        if membership.getMemberById(id) is not None:
+        mtool = getUtility(IMembershipTool)
+        if mtool.getMemberById(id) is not None:
             return 0
         return 1
 
@@ -195,3 +191,4 @@ class RegistrationTool(UniqueObject, SimpleItem):
         raise NotImplementedError
 
 InitializeClass(RegistrationTool)
+registerToolInterface('portal_registration', IRegistrationTool)

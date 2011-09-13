@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Portal skins tool.
-
-$Id$
 """
 
 from difflib import unified_diff
@@ -29,12 +27,14 @@ from OFS.ObjectManager import REPLACEABLE
 from Persistence import PersistentMapping
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PythonScripts.PythonScript import PythonScript
+from zope.component import getUtility
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.DirectoryView import base_ignore
 from Products.CMFCore.DirectoryView import ignore
 from Products.CMFCore.DirectoryView import ignore_re
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ISkinsTool
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ManagePortal
@@ -47,7 +47,6 @@ from Products.CMFCore.utils import UniqueObject
 def modifiedOptions():
     # Remove the existing "Properties" option and add our own.
     rval = []
-    pos = -1
     for o in Folder.manage_options:
         label = o.get('label', None)
         if label != 'Properties':
@@ -307,7 +306,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         """
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool and uses self.REQUEST
-        mtool = getToolByName(self, 'portal_membership')
+        mtool = getUtility(IMembershipTool)
         utool = getToolByName(self, 'portal_url')
         member = mtool.getAuthenticatedMember()
         if hasattr(aq_base(member), 'getProperty'):

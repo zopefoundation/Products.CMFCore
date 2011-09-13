@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Caching tool implementation.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -29,18 +27,19 @@ from OFS.SimpleItem import SimpleItem
 from Persistence import PersistentMapping
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
+from zope.component import getUtility
 from zope.container.interfaces import IObjectMovedEvent
 from zope.interface import implements
 
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import ICachingPolicy
 from Products.CMFCore.interfaces import ICachingPolicyManager
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _setCacheHeaders
 from Products.CMFCore.utils import _ViewEmulator
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import registerToolInterface
 
 # This is lame :(
@@ -60,11 +59,11 @@ def createCPContext( content, view_method, keywords, time=None ):
         Construct an expression context for TALES expressions,
         for use by CachingPolicy objects.
     """
-    pm = getToolByName( content, 'portal_membership', None )
-    if not pm or pm.isAnonymousUser():
+    mtool = getUtility(IMembershipTool)
+    if mtool.isAnonymousUser():
         member = None
     else:
-        member = pm.getAuthenticatedMember()
+        member = mtool.getAuthenticatedMember()
 
     if time is None:
         time = DateTime()
@@ -876,8 +875,7 @@ class CachingPolicyManager( SimpleItem, CacheManager ):
 
         return cache
 
-
-InitializeClass( CachingPolicyManager )
+InitializeClass(CachingPolicyManager)
 registerToolInterface('caching_policy_manager', ICachingPolicyManager)
 
 

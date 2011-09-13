@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0-alpha (unreleased)
 ------------------------
 
+- tools: Converted several tools into utilities.
+  CookieCrumbler, MemberDataTool, MembershipTool and RegistrationTool are now
+  local utilities.
+
 - MemberDataTool: Changed property modes to 'w' and added 'fullname' property.
 
 - setup handlers: Improved content type registry handler.

@@ -18,12 +18,14 @@ import Testing
 
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
+from zope.component import getSiteManager
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
+from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.MemberDataTool import MemberDataTool
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
@@ -85,7 +87,8 @@ class _MemberDataToolSetup(BaseRegistryTests):
     def _initSite(self, use_changed=False):
         self.root.site = Folder(id='site')
         site = self.root.site
-        mdtool = site.portal_memberdata = MemberDataTool()
+        mdtool = MemberDataTool()
+        getSiteManager().registerUtility(mdtool, IMemberDataTool)
 
         if use_changed:
             mdtool._updateProperty('email', 'value1')
@@ -141,7 +144,7 @@ class importMemberDataToolTests(_MemberDataToolSetup):
                 import importMemberDataTool
 
         site = self._initSite()
-        mdtool = site.portal_memberdata
+        mdtool = getSiteManager().getUtility(IMemberDataTool)
 
         context = DummyImportContext(site)
         context._files['memberdata.xml'] = _CHANGED_EXPORT

@@ -23,6 +23,7 @@ from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.CMFBTreeFolder import CMFBTreeFolder
+from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.MemberDataTool import MemberDataTool
 from Products.CMFCore.PortalFolder import PortalFolder
@@ -175,9 +176,10 @@ class MembershipToolSecurityTests(SecurityTest):
         sm = getSiteManager()
         sm.registerUtility(site, ISiteRoot)
         mtool = site.portal_membership
-        members = site._setObject( 'Members', PortalFolder('Members') )
-        acl_users = site._setObject( 'acl_users', DummyUserFolder() )
-        mdtool = site._setObject( 'portal_memberdata', MemberDataTool() )
+        members = site._setObject('Members', PortalFolder('Members'))
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+        mdtool = MemberDataTool()
+        sm.registerUtility(mdtool, IMemberDataTool)
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
         self.assertEqual( acl_users.getUserById('user_foo'),
@@ -200,12 +202,13 @@ class MembershipToolSecurityTests(SecurityTest):
         # http://www.zope.org/Collectors/CMF/481
         # Make sure we get the right exception
         site = self._makeSite()
+        sm = getSiteManager()
+        sm.registerUtility(site, ISiteRoot)
         mtool = site.portal_membership
-        members = site._setObject( 'Members', PortalFolder('Members') )
-        acl_users = site._setObject( 'acl_users', DummyUserFolder() )
-        utool = site._setObject( 'portal_url', DummyTool() )
-        wtool = site._setObject( 'portal_workflow', DummyTool() )
-        mdtool = site._setObject( 'portal_memberdata', MemberDataTool() )
+        members = site._setObject('Members', PortalFolder('Members'))
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+        mdtool = MemberDataTool()
+        sm.registerUtility(mdtool, IMemberDataTool)
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
         self.assertEqual( acl_users.getUserById('user_foo'),
@@ -228,6 +231,7 @@ class MembershipToolSecurityTests(SecurityTest):
 
         # Cleanup
         DummyUserFolder.userFolderDelUsers = deletion_method
+        cleanUp()
 
     def test_getMemberById_nonesuch(self):
         INVALID_USER_ID = 'nonesuch'

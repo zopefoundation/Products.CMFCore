@@ -1,7 +1,9 @@
 <configure
     xmlns="http://namespaces.zope.org/zope">
 
-  <include package="five.localsitemanager" />
+  <include package="five.globalrequest"/>
+
+  <include package="five.localsitemanager"/>
 
   <include file="permissions.zcml"/>
 

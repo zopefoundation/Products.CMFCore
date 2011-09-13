@@ -11,8 +11,6 @@
 # 
 ##############################################################################
 """ Cookie Crumbler: Enable cookies for non-cookie user folders.
-
-$Id$
 """
 
 from base64 import encodestring, decodestring
@@ -25,16 +23,20 @@ from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
-from OFS.SimpleItem import SimpleItem
-from OFS.PropertyManager import PropertyManager
 from OFS.interfaces import IObjectWillBeMovedEvent
+from OFS.PropertyManager import PropertyManager
+from OFS.SimpleItem import SimpleItem
 from zope.container.interfaces import IObjectMovedEvent
+from zope.globalrequest import getRequest
 from zope.interface import implements
 from ZPublisher import BeforeTraverse
+from ZPublisher.BaseRequest import RequestContainer
 from ZPublisher.HTTPRequest import HTTPRequest
 
 from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.utils import UniqueObject, getToolByName
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import registerToolInterface
+from Products.CMFCore.utils import UniqueObject
 
 
 # Constants.
@@ -137,10 +139,8 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     security.declarePrivate('defaultSetAuthCookie')
     def defaultSetAuthCookie(self, resp, cookie_name, cookie_value):
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
         kw = {}
-        req = getattr(self, 'REQUEST', None)
+        req = getRequest()
         if req is not None and req.get('SERVER_URL', '').startswith('https:'):
             # Ask the client to send back the cookie only in SSL mode
             kw['secure'] = 'y'
@@ -266,7 +266,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         Updates cookie credentials if user details are changed.
         """
         if request is None:
-            request = self.REQUEST # BBB for Membershiptool
+            request = getRequest() # BBB for Membershiptool
         reponse = request['RESPONSE']
         ac = encodestring('%s:%s' % (name, pw)).rstrip()
         method = self.getCookieMethod('setAuthCookie',
@@ -280,8 +280,10 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         """
         target = None
         if response is None:
-            response = self.REQUEST['RESPONSE'] # BBB for App.Management
-            atool = getToolByName(self, 'portal_actions')
+            response = getRequest()['RESPONSE'] # BBB for App.Management
+            request_container = RequestContainer(REQUEST=getRequest())
+            rich_context = self.__of__(request_container)
+            atool = getToolByName(rich_context, 'portal_actions')
             target = atool.getActionInfo('user/logout')['url']
         method = self.getCookieMethod('expireAuthCookie',
                                        self.defaultExpireAuthCookie)
@@ -300,6 +302,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         return id
 
 InitializeClass(CookieCrumbler)
+registerToolInterface('cookie_authentication', ICookieCrumbler)
 
 
 def handleCookieCrumblerEvent(ob, event):

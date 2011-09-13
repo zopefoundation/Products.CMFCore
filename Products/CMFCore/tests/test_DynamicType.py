@@ -20,6 +20,7 @@ from StringIO import StringIO
 
 from Acquisition import Implicit
 from Products.Five.browser import BrowserView
+from zope.component import getSiteManager
 from zope.component import provideAdapter
 from zope.interface import alsoProvides
 from zope.interface.verify import verifyClass
@@ -27,13 +28,14 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserView
 try:
     from zope.publisher.interfaces import IDefaultViewName
-except ImportError:  # zope.component had this before the ZTK
+except ImportError:  # BBB: zope.component had this before the ZTK
     from zope.component.interfaces import IDefaultViewName
 from zope.testing.cleanup import cleanUp
 from ZPublisher.HTTPRequest import HTTPRequest
 from ZPublisher.HTTPResponse import HTTPResponse
 
 from Products.CMFCore.DynamicType import DynamicType
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
@@ -151,7 +153,7 @@ class DynamicTypeSecurityTests(SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
-        self.site._setObject( 'portal_membership', DummyTool() )
+        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
         self.site._setObject( 'portal_types', TypesTool() )
         self.site._setObject( 'portal_url', DummyTool() )
         fti = FTIDATA_CMF[0].copy()

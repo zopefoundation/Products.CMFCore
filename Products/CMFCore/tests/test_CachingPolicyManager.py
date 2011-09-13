@@ -25,17 +25,19 @@ from Acquisition import Implicit
 from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
 from OFS.Cache import Cacheable
+from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 
 from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.FSPageTemplate import FSPageTemplate
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import RequestTest
+from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 ACCLARK = DateTime( '2001/01/01' )
 portal_owner = 'portal_owner'
@@ -103,6 +105,7 @@ class CachingPolicyTests(unittest.TestCase):
 
     def setUp(self):
         self._epoch = DateTime(0)
+        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
     def test_interfaces(self):
         from Products.CMFCore.CachingPolicyManager import CachingPolicy
@@ -432,6 +435,7 @@ class CachingPolicyManagerTests(unittest.TestCase):
 
     def setUp(self):
         self._epoch = DateTime()
+        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
     def assertEqualDelta( self, lhs, rhs, delta ):
         self.failUnless( abs( lhs - rhs ) <= delta )
@@ -627,28 +631,29 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual( headers[2][1] , 'max-age=86400' )
 
 
-class CachingPolicyManager304Tests(RequestTest, FSDVTest):
+class CachingPolicyManager304Tests(TransactionalTest, FSDVTest):
 
     layer = FunctionalZCMLLayer
 
     def setUp(self):
         from Products.CMFCore import CachingPolicyManager
 
-        RequestTest.setUp(self)
+        TransactionalTest.setUp(self)
         FSDVTest.setUp(self)
 
         now = DateTime()
 
         # Create a fake portal and the tools we need
-        self.portal = DummySite(id='portal').__of__(self.root)
+        self.portal = DummySite(id='portal').__of__(self.app)
         self.portal._setObject('portal_types', DummyTool())
+        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
         # This is a FSPageTemplate that will be used as the View for
         # our content objects. It doesn't matter what it returns.
         path = os.path.join(self.skin_path_name, 'testPT2.pt')
         self.portal._setObject('dummy_view', FSPageTemplate('dummy_view', path))
 
-        uf = self.root.acl_users
+        uf = self.app.acl_users
         password = 'secret'
         uf.userFolderAddUser(portal_owner, password, ['Manager'], [])
         user = uf.getUserById(portal_owner)
@@ -708,7 +713,8 @@ class CachingPolicyManager304Tests(RequestTest, FSDVTest):
                       enable_304s = 0)
 
     def tearDown(self):
-        RequestTest.tearDown(self)
+        getSiteManager().unregisterUtility(provided=IMembershipTool)
+        TransactionalTest.tearDown(self)
         FSDVTest.tearDown(self)
 
     def _cleanup(self):
@@ -843,7 +849,6 @@ class CachingPolicyManager304Tests(RequestTest, FSDVTest):
         self._cleanup()
 
     def testConditionalGETDisabled(self):
-        yesterday = DateTime() - 1
         doc3 = self.portal.doc3
         request = doc3.REQUEST
         response = request.RESPONSE
@@ -876,23 +881,25 @@ class FSObjMaker(FSDVTest):
         path = path_join(self.skin_path_name, filename)
         return FSDTMLMethod( id, path )
 
-class NestedTemplateTests( RequestTest, FSObjMaker ):
+
+class NestedTemplateTests(TransactionalTest, FSObjMaker):
 
     layer = TraversingZCMLLayer
 
     def setUp(self):
+        from Products.CMFCore import CachingPolicyManager
+
         FSObjMaker.setUp(self)
-        RequestTest.setUp(self)
+        TransactionalTest.setUp(self)
 
         # Create a fake portal and the tools we need
-        self.portal = DummySite(id='portal').__of__(self.root)
+        self.portal = DummySite(id='portal').__of__(self.app)
         self.portal._setObject('portal_types', DummyTool())
-
-        from Products.CMFCore import CachingPolicyManager
         CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
+        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
     def tearDown(self):
-        RequestTest.tearDown(self)
+        TransactionalTest.tearDown(self)
         FSObjMaker.tearDown(self)
 
     def test_subtemplate_cpm_1( self ):
@@ -1003,7 +1010,7 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
         portal._setObject('nested_view_1', nested_view_1)
         portal._setObject('nested_view_2', nested_view_2)
 
-        data = portal.doc1()
+        portal.doc1()
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
@@ -1195,34 +1202,39 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
                          )
 
 
-class OFSCacheTests(RequestTest):
+class OFSCacheTests(TransactionalTest):
 
     layer = FunctionalZCMLLayer
 
     def setUp(self):
         from Products.CMFCore import CachingPolicyManager
 
-        RequestTest.setUp(self)
+        TransactionalTest.setUp(self)
 
         # Create a fake portal and the tools we need
-        self.portal = DummySite(id='portal').__of__(self.root)
+        self.portal = DummySite(id='portal').__of__(self.app)
         self.portal._setObject('doc1', CacheableDummyContent('doc1'))
         self.portal._setObject('doc2', CacheableDummyContent('doc2'))
         CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
         cpm = self.portal.caching_policy_manager
+        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
         # This policy only applies to doc1. It will not emit any ETag header
         # but it enables If-modified-since handling.
-        cpm.addPolicy(policy_id = 'policy_1',
-                      predicate = 'python:object.getId()=="doc1"',
-                      mtime_func = '',
-                      max_age_secs = 100,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc1',
-                      etag_func = '',
-                      enable_304s = 0)
+        cpm.addPolicy(policy_id='policy_1',
+                      predicate='python:object.getId()=="doc1"',
+                      mtime_func='',
+                      max_age_secs=100,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc1',
+                      etag_func='',
+                      enable_304s=0)
+
+    def tearDown(self):
+        getSiteManager().unregisterUtility(provided=IMembershipTool)
+        TransactionalTest.tearDown(self)
 
     def test_empty(self):
 

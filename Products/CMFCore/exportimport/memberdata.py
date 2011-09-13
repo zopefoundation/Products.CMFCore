@@ -14,6 +14,7 @@
 """
 
 from zope.component import adapts
+from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import exportObjects
@@ -22,7 +23,6 @@ from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
 from Products.CMFCore.interfaces import IMemberDataTool
-from Products.CMFCore.utils import getToolByName
 
 
 class MemberDataToolXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
@@ -59,8 +59,8 @@ class MemberDataToolXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
 def importMemberDataTool(context):
     """Import member data tool settings from an XML file.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_memberdata', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.queryUtility(IMemberDataTool)
     if tool is None:
         logger = context.getLogger('memberdata')
         logger.debug('Nothing to import.')
@@ -71,8 +71,8 @@ def importMemberDataTool(context):
 def exportMemberDataTool(context):
     """Export member data tool settings as an XML file.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_memberdata', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.queryUtility(IMemberDataTool)
     if tool is None:
         logger = context.getLogger('memberdata')
         logger.debug('Nothing to export.')

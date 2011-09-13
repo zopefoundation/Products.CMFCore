@@ -47,9 +47,8 @@ class _MailHostSetup(BaseRegistryTests):
 
         self.root.site = Folder(id='site')
         site = self.root.site
-        mh = site.MailHost = MailHost('MailHost')
-        sm = getSiteManager()
-        sm.registerUtility(site.MailHost, IMailHost)
+        mh = MailHost('MailHost')
+        getSiteManager().registerUtility(mh, IMailHost)
  
         if use_changed:
             mh.smtp_port='1'
@@ -99,7 +98,7 @@ class importMailHostTests(_MailHostSetup):
         from Products.CMFCore.exportimport.mailhost import importMailHost
 
         site = self._initSite()
-        mh = site.MailHost
+        mh = getSiteManager().getUtility(IMailHost)
 
         context = DummyImportContext(site)
         context._files['mailhost.xml'] = _CHANGED_EXPORT

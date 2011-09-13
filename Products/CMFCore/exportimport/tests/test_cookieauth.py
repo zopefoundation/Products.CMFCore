@@ -17,6 +17,7 @@ import unittest
 import Testing
 
 from OFS.Folder import Folder
+from zope.component import getSiteManager
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
@@ -24,6 +25,7 @@ from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
 from Products.CMFCore.CookieCrumbler import CookieCrumbler
+from Products.CMFCore.interfaces import ICookieCrumbler
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
 _COOKIECRUMBLER_BODY = """\
@@ -102,7 +104,8 @@ class _CookieCrumblerSetup(BaseRegistryTests):
     def _initSite(self, use_changed=False):
         self.root.site = Folder(id='site')
         site = self.root.site
-        cc = site.cookie_authentication = CookieCrumbler()
+        cc = CookieCrumbler()
+        getSiteManager().registerUtility(cc, ICookieCrumbler)
 
         if use_changed:
             cc.auth_cookie = 'value1'
@@ -158,7 +161,7 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
                 import importCookieCrumbler
 
         site = self._initSite()
-        cc = site.cookie_authentication
+        cc = getSiteManager().getUtility(ICookieCrumbler)
 
         context = DummyImportContext(site)
         context._files['cookieauth.xml'] = _CHANGED_EXPORT
@@ -177,7 +180,7 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
                 import importCookieCrumbler
 
         site = self._initSite()
-        cc = site.cookie_authentication
+        cc = getSiteManager().getUtility(ICookieCrumbler)
 
         context = DummyImportContext(site)
         context._files['cookieauth.xml'] = _CMF22_IMPORT

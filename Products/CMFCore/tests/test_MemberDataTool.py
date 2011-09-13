@@ -19,9 +19,12 @@ import Testing
 import Acquisition
 from AccessControl.SecurityManagement import newSecurityManager
 from DateTime.DateTime import DateTime
+from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.tests.base.security import DummyUser as BaseDummyUser
 
 
@@ -64,6 +67,9 @@ class MemberDataToolTests(unittest.TestCase):
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
 
+    def tearDown(self):
+        cleanUp()
+
     def test_interfaces(self):
         from Products.CMFCore.interfaces import IMemberDataTool
 
@@ -93,7 +99,8 @@ class MemberDataToolTests(unittest.TestCase):
         from Products.CMFCore.MembershipTool import MembershipTool
         folder = Folder('test')
         folder._setObject('portal_memberdata', self._makeOne())
-        folder._setObject('portal_membership', MembershipTool())
+        sm = getSiteManager()
+        sm.registerUtility(MembershipTool().__of__(folder), IMembershipTool)
         folder._setObject('acl_users', DummyUserFolder())
         tool = folder.portal_memberdata
 
@@ -134,8 +141,12 @@ class MemberAdapterTests(unittest.TestCase):
 
         self.site = Folder('test')
         self.site._setObject('portal_memberdata', MemberDataTool())
-        self.site._setObject('portal_membership', MembershipTool())
+        sm = getSiteManager()
+        sm.registerUtility(MembershipTool(), IMembershipTool)
         self.site._setObject('acl_users', DummyUserFolder())
+
+    def tearDown(self):
+        cleanUp()
 
     def test_interfaces(self):
         from AccessControl.interfaces import IUser

@@ -47,6 +47,7 @@ setup(name='Products.%s' % NAME,
       install_requires=[
           'setuptools',
           'Zope2 >= 2.13.4',
+          'five.globalrequest',
           'five.localsitemanager',
           'Products.BTreeFolder2',
           'Products.GenericSetup',

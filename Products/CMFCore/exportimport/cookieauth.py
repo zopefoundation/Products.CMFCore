@@ -11,11 +11,10 @@
 #
 ##############################################################################
 """Cookie crumbler xml adapters and setup handlers.
-
-$Id$
 """
 
 from zope.component import adapts
+from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import exportObjects
@@ -24,7 +23,6 @@ from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
 from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.utils import getToolByName
 
 
 class CookieCrumblerXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
@@ -73,8 +71,8 @@ class CookieCrumblerXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
 def importCookieCrumbler(context):
     """Import cookie crumbler settings from an XML file.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'cookie_authentication', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.queryUtility(ICookieCrumbler)
     if tool is None:
         logger = context.getLogger('cookies')
         logger.debug('Nothing to import.')
@@ -85,8 +83,8 @@ def importCookieCrumbler(context):
 def exportCookieCrumbler(context):
     """Export cookie crumbler settings as an XML file.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'cookie_authentication', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.queryUtility(ICookieCrumbler)
     if tool is None:
         logger = context.getLogger('cookies')
         logger.debug('Nothing to export.')

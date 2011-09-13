@@ -30,11 +30,15 @@ from OFS.Folder import Folder
 from Persistence import PersistentMapping
 from ZODB.POSException import ConflictError
 from zope.component import getUtility
+from zope.component import queryUtility
 from zope.interface import implements
 
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import BadRequest
+from Products.CMFCore.interfaces import ICookieCrumbler
+from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import IRegistrationTool
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ChangeLocalRoles
@@ -45,7 +49,7 @@ from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 logger = logging.getLogger('CMFCore.MembershipTool')
@@ -92,13 +96,11 @@ class MembershipTool(UniqueObject, Folder):
     def setPassword(self, password, domains=None, REQUEST=None):
         '''Allows the authenticated member to set his/her own password.
         '''
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
-        registration = getToolByName(self, 'portal_registration', None)
         if not self.isAnonymousUser():
             member = self.getAuthenticatedMember()
-            if registration:
-                failMessage = registration.testPasswordValidity(password)
+            rtool = queryUtility(IRegistrationTool)
+            if rtool is not None:
+                failMessage = rtool.testPasswordValidity(password)
                 if failMessage is not None:
                     raise BadRequest(failMessage)
             member.setSecurityProfile(password=password, domains=domains)
@@ -123,8 +125,6 @@ class MembershipTool(UniqueObject, Folder):
         Provides an opportunity for a portal_memberdata tool to retrieve and
         store member data independently of the user object.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
         b = getattr(u, 'aq_base', None)
         if b is None:
             # u isn't wrapped at all.  Wrap it in self.acl_users.
@@ -143,7 +143,7 @@ class MembershipTool(UniqueObject, Folder):
                         portal_role not in u.roles):
                     u.roles.append(portal_role)
 
-        mdtool = getToolByName(self, 'portal_memberdata', None)
+        mdtool = queryUtility(IMemberDataTool)
         if mdtool is not None:
             try:
                 u = mdtool.wrapUser(u)
@@ -338,12 +338,9 @@ class MembershipTool(UniqueObject, Folder):
             name = user.getUserName()
             # this really does need to be the user name, and not the user id,
             # because we're dealing with authentication credentials
-            try:
-                cctool = getToolByName(self, 'cookie_authentication')
+            cctool = queryUtility(ICookieCrumbler)
+            if cctool is not None:
                 cctool.credentialsChanged(user, name, password, REQUEST)
-            except AttributeError:
-                # No CookieCrumbler
-                pass
 
     security.declareProtected(ManageUsers, 'getMemberById')
     def getMemberById(self, id):
@@ -401,13 +398,12 @@ class MembershipTool(UniqueObject, Folder):
         return map(self.wrapUser, self.acl_users.getUsers())
 
     security.declareProtected(ListPortalMembers, 'searchMembers')
-    def searchMembers( self, search_param, search_term ):
+    def searchMembers(self, search_param, search_term):
         """ Search the membership """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
-        md = getToolByName( self, 'portal_memberdata' )
-
-        return md.searchMemberData( search_param, search_term )
+        mdtool = queryUtility(IMemberDataTool)
+        if mdtool is not None:
+            return mdtool.searchMemberData(search_param, search_term)
+        return None
 
     security.declareProtected(View, 'getCandidateLocalRoles')
     def getCandidateLocalRoles(self, obj):
@@ -480,9 +476,6 @@ class MembershipTool(UniqueObject, Folder):
                       delete_localroles=1, REQUEST=None):
         """ Delete members specified by member_ids.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
-
         # Delete members in acl_users.
         acl_users = self.acl_users
         if _checkPermission(ManageUsers, acl_users):
@@ -502,7 +495,7 @@ class MembershipTool(UniqueObject, Folder):
                                  'permission for the underlying User Folder.')
 
         # Delete member data in portal_memberdata.
-        mdtool = getToolByName(self, 'portal_memberdata', None)
+        mdtool = queryUtility(IMemberDataTool)
         if mdtool is not None:
             for member_id in member_ids:
                 mdtool.deleteMemberData(member_id)
@@ -536,3 +529,4 @@ class MembershipTool(UniqueObject, Folder):
         return None
 
 InitializeClass(MembershipTool)
+registerToolInterface('portal_membership', IMembershipTool)

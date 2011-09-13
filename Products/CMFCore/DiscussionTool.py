@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Basic portal discussion access tool.
-
-$Id$
 """
 
 import urllib
@@ -23,9 +21,11 @@ from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
 from OFS.SimpleItem import SimpleItem
+from zope.component import getUtility
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import IOldstyleDiscussable
 from Products.CMFCore.interfaces import IOldstyleDiscussionTool
 from Products.CMFCore.permissions import AccessContentsInformation
@@ -66,8 +66,8 @@ class OldDiscussable(Implicit):
         # It is not yet clear to me what the correct location for this hook is
 
         # Find the folder designated for replies, creating if missing
-        membershiptool = getToolByName(self.content, 'portal_membership')
-        home = membershiptool.getHomeFolder()
+        mtool = getUtility(IMembershipTool)
+        home = mtool.getHomeFolder()
         if not hasattr(home, 'Correspondence'):
             home.manage_addPortalFolder('Correspondence')
         location = home.Correspondence
