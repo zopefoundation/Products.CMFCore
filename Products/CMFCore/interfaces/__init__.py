@@ -11,11 +11,8 @@
 #
 ##############################################################################
 """ CMFCore.interfaces package.
-
-$Id$
 """
 
 from _content import *
 from _tools import *
 from _events import *
-from _cookieCrumbler import ICookieCrumbler

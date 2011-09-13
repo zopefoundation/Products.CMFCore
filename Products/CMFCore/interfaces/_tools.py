@@ -17,6 +17,9 @@ from AccessControl.interfaces import IUser
 from zope.interface import Attribute
 from zope.interface import Interface
 
+# BBB: _tools is the old location of this interface
+from ._cookieCrumbler import ICookieCrumbler
+
 _marker = object()
 
 
