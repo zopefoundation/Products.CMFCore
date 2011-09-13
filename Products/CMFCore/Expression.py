@@ -22,6 +22,7 @@ from Persistence import Persistent
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from zope.component import getUtility
+from zope.component.interfaces import ComponentLookupError
 
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.utils import getToolByName
@@ -89,7 +90,11 @@ def createExprContext(folder, portal, object):
     '''
     An expression context provides names for TALES expressions.
     '''
-    mtool = getUtility(IMembershipTool)
+    try:
+        mtool = getUtility(IMembershipTool)
+    except ComponentLookupError:
+        # BBB: fallback for CMF 2.2 instances
+        mtool = getToolByName(portal, 'portal_membership')
     if object is None:
         object_url = ''
     else:
