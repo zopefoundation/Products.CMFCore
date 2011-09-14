@@ -14,9 +14,11 @@
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from Acquisition import aq_get
 from App.class_init import InitializeClass
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements
 from zope.publisher.defaultview import queryDefaultViewName
 
@@ -109,7 +111,11 @@ class DynamicType:
         creator to grab icons on the fly instead of using a fixed
         attribute on the class.
         """
-        utool = getUtility(IURLTool)
+        try:
+            utool = getUtility(IURLTool)
+        except ComponentLookupError:
+            # BBB: fallback for CMF 2.2 instances
+            utool = aq_get(self, 'portal_url')
         portal_url = utool()
         icon = self.getIconURL()
         if icon.startswith(portal_url):
