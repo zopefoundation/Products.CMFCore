@@ -36,6 +36,7 @@ from ZPublisher.HTTPResponse import HTTPResponse
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
@@ -153,9 +154,10 @@ class DynamicTypeSecurityTests(SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
-        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
+        sm = getSiteManager()
+        sm.registerUtility(DummyTool(), IMembershipTool)
+        sm.registerUtility(DummyTool().__of__(self.site), IURLTool)
         self.site._setObject( 'portal_types', TypesTool() )
-        self.site._setObject( 'portal_url', DummyTool() )
         fti = FTIDATA_CMF[0].copy()
         self.site.portal_types._setObject( 'Dummy Content 15', FTI(**fti) )
         self.site._setObject( 'foo', DummyContent() )
@@ -176,7 +178,7 @@ class DynamicTypeSecurityTests(SecurityTest):
         # carries some useful information
         INVALID_ID = 'invalid_id'
         try:
-            rval = foo.getActionInfo('object/%s' % INVALID_ID)
+            foo.getActionInfo('object/%s' % INVALID_ID)
         except ValueError, e:
             message = e.args[0]
             detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)

@@ -11,11 +11,10 @@
 #
 ##############################################################################
 """Actions tool node adapters.
-
-$Id$
 """
 
 from zope.component import adapts
+from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import exportObjects
@@ -259,8 +258,8 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
 def importActionProviders(context):
     """Import actions tool.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_actions', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.queryUtility(IActionsTool)
     if tool is None:
         logger = context.getLogger('actions')
         logger.debug('Nothing to import.')
@@ -271,8 +270,8 @@ def importActionProviders(context):
 def exportActionProviders(context):
     """Export actions tool.
     """
-    site = context.getSite()
-    tool = getToolByName(site, 'portal_actions', None)
+    sm = getSiteManager(context.getSite())
+    tool = sm.queryUtility(IActionsTool)
     if tool is None:
         logger = context.getLogger('actions')
         logger.debug('Nothing to export.')

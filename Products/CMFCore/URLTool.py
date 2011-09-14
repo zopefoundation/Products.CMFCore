@@ -11,23 +11,24 @@
 #
 ##############################################################################
 """ CMFCore portal_url tool.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from Acquisition import aq_inner
-from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
+from zope.component import getUtility
+from zope.globalrequest import getRequest
 from zope.interface import implements
+from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 
@@ -65,17 +66,14 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     def __call__(self, relative=0, *args, **kw):
         """ Get by default the absolute URL of the portal.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # absolute_url() depends implicitly on REQUEST
         return self.getPortalObject().absolute_url(relative=relative)
 
     security.declarePublic('getPortalObject')
     def getPortalObject(self):
         """ Get the portal object itself.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # queryUtility(ISiteRoot) doesn't work because we need the REQUEST
-        return aq_parent( aq_inner(self) )
+        request_container = RequestContainer(REQUEST=getRequest())
+        return getUtility(ISiteRoot).__of__(request_container)
 
     security.declarePublic('getRelativeContentPath')
     def getRelativeContentPath(self, content):
@@ -101,3 +99,4 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
         return '/'.join( self.getPortalObject().getPhysicalPath() )
 
 InitializeClass(URLTool)
+registerToolInterface('portal_url', IURLTool)

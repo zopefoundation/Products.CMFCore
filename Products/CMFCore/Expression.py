@@ -15,6 +15,7 @@
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
+from Acquisition import aq_get
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from App.class_init import InitializeClass
@@ -23,9 +24,10 @@ from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from zope.component import getUtility
 from zope.component.interfaces import ComponentLookupError
+from zope.globalrequest import getRequest
 
 from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.interfaces import IURLTool
 
 
 class Expression(Persistent):
@@ -57,7 +59,7 @@ InitializeClass(Expression)
 
 
 def getExprContext(context, object=None):
-    request = getattr(context, 'REQUEST', None)
+    request = getRequest()
     if request:
         cache = request.get('_ec_cache', None)
         if cache is None:
@@ -66,7 +68,11 @@ def getExprContext(context, object=None):
     else:
         ec = None
     if ec is None:
-        utool = getToolByName(context, 'portal_url')
+        try:
+            utool = getUtility(IURLTool)
+        except ComponentLookupError:
+            # BBB: fallback for CMF 2.2 instances
+            utool = aq_get(context, 'portal_url')
         portal = utool.getPortalObject()
         if object is None or not hasattr(object, 'aq_base'):
             folder = portal
@@ -94,7 +100,7 @@ def createExprContext(folder, portal, object):
         mtool = getUtility(IMembershipTool)
     except ComponentLookupError:
         # BBB: fallback for CMF 2.2 instances
-        mtool = getToolByName(portal, 'portal_membership')
+        mtool = aq_get(portal, 'portal_membership')
     if object is None:
         object_url = ''
     else:

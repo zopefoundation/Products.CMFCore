@@ -26,15 +26,15 @@ from DateTime.DateTime import DateTime
 from OFS.interfaces import IObjectWillBeMovedEvent
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
+from zope.component import getUtility
 from zope.container.interfaces import IObjectMovedEvent
 from zope.globalrequest import getRequest
 from zope.interface import implements
 from ZPublisher import BeforeTraverse
-from ZPublisher.BaseRequest import RequestContainer
 from ZPublisher.HTTPRequest import HTTPRequest
 
+from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
@@ -281,9 +281,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         target = None
         if response is None:
             response = getRequest()['RESPONSE'] # BBB for App.Management
-            request_container = RequestContainer(REQUEST=getRequest())
-            rich_context = self.__of__(request_container)
-            atool = getToolByName(rich_context, 'portal_actions')
+            atool = getUtility(IActionsTool)
             target = atool.getActionInfo('user/logout')['url']
         method = self.getCookieMethod('expireAuthCookie',
                                        self.defaultExpireAuthCookie)

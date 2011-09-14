@@ -23,6 +23,7 @@ from OFS.OrderedFolder import OrderedFolder
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
+from zope.globalrequest import getRequest
 from zope.i18nmessageid import Message
 from zope.interface import implements
 
@@ -33,7 +34,6 @@ from Products.CMFCore.interfaces import IActionInfo
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import getToolByName
 
 _unchanged = [] # marker
 
@@ -536,7 +536,7 @@ InitializeClass( ActionInformation )
 
 
 def getOAI(context, object=None):
-    request = getattr(context, 'REQUEST', None)
+    request = getRequest()
     if request:
         cache = request.get('_oai_cache', None)
         if cache is None:

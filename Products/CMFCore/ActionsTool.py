@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Basic action list tool.
-
-$Id$
 """
 
 from warnings import warn
@@ -30,6 +28,8 @@ from Products.CMFCore.interfaces import IActionProvider
 from Products.CMFCore.interfaces import IActionsTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 
@@ -40,8 +40,6 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         Weave together the various sources of "actions" which are apropos
         to the current user and context.
     """
-    # XXX: this class violates the rules for tools/utilities:
-    # ActionProviderBase depends implicitly on REQUEST
 
     implements(IActionsTool)
 
@@ -134,13 +132,15 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         return self.action_providers
 
     security.declareProtected(ManagePortal, 'addActionProvider')
-    def addActionProvider( self, provider_name ):
+    def addActionProvider(self, provider_name):
         """ Add an Action Provider id to the providers queried by this tool.
         """
-        ap = list( self.action_providers )
-        if hasattr( self, provider_name ) and provider_name not in ap:
-            ap.append( provider_name )
-            self.action_providers = tuple( ap )
+        if getToolByName(self, provider_name, None) is None:
+            return
+        ap = list(self.action_providers)
+        if provider_name not in ap:
+            ap.append(provider_name)
+            self.action_providers = tuple(ap)
 
     security.declareProtected(ManagePortal, 'deleteActionProvider')
     def deleteActionProvider( self, provider_name ):
@@ -162,7 +162,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
 
         # Include actions from specific tools.
         for provider_name in self.listActionProviders():
-            provider = getattr(self, provider_name)
+            provider = getToolByName(self, provider_name)
             if IActionProvider.providedBy(provider):
                 actions.extend( provider.listActionInfos(object=object) )
 
@@ -186,3 +186,4 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         return filtered_actions
 
 InitializeClass(ActionsTool)
+registerToolInterface('portal_actions', IActionsTool)

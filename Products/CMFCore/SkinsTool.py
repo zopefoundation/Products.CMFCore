@@ -36,12 +36,12 @@ from Products.CMFCore.DirectoryView import ignore
 from Products.CMFCore.DirectoryView import ignore_re
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ISkinsTool
+from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
 from Products.CMFCore.SkinsContainer import SkinsContainer
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
 
 def modifiedOptions():
@@ -305,9 +305,8 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         """ If needed, updates the skin cookie based on the member preference.
         """
         # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool and uses self.REQUEST
+        # it uses self.REQUEST
         mtool = getUtility(IMembershipTool)
-        utool = getToolByName(self, 'portal_url')
         member = mtool.getAuthenticatedMember()
         if hasattr(aq_base(member), 'getProperty'):
             mskin = member.getProperty('portal_skin')
@@ -316,6 +315,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                 cookie = req.cookies.get(self.request_varname, None)
                 if cookie != mskin:
                     resp = req.RESPONSE
+                    utool = getUtility(IURLTool)
                     portal_path = req['BASEPATH1'] + '/' + utool(1)
 
                     if not self.cookie_persistence:
@@ -341,10 +341,10 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         """ Expire the skin cookie.
         """
         # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool and uses self.REQUEST
+        # it uses self.REQUEST
         req = self.REQUEST
         resp = req.RESPONSE
-        utool = getToolByName(self, 'portal_url')
+        utool = getUtility(IURLTool)
         portal_path = req['BASEPATH1'] + '/' + utool(1)
         resp.expireCookie(self.request_varname, path=portal_path)
 

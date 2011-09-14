@@ -19,6 +19,7 @@ import Testing
 from Acquisition import aq_parent
 from Acquisition import Implicit
 from OFS.OrderedFolder import OrderedFolder
+from zope.component import getSiteManager
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
@@ -345,10 +346,9 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     def setUp(self):
         from Products.CMFCore.ActionsTool import ActionsTool
 
-        site = DummySite('site')
-        site._setObject('portal_actions', ActionsTool('portal_actions'))
-        self._obj = site.portal_actions
+        self._obj = ActionsTool('portal_actions')
         self._BODY = _ACTIONSTOOL_BODY
+        getSiteManager().registerUtility(self._obj, IActionsTool)
 
 
 class _ActionSetup(BaseRegistryTests):
@@ -358,8 +358,9 @@ class _ActionSetup(BaseRegistryTests):
         site = self.root.site
         site.portal_membership = DummyMembershipTool()
 
-        site.portal_actions = DummyActionsTool()
-        site.portal_actions.addActionProvider('portal_actions')
+        self.atool = DummyActionsTool()
+        getSiteManager().registerUtility(self.atool, IActionsTool)
+        self.atool.addActionProvider('portal_actions')
 
         if foo > 0:
             site.portal_foo = DummyTool()
@@ -372,7 +373,7 @@ class _ActionSetup(BaseRegistryTests):
                                       permission=(),
                                       category='dummy',
                                       visible=1)
-            site.portal_actions.addActionProvider('portal_foo')
+            self.atool.addActionProvider('portal_foo')
 
         if bar > 0:
             site.portal_bar = DummyTool()
@@ -385,7 +386,7 @@ class _ActionSetup(BaseRegistryTests):
                                       permission=('Manage portal',),
                                       category='dummy',
                                       visible=0)
-            site.portal_actions.addActionProvider('portal_bar')
+            self.atool.addActionProvider('portal_bar')
 
         return site
 
@@ -414,13 +415,13 @@ class exportActionProvidersTests(_ActionSetup):
 
         site = self._initSite()
         # Set up an old action for added difficulty
-        site.portal_actions.addAction(id='baz',
-                                      name='Baz',
-                                      action='baz',
-                                      condition='python:1',
-                                      permission=(),
-                                      category='dummy',
-                                      visible=1)
+        self.atool.addAction(id='baz',
+                             name='Baz',
+                             action='baz',
+                             condition='python:1',
+                             permission=(),
+                             category='dummy',
+                             visible=1)
 
         context = DummyExportContext(site)
         exportActionProviders(context)
@@ -441,7 +442,7 @@ class importActionProvidersTests(_ActionSetup):
                 import importActionProviders
 
         site = self._initSite(2, 0)
-        atool = site.portal_actions
+        atool = self.atool
 
         self.assertEqual(len(atool.listActionProviders()), 2)
         self.failUnless('portal_foo' in atool.listActionProviders())
@@ -461,7 +462,7 @@ class importActionProvidersTests(_ActionSetup):
                 import importActionProviders
 
         site = self._initSite(2, 0)
-        atool = site.portal_actions
+        atool = self.atool
 
         self.assertEqual(len(atool.listActionProviders()), 2)
         self.failUnless('portal_foo' in atool.listActionProviders())
@@ -481,7 +482,7 @@ class importActionProvidersTests(_ActionSetup):
                 import importActionProviders
 
         site = self._initSite(2, 0)
-        atool = site.portal_actions
+        atool = self.atool
 
         self.assertEqual(len(atool.listActionProviders()), 2)
         self.failUnless('portal_foo' in atool.listActionProviders())
@@ -502,7 +503,7 @@ class importActionProvidersTests(_ActionSetup):
                 import importActionProviders
 
         site = self._initSite(1, 1)
-        atool = site.portal_actions
+        atool = self.atool
         foo = site.portal_foo
         bar = site.portal_bar
 
@@ -549,7 +550,7 @@ class importActionProvidersTests(_ActionSetup):
                 import importActionProviders
 
         site = self._initSite(0, 0)
-        atool = site.portal_actions
+        atool = self.atool
 
         context = DummyImportContext(site)
         context._files['actions.xml'] = _I18N_IMPORT
@@ -575,7 +576,7 @@ class importActionProvidersTests(_ActionSetup):
                 import importActionProviders
 
         site = self._initSite(0, 0)
-        atool = site.portal_actions
+        atool = self.atool
 
         context = DummyImportContext(site)
         context._files['actions.xml'] = _NEWSYTLE_EXPORT
@@ -600,7 +601,7 @@ class importActionProvidersTests(_ActionSetup):
                 import importActionProviders
 
         site = self._initSite(2, 2)
-        atool = site.portal_actions
+        atool = self.atool
 
         self.assertEqual(atool.listActionProviders(),
                           ['portal_actions', 'portal_foo', 'portal_bar'])

@@ -27,6 +27,7 @@ from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.MembershipTool import MembershipTool
 from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -126,16 +127,17 @@ class ActionsToolSecurityTests(SecurityTest):
         return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        SecurityTest.setUp(self)
+        from Products.CMFCore.interfaces import IActionsTool
 
-        sm = getSiteManager()
-        sm.registerUtility(self.app, ISiteRoot)
-        self.app._setObject('portal_actions', self._makeOne())
-        self.app._setObject('portal_url', URLTool())
-        self.app._setObject('foo', URLTool())
-        sm.registerUtility(MembershipTool(), IMembershipTool)
-        self.tool = self.app.portal_actions
+        SecurityTest.setUp(self)
+        self.tool = self._makeOne()
         self.tool.action_providers = ('portal_actions',)
+        self.app._setObject('foo', URLTool())
+        sm = getSiteManager()
+        sm.registerUtility(self.tool, IActionsTool)
+        sm.registerUtility(MembershipTool(), IMembershipTool)
+        sm.registerUtility(self.app, ISiteRoot)
+        sm.registerUtility(URLTool(), IURLTool)
 
     def tearDown(self):
         cleanUp()

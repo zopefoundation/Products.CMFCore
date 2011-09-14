@@ -11,18 +11,18 @@
 #
 ##############################################################################
 """ DynamicType: Mixin for dynamic properties.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
-from zope.publisher.defaultview import queryDefaultViewName
+from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.interface import implements
+from zope.publisher.defaultview import queryDefaultViewName
 
 from Products.CMFCore.Expression import getExprContext
 from Products.CMFCore.interfaces import IDynamicType
+from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.utils import getToolByName
 
 
@@ -91,7 +91,7 @@ class DynamicType:
         """
         ti = self.getTypeInfo()
         if ti is None:
-            utool = getToolByName(self, 'portal_url')
+            utool = getUtility(IURLTool)
             return '%s/misc_/OFSP/dtmldoc.gif' % utool()
         icon_expr_object = ti.getIconExprObject()
         if icon_expr_object is None:
@@ -109,7 +109,7 @@ class DynamicType:
         creator to grab icons on the fly instead of using a fixed
         attribute on the class.
         """
-        utool = getToolByName(self, 'portal_url')
+        utool = getUtility(IURLTool)
         portal_url = utool()
         icon = self.getIconURL()
         if icon.startswith(portal_url):
