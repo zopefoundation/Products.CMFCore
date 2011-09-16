@@ -304,4 +304,5 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         self.catalog_object(object, uid, idxs, update_metadata)
 
 InitializeClass(CatalogTool)
-registerToolInterface('portal_catalog', ICatalogTool)
+# XXX: fix this
+# registerToolInterface('portal_catalog', ICatalogTool)
