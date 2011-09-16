@@ -20,11 +20,14 @@ import transaction
 from AccessControl.SecurityManagement import newSecurityManager
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
+from zope.component import getSiteManager
 from zope.interface import implements
 
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
 from Products.CMFCore.exceptions import NotFound
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.testcase import LogInterceptor
@@ -120,8 +123,11 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         self.root = DummyRoot('')
         self.root.site = SimpleFolder('site')
         self.site = self.root.site
-        self.site._setObject('portal_catalog', DummyCatalog())
-        self.site._setObject('portal_workflow', DummyWorkflowTool())
+        sm = getSiteManager()
+        self.ctool = DummyCatalog()
+        sm.registerUtility(self.ctool, ICatalogTool)
+        self.wtool = DummyWorkflowTool()
+        sm.registerUtility(self.wtool, IWorkflowTool)
         self.site.foo = TheClass('foo')
 
     def tearDown(self):
@@ -130,26 +136,26 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
 
     def test_indexObject(self):
         foo = self.site.foo
-        cat = self.site.portal_catalog
+        cat = self.ctool
         foo.indexObject()
         self.assertEquals(cat.log, ["index /site/foo"])
 
     def test_unindexObject(self):
         foo = self.site.foo
-        cat = self.site.portal_catalog
+        cat = self.ctool
         foo.unindexObject()
         self.assertEquals(cat.log, ["unindex /site/foo"])
 
     def test_reindexObject(self):
         foo = self.site.foo
-        cat = self.site.portal_catalog
+        cat = self.ctool
         foo.reindexObject()
         self.assertEquals(cat.log, ["reindex /site/foo []"])
         self.assert_(foo.notified)
 
     def test_reindexObject_idxs(self):
         foo = self.site.foo
-        cat = self.site.portal_catalog
+        cat = self.ctool
         foo.reindexObject(idxs=['bar'])
         self.assertEquals(cat.log, ["reindex /site/foo ['bar']"])
         self.failIf(foo.notified)
@@ -160,7 +166,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         bar = self.site.foo.bar
         self.site.foo.hop = TheClass('hop')
         hop = self.site.foo.hop
-        cat = self.site.portal_catalog
+        cat = self.ctool
         cat.setObs([foo, bar, hop])
         foo.reindexObjectSecurity()
         l = list(cat.log)
@@ -179,7 +185,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo = self.site.foo
         missing = TheClass('missing').__of__(foo)
         missing.GETOBJECT_RAISES = True
-        cat = self.site.portal_catalog
+        cat = self.ctool
         try:
             self._catch_log_errors()
             cat.setObs([foo, missing])
@@ -194,7 +200,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo = self.site.foo
         missing = TheClass('missing').__of__(foo)
         missing.GETOBJECT_RAISES = False
-        cat = self.site.portal_catalog
+        cat = self.ctool
         cat.setObs([foo, missing])
         foo.reindexObjectSecurity()
         self.assertEquals(cat.log,
@@ -205,11 +211,11 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
 
     def test_catalog_tool(self):
         foo = self.site.foo
-        self.assertEqual(foo._getCatalogTool(), self.site.portal_catalog)
+        self.assertEqual(foo._getCatalogTool(), self.ctool)
 
     def test_workflow_tool(self):
         foo = self.site.foo
-        self.assertEqual(foo._getWorkflowTool(), self.site.portal_workflow)
+        self.assertEqual(foo._getWorkflowTool(), self.wtool)
 
     # FIXME: more tests needed
 
@@ -221,8 +227,10 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
     def _makeSite(self):
         self.app._setObject('site', SimpleFolder('site'))
         site = self.app._getOb('site')
-        site._setObject('portal_catalog', DummyCatalog())
-        site._setObject('portal_workflow', DummyWorkflowTool())
+        sm = getSiteManager()
+        self.ctool = DummyCatalog()
+        sm.registerUtility(self.ctool, ICatalogTool)
+        sm.registerUtility(DummyWorkflowTool(), IWorkflowTool)
         # Hack, we need a _p_mtime for the file, so we make sure that it
         # has one. We use a subtransaction, which means we can rollback
         # later and pretend we didn't touch the ZODB.
@@ -258,7 +266,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         site = self._makeSite()
         bar = TheClass('bar')
         site._setObject('bar', bar)
-        cat = site.portal_catalog
+        cat = self.ctool
         self.assertEquals(cat.log, ["index /site/bar"])
 
     def test_object_unindexed_after_removing(self):
@@ -266,7 +274,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         site = self._makeSite()
         bar = TheClass('bar')
         site._setObject('bar', bar)
-        cat = site.portal_catalog
+        cat = self.ctool
         cat.log = []
         site._delObject('bar')
         self.assertEquals(cat.log, ["unindex /site/bar"])
@@ -282,7 +290,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
         bar = TheClass('bar')
         folder1._setObject('bar', bar)
-        cat = site.portal_catalog
+        cat = self.ctool
         cat.log = []
 
         transaction.savepoint(optimistic=True)
@@ -303,7 +311,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
         bar = TheClass('bar')
         folder1._setObject('bar', bar)
-        cat = site.portal_catalog
+        cat = self.ctool
         cat.log = []
 
         transaction.savepoint(optimistic=True)
@@ -321,7 +329,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
         bar = TheClass('bar')
         site._setObject('bar', bar)
-        cat = site.portal_catalog
+        cat = self.ctool
         cat.log = []
 
         transaction.savepoint(optimistic=True)

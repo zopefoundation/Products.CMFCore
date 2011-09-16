@@ -32,6 +32,7 @@ from zope.interface.verify import verifyClass
 from Products.CMFCore.exceptions import BadRequest
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import ITypesTool
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.testing import ConformsToFolder
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.testing import TraversingEventZCMLLayer
@@ -96,7 +97,7 @@ class PortalFolderFactoryTests(SecurityTest):
         SecurityTest.setUp(self)
         sm = getSiteManager()
         sm.registerUtility(self._getTargetObject(), IFactory, 'cmf.folder')
-        self.site = DummySite('site').__of__(self.root)
+        self.site = DummySite('site').__of__(self.app)
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
@@ -166,7 +167,7 @@ class PortalFolderSecurityTests(SecurityTest):
 
     def setUp(self):
         SecurityTest.setUp(self)
-        self.site = DummySite('site').__of__(self.root)
+        self.site = DummySite('site').__of__(self.app)
 
     def test_contents_methods(self):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
@@ -251,33 +252,42 @@ class PortalFolderSecurityTests(SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
-        self.assertEqual( len(ctool), 0 )
+        self.site._setObject('portal_types', TypesTool())
+        ctool = DummyCatalogTool()
+        getSiteManager().registerUtility(ctool, ICatalogTool)
+        self.assertEqual(len(ctool), 0)
 
-        test._setObject( 'foo', DummyContent( 'foo' , catalog=1 ) )
+        test._setObject('foo', DummyContent('foo' , catalog=1))
         foo = test.foo
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
-        self.assertEqual( len(ctool), 1 )
+        self.failUnless(foo.after_add_called)
+        self.failIf(foo.before_delete_called)
+        self.assertEqual(len(ctool), 1)
 
         foo.reset()
         test._delObject('foo')
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
-        self.assertEqual( len(ctool), 0 )
+        self.failIf(foo.after_add_called)
+        self.failUnless(foo.before_delete_called)
+        self.assertEqual(len(ctool), 0)
+
+        getSiteManager().unregisterUtility(provided=ICatalogTool)
 
     def test_portalfolder_cataloging(self):
         #
         # Test to ensure a portal folder itself is *not* cataloged upon
         # instantiation (Tracker issue 309)
         #
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
-        wftool = self.site._setObject( 'portal_workflow', WorkflowTool() )
+        self.site._setObject('portal_types', TypesTool())
+        sm = getSiteManager()
+        ctool = DummyCatalogTool()
+        sm.registerUtility(ctool, ICatalogTool)
+        wtool = WorkflowTool()
+        sm.registerUtility(wtool, IWorkflowTool)
         test = self._makeOne('test')
-        wftool.notifyCreated(test)
-        self.assertEqual( len(ctool), 0 )
+        wtool.notifyCreated(test)
+        self.assertEqual(len(ctool), 0)
+
+        sm.unregisterUtility(provided=ICatalogTool)
+        sm.unregisterUtility(provided=IWorkflowTool)
 
     def test_tracker261(self):
         #
@@ -290,9 +300,10 @@ class PortalFolderSecurityTests(SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
-        self.assertEqual( len(ctool), 0 )
+        self.site._setObject('portal_types', TypesTool())
+        ctool = DummyCatalogTool()
+        getSiteManager().registerUtility(ctool, ICatalogTool)
+        self.assertEqual(len(ctool), 0)
 
         test._setObject( 'sub', PortalFolder( 'sub', '' ) )
         sub = test.sub
@@ -309,6 +320,8 @@ class PortalFolderSecurityTests(SecurityTest):
         self.failIf( foo.after_add_called )
         self.failUnless( foo.before_delete_called )
         self.assertEqual( len(ctool), 0 )
+
+        getSiteManager().unregisterUtility(provided=ICatalogTool)
 
     def test_manageAddFolder(self):
         #
@@ -359,7 +372,7 @@ class PortalFolderSecurityTests(SecurityTest):
                 self._context._setOb( id, PortalFolder( id ) )
                 self._context._getOb( id )._setPortalTypeName( 'Grabbed' )
 
-        self.root.grabbed = Grabbed(test)
+        self.app.grabbed = Grabbed(test)
 
         test.manage_addFolder(id='indirect', title='Indirect')
         self.assertEqual( test.indirect.getPortalTypeName(), 'Grabbed' )
@@ -432,8 +445,10 @@ class PortalFolderSecurityTests(SecurityTest):
                 return self._workflows
 
         # Now copy/paste verification should raise a ValueError
-        self.site.portal_workflow = DummyWorkflowTool()
+        getSiteManager().registerUtility(DummyWorkflowTool(), IWorkflowTool)
         self.assertRaises(ValueError, folder._verifyObjectPaste, content)
+
+        getSiteManager().unregisterUtility(provided=IWorkflowTool)
 
     def test_setObjectRaisesBadRequest(self):
         #
@@ -517,8 +532,8 @@ class PortalFolderMoveTests(SecurityTest):
 
     def setUp(self):
         SecurityTest.setUp(self)
-        self.root._setObject( 'site', DummySite('site') )
-        self.site = self.root.site
+        self.app._setObject('site', DummySite('site'))
+        self.site = self.app.site
 
     def _makeOne(self, id, *args, **kw):
         from Products.CMFCore.PortalFolder import PortalFolder
@@ -533,8 +548,9 @@ class PortalFolderMoveTests(SecurityTest):
 
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
-        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
+        self.site._setObject( 'portal_types', TypesTool() )
+        ctool = DummyCatalogTool()
+        getSiteManager().registerUtility(ctool, ICatalogTool)
         self.assertEqual( len(ctool), 0 )
 
         folder = self._makeOne('folder')
@@ -580,7 +596,8 @@ class PortalFolderMoveTests(SecurityTest):
         #
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
-        ctool = self.site._setObject( 'portal_catalog', DummyCatalogTool() )
+        ctool = DummyCatalogTool()
+        getSiteManager().registerUtility(ctool, ICatalogTool)
         ttool = self.site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_DUMMY[0].copy()
         ttool._setObject( 'Dummy Content', FTI(**fti) )
@@ -967,7 +984,6 @@ class PortalFolderCopySupportTests(SecurityTest):
         self.app._setObject( 'folder1', PortalFolder( 'folder1' ) )
         self.app._setObject( 'folder2', PortalFolder( 'folder2' ) )
         folder1 = getattr( self.app, 'folder1' )
-        folder2 = getattr( self.app, 'folder2' )
         manage_addFile(folder1, 'file', file='', content_type='text/plain')
 
         # Hack, we need a _p_mtime for the file, so we make sure that it

@@ -28,6 +28,7 @@ from Persistence import PersistentMapping
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PythonScripts.PythonScript import PythonScript
 from zope.component import getUtility
+from zope.globalrequest import getRequest
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
@@ -42,6 +43,7 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
 from Products.CMFCore.SkinsContainer import SkinsContainer
 from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 def modifiedOptions():
@@ -304,14 +306,12 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     def updateSkinCookie(self):
         """ If needed, updates the skin cookie based on the member preference.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it uses self.REQUEST
         mtool = getUtility(IMembershipTool)
         member = mtool.getAuthenticatedMember()
         if hasattr(aq_base(member), 'getProperty'):
             mskin = member.getProperty('portal_skin')
             if mskin:
-                req = self.REQUEST
+                req = getRequest()
                 cookie = req.cookies.get(self.request_varname, None)
                 if cookie != mskin:
                     resp = req.RESPONSE
@@ -340,9 +340,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     def clearSkinCookie(self):
         """ Expire the skin cookie.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it uses self.REQUEST
-        req = self.REQUEST
+        req = getRequest()
         resp = req.RESPONSE
         utool = getUtility(IURLTool)
         portal_path = req['BASEPATH1'] + '/' + utool(1)
@@ -395,3 +393,4 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         return res
 
 InitializeClass(SkinsTool)
+registerToolInterface('portal_skins', ISkinsTool)

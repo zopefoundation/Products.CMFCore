@@ -21,9 +21,13 @@ import transaction
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.SecurityManager import setSecurityPolicy
+from OFS.Folder import Folder
+from zope.component import getSiteManager
 
+from Products.CMFCore.interfaces import ISkinsTool
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.security import AnonymousUser
+from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy
 from Products.CMFCore.utils import getPackageLocation
 
@@ -162,6 +166,22 @@ class FSDVTest(unittest.TestCase):
         self.skin_path_name = join(self.tempname, self._skinname,
                                    self._layername)
 
+    def _makeContext(self, obj_id, filename):
+        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
+
+        stool = Folder('portal_skins')
+        getSiteManager().registerUtility(stool, ISkinsTool)
+
+        stool._setObject('custom', Folder('custom'))
+        custom = stool.custom
+
+        stool._setObject('fsdir', Folder('fsdir'))
+        fsdir = stool.fsdir
+
+        fsdir._setObject(obj_id, self._makeOne(obj_id, filename))
+
+        return stool, custom, fsdir, fsdir[obj_id]
+
 
 class WritableFSDVTest(FSDVTest):
     # Base class for FSDV test, creates a fake skin
@@ -233,7 +253,7 @@ class WritableFSDVTest(FSDVTest):
                  join(self.tempname, self._skinname),
                  ignore=ignore_patterns('.svn'))
         # make sure we have a writable copy
-        for root, dirs, files in walk(self.tempname):
+        for root, _dirs, files in walk(self.tempname):
             for name in files:
                 chmod(join(root, name), S_IREAD + S_IWRITE)
         FSDVTest.setUp(self)

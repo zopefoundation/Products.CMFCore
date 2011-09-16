@@ -18,20 +18,19 @@ import Testing
 
 from os.path import join as path_join
 
-from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from App.Common import rfc1123_date
 from DateTime import DateTime
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
 from zope.site.hooks import setHooks
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
 from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -105,28 +104,16 @@ class FSDTMLMethodTests(RequestTest, FSDTMLMaker):
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
 
-class FSDTMLMethodCustomizationTests( SecurityTest, FSDTMLMaker ):
+class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
 
     def setUp(self):
         FSDTMLMaker.setUp(self)
         SecurityTest.setUp(self)
-        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
-
-        self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
-        self.skins = self.root.portal_skins
-
-        self.skins._setObject( 'custom', Folder( 'custom' ) )
-        self.custom = self.skins.custom
-
-        self.skins._setObject( 'fsdir', Folder( 'fsdir' ) )
-        self.fsdir = self.skins.fsdir
-
-        self.fsdir._setObject( 'testDTML'
-                             , self._makeOne( 'testDTML', 'testDTML.dtml' ) )
-
-        self.fsDTML = self.fsdir.testDTML
+        self.skins, self.custom, self.fsdir, self.fsDTML = self._makeContext(
+                                                   'testDTML', 'testDTML.dtml')
 
     def tearDown(self):
+        cleanUp()
         SecurityTest.tearDown(self)
         FSDTMLMaker.tearDown(self)
 

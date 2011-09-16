@@ -5,8 +5,9 @@ Products.CMFCore Changelog
 ------------------------
 
 - tools: Converted several tools into utilities.
-  ActionsTool, CookieCrumbler, MemberDataTool, MembershipTool, RegistrationTool
-  and URLTool are now local utilities.
+  ActionsTool, CatalogTool, CookieCrumbler, MemberDataTool, MembershipTool,
+  RegistrationTool, SkinsTool, URLTool and WorkflowTool are now local
+  utilities.
 
 - MemberDataTool: Changed property modes to 'w' and added 'fullname' property.
 

@@ -16,7 +16,9 @@
 import unittest
 
 from AccessControl.Permission import Permission
+from zope.component import getSiteManager
 
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import WarningInterceptor
@@ -99,7 +101,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from Acquisition import aq_base
         from Products.CMFCore.interfaces import ITypeInformation
         from webdav.NullResource import NullResource
-        site = self._makeSite().__of__(self.root)
+        site = self._makeSite().__of__(self.app)
         tool = self._makeOne().__of__(site)
         meta_types = {}
         # Seems we get NullResource if the method couldn't be traverse to
@@ -121,7 +123,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
         from Products.CMFCore.tests.base.dummy import DummyFolder
         from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-        site = self._makeSite().__of__(self.root)
+        site = self._makeSite().__of__(self.app)
         acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -140,7 +142,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
         from Products.CMFCore.tests.base.dummy import DummyFolder
         from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-        site = self._makeSite().__of__(self.root)
+        site = self._makeSite().__of__(self.app)
         acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -160,7 +162,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
         from Products.CMFCore.tests.base.dummy import DummyFolder
         from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-        site = self._makeSite().__of__(self.root)
+        site = self._makeSite().__of__(self.app)
         acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -180,7 +182,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
         from Products.CMFCore.tests.base.dummy import DummyFolder
         from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-        site = self._makeSite().__of__(self.root)
+        site = self._makeSite().__of__(self.app)
         acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -201,7 +203,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
         from Products.CMFCore.tests.base.dummy import DummyFolder
         from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-        site = self._makeSite().__of__(self.root)
+        site = self._makeSite().__of__(self.app)
         acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -210,10 +212,13 @@ class TypesToolFunctionalTests(SecurityTest):
         tool._setObject('Dummy Content', FTI(**fti))
         folder = DummyFolder(id='folder', fake_product=1).__of__(site)
         tool.portal_workflow = DummyWorkflowTool(DummyWorkflow(False))
+        getSiteManager().registerUtility(tool.portal_workflow, IWorkflowTool)
 
         self.assertRaises(Unauthorized,
                           tool.constructContent,
                           'Dummy Content', container=folder, id='page1')
+
+        getSiteManager().unregisterUtility(provided=IWorkflowTool)
 
     def test_constructContent_simple_STI(self):
         from AccessControl import Unauthorized
@@ -225,7 +230,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
         from Products.CMFCore.tests.base.tidata import STI_SCRIPT
         from Products.PythonScripts.PythonScript import PythonScript
-        site = self._makeSite().__of__(self.root)
+        site = self._makeSite().__of__(self.app)
         acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -318,8 +323,8 @@ class TypeInfoTests(WarningInterceptor):
         taf = self._makeAndSetInstance( 'Allowing Folder'
                                       , allowed_content_types=( 'Hidden'
                                                               ,'Not Hidden'))
-        tih = self._makeAndSetInstance( 'Hidden', global_allow=0)
-        tnh = self._makeAndSetInstance( 'Not Hidden')
+        self._makeAndSetInstance('Hidden', global_allow=0)
+        self._makeAndSetInstance('Not Hidden')
         # make sure we're normally hidden but everything else is visible
         self.failIf     ( tnf.allowType( 'Hidden' ) )
         self.failUnless ( tnf.allowType( 'Not Hidden') )

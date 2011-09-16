@@ -19,13 +19,11 @@ ZopeTestCase.installProduct('ZSQLMethods', 1)
 
 from os.path import join
 
-from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
-from OFS.Folder import Folder
+from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSZSQLMethod import FSZSQLMethod
-from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
@@ -64,65 +62,49 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
     def setUp(self):
         FSZSQLMaker.setUp(self)
         SecurityTest.setUp(self)
-        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
-
-        self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
-        self.skins = self.root.portal_skins
-
-        self.skins._setObject( 'custom', Folder( 'custom' ) )
-        self.custom = self.skins.custom
-
-        self.skins._setObject( 'fsdir', Folder( 'fsdir' ) )
-        self.fsdir = self.skins.fsdir
-
-        self.fsdir._setObject( 'testsql'
-                             , self._makeOne( 'testsql', 'testsql.zsql' ) )
-
-        self.fsZSQL = self.fsdir.testsql
+        self.skins, self.custom, self.fsdir, self.fsZSQL = self._makeContext(
+                                                     'testsql', 'testsql.zsql')
 
     def tearDown(self):
+        cleanUp()
         SecurityTest.tearDown(self)
         FSZSQLMaker.tearDown(self)
 
-    def test_customize( self ):
+    def test_customize(self):
+        self.fsZSQL.manage_doCustomize(folder_path='custom')
 
-        self.fsZSQL.manage_doCustomize( folder_path='custom' )
+        self.assertEqual(len(self.custom.objectIds()), 1)
+        self.failUnless('testsql' in self.custom.objectIds())
 
-        self.assertEqual( len( self.custom.objectIds() ), 1 )
-        self.failUnless( 'testsql' in self.custom.objectIds() )   
-
-    def test_customize_alternate_root( self ):
-
+    def test_customize_alternate_root(self):
         from OFS.Folder import Folder
 
-        self.root.other = Folder('other')
+        self.app.other = Folder('other')
 
-        self.fsZSQL.manage_doCustomize( folder_path='other', root=self.root )
+        self.fsZSQL.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.failIf( 'testsql' in self.custom.objectIds() )   
-        self.failUnless( 'testsql' in self.root.other.objectIds() )   
+        self.failIf('testsql' in self.custom.objectIds())
+        self.failUnless('testsql' in self.app.other.objectIds())
 
-    def test_customize_fspath_as_dot( self ):
+    def test_customize_fspath_as_dot(self):
+        self.fsZSQL.manage_doCustomize(folder_path='.')
 
-        self.fsZSQL.manage_doCustomize( folder_path='.' )
+        self.failIf('testsql' in self.custom.objectIds())
+        self.failUnless('testsql' in self.skins.objectIds())
 
-        self.failIf( 'testsql' in self.custom.objectIds() )   
-        self.failUnless( 'testsql' in self.skins.objectIds() )   
-
-    def test_customize_manual_clone( self ):
-
+    def test_customize_manual_clone(self):
         from OFS.Folder import Folder
 
         clone = Folder('testsql')
 
-        self.fsZSQL.manage_doCustomize( folder_path='custom', obj=clone )
+        self.fsZSQL.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.failUnless( 'testsql' in self.custom.objectIds() )   
-        self.failUnless( aq_base(self.custom._getOb('testsql')) is clone )   
+        self.failUnless('testsql' in self.custom.objectIds())
+        self.failUnless(aq_base(self.custom._getOb('testsql')) is clone)
 
     def test_customize_properties(self):
         # Make sure all properties are coming across
-        self.fsZSQL.manage_doCustomize( folder_path='custom' )
+        self.fsZSQL.manage_doCustomize(folder_path='custom')
         zsql = self.custom.testsql
 
         self.assertEqual(zsql.title, 'This is a title')

@@ -23,6 +23,7 @@ from App.special_dtml import DTMLFile
 from ExtensionClass import Base
 from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
+from zope.component import queryUtility
 from zope.component import subscribers
 from zope.container.interfaces import IObjectAddedEvent
 from zope.container.interfaces import IObjectMovedEvent
@@ -32,13 +33,14 @@ from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
 from Products.CMFCore.interfaces import ICallableOpaqueItem
 from Products.CMFCore.interfaces import ICatalogAware
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IOpaqueItemManager
 from Products.CMFCore.interfaces import IWorkflowAware
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getToolByName
 
 logger = logging.getLogger('CMFCore.CMFCatalogAware')
 
@@ -55,7 +57,7 @@ class CatalogAware(Base):
     # The following method can be overridden using inheritance so that it's
     # possible to specify another catalog tool for a given content type
     def _getCatalogTool(self):
-        return getToolByName(self, 'portal_catalog', None)
+        return queryUtility(ICatalogTool)
 
     #
     #   'ICatalogAware' interface methods
@@ -145,14 +147,14 @@ class WorkflowAware(Base):
         """ Tab displaying the current workflows for the content object.
         """
         ob = self
-        wftool = self._getWorkflowTool()
+        wtool = self._getWorkflowTool()
         # XXX None ?
-        if wftool is not None:
-            wf_ids = wftool.getChainFor(ob)
+        if wtool is not None:
+            wf_ids = wtool.getChainFor(ob)
             states = {}
             chain = []
             for wf_id in wf_ids:
-                wf = wftool.getWorkflowById(wf_id)
+                wf = wtool.getWorkflowById(wf_id)
                 if wf is not None:
                     # XXX a standard API would be nice
                     if hasattr(wf, 'getReviewStateOf'):
@@ -175,7 +177,7 @@ class WorkflowAware(Base):
     # The following method can be overridden using inheritance so that it's
     # possible to specify another workflow tool for a given content type
     def _getWorkflowTool(self):
-        return getToolByName(self, 'portal_workflow', None)
+        return queryUtility(IWorkflowTool)
 
     #
     #   'IWorkflowAware' interface methods
@@ -184,9 +186,9 @@ class WorkflowAware(Base):
     def notifyWorkflowCreated(self):
         """ Notify the workflow that the object was just created.
         """
-        wftool = self._getWorkflowTool()
-        if wftool is not None:
-            wftool.notifyCreated(self)
+        wtool = self._getWorkflowTool()
+        if wtool is not None:
+            wtool.notifyCreated(self)
 
 InitializeClass(WorkflowAware)
 

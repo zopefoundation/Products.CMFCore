@@ -22,9 +22,10 @@ from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
-from zope.interface import implements
 from zope.component import adapts
 from zope.component import queryMultiAdapter
+from zope.component import queryUtility
+from zope.interface import implements
 from zope.interface import providedBy
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
@@ -32,17 +33,19 @@ from zope.interface.declarations import ObjectSpecificationDescriptor
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IIndexableObjectWrapper
-from Products.CMFCore.interfaces import IIndexableObject
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import IIndexableObject
+from Products.CMFCore.interfaces import IIndexableObjectWrapper
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.permissions import AccessInactivePortalContent
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _mergedLocalRoles
-from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
+
 
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 
@@ -66,9 +69,9 @@ class IndexableObjectWrapper(object):
 
     def __init__(self, ob, catalog):
         # look up the workflow variables for the object
-        wftool = getToolByName(catalog, 'portal_workflow', None)
-        if wftool is not None:
-            self.__vars = wftool.getCatalogVariablesFor(ob)
+        wtool = queryUtility(IWorkflowTool)
+        if wtool is not None:
+            self.__vars = wtool.getCatalogVariablesFor(ob)
         else:
             self.__vars = {}
         self.__ob = ob
@@ -301,3 +304,4 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         self.catalog_object(object, uid, idxs, update_metadata)
 
 InitializeClass(CatalogTool)
+registerToolInterface('portal_catalog', ICatalogTool)

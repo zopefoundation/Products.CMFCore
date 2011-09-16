@@ -20,7 +20,6 @@ ZopeTestCase.installProduct('PageTemplates', 1)
 
 from os.path import join as path_join
 
-from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
@@ -31,7 +30,6 @@ from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSPageTemplate import FSPageTemplate
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
-from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -134,7 +132,6 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
             self.fail('Calling a bad template did not raise an exception')
 
     def test_caching( self ):
-
         #   Test HTTP caching headers.
         self._setupCachingPolicyManager(DummyCachingManager())
         original_len = len( self.RESPONSE.headers )
@@ -146,7 +143,6 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         self.failUnless( 'bar' in self.RESPONSE.headers.keys() )
 
     def test_pt_properties( self ):
-
         script = self._makeOne( 'testPT', 'testPT.pt' )
         self.assertEqual( script.pt_source_file(), 'file:%s'
                                % path_join(self.skin_path_name, 'testPT.pt') )
@@ -160,26 +156,13 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
             self.assertEqual(script(), 'foo bar spam eggs\n')
 
 
-class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
+class FSPageTemplateCustomizationTests(SecurityTest, FSPTMaker):
 
     def setUp(self):
         FSPTMaker.setUp(self)
         SecurityTest.setUp(self)
-        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
-
-        self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
-        self.skins = self.root.portal_skins
-
-        self.skins._setObject( 'custom', Folder( 'custom' ) )
-        self.custom = self.skins.custom
-
-        self.skins._setObject( 'fsdir', Folder( 'fsdir' ) )
-        self.fsdir = self.skins.fsdir
-
-        self.fsdir._setObject( 'testPT'
-                             , self._makeOne( 'testPT', 'testPT.pt' ) )
-
-        self.fsPT = self.fsdir.testPT
+        self.skins, self.custom, self.fsdir, self.fsPT = self._makeContext(
+                                                         'testPT', 'testPT.pt')
 
     def tearDown(self):
         cleanUp()
@@ -187,15 +170,12 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
         FSPTMaker.tearDown(self)
 
     def test_customize( self ):
-
         self.fsPT.manage_doCustomize( folder_path='custom' )
 
         self.assertEqual( len( self.custom.objectIds() ), 1 )
         self.failUnless( 'testPT' in self.custom.objectIds() )
 
     def test_customize_alternate_root( self ):
-
-        from OFS.Folder import Folder
         self.root.other = Folder('other')
 
         self.fsPT.manage_doCustomize( folder_path='other', root=self.root )
@@ -204,14 +184,12 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
         self.failUnless( 'testPT' in self.root.other.objectIds() )  
 
     def test_customize_fspath_as_dot( self ):
-
         self.fsPT.manage_doCustomize( folder_path='.' )
 
         self.failIf( 'testPT' in self.custom.objectIds() )  
         self.failUnless( 'testPT' in self.skins.objectIds() )  
 
     def test_customize_manual_clone( self ):
-
         clone = Folder('testPT')
 
         self.fsPT.manage_doCustomize( folder_path='custom', obj=clone )
@@ -237,7 +215,6 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
 
 
     def test_dontExpandOnCreation( self ):
-
         self.fsPT.manage_doCustomize( folder_path='custom' )
 
         customized = self.custom.testPT

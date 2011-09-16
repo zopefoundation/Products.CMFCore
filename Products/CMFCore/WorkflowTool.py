@@ -11,27 +11,27 @@
 #
 ##############################################################################
 """ Basic workflow tool.
-
-$Id$
 """
 
 import sys
 
-from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base, aq_inner, aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
 from Persistence import PersistentMapping
-from zope.event import notify
-from zope.interface import implements
-from zope.interface import implementer
-from zope.component import adapts
 from zope.component import adapter
+from zope.component import adapts
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.event import notify
+from zope.globalrequest import getRequest
+from zope.interface import implementer
+from zope.interface import implements
+from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
@@ -44,6 +44,7 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import Message as _
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore.WorkflowCore import ActionRaisedExceptionEvent
 from Products.CMFCore.WorkflowCore import ActionSucceededEvent
@@ -469,13 +470,11 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
     def getDefaultChainFor(self, ob):
         """ Get the default chain, if applicable, for ob.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
-        types_tool = getToolByName( self, 'portal_types', None )
-        if ( types_tool is not None
-            and types_tool.getTypeInfo( ob ) is not None ):
+        request_container = RequestContainer(REQUEST=getRequest())
+        rich_context = self.__of__(request_container)
+        ttool = getToolByName(rich_context, 'portal_types', None)
+        if ttool is not None and ttool.getTypeInfo(ob) is not None:
             return self._default_chain
-
         return ()
 
     security.declarePrivate('getWorkflowIds')
@@ -503,18 +502,16 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
     #
     #   Helper methods
     #
-    security.declarePrivate( '_listTypeInfo' )
+    security.declarePrivate('_listTypeInfo')
     def _listTypeInfo(self):
-
         """ List the portal types which are available.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
-        pt = getToolByName(self, 'portal_types', None)
-        if pt is None:
-            return ()
-        else:
-            return pt.listTypeInfo()
+        request_container = RequestContainer(REQUEST=getRequest())
+        rich_context = self.__of__(request_container)
+        ttool = getToolByName(rich_context, 'portal_types', None)
+        if ttool is not None:
+            return ttool.listTypeInfo()
+        return ()
 
     security.declarePrivate( '_invokeWithNotification' )
     def _invokeWithNotification(self, wfs, ob, action, func, args, kw):
@@ -617,6 +614,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             ob.reindexObjectSecurity()
 
 InitializeClass(WorkflowTool)
+registerToolInterface('portal_workflow', IWorkflowTool)
 
 
 class DefaultWorkflowStatus(object):

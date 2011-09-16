@@ -22,9 +22,11 @@ from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
 from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
+from zope.component import queryUtility
 from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import IOldstyleDiscussable
 from Products.CMFCore.interfaces import IOldstyleDiscussionTool
@@ -33,7 +35,6 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import ReplyToItem
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
 
 
@@ -89,8 +90,9 @@ class OldDiscussable(Implicit):
             Often, the actual objects are not needed.  This is less expensive
             than fetching the objects.
         """
-        catalog = getToolByName(self.content, 'portal_catalog')
-        return catalog.searchResults(in_reply_to=
+        ctool = queryUtility(ICatalogTool)
+        if ctool is not None:
+            return ctool.searchResults(in_reply_to=
                                       urllib.unquote('/'+self.absolute_url(1)))
 
     security.declareProtected(View, 'getReplies')
@@ -99,11 +101,12 @@ class OldDiscussable(Implicit):
             Return a sequence of the DiscussionResponse objects which are
             associated with this Discussable
         """
-        catalog = getToolByName(self.content, 'portal_catalog')
-        results = self.getReplyResults()
-        rids    = map(lambda x: x.data_record_id_, results)
-        objects = map(catalog.getobject, rids)
-        return objects
+        ctool = queryUtility(ICatalogTool)
+        if ctool is not None:
+            results = self.getReplyResults()
+            rids = map(lambda x: x.data_record_id_, results)
+            objects = map(ctool.getobject, rids)
+            return objects
 
     def quotedContents(self):
         """

@@ -25,6 +25,7 @@ from zope.testing.cleanup import cleanUp
 from Products.CMFCore.CMFBTreeFolder import CMFBTreeFolder
 from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.MemberDataTool import MemberDataTool
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -73,7 +74,7 @@ class MembershipToolSecurityTests(SecurityTest):
         mtool = site.portal_membership
         members = site._setObject( 'Members', PortalFolder('Members') )
         acl_users = site._setObject( 'acl_users', DummyUserFolder() )
-        wtool = site._setObject( 'portal_workflow', DummyTool() )
+        getSiteManager().registerUtility(DummyTool(), IWorkflowTool)
 
         # permission
         mtool.createMemberArea('user_foo')
@@ -106,7 +107,7 @@ class MembershipToolSecurityTests(SecurityTest):
         mtool = site.portal_membership
         members = site._setObject( 'Members', CMFBTreeFolder('Members') )
         acl_users = site._setObject( 'acl_users', DummyUserFolder() )
-        wtool = site._setObject( 'portal_workflow', DummyTool() )
+        getSiteManager().registerUtility(DummyTool(), IWorkflowTool)
 
         # permission
         mtool.createMemberArea('user_foo')
@@ -140,7 +141,7 @@ class MembershipToolSecurityTests(SecurityTest):
         site = self._makeSite( self.root.folder )
         mtool = site.portal_membership
         members = site._setObject( 'Members', PortalFolder('Members') )
-        wtool = site._setObject( 'portal_workflow', DummyTool() )
+        getSiteManager().registerUtility(DummyTool(), IWorkflowTool)
 
         local_uf = DummyUserFolder()
         delattr( local_uf, NONLOCAL_USER_ID )

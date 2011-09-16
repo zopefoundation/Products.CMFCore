@@ -19,13 +19,11 @@ import Testing
 import os
 import re
 
-from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from App.Common import rfc1123_date
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.testing import TraversingZCMLLayer
-from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -185,26 +183,11 @@ class FSSTXMethodCustomizationTests(SecurityTest,
                                    ):
 
     def setUp(self):
-        from OFS.Folder import Folder
-
         _TemplateSwitcher.setUp(self)
         SecurityTest.setUp(self)
         FSSTXMaker.setUp(self)
-        newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
-
-        self.root._setObject( 'portal_skins', Folder( 'portal_skins' ) )
-        self.skins = self.root.portal_skins
-
-        self.skins._setObject( 'custom', Folder( 'custom' ) )
-        self.custom = self.skins.custom
-
-        self.skins._setObject( 'fsdir', Folder( 'fsdir' ) )
-        self.fsdir = self.skins.fsdir
-
-        self.fsdir._setObject( 'testSTX'
-                             , self._makeOne( 'testSTX', 'testSTX.stx' ) )
-
-        self.fsSTX = self.fsdir.testSTX
+        self.skins, self.custom, self.fsdir, self.fsSTX = self._makeContext(
+                                                      'testSTX', 'testSTX.stx')
 
     def tearDown(self):
         cleanUp()

@@ -20,6 +20,7 @@ ZopeTestCase.installProduct('CMFCore', 1)
 import os
 
 from OFS.Folder import Folder
+from zope.component import getSiteManager
 from zope.interface import implements
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
@@ -303,10 +304,11 @@ class _SkinsSetup(_DVRegistrySetup, BaseRegistryTests):
         fsdvs = [ (id, DirectoryView(id,
                                'Products.CMFCore.exportimport.tests:%s' % id))
                   for id in ids ]
-        site._setObject('portal_skins', DummySkinsTool(selections, fsdvs))
+        stool = DummySkinsTool(selections, fsdvs).__of__(site)
+        getSiteManager().registerUtility(stool, ISkinsTool)
 
         site.REQUEST = 'exists'
-        return site
+        return site, stool
 
     def setUp(self):
         BaseRegistryTests.setUp(self)
@@ -324,7 +326,7 @@ class exportSkinsToolTests(_SkinsSetup):
     def test_empty(self):
         from Products.CMFCore.exportimport.skins import exportSkinsTool
 
-        site = self._initSite()
+        site, _stool = self._initSite()
         context = DummyExportContext(site)
         exportSkinsTool(context)
 
@@ -340,8 +342,8 @@ class exportSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        tool = site.portal_skins
+        site, tool = self._initSite(selections=_PATHS, ids=_IDS)
+
         tool.default_skin = 'basic'
         tool.request_varname = 'skin_var'
         tool.allow_any = True
@@ -378,8 +380,8 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
+
         self.failUnless(skins_tool._getSelections().has_key('fancy'))
 
         context = DummyImportContext(site)
@@ -395,8 +397,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         self.failIf(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
@@ -420,8 +421,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         self.failIf(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
@@ -445,8 +445,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         self.failIf(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
@@ -467,8 +466,7 @@ class importSkinsToolTests(_SkinsSetup):
     def test_normal(self):
         from Products.CMFCore.exportimport.skins import importSkinsTool
 
-        site = self._initSite()
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite()
 
         self.failIf(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 0)
@@ -492,8 +490,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two')
         _PATHS = {'basic': 'one', 'fancy': 'two,one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         self.failIf(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
@@ -537,8 +534,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two')
         _PATHS = {'basic': 'one', 'fancy': 'two,one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         self.failIf(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
@@ -569,8 +565,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two')
         _PATHS = {'basic': 'one', 'fancy': 'two,one'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
@@ -607,8 +602,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two', 'three', 'four')
         _PATHS = {'basic': 'one,three,four', 'existing': 'one,two,four'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
@@ -637,8 +631,7 @@ class importSkinsToolTests(_SkinsSetup):
         _IDS = ('one', 'two', 'three', 'four')
         _PATHS = {'existing': 'one,three,four'}
 
-        site = self._initSite(selections=_PATHS, ids=_IDS)
-        skins_tool = site.portal_skins
+        site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 1)

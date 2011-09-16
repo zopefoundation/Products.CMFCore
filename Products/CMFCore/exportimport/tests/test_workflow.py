@@ -17,6 +17,7 @@ import unittest
 import Testing
 
 from OFS.Folder import Folder
+from zope.component import getSiteManager
 from zope.interface import implements
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
@@ -25,6 +26,7 @@ from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.testing import DummyWorkflow
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
@@ -157,10 +159,10 @@ class WorkflowToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 class _WorkflowSetup(BaseRegistryTests):
 
     def _initSite(self):
-        self.root.site = Folder(id='site')
-        site = self.root.site
-        self.root.site.portal_workflow = DummyWorkflowTool()
-        return site
+        site = Folder(id='site').__of__(self.app)
+        wtool = DummyWorkflowTool().__of__(site)
+        getSiteManager().registerUtility(wtool, IWorkflowTool)
+        return site, wtool
 
 
 class exportWorkflowToolTests(_WorkflowSetup):
@@ -170,7 +172,7 @@ class exportWorkflowToolTests(_WorkflowSetup):
     def test_empty(self):
         from Products.CMFCore.exportimport.workflow import exportWorkflowTool
 
-        site = self._initSite()
+        site, _wtool = self._initSite()
         context = DummyExportContext(site)
         exportWorkflowTool(context)
 
@@ -186,8 +188,8 @@ class exportWorkflowToolTests(_WorkflowSetup):
         WF_ID_NON = 'non_dcworkflow'
         WF_TITLE_NON = 'Non-DCWorkflow'
 
-        site = self._initSite()
-        wf_tool = site.portal_workflow
+        site, wf_tool = self._initSite()
+
         nondcworkflow = DummyWorkflow(WF_TITLE_NON)
         nondcworkflow.title = WF_TITLE_NON
         wf_tool._setObject(WF_ID_NON, nondcworkflow)
@@ -216,8 +218,7 @@ class importWorkflowToolTests(_WorkflowSetup):
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
 
-        site = self._initSite()
-        wf_tool = site.portal_workflow
+        site, wf_tool = self._initSite()
 
         for i in range(4):
             nondcworkflow = DummyWorkflow(WF_TITLE_NON % i)
@@ -242,8 +243,7 @@ class importWorkflowToolTests(_WorkflowSetup):
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
 
-        site = self._initSite()
-        wf_tool = site.portal_workflow
+        site, wf_tool = self._initSite()
 
         for i in range(4):
             nondcworkflow = DummyWorkflow(WF_TITLE_NON % i)
@@ -268,8 +268,7 @@ class importWorkflowToolTests(_WorkflowSetup):
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
 
-        site = self._initSite()
-        wf_tool = site.portal_workflow
+        site, wf_tool = self._initSite()
 
         for i in range(4):
             nondcworkflow = DummyWorkflow(WF_TITLE_NON % i)
@@ -297,8 +296,7 @@ class importWorkflowToolTests(_WorkflowSetup):
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
 
-        site = self._initSite()
-        wf_tool = site.portal_workflow
+        site, wf_tool = self._initSite()
 
         for i in range(4):
             nondcworkflow = DummyWorkflow(WF_TITLE_NON % i)
@@ -329,8 +327,7 @@ class importWorkflowToolTests(_WorkflowSetup):
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
 
-        site = self._initSite()
-        wf_tool = site.portal_workflow
+        site, wf_tool = self._initSite()
 
         for i in range(4):
             nondcworkflow = DummyWorkflow(WF_TITLE_NON % i)

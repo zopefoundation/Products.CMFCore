@@ -22,12 +22,14 @@ from Products.ZCTextIndex.Lexicon import CaseNormalizer
 from Products.ZCTextIndex.Lexicon import Splitter
 from Products.ZCTextIndex.Lexicon import StopWordRemover
 from Products.ZCTextIndex.ZCTextIndex import PLexicon
+from zope.component import getSiteManager
 
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
 from Products.CMFCore.CatalogTool import CatalogTool
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
 _EMPTY_EXPORT = """\
@@ -74,8 +76,9 @@ class _extra:
 class _CatalogToolSetup(BaseRegistryTests):
 
     def _initSite(self, foo=2):
-        site = self.root.site = Folder(id='site')
-        ctool = site.portal_catalog = CatalogTool()
+        site = Folder(id='site').__of__(self.app)
+        ctool = CatalogTool()
+        getSiteManager().registerUtility(ctool, ICatalogTool)
 
         for obj_id in ctool.objectIds():
             ctool._delObject(obj_id)
@@ -96,7 +99,7 @@ class _CatalogToolSetup(BaseRegistryTests):
 
             ctool.addColumn('foo_zctext')
 
-        return site
+        return site, ctool
 
 
 class exportCatalogToolTests(_CatalogToolSetup):
@@ -106,7 +109,7 @@ class exportCatalogToolTests(_CatalogToolSetup):
     def test_unchanged(self):
         from Products.CMFCore.exportimport.catalog import exportCatalogTool
 
-        site = self._initSite(0)
+        site, _ctool = self._initSite(0)
         context = DummyExportContext(site)
         exportCatalogTool(context)
 
@@ -119,7 +122,7 @@ class exportCatalogToolTests(_CatalogToolSetup):
     def test_normal(self):
         from Products.CMFCore.exportimport.catalog import exportCatalogTool
 
-        site = self._initSite(2)
+        site, _ctool = self._initSite(2)
         context = DummyExportContext(site)
         exportCatalogTool(context)
 
@@ -137,8 +140,7 @@ class importCatalogToolTests(_CatalogToolSetup):
     def test_empty_purge(self):
         from Products.CMFCore.exportimport.catalog import importCatalogTool
 
-        site = self._initSite(2)
-        ctool = site.portal_catalog
+        site, ctool = self._initSite(2)
 
         self.assertEqual(len(ctool.objectIds()), 1)
         self.assertEqual(len(ctool.indexes()), 1)
@@ -155,8 +157,7 @@ class importCatalogToolTests(_CatalogToolSetup):
     def test_empty_update(self):
         from Products.CMFCore.exportimport.catalog import importCatalogTool
 
-        site = self._initSite(2)
-        ctool = site.portal_catalog
+        site, ctool = self._initSite(2)
 
         self.assertEqual(len(ctool.objectIds()), 1)
         self.assertEqual(len(ctool.indexes()), 1)
@@ -174,8 +175,7 @@ class importCatalogToolTests(_CatalogToolSetup):
         from Products.CMFCore.exportimport.catalog import exportCatalogTool
         from Products.CMFCore.exportimport.catalog import importCatalogTool
 
-        site = self._initSite(2)
-        ctool = site.portal_catalog
+        site, ctool = self._initSite(2)
 
         self.assertEqual(len(ctool.objectIds()), 1)
         self.assertEqual(len(ctool.indexes()), 1)
@@ -202,8 +202,7 @@ class importCatalogToolTests(_CatalogToolSetup):
     def test_normal_update(self):
         from Products.CMFCore.exportimport.catalog import importCatalogTool
 
-        site = self._initSite(2)
-        ctool = site.portal_catalog
+        site, ctool = self._initSite(2)
 
         self.assertEqual(len(ctool.objectIds()), 1)
         self.assertEqual(len(ctool.indexes()), 1)

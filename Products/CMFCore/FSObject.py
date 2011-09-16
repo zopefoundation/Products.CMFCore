@@ -29,11 +29,12 @@ from OFS.Cache import Cacheable
 from OFS.role import RoleManager
 from OFS.SimpleItem import Item
 from Products.PythonScripts.standard import html_quote
+from zope.component import getUtility
 
+from Products.CMFCore.interfaces import ISkinsTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
 from Products.CMFCore.permissions import ViewManagementScreens
-from Products.CMFCore.utils import getToolByName
 
 
 class FSObject(Implicit, Item, RoleManager, Cacheable):
@@ -115,16 +116,10 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
                 # The permission was invalid, never mind
                 pass
 
-        skins_tool_namegetter = getattr(self, 'getSkinsFolderName', None)
-        if skins_tool_namegetter is not None:
-            skins_tool_name = skins_tool_namegetter()
-        else:
-            skins_tool_name = 'portal_skins'
-
         id = obj.getId()
         fpath = tuple(folder_path.split('/'))
         if root is None:
-            portal_skins = getToolByName(self, skins_tool_name)
+            portal_skins = getUtility(ISkinsTool)
         else:
             portal_skins = root
         if folder_path == '.':

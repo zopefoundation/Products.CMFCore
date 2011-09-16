@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Type registration tool.
-
-$Id$
 """
 
 import logging
@@ -45,6 +43,7 @@ from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import IAction
 from Products.CMFCore.interfaces import ITypeInformation
 from Products.CMFCore.interfaces import ITypesTool
+from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import AddPortalContent
 from Products.CMFCore.permissions import ManagePortal
@@ -52,7 +51,6 @@ from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _wwwdir
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import SimpleItemWithProperties
 from Products.CMFCore.utils import UniqueObject
 
@@ -354,10 +352,10 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     def _checkWorkflowAllowed(self, container):
         """ Check if a workflow veto object creation
         """
-        wtool = getToolByName(self, 'portal_workflow', None)
+        wtool = queryUtility(IWorkflowTool)
         if wtool is None:
             return True
-        
+
         type_id = self.getId()
         workflows = wtool.getWorkflowsFor(type_id)
         for workflow in workflows:
@@ -369,8 +367,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
             if not guard(container, type_id):
                 return False
-        
-        return True        
+
+        return True
 
     #
     #   'IAction' interface methods

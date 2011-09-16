@@ -16,11 +16,15 @@
 import unittest
 
 from Acquisition import Implicit
+from zope.component import getSiteManager
 from zope.interface import implements
+from zope.testing.cleanup import cleanUp
+
 from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.interfaces import IIndexableObject
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import IIndexableObject
+from Products.CMFCore.interfaces import IWorkflowTool
+from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
 
@@ -61,16 +65,19 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         return IndexableObjectWrapper
 
     def _makeOne(self, vars, obj):
-        self.root = FakeFolder()
-        self.root.portal_catalog = FakeCatalog()
-        self.root.portal_workflow = FakeWorkflowTool(vars)
-        catalog = self.root.portal_catalog
+        self.app = FakeFolder()
+        self.app.portal_catalog = FakeCatalog()
+        getSiteManager().registerUtility(FakeWorkflowTool(vars), IWorkflowTool)
+        catalog = self.app.portal_catalog
         return self._getTargetClass()(obj, catalog)
 
     def _makeContent(self, *args, **kw):
         from Products.CMFCore.tests.base.dummy import DummyContent
 
         return DummyContent(*args, **kw)
+
+    def tearDown(self):
+        cleanUp()
 
     def test_interfaces(self):
         from zope.interface.verify import verifyClass
@@ -149,13 +156,13 @@ class CatalogToolTests(SecurityTest):
     def loginWithRoles(self, *roles):
         from AccessControl.SecurityManagement import newSecurityManager
         from Products.CMFCore.tests.base.security import UserWithRoles
-        user = UserWithRoles(*roles).__of__(self.root)
+        user = UserWithRoles(*roles).__of__(self.app)
         newSecurityManager(None, user)
 
     def loginManager(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from Products.CMFCore.tests.base.security import OmnipotentUser
-        user = OmnipotentUser().__of__(self.root)
+        user = OmnipotentUser().__of__(self.app)
         newSecurityManager(None, user)
 
     def setupProxyRoles(self, *proxy_roles):
@@ -459,10 +466,9 @@ class CatalogToolTests(SecurityTest):
 
     def test_refreshCatalog(self):
         from Products.CMFCore.tests.base.dummy import DummySite
-        site = DummySite('site').__of__(self.root)
+        site = DummySite('site').__of__(self.app)
         site._setObject('dummy', self._makeContent(catalog=1))
-        site._setObject('portal_catalog', self._makeOne())
-        ctool = site.portal_catalog
+        ctool = self._makeOne().__of__(site)
         ctool.addIndex('meta_type', 'FieldIndex')
         ctool.catalog_object(site.dummy, '/dummy')
 
@@ -535,11 +541,10 @@ class CatalogToolTests(SecurityTest):
         def FakeWrapper(object, catalog):
             return object
 
-        from zope.component import getSiteManager
-        self.sm = getSiteManager()
-        self.sm.registerAdapter(FakeWrapper,
-                                (IContentish, ICatalogTool),
-                                IIndexableObject)
+        sm = getSiteManager()
+        sm.registerAdapter(FakeWrapper,
+                           (IContentish, ICatalogTool),
+                           IIndexableObject)
 
         dummy = DummyContent(catalog=1)
         ctool = self._makeOne()
