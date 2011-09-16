@@ -85,8 +85,7 @@ class MemberDataToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 class _MemberDataToolSetup(BaseRegistryTests):
 
     def _initSite(self, use_changed=False):
-        self.root.site = Folder(id='site')
-        site = self.root.site
+        site = Folder(id='site').__of__(self.app)
         mdtool = MemberDataTool()
         getSiteManager().registerUtility(mdtool, IMemberDataTool)
 
@@ -99,7 +98,7 @@ class _MemberDataToolSetup(BaseRegistryTests):
             mdtool._updateProperty('fullname', 'value3')
             mdtool.manage_addProperty('home_page', '', 'string')
 
-        return site
+        return site, mdtool
 
 
 class exportMemberDataToolTests(_MemberDataToolSetup):
@@ -110,7 +109,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
         from Products.CMFCore.exportimport.memberdata \
                 import exportMemberDataTool
 
-        site = self._initSite(use_changed=False)
+        site, _mdtool = self._initSite(use_changed=False)
         context = DummyExportContext(site)
         exportMemberDataTool(context)
 
@@ -124,7 +123,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
         from Products.CMFCore.exportimport.memberdata \
                 import exportMemberDataTool
 
-        site = self._initSite(use_changed=True)
+        site, _mdtool = self._initSite(use_changed=True)
         context = DummyExportContext(site)
         exportMemberDataTool(context)
 
@@ -143,8 +142,7 @@ class importMemberDataToolTests(_MemberDataToolSetup):
         from Products.CMFCore.exportimport.memberdata \
                 import importMemberDataTool
 
-        site = self._initSite()
-        mdtool = getSiteManager().getUtility(IMemberDataTool)
+        site, mdtool = self._initSite()
 
         context = DummyImportContext(site)
         context._files['memberdata.xml'] = _CHANGED_EXPORT

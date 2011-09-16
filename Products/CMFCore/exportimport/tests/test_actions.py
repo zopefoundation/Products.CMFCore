@@ -25,6 +25,7 @@ from zope.interface import implements
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IActionProvider
 from Products.CMFCore.interfaces import IActionsTool
+from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.testing import ExportImportZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.GenericSetup.testing import BodyAdapterTestCase
@@ -354,13 +355,12 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 class _ActionSetup(BaseRegistryTests):
 
     def _initSite(self, foo=2, bar=2):
-        self.root.site = DummySite('site')
-        site = self.root.site
-        site.portal_membership = DummyMembershipTool()
-
-        self.atool = DummyActionsTool()
-        getSiteManager().registerUtility(self.atool, IActionsTool)
-        self.atool.addActionProvider('portal_actions')
+        site = DummySite('site')
+        sm = getSiteManager()
+        sm.registerUtility(DummyMembershipTool(), IMembershipTool)
+        atool = DummyActionsTool()
+        atool.addActionProvider('portal_actions')
+        sm.registerUtility(atool, IActionsTool)
 
         if foo > 0:
             site.portal_foo = DummyTool()
@@ -373,7 +373,7 @@ class _ActionSetup(BaseRegistryTests):
                                       permission=(),
                                       category='dummy',
                                       visible=1)
-            self.atool.addActionProvider('portal_foo')
+            atool.addActionProvider('portal_foo')
 
         if bar > 0:
             site.portal_bar = DummyTool()
@@ -386,9 +386,9 @@ class _ActionSetup(BaseRegistryTests):
                                       permission=('Manage portal',),
                                       category='dummy',
                                       visible=0)
-            self.atool.addActionProvider('portal_bar')
+            atool.addActionProvider('portal_bar')
 
-        return site
+        return site, atool
 
 
 class exportActionProvidersTests(_ActionSetup):
@@ -399,7 +399,7 @@ class exportActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import exportActionProviders
 
-        site = self._initSite(0, 0)
+        site, _atool = self._initSite(0, 0)
         context = DummyExportContext(site)
         exportActionProviders(context)
 
@@ -413,15 +413,15 @@ class exportActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import exportActionProviders
 
-        site = self._initSite()
+        site, atool = self._initSite()
         # Set up an old action for added difficulty
-        self.atool.addAction(id='baz',
-                             name='Baz',
-                             action='baz',
-                             condition='python:1',
-                             permission=(),
-                             category='dummy',
-                             visible=1)
+        atool.addAction(id='baz',
+                        name='Baz',
+                        action='baz',
+                        condition='python:1',
+                        permission=(),
+                        category='dummy',
+                        visible=1)
 
         context = DummyExportContext(site)
         exportActionProviders(context)
@@ -441,8 +441,7 @@ class importActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import importActionProviders
 
-        site = self._initSite(2, 0)
-        atool = self.atool
+        site, atool = self._initSite(2, 0)
 
         self.assertEqual(len(atool.listActionProviders()), 2)
         self.failUnless('portal_foo' in atool.listActionProviders())
@@ -461,8 +460,7 @@ class importActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import importActionProviders
 
-        site = self._initSite(2, 0)
-        atool = self.atool
+        site, atool = self._initSite(2, 0)
 
         self.assertEqual(len(atool.listActionProviders()), 2)
         self.failUnless('portal_foo' in atool.listActionProviders())
@@ -481,8 +479,7 @@ class importActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import importActionProviders
 
-        site = self._initSite(2, 0)
-        atool = self.atool
+        site, atool = self._initSite(2, 0)
 
         self.assertEqual(len(atool.listActionProviders()), 2)
         self.failUnless('portal_foo' in atool.listActionProviders())
@@ -502,8 +499,7 @@ class importActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import importActionProviders
 
-        site = self._initSite(1, 1)
-        atool = self.atool
+        site, atool = self._initSite(1, 1)
         foo = site.portal_foo
         bar = site.portal_bar
 
@@ -549,8 +545,7 @@ class importActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import importActionProviders
 
-        site = self._initSite(0, 0)
-        atool = self.atool
+        site, atool = self._initSite(0, 0)
 
         context = DummyImportContext(site)
         context._files['actions.xml'] = _I18N_IMPORT
@@ -575,8 +570,7 @@ class importActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import importActionProviders
 
-        site = self._initSite(0, 0)
-        atool = self.atool
+        site, atool = self._initSite(0, 0)
 
         context = DummyImportContext(site)
         context._files['actions.xml'] = _NEWSYTLE_EXPORT
@@ -600,8 +594,7 @@ class importActionProvidersTests(_ActionSetup):
         from Products.CMFCore.exportimport.actions \
                 import importActionProviders
 
-        site = self._initSite(2, 2)
-        atool = self.atool
+        site, atool = self._initSite(2, 2)
 
         self.assertEqual(atool.listActionProviders(),
                           ['portal_actions', 'portal_foo', 'portal_bar'])
