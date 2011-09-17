@@ -17,6 +17,8 @@ import unittest
 
 from Acquisition import Implicit
 from zope.component import getSiteManager
+from zope.globalrequest import clearRequest
+from zope.globalrequest import setRequest
 from zope.interface import implements
 from zope.testing.cleanup import cleanUp
 
@@ -25,6 +27,7 @@ from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IIndexableObject
 from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.tests.base.dummy import DummyContent
+from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
 
@@ -65,10 +68,8 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         return IndexableObjectWrapper
 
     def _makeOne(self, vars, obj):
-        self.app = FakeFolder()
-        self.app.portal_catalog = FakeCatalog()
         getSiteManager().registerUtility(FakeWorkflowTool(vars), IWorkflowTool)
-        catalog = self.app.portal_catalog
+        catalog = FakeCatalog().__of__(FakeFolder())
         return self._getTargetClass()(obj, catalog)
 
     def _makeContent(self, *args, **kw):
@@ -464,9 +465,24 @@ class CatalogToolTests(SecurityTest):
         self.assertEqual(kw, {'expires':
                               {'query': (5, 7), 'range': 'min:max'}})
 
+    def test_searchResults_brain(self):
+        site = DummySite('site')
+        site._setObject('dummy', self._makeContent(catalog=1))
+        ctool = self._makeOne().__of__(site)
+        ctool.addIndex('meta_type', 'FieldIndex')
+        ctool.catalog_object(site.dummy, '/dummy')
+
+        query = {'meta_type': 'Dummy'}
+        setRequest(self.REQUEST)
+        brain = ctool.searchResults(query)[0]
+        clearRequest()
+
+        self.assertEqual('/dummy', brain.getPath())
+        self.assertEqual('http://nohost/dummy', brain.getURL())
+        self.assertEqual(site.dummy, brain.getObject())
+
     def test_refreshCatalog(self):
-        from Products.CMFCore.tests.base.dummy import DummySite
-        site = DummySite('site').__of__(self.app)
+        site = DummySite('site')
         site._setObject('dummy', self._makeContent(catalog=1))
         ctool = self._makeOne().__of__(site)
         ctool.addIndex('meta_type', 'FieldIndex')

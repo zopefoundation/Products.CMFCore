@@ -25,11 +25,13 @@ from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.component import adapts
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
+from zope.globalrequest import getRequest
 from zope.interface import implements
 from zope.interface import providedBy
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
+from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
@@ -228,7 +230,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                     range = 'min:max'
                 kw[k] = {'query': query, 'range': range}
 
-        return ZCatalog.searchResults(self, REQUEST, **kw)
+        return self.unrestrictedSearchResults(REQUEST, **kw)
 
     __call__ = searchResults
 
@@ -245,7 +247,14 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         If you're in doubt if you should use this method or
         'searchResults' use the latter.
         """
-        return ZCatalog.searchResults(self, REQUEST, **kw)
+        # usually the REQUEST argument is no request, so we always look it up
+        real_request = getRequest()
+        if real_request is not None:
+            request_container = RequestContainer(REQUEST=real_request)
+            mod_self = self.__of__(request_container)
+        else:
+            mod_self = self
+        return ZCatalog.searchResults(mod_self, REQUEST, **kw)
 
     def __url(self, ob):
         return '/'.join( ob.getPhysicalPath() )
@@ -256,8 +265,6 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                        pghandler=None):
         # Wraps the object with workflow and accessibility
         # information just before cataloging.
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
         if IIndexableObject.providedBy(obj):
             w = obj
         else:
@@ -304,5 +311,4 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         self.catalog_object(object, uid, idxs, update_metadata)
 
 InitializeClass(CatalogTool)
-# XXX: fix this
-# registerToolInterface('portal_catalog', ICatalogTool)
+registerToolInterface('portal_catalog', ICatalogTool)
