@@ -17,6 +17,8 @@ from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
+from Acquisition import aq_chain
+from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
@@ -247,14 +249,25 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         If you're in doubt if you should use this method or
         'searchResults' use the latter.
         """
+        # XXX: catalog brains use self.REQUEST in getURL
         # usually the REQUEST argument is no request, so we always look it up
         real_request = getRequest()
         if real_request is not None:
-            request_container = RequestContainer(REQUEST=real_request)
-            mod_self = self.__of__(request_container)
+            mod_self = RequestContainer(REQUEST=real_request)
+            for item in reversed(aq_chain(self)):
+                if getattr(item, '__of__', None) is not None:
+                    mod_self = item.__of__(mod_self)
         else:
             mod_self = self
         return ZCatalog.searchResults(mod_self, REQUEST, **kw)
+
+    def getPhysicalRoot(self):
+        # XXX: catalog brains use getPhysicalRoot for wrapping objects
+        app = aq_parent(self).getPhysicalRoot()
+        request = getRequest()
+        if request is not None and getattr(app, '__of__', None) is not None:
+            app = app.__of__(RequestContainer(REQUEST=request))
+        return app
 
     def __url(self, ob):
         return '/'.join( ob.getPhysicalPath() )

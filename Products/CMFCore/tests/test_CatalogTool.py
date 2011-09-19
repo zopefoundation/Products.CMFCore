@@ -480,6 +480,7 @@ class CatalogToolTests(SecurityTest):
         self.assertEqual('/dummy', brain.getPath())
         self.assertEqual('http://nohost/dummy', brain.getURL())
         self.assertEqual(site.dummy, brain.getObject())
+        self.assertTrue(hasattr(brain.getObject(), 'REQUEST'))
 
     def test_refreshCatalog(self):
         site = DummySite('site')
