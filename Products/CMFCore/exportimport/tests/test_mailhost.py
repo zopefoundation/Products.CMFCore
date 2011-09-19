@@ -30,13 +30,15 @@ from Products.CMFCore.testing import ExportImportZCMLLayer
 _DEFAULT_EXPORT = """\
 <?xml version="1.0"?>
 <object name="MailHost" meta_type="Mail Host" smtp_host="localhost"
-   smtp_port="25" smtp_pwd="" smtp_uid=""/>
+   smtp_port="25" smtp_pwd="" smtp_queue="False" smtp_queue_directory="/tmp"
+   smtp_uid=""/>
 """
 
 _CHANGED_EXPORT = """\
 <?xml version="1.0"?>
 <object name="MailHost" meta_type="Mail Host" smtp_host="value2"
-   smtp_port="1" smtp_pwd="value1" smtp_uid="value3"/>
+   smtp_port="1" smtp_pwd="value1" smtp_queue="False"
+   smtp_queue_directory="/tmp" smtp_uid="value3"/>
 """
 
 
