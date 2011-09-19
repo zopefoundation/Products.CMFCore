@@ -78,7 +78,7 @@
       title="Catalog Tool"
       description="Import catalog tool's sub-objects, indexes and columns."
       handler="Products.CMFCore.exportimport.catalog.importCatalogTool">
-    <depends name="toolset"/>
+    <depends name="componentregistry"/>
   </genericsetup:importStep>
 
   <genericsetup:exportStep
@@ -108,7 +108,7 @@
       title="Cookie Authentication"
       description="Import cookie crumbler settings"
       handler="Products.CMFCore.exportimport.cookieauth.importCookieCrumbler">
-    <depends name="toolset"/>
+    <depends name="componentregistry"/>
   </genericsetup:importStep>
 
   <genericsetup:exportStep
@@ -196,7 +196,7 @@
       title="Workflow Tool"
       description="Import workflow tool's workflow definitions and supporting scripts."
       handler="Products.CMFCore.exportimport.workflow.importWorkflowTool">
-    <depends name="toolset"/>
+    <depends name="componentregistry"/>
   </genericsetup:importStep>
 
   <genericsetup:exportStep
