@@ -41,6 +41,12 @@ _CHANGED_EXPORT = """\
    smtp_queue_directory="/tmp" smtp_uid="value3"/>
 """
 
+_ZOPE211_EXPORT = """\
+<?xml version="1.0"?>
+<object name="MailHost" meta_type="Mail Host" smtp_host="value2"
+   smtp_port="1" smtp_pwd="value1" smtp_uid="value3"/>
+"""
+
 
 class _MailHostSetup(BaseRegistryTests):
 
@@ -99,7 +105,6 @@ class importMailHostTests(_MailHostSetup):
         from Products.CMFCore.exportimport.mailhost import importMailHost
 
         site, mh = self._initSite()
-
         context = DummyImportContext(site)
         context._files['mailhost.xml'] = _CHANGED_EXPORT
         importMailHost(context)
@@ -108,6 +113,23 @@ class importMailHostTests(_MailHostSetup):
         self.assertEqual(mh.smtp_host, 'value2')
         self.assertEqual(mh.smtp_uid, 'value3')
         self.assertEqual(mh.smtp_port, 1)
+        self.assertEqual(mh.smtp_queue, False)
+        self.assertEqual(mh.smtp_queue_directory, '/tmp')
+
+    def test_migration(self):
+        from Products.CMFCore.exportimport.mailhost import importMailHost
+
+        site, mh = self._initSite()
+        context = DummyImportContext(site)
+        context._files['mailhost.xml'] = _ZOPE211_EXPORT
+        importMailHost(context)
+
+        self.assertEqual(mh.smtp_pwd, 'value1')
+        self.assertEqual(mh.smtp_host, 'value2')
+        self.assertEqual(mh.smtp_uid, 'value3')
+        self.assertEqual(mh.smtp_port, 1)
+        self.assertEqual(mh.smtp_queue, False)
+        self.assertEqual(mh.smtp_queue_directory, '/tmp')
 
 
 def test_suite():
