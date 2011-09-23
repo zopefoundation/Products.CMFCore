@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Basic Site content type registry
-
-$Id$
 """
 
 import os
@@ -24,14 +22,15 @@ from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from Persistence import PersistentMapping
+from zope.component import getUtility
 from zope.interface import implements
 from ZPublisher.mapply import mapply
 
 from Products.CMFCore.interfaces import IContentTypeRegistry
 from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getToolByName
 
 
 class MajorMinorPredicate( SimpleItem ):
@@ -168,7 +167,7 @@ class ExtensionPredicate( SimpleItem ):
         if self.extensions is None:
             return 0
 
-        base, ext = os.path.splitext( name )
+        _base, ext = os.path.splitext(name)
         if ext and ext[ 0 ] == '.':
             ext = ext[ 1: ]
 
@@ -426,26 +425,23 @@ class ContentTypeRegistry( SimpleItem ):
                               + '?manage_tabs_message=Predicate+removed.'
                               )
 
-    security.declareProtected( ManagePortal, 'manage_testRegistry' )
-    manage_testRegistry = DTMLFile( 'registryTest', _dtmldir )
+    security.declareProtected(ManagePortal, 'manage_testRegistry')
+    manage_testRegistry = DTMLFile('registryTest', _dtmldir)
 
-    security.declareProtected( ManagePortal, 'doTestRegistry' )
-    def doTestRegistry( self, name, content_type, body, REQUEST ):
+    security.declareProtected(ManagePortal, 'doTestRegistry')
+    def doTestRegistry(self, name, content_type, body, REQUEST):
         """
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on a non-utility tool
-        typeName = self.findTypeName( name, content_type, body )
+        typeName = self.findTypeName(name, content_type, body)
         if typeName is None:
             typeName = '<unknown>'
         else:
-            types_tool = getToolByName(self, 'portal_types')
-            typeName = types_tool.getTypeInfo(typeName).Title()
-        REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                               + '/manage_testRegistry'
-                               + '?testResults=Type:+%s'
-                                       % urllib.quote( typeName )
-                               )
+            ttool = getUtility(ITypesTool)
+            typeName = ttool.getTypeInfo(typeName).Title()
+        REQUEST['RESPONSE'].redirect(self.absolute_url()
+                                     + '/manage_testRegistry'
+                                     + '?testResults=Type:+%s'
+                                     % urllib.quote(typeName))
 
     #
     #   Predicate manipulation
@@ -532,7 +528,7 @@ class ContentTypeRegistry( SimpleItem ):
         """
             Bind the given predicate to a particular type object.
         """
-        pred, oldTypeObjName = self.predicates[ predicate_id ]
+        pred, _oldTypeObjName = self.predicates[predicate_id]
         self.predicates[ predicate_id ] = ( pred, typeObjectName )
 
     #

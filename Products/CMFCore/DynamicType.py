@@ -18,14 +18,15 @@ from Acquisition import aq_get
 from App.class_init import InitializeClass
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
+from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements
 from zope.publisher.defaultview import queryDefaultViewName
 
 from Products.CMFCore.Expression import getExprContext
 from Products.CMFCore.interfaces import IDynamicType
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.utils import getToolByName
 
 
 class DynamicType:
@@ -68,7 +69,7 @@ class DynamicType:
     def getTypeInfo(self):
         """ Get the TypeInformation object specified by the portal type.
         """
-        tool = getToolByName(self, 'portal_types', None)
+        tool = queryUtility(ITypesTool)
         if tool is None:
             return None
         return tool.getTypeInfo(self)  # Can return None.

@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ PortalFolder: CMF-enabled Folder objects.
-
-$Id$
 """
 
 import base64
@@ -25,6 +23,7 @@ from Acquisition import aq_parent, aq_inner, aq_base
 from App.class_init import InitializeClass
 from OFS.Folder import Folder
 from OFS.OrderSupport import OrderSupport
+from zope.component import getUtility
 from zope.component.factory import Factory
 from zope.interface import implements
 
@@ -36,6 +35,7 @@ from Products.CMFCore.exceptions import zExceptions_Unauthorized
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.interfaces import IMutableMinimalDublinCore
 from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.permissions import AddPortalContent
 from Products.CMFCore.permissions import AddPortalFolders
 from Products.CMFCore.permissions import DeleteObjects
@@ -125,9 +125,9 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
             List type info objects for types which can be added in
             this folder.
         """
-        portal_types = getToolByName(self, 'portal_types')
-        myType = portal_types.getTypeInfo(self)
-        result = portal_types.listTypeInfo()
+        ttool = getUtility(ITypesTool)
+        myType = ttool.getTypeInfo(self)
+        result = ttool.listTypeInfo()
 
         if myType is not None:
             return [t for t in result if myType.allowType(t.getId()) and
@@ -149,8 +149,8 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         pt = filt.get('portal_type', [])
         if isinstance(pt, basestring):
             pt = [pt]
-        types_tool = getToolByName(self, 'portal_types')
-        allowed_types = types_tool.listContentTypes()
+        ttool = getUtility(ITypesTool)
+        allowed_types = ttool.listContentTypes()
         if not pt:
             pt = allowed_types
         else:
@@ -284,14 +284,14 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
     def invokeFactory(self, type_name, id, RESPONSE=None, *args, **kw):
         """ Invokes the portal_types tool.
         """
-        pt = getToolByName(self, 'portal_types')
-        myType = pt.getTypeInfo(self)
+        ttool = getUtility(ITypesTool)
+        myType = ttool.getTypeInfo(self)
 
         if myType is not None:
             if not myType.allowType( type_name ):
                 raise ValueError('Disallowed subobject type: %s' % type_name)
 
-        return pt.constructContent(type_name, self, id, RESPONSE, *args, **kw)
+        return ttool.constructContent(type_name, self, id, RESPONSE, *args, **kw)
 
     security.declareProtected(AddPortalContent, 'checkIdAvailable')
     def checkIdAvailable(self, id):
@@ -405,15 +405,15 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
             if type_name is not None:
 
-                pt = getToolByName(self, 'portal_types')
-                myType = pt.getTypeInfo(self)
+                ttool = getUtility(ITypesTool)
+                myType = ttool.getTypeInfo(self)
 
                 if myType is not None and not myType.allowType(type_name):
                     raise ValueError('Disallowed subobject type: %s'
                                         % type_name)
 
                 # Check for workflow guards
-                objType = pt.getTypeInfo(type_name)
+                objType = ttool.getTypeInfo(type_name)
                 if ( objType is not None and
                      not objType._checkWorkflowAllowed(self) ):
                     raise ValueError('Pasting not allowed in this workflow')

@@ -19,10 +19,12 @@ import Testing
 from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
 from OFS.Folder import Folder
+from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.exceptions import NotFound
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import TraversingEventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyObject
@@ -47,15 +49,16 @@ class PortalContentTests(unittest.TestCase):
 
     def _setupCallTests(self, aliases):
         # root
-        root = Folder( 'root' )
+        root = Folder('root')
 
         # set up dummy type info with problematic double-default alias
-        root._setObject( 'portal_types', DummyTool() )
-        root.portal_types._type_actions = aliases
+        ttool = DummyTool()
+        ttool._type_actions = aliases
+        getSiteManager().registerUtility(ttool, ITypesTool)
 
         # dummy content and skin
-        root._setObject( 'dummycontent', DummyContent() )
-        root._setObject( 'dummy_view', DummyObject() )
+        root._setObject('dummycontent', DummyContent())
+        root._setObject('dummy_view', DummyObject())
         return root.dummycontent
 
     def test_DoubleDefaultAlias(self):
@@ -91,8 +94,8 @@ class TestContentCopyPaste(SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
 
-        self.root._setObject('site', DummySite('site'))
-        self.site = self.root.site
+        self.app._setObject('site', DummySite('site'))
+        self.site = self.app.site
         self.acl_users = self.site._setObject('acl_users', DummyUserFolder())
 
     def _initContent(self, folder, id):

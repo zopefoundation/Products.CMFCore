@@ -16,11 +16,13 @@
 import unittest
 import Testing
 
+from zope.component import getSiteManager
 from zope.interface import implements
 
 from Products.CMFCore.interfaces import ICallableOpaqueItem
 from Products.CMFCore.interfaces import ICallableOpaqueItemEvents
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.testing import TraversingEventZCMLLayer
 from Products.CMFCore.tests.base.dummy \
@@ -85,7 +87,7 @@ class OpaqueBase:
         self.id = id
         setattr(obj, id, self)
 
-    def __call__():
+    def __call__(self):
         return
 
     def getId(self):
@@ -137,23 +139,21 @@ class ManageBeforeAfterTests(SecurityTest):
     def setUp(self):
         SecurityTest.setUp(self)
 
-        root = self.root
-
         # setting up types tool
-        root._setObject( 'portal_types', TypesTool() )
+        getSiteManager().registerUtility(TypesTool(), ITypesTool)
 
         # setup portal
         try:
-            root._delObject('test')
+            self.app._delObject('test')
         except AttributeError:
             pass
-        root._setObject('test', PortalFolder('test', ''))
-        self.test = test = self.root.test
+        self.app._setObject('test', PortalFolder('test', ''))
+        self.test = test = self.app.test
 
         # setting up folders
-        test._setObject( 'folder', PortalFolder( 'folder', '' ) )
+        test._setObject('folder', PortalFolder('folder', ''))
         folder = self.folder = test.folder
-        folder._setObject( 'sub', PortalFolder( 'sub', '' ) )
+        folder._setObject('sub', PortalFolder('sub', ''))
         sub = self.sub = folder.sub
 
         #----- hacks to allow pasting (see also test_PortalFolder)
@@ -177,7 +177,7 @@ class ManageBeforeAfterTests(SecurityTest):
         dummy = addDummyContent(folder, 'dummy', None)
 
         # WAAAA! must get _p_jar set
-        old, dummy._p_jar = sub._p_jar, self.root._p_jar
+        old, dummy._p_jar = sub._p_jar, self.app._p_jar
         try:
             cp = folder.manage_copyObjects(ids=['dummy'])
             sub.manage_pasteObjects(cp)
@@ -194,7 +194,7 @@ class ManageBeforeAfterTests(SecurityTest):
         self.failIf(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
-        old, dummy._p_jar = sub._p_jar, self.root._p_jar
+        old, dummy._p_jar = sub._p_jar, self.app._p_jar
         try:
             cp = folder.manage_copyObjects(ids=['dummy'])
             sub.manage_pasteObjects(cp)
@@ -215,7 +215,7 @@ class ManageBeforeAfterTests(SecurityTest):
         self.failIf(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
-        old, dummy._p_jar = sub._p_jar, self.root._p_jar
+        old, dummy._p_jar = sub._p_jar, self.app._p_jar
         try:
             cp = folder.manage_copyObjects(ids=['dummy'])
             sub.manage_pasteObjects(cp)
@@ -236,7 +236,7 @@ class ManageBeforeAfterTests(SecurityTest):
         self.failIf(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
-        old, dummy._p_jar = sub._p_jar, self.root._p_jar
+        old, dummy._p_jar = sub._p_jar, self.app._p_jar
         try:
             cp = folder.manage_copyObjects(ids=['dummy'])
             sub.manage_pasteObjects(cp)
@@ -258,7 +258,7 @@ class ManageBeforeAfterTests(SecurityTest):
         self.failIf(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
-        old, dummy._p_jar = sub._p_jar, self.root._p_jar
+        old, dummy._p_jar = sub._p_jar, self.app._p_jar
         try:
             cp = folder.manage_copyObjects(ids=['dummy'])
             sub.manage_pasteObjects(cp)

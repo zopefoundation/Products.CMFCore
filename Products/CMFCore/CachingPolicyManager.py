@@ -818,34 +818,30 @@ class CachingPolicyManager( SimpleItem, CacheManager ):
     #
     #   'portal_caching' interface methods
     #
-    security.declareProtected( View, 'getHTTPCachingHeaders' )
-    def getHTTPCachingHeaders( self, content, view_method, keywords, time=None):
+    security.declareProtected(View, 'getHTTPCachingHeaders')
+    def getHTTPCachingHeaders(self, content, view_method, keywords, time=None):
         """
             Return a list of HTTP caching headers based on 'content',
             'view_method', and 'keywords'.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # createCPContext depends on a non-utility tool
-        context = createCPContext( content, view_method, keywords, time=time )
-        for policy_id, policy in self.listPolicies():
+        context = createCPContext(content, view_method, keywords, time=time)
+        for _policy_id, policy in self.listPolicies():
 
-            headers = policy.getHeaders( context )
+            headers = policy.getHeaders(context)
             if headers:
                 return headers
 
         return ()
 
-    security.declareProtected( View, 'getModTimeAndETag' )
-    def getModTimeAndETag( self, content, view_method, keywords, time=None):
+    security.declareProtected(View, 'getModTimeAndETag')
+    def getModTimeAndETag(self, content, view_method, keywords, time=None):
         """ Return the modification time and ETag for the content object,
             view method, and keywords as the tuple (modification_time, etag,
             set_last_modified_header), where modification_time is a DateTime,
             or None.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # createCPContext depends on a non-utility tool
-        context = createCPContext( content, view_method, keywords, time=time )
-        for policy_id, policy in self.listPolicies():
+        context = createCPContext(content, view_method, keywords, time=time)
+        for _policy_id, policy in self.listPolicies():
             if policy.getEnable304s() and policy.testPredicate(context):
 
                 last_modified = policy._mtime_func(context)

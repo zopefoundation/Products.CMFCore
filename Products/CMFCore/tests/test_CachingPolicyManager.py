@@ -31,6 +31,7 @@ from zope.interface.verify import verifyClass
 from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.FSPageTemplate import FSPageTemplate
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
@@ -645,8 +646,9 @@ class CachingPolicyManager304Tests(TransactionalTest, FSDVTest):
 
         # Create a fake portal and the tools we need
         self.portal = DummySite(id='portal').__of__(self.app)
-        self.portal._setObject('portal_types', DummyTool())
-        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
+        sm = getSiteManager()
+        sm.registerUtility(DummyTool(), IMembershipTool)
+        sm.registerUtility(DummyTool(), ITypesTool)
 
         # This is a FSPageTemplate that will be used as the View for
         # our content objects. It doesn't matter what it returns.
@@ -713,7 +715,9 @@ class CachingPolicyManager304Tests(TransactionalTest, FSDVTest):
                       enable_304s = 0)
 
     def tearDown(self):
-        getSiteManager().unregisterUtility(provided=IMembershipTool)
+        sm = getSiteManager()
+        sm.unregisterUtility(provided=IMembershipTool)
+        sm.registerUtility(provided=ITypesTool)
         TransactionalTest.tearDown(self)
         FSDVTest.tearDown(self)
 
@@ -894,9 +898,10 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
 
         # Create a fake portal and the tools we need
         self.portal = DummySite(id='portal').__of__(self.app)
-        self.portal._setObject('portal_types', DummyTool())
         CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
-        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
+        sm = getSiteManager()
+        sm.registerUtility(DummyTool(), IMembershipTool)
+        sm.registerUtility(DummyTool(), ITypesTool)
 
     def tearDown(self):
         TransactionalTest.tearDown(self)

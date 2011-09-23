@@ -11,11 +11,10 @@
 #
 ##############################################################################
 """Namespace for CMF specific add views.
-
-$Id$
 """
 
 from zope.component import adapts
+from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.interface import Interface
@@ -23,7 +22,7 @@ from zope.location.interfaces import LocationError
 from zope.traversing.interfaces import ITraversable
 
 from interfaces import IFolderish
-from utils import getToolByName
+from Products.CMFCore.interfaces import ITypesTool
 
 
 class AddViewTraverser(object):
@@ -39,7 +38,7 @@ class AddViewTraverser(object):
         self.request = request
 
     def traverse(self, name, ignored):
-        ttool = getToolByName(self.context, 'portal_types')
+        ttool = getUtility(ITypesTool)
         ti = ttool.getTypeInfo(name)
         if ti is not None:
             add_view = queryMultiAdapter((self.context, self.request, ti),

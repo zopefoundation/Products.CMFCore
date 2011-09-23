@@ -18,6 +18,7 @@ import Testing
 
 from OFS.SimpleItem import SimpleItem
 from zope.component import adapter
+from zope.component import getSiteManager
 from zope.component import provideHandler
 from zope.interface import implements
 from zope.interface.verify import verifyClass
@@ -27,6 +28,7 @@ from Products.CMFCore.interfaces import IActionRaisedExceptionEvent
 from Products.CMFCore.interfaces import IActionSucceededEvent
 from Products.CMFCore.interfaces import IActionWillBeInvokedEvent
 from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IWorkflowAware
 from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.CMFCore.testing import TraversingEventZCMLLayer
@@ -168,12 +170,11 @@ class WorkflowToolTests(unittest.TestCase):
 
         return tool
 
-    def _makeRoot( self ):
-
+    def _makeRoot(self):
         from OFS.Folder import Folder
-        root = Folder( 'root' )
-        tt = DummyTypesTool()
-        root._setObject( 'portal_types', tt )
+
+        root = Folder('root')
+        getSiteManager().registerUtility(DummyTypesTool(), ITypesTool)
         return root
 
     def _makeWithTypes( self ):

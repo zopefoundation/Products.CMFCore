@@ -36,6 +36,7 @@ from ZPublisher.HTTPResponse import HTTPResponse
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -73,9 +74,10 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
 
     def setUp(self):
         self.site = DummySite('site')
-        self.site._setObject( 'portal_types', TypesTool() )
+        ttool = TypesTool()
+        getSiteManager().registerUtility(ttool, ITypesTool)
         fti = FTIDATA_CMF[0].copy()
-        self.site.portal_types._setObject( 'Dummy Content 15', FTI(**fti) )
+        ttool._setObject( 'Dummy Content 15', FTI(**fti) )
         self.site._setObject( 'foo', DummyContent() )
         dummy_view = self.site._setObject( 'dummy_view', DummyObject() )
 
@@ -153,14 +155,15 @@ class DynamicTypeSecurityTests(SecurityTest):
 
     def setUp(self):
         SecurityTest.setUp(self)
-        self.site = DummySite('site').__of__(self.root)
+        self.site = DummySite('site').__of__(self.app)
+        ttool = TypesTool()
+        fti = FTIDATA_CMF[0].copy()
+        ttool._setObject( 'Dummy Content 15', FTI(**fti) )
+        self.site._setObject( 'foo', DummyContent() )
         sm = getSiteManager()
         sm.registerUtility(DummyTool(), IMembershipTool)
         sm.registerUtility(DummyTool().__of__(self.site), IURLTool)
-        self.site._setObject( 'portal_types', TypesTool() )
-        fti = FTIDATA_CMF[0].copy()
-        self.site.portal_types._setObject( 'Dummy Content 15', FTI(**fti) )
-        self.site._setObject( 'foo', DummyContent() )
+        sm.registerUtility(ttool, ITypesTool)
 
     def tearDown(self):
         cleanUp()

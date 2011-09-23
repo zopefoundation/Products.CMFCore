@@ -27,14 +27,14 @@ from zope.component import adapter
 from zope.component import adapts
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.component import queryUtility
 from zope.event import notify
-from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.interface import implements
-from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IWorkflowAware
 from Products.CMFCore.interfaces import IWorkflowDefinition
 from Products.CMFCore.interfaces import IWorkflowHistory
@@ -42,7 +42,6 @@ from Products.CMFCore.interfaces import IWorkflowStatus
 from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import Message as _
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
@@ -470,9 +469,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
     def getDefaultChainFor(self, ob):
         """ Get the default chain, if applicable, for ob.
         """
-        request_container = RequestContainer(REQUEST=getRequest())
-        rich_context = self.__of__(request_container)
-        ttool = getToolByName(rich_context, 'portal_types', None)
+        ttool = queryUtility(ITypesTool)
         if ttool is not None and ttool.getTypeInfo(ob) is not None:
             return self._default_chain
         return ()
@@ -506,9 +503,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
     def _listTypeInfo(self):
         """ List the portal types which are available.
         """
-        request_container = RequestContainer(REQUEST=getRequest())
-        rich_context = self.__of__(request_container)
-        ttool = getToolByName(rich_context, 'portal_types', None)
+        ttool = queryUtility(ITypesTool)
         if ttool is not None:
             return ttool.listTypeInfo()
         return ()
@@ -549,7 +544,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     security.declarePrivate( '_recursiveUpdateRoleMappings' )
     def _recursiveUpdateRoleMappings(self, ob, wfs):
-
         """ Update roles-permission mappings recursively, and
             reindex special index.
         """
@@ -576,7 +570,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         if hasattr(aq_base(ob), 'objectItems'):
             obs = ob.objectItems()
             if obs:
-                for k, v in obs:
+                for _k, v in obs:
                     changed = getattr(v, '_p_changed', 0)
                     count = count + self._recursiveUpdateRoleMappings(v, wfs)
                     if changed is None:

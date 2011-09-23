@@ -20,8 +20,10 @@ from csv import reader
 from ConfigParser import ConfigParser
 from StringIO import StringIO
 
+from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
+from Products.CMFCore.interfaces import ITypesTool
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
@@ -591,7 +593,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         after = site.objectIds()
         self.assertEqual(len(after), 0)
         self.assertEqual(len(context._notes), len(ITEM_IDS))
-        for level, component, message in context._notes:
+        for _level, component, message in context._notes:
             self.assertEqual(component, 'SFWA')
             self.failUnless(message.startswith("Couldn't make"))
 
@@ -912,11 +914,12 @@ def _makeFolder(id, site_folder=False):
     folder = PortalFolder(id)
     folder.portal_type = TEST_FOLDER
     if site_folder:
-        tool = folder.portal_types = TypesTool()
-        tool._setObject(TEST_CSV_AWARE, _TypeInfo(TEST_CSV_AWARE))
-        tool._setObject(TEST_INI_AWARE, _TypeInfo(TEST_INI_AWARE))
-        tool._setObject(TEST_CONTENT, _TypeInfo(TEST_CONTENT))
-        tool._setObject(TEST_FOLDER, _TypeInfo(TEST_FOLDER))
+        ttool = TypesTool()
+        ttool._setObject(TEST_CSV_AWARE, _TypeInfo(TEST_CSV_AWARE))
+        ttool._setObject(TEST_INI_AWARE, _TypeInfo(TEST_INI_AWARE))
+        ttool._setObject(TEST_CONTENT, _TypeInfo(TEST_CONTENT))
+        ttool._setObject(TEST_FOLDER, _TypeInfo(TEST_FOLDER))
+        getSiteManager().registerUtility(ttool, ITypesTool)
 
     return folder
 

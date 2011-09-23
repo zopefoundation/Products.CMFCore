@@ -22,15 +22,16 @@ from Acquisition import aq_base
 from Acquisition import aq_get
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-from OFS.OrderedFolder import OrderedFolder
 from OFS.ObjectManager import IFAwareObjectManager
+from OFS.OrderedFolder import OrderedFolder
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
-from zope.container.contained import ObjectAddedEvent
 from zope.container.contained import notifyContainerModified
+from zope.container.contained import ObjectAddedEvent
 from zope.event import notify
+from zope.globalrequest import getRequest
 from zope.i18nmessageid import Message
 from zope.interface import implements
 from zope.lifecycleevent import ObjectCreatedEvent
@@ -51,6 +52,7 @@ from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _wwwdir
+from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import SimpleItemWithProperties
 from Products.CMFCore.utils import UniqueObject
 
@@ -537,8 +539,6 @@ class FactoryTypeInformation(TypeInformation):
 
         Does not do any security checks.
         """
-        # XXX: this method violates the rules for tools/utilities:
-        # it depends on self.REQUEST
         id = str(id)
 
         if self.product:
@@ -547,7 +547,10 @@ class FactoryTypeInformation(TypeInformation):
 
             if getattr(aq_base(m), 'isDocTemp', 0):
                 kw['id'] = id
-                newid = m(m.aq_parent, self.REQUEST, *args, **kw)
+                request = aq_get(self, 'REQUEST', None)
+                if request is None:
+                    request = getRequest()
+                newid = m(m.aq_parent, request, *args, **kw)
             else:
                 newid = m(id, *args, **kw)
             # allow factory to munge ID
@@ -855,10 +858,11 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         _dict = {}
         for ti in self.listTypeInfo():
             aliases = ti.getMethodAliases()
-            for k, v in aliases.items():
+            for k in aliases.keys():
                 _dict[k] = 1
         rval = _dict.keys()
         rval.sort()
         return rval
 
 InitializeClass(TypesTool)
+registerToolInterface('portal_types', ITypesTool)

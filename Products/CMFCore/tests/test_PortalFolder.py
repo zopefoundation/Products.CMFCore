@@ -34,7 +34,6 @@ from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.testing import ConformsToFolder
-from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.testing import TraversingEventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
@@ -95,13 +94,11 @@ class PortalFolderFactoryTests(SecurityTest):
         from Products.CMFCore.PortalFolder import PortalFolder
 
         SecurityTest.setUp(self)
-        sm = getSiteManager()
-        sm.registerUtility(self._getTargetObject(), IFactory, 'cmf.folder')
         self.site = DummySite('site').__of__(self.app)
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
-        ttool = self.site._setObject('portal_types', TypesTool())
+        self.ttool = ttool = TypesTool()
         ttool._setObject(self._PORTAL_TYPE,
                          FTI(id=self._PORTAL_TYPE,
                              title='Folder or Directory',
@@ -109,6 +106,9 @@ class PortalFolderFactoryTests(SecurityTest):
                              factory='cmf.folder',
                              filter_content_types=0))
         ttool._setObject('Dummy Content', FTI(**FTIDATA_DUMMY[0].copy()))
+        sm = getSiteManager()
+        sm.registerUtility(ttool, ITypesTool)
+        sm.registerUtility(self._getTargetObject(), IFactory, 'cmf.folder')
 
         self.f = self.site._setObject('container', PortalFolder('container'))
         self.f._setPortalTypeName(self._PORTAL_TYPE)
@@ -128,7 +128,7 @@ class PortalFolderFactoryTests(SecurityTest):
 
     def test_invokeFactory_disallowed_type(self):
         f = self.f
-        ftype = getattr(self.site.portal_types, self._PORTAL_TYPE)
+        ftype = getattr(self.ttool, self._PORTAL_TYPE)
         ftype.filter_content_types = 1
         self.assertRaises(ValueError,
                           f.invokeFactory, self._PORTAL_TYPE, 'sub')
@@ -154,7 +154,7 @@ class PortalFolderTests(ConformsToFolder, unittest.TestCase):
 
 class PortalFolderSecurityTests(SecurityTest):
 
-    layer = FunctionalZCMLLayer
+    layer = TraversingEventZCMLLayer
 
     def _getTargetClass(self):
         from Products.CMFCore.PortalFolder import PortalFolder
@@ -173,7 +173,9 @@ class PortalFolderSecurityTests(SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
+        ttool = TypesTool()
+        getSiteManager().registerUtility(ttool, ITypesTool)
+
         f = self._makeOne('foo')
         self.assertEqual( f.objectValues(), [] )
         self.assertEqual( f.contentIds(), [] )
@@ -252,10 +254,11 @@ class PortalFolderSecurityTests(SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
-        self.site._setObject('portal_types', TypesTool())
         ctool = DummyCatalogTool()
-        getSiteManager().registerUtility(ctool, ICatalogTool)
         self.assertEqual(len(ctool), 0)
+        sm = getSiteManager()
+        sm.registerUtility(ctool, ICatalogTool)
+        sm.registerUtility(TypesTool(), ITypesTool)
 
         test._setObject('foo', DummyContent('foo' , catalog=1))
         foo = test.foo
@@ -269,25 +272,20 @@ class PortalFolderSecurityTests(SecurityTest):
         self.failUnless(foo.before_delete_called)
         self.assertEqual(len(ctool), 0)
 
-        getSiteManager().unregisterUtility(provided=ICatalogTool)
-
     def test_portalfolder_cataloging(self):
         #
         # Test to ensure a portal folder itself is *not* cataloged upon
         # instantiation (Tracker issue 309)
         #
-        self.site._setObject('portal_types', TypesTool())
-        sm = getSiteManager()
         ctool = DummyCatalogTool()
-        sm.registerUtility(ctool, ICatalogTool)
         wtool = WorkflowTool()
+        sm = getSiteManager()
+        sm.registerUtility(ctool, ICatalogTool)
         sm.registerUtility(wtool, IWorkflowTool)
+
         test = self._makeOne('test')
         wtool.notifyCreated(test)
         self.assertEqual(len(ctool), 0)
-
-        sm.unregisterUtility(provided=ICatalogTool)
-        sm.unregisterUtility(provided=IWorkflowTool)
 
     def test_tracker261(self):
         #
@@ -300,7 +298,6 @@ class PortalFolderSecurityTests(SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
-        self.site._setObject('portal_types', TypesTool())
         ctool = DummyCatalogTool()
         getSiteManager().registerUtility(ctool, ICatalogTool)
         self.assertEqual(len(ctool), 0)
@@ -321,19 +318,18 @@ class PortalFolderSecurityTests(SecurityTest):
         self.failUnless( foo.before_delete_called )
         self.assertEqual( len(ctool), 0 )
 
-        getSiteManager().unregisterUtility(provided=ICatalogTool)
-
     def test_manageAddFolder(self):
         #
         #   Does MKDIR/MKCOL intercept work?
         #
         from Products.CMFCore.PortalFolder import PortalFolder
+        from Products.CMFCore.PortalFolder import PortalFolderFactory
 
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
 
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
+        ttool = TypesTool()
         ttool._setObject( 'Folder'
                         , FTI( id='Folder'
                              , title='Folder or Directory'
@@ -349,6 +345,9 @@ class PortalFolderSecurityTests(SecurityTest):
                              , factory='cmf.folder'
                              )
                         )
+        sm = getSiteManager()
+        sm.registerUtility(ttool, ITypesTool)
+        sm.registerUtility(PortalFolderFactory, IFactory, 'cmf.folder')
 
         # First, test default behavior
         test.manage_addFolder(id='simple', title='Simple')
@@ -384,7 +383,8 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         #   _verifyObjectPaste() should honor allowed content types
         #
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
+        ttool = TypesTool()
+        getSiteManager().registerUtility(ttool, ITypesTool)
         fti = FTIDATA_DUMMY[0].copy()
         ttool._setObject( 'Dummy Content', FTI(**fti) )
         ttool._setObject( 'Folder', FTI(**fti) )
@@ -413,13 +413,15 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
-        ttool = self.site._setObject('portal_types', TypesTool())
+        ttool = TypesTool()
         fti = FTIDATA_DUMMY[0].copy()
         ttool._setObject('Dummy Content', FTI(**fti))
         ttool._setObject('Folder', FTI(**fti))
         folder = self._makeOne('folder', 'Folder')
         content = self._makeOne('content')
         folder._setObject('content', content)
+        sm = getSiteManager()
+        sm.registerUtility(ttool, ITypesTool)
 
         # Allow adding of Dummy Content
         ttool.Folder.manage_changeProperties(filter_content_types=False)
@@ -445,10 +447,8 @@ class PortalFolderSecurityTests(SecurityTest):
                 return self._workflows
 
         # Now copy/paste verification should raise a ValueError
-        getSiteManager().registerUtility(DummyWorkflowTool(), IWorkflowTool)
+        sm.registerUtility(DummyWorkflowTool(), IWorkflowTool)
         self.assertRaises(ValueError, folder._verifyObjectPaste, content)
-
-        getSiteManager().unregisterUtility(provided=IWorkflowTool)
 
     def test_setObjectRaisesBadRequest(self):
         #
@@ -485,8 +485,9 @@ class PortalFolderSecurityTests(SecurityTest):
         newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         test._setPortalTypeName('Dummy Content 15')
-        ttool = self.site._setObject('portal_types', TypesTool())
+        ttool = TypesTool()
         ttool._setObject('Dummy Content 15', FTI(**FTIDATA_CMF[0]))
+        getSiteManager().registerUtility(ttool, ITypesTool)
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         test._checkId('view.html')
         newSecurityManager(None, acl_users.user_foo)
@@ -548,9 +549,10 @@ class PortalFolderMoveTests(SecurityTest):
 
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
-        self.site._setObject( 'portal_types', TypesTool() )
         ctool = DummyCatalogTool()
-        getSiteManager().registerUtility(ctool, ICatalogTool)
+        sm = getSiteManager()
+        sm.registerUtility(TypesTool(), ITypesTool)
+        sm.registerUtility(ctool, ICatalogTool)
         self.assertEqual( len(ctool), 0 )
 
         folder = self._makeOne('folder')
@@ -597,14 +599,16 @@ class PortalFolderMoveTests(SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
         ctool = DummyCatalogTool()
-        getSiteManager().registerUtility(ctool, ICatalogTool)
-        ttool = self.site._setObject( 'portal_types', TypesTool() )
+        ttool = TypesTool()
         fti = FTIDATA_DUMMY[0].copy()
         ttool._setObject( 'Dummy Content', FTI(**fti) )
         sub1 = self._makeOne('sub1')
         sub2 = self._makeOne('sub2')
         sub3 = self._makeOne('sub3')
         self.assertEqual( len(ctool), 0 )
+        sm = getSiteManager()
+        sm.registerUtility(ctool, ICatalogTool)
+        sm.registerUtility(ttool, ITypesTool)
 
         sub1._setObject( 'dummy', DummyContent( 'dummy', catalog=1 ) )
         self.failUnless( 'dummy' in sub1.objectIds() )
@@ -976,7 +980,7 @@ class _AllowedUser( Implicit ):
 
 class PortalFolderCopySupportTests(SecurityTest):
 
-    layer = FunctionalZCMLLayer
+    layer = TraversingEventZCMLLayer
 
     def _initFolders(self):
         from Products.CMFCore.PortalFolder import PortalFolder
@@ -1166,19 +1170,7 @@ class PortalFolderCopySupportTests(SecurityTest):
                                              + '.*%s' % ADD_IMAGES_AND_FILES
                                    )
 
-    def test_move_cant_delete_source( self ):
-
-        #
-        #   This test fails on Zope's earlier than 2.7.3 because of the
-        #   changes required to 'OFS.CopytSupport.manage_pasteObjects'
-        #   which must pass 'validate_src' of 2 to '_verifyObjectPaste'
-        #   to indicate that the object is being moved, rather than
-        #   simply copied.
-        #
-        #   If you are running with such a Zope, this test will fail,
-        #   because the move (which should raise Unauthorized) will be
-        #   allowed.
-        #
+    def test_move_cant_delete_source(self):
         from AccessControl.Permissions import delete_objects as DeleteObjects
         from Products.CMFCore.PortalFolder import PortalFolder
 
@@ -1187,8 +1179,6 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         folder1._setObject( 'sub', PortalFolder( 'sub' ) )
         transaction.savepoint(optimistic=True) # get a _p_jar for 'sub'
-
-        self.app.portal_types = DummyTypesTool()
 
         def _no_delete_objects(permission, object, context):
             return permission != DeleteObjects
@@ -1203,7 +1193,6 @@ class PortalFolderCopySupportTests(SecurityTest):
                                    )
 
     def test_paste_with_restricted_item_content_type_not_allowed(self):
-
         #   Test from CMF Collector #216 (Plone #2186), for the case
         #   in which the item being pasted does not allow adding such
         #   objects to containers which do not explicitly grant access.
@@ -1218,10 +1207,9 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         self._initPolicyAndUser() # ensure that sec. machinery allows paste
 
-        self.app._setObject( 'portal_types', TypesTool() )
-        types_tool = self.app.portal_types
-        types_tool._setObject( RESTRICTED_TYPE
-                             , FTI( id=RESTRICTED_TYPE
+        ttool = TypesTool()
+        ttool._setObject(RESTRICTED_TYPE,
+                                FTI(id=RESTRICTED_TYPE
                                   , title=RESTRICTED_TYPE
                                   , meta_type=PortalFolder.meta_type
                                   , product='CMFCore'
@@ -1229,8 +1217,8 @@ class PortalFolderCopySupportTests(SecurityTest):
                                   , global_allow=0
                                   )
                              )
-        types_tool._setObject( UNRESTRICTED_TYPE
-                             , FTI( id=UNRESTRICTED_TYPE
+        ttool._setObject(UNRESTRICTED_TYPE,
+                                FTI(id=UNRESTRICTED_TYPE
                                   , title=UNRESTRICTED_TYPE
                                   , meta_type=PortalFolder.meta_type
                                   , product='CMFCore'
@@ -1238,17 +1226,14 @@ class PortalFolderCopySupportTests(SecurityTest):
                                   , filter_content_types=0
                                   )
                              )
+        getSiteManager().registerUtility(ttool, ITypesTool)
 
         # copy and pasting the object into the folder should raise
         # an exception
-        copy_cookie = self.app.manage_copyObjects( ids=[ 'folder2' ] )
-        self.assertRaises( ValueError
-                         , folder1.manage_pasteObjects
-                         , copy_cookie
-                         )
+        copy_cookie = self.app.manage_copyObjects(ids=['folder2'])
+        self.assertRaises(ValueError, folder1.manage_pasteObjects, copy_cookie)
 
     def test_paste_with_restricted_item_content_type_allowed(self):
-
         #   Test from CMF Collector #216 (Plone #2186), for the case
         #   in which the item being pasted *does8 allow adding such
         #   objects to containers which *do* explicitly grant access.
@@ -1263,10 +1248,9 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         self._initPolicyAndUser() # ensure that sec. machinery allows paste
 
-        self.app._setObject( 'portal_types', TypesTool() )
-        types_tool = self.app.portal_types
-        types_tool._setObject( RESTRICTED_TYPE
-                             , FTI( id=RESTRICTED_TYPE
+        ttool = TypesTool()
+        ttool._setObject(RESTRICTED_TYPE,
+                                FTI(id=RESTRICTED_TYPE
                                   , title=RESTRICTED_TYPE
                                   , meta_type=PortalFolder.meta_type
                                   , product='CMFCore'
@@ -1274,25 +1258,25 @@ class PortalFolderCopySupportTests(SecurityTest):
                                   , global_allow=0
                                   )
                              )
-        types_tool._setObject( UNRESTRICTED_TYPE
-                             , FTI( id=UNRESTRICTED_TYPE
+        ttool._setObject(UNRESTRICTED_TYPE,
+                                FTI(id=UNRESTRICTED_TYPE
                                   , title=UNRESTRICTED_TYPE
                                   , meta_type=PortalFolder.meta_type
                                   , product='CMFCore'
                                   , factory='manage_addPortalFolder'
                                   , filter_content_types=1
-                                  , allowed_content_types=[ RESTRICTED_TYPE ]
+                                  , allowed_content_types=[RESTRICTED_TYPE]
                                   )
                              )
+        getSiteManager().registerUtility(ttool, ITypesTool)
 
         # copy and pasting the object into the folder should *not* raise
         # an exception, because the folder's type allows it.
-        copy_cookie = self.app.manage_copyObjects( ids=[ 'folder2' ] )
-        folder1.manage_pasteObjects( copy_cookie )
-        self.failUnless( 'folder2' in folder1.objectIds() )
+        copy_cookie = self.app.manage_copyObjects(ids=['folder2'])
+        folder1.manage_pasteObjects(copy_cookie)
+        self.failUnless('folder2' in folder1.objectIds())
 
     def test_paste_with_restricted_container_content_type(self):
-
         #   Test from CMF Collector #216 (Plone #2186), for the case
         #   in which the container does not allow adding items of the
         #   type being pasted.
@@ -1307,10 +1291,9 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         self._initPolicyAndUser() # ensure that sec. machinery allows paste
 
-        self.app._setObject( 'portal_types', TypesTool() )
-        types_tool = self.app.portal_types
-        types_tool._setObject( RESTRICTED_TYPE
-                             , FTI( id=RESTRICTED_TYPE
+        ttool = TypesTool()
+        ttool._setObject(RESTRICTED_TYPE,
+                                FTI(id=RESTRICTED_TYPE
                                   , title=RESTRICTED_TYPE
                                   , meta_type=PortalFolder.meta_type
                                   , product='CMFCore'
@@ -1319,8 +1302,8 @@ class PortalFolderCopySupportTests(SecurityTest):
                                   , allowed_content_types=()
                                   )
                              )
-        types_tool._setObject( UNRESTRICTED_TYPE
-                             , FTI( id=UNRESTRICTED_TYPE
+        ttool._setObject(UNRESTRICTED_TYPE,
+                                FTI(id=UNRESTRICTED_TYPE
                                   , title=UNRESTRICTED_TYPE
                                   , meta_type=PortalFolder.meta_type
                                   , product='CMFCore'
@@ -1328,27 +1311,12 @@ class PortalFolderCopySupportTests(SecurityTest):
                                   , global_allow=1
                                   )
                              )
+        getSiteManager().registerUtility(ttool, ITypesTool)
 
         # copy and pasting the object into the folder should raise
         # an exception
-        copy_cookie = self.app.manage_copyObjects( ids=[ 'folder2' ] )
-        self.assertRaises( ValueError
-                         , folder1.manage_pasteObjects
-                         , copy_cookie
-                         )
-
-class DummyTypeInfo:
-
-    def allowType( self, portal_type ):
-        return True
-
-class DummyTypesTool( Implicit ):
-
-    implements(ITypesTool)
-
-    def getTypeInfo( self, portal_type ):
-
-        return DummyTypeInfo()
+        copy_cookie = self.app.manage_copyObjects(ids=['folder2'])
+        self.assertRaises(ValueError, folder1.manage_pasteObjects, copy_cookie)
 
 
 def test_suite():
