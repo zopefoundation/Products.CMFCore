@@ -63,7 +63,7 @@
       title="Caching Policies"
       description="Import caching policy manager's policies."
       handler="Products.CMFCore.exportimport.cachingpolicymgr.importCachingPolicyManager">
-    <depends name="toolset"/>
+    <depends name="componentregistry"/>
   </genericsetup:importStep>
 
   <genericsetup:exportStep
@@ -181,7 +181,7 @@
       title="Types Tool"
       description="Import types tool's type information objects."
       handler="Products.CMFCore.exportimport.typeinfo.importTypesTool">
-    <depends name="toolset"/>
+    <depends name="componentregistry"/>
   </genericsetup:importStep>
 
   <genericsetup:exportStep

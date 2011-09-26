@@ -46,12 +46,14 @@ from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from thread import allocate_lock
 from zope.component import getUtility
+from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import NotFound
+from Products.CMFCore.interfaces import ICachingPolicyManager
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 
@@ -378,7 +380,7 @@ def _checkConditionalGET(obj, extra_context):
         # not a conditional GET
         return False
 
-    manager = getToolByName(obj, 'caching_policy_manager', None)
+    manager = queryUtility(ICachingPolicyManager)
     if manager is None:
         return False
 
@@ -458,7 +460,7 @@ def _setCacheHeaders(obj, extra_context):
         delattr(REQUEST, SUBTEMPLATE)
 
         content = aq_parent(obj)
-        manager = getToolByName(obj, 'caching_policy_manager', None)
+        manager = queryUtility(ICachingPolicyManager)
         if manager is None:
             return
 

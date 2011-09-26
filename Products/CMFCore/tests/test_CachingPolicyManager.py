@@ -38,6 +38,7 @@ from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import FSDVTest
+from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 ACCLARK = DateTime( '2001/01/01' )
@@ -101,6 +102,7 @@ class CachingPolicyTests(unittest.TestCase):
 
     def _makeContext( self, **kw ):
         from Products.CMFCore.CachingPolicyManager import createCPContext
+
         return createCPContext( DummyContent2(self._epoch)
                               , 'foo_view', kw, self._epoch )
 
@@ -125,7 +127,6 @@ class CachingPolicyTests(unittest.TestCase):
                         , rfc1123_date(self._epoch.timeTime()) )
 
     def test_noPassPredicate( self ):
-
         policy = self._makePolicy( 'noPassPredicate', predicate='nothing' )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -133,7 +134,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( len( headers ), 0 )
 
     def test_typePredicate( self ):
-
         policy = self._makePolicy( 'typePredicate'
                            , predicate='python:object.Type() == "Dummy"' )
         context = self._makeContext()
@@ -144,7 +144,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( headers[0][1] , rfc1123_date(self._epoch.timeTime()) )
 
     def test_typePredicateMiss( self ):
-
         policy = self._makePolicy( 'typePredicate'
                         , predicate='python:object.Type() == "Foolish"' )
         context = self._makeContext()
@@ -153,7 +152,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( len( headers ), 0 )
 
     def test_viewPredicate( self ):
-
         policy = self._makePolicy( 'viewPredicate'
                                  , predicate='python:view == "foo_view"' )
         context = self._makeContext()
@@ -165,7 +163,6 @@ class CachingPolicyTests(unittest.TestCase):
                         , rfc1123_date(self._epoch.timeTime()) )
 
     def test_viewPredicateMiss( self ):
-
         policy = self._makePolicy( 'viewPredicateMiss'
                            , predicate='python:view == "bar_view"' )
         context = self._makeContext()
@@ -174,7 +171,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( len( headers ), 0 )
 
     def test_kwPredicate( self ):
-
         policy = self._makePolicy( 'kwPredicate'
                                  , predicate='python:"foo" in keywords.keys()' )
         context = self._makeContext( foo=1 )
@@ -186,7 +182,6 @@ class CachingPolicyTests(unittest.TestCase):
                         , rfc1123_date(self._epoch.timeTime()) )
 
     def test_kwPredicateMiss( self ):
-
         policy = self._makePolicy( 'kwPredicateMiss'
                                  , predicate='python:"foo" in keywords.keys()' )
         context = self._makeContext( bar=1 )
@@ -200,7 +195,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( len( headers ), 0 )
 
     def test_mtimeFunc( self ):
-
         policy = self._makePolicy( 'mtimeFunc'
                                  , mtime_func='string:2001/01/01' )
         context = self._makeContext()
@@ -212,7 +206,6 @@ class CachingPolicyTests(unittest.TestCase):
                         , rfc1123_date(ACCLARK.timeTime()) )
 
     def test_mtimeFuncNone( self ):
-
         policy = self._makePolicy( 'mtimeFuncNone'
                                  , mtime_func='nothing' )
         context = self._makeContext()
@@ -221,7 +214,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( len( headers ), 0 )
 
     def test_maxAge( self ):
-
         policy = self._makePolicy( 'aged', max_age_secs=86400 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -237,7 +229,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( headers[2][1] , 'max-age=86400' )
 
     def test_sMaxAge( self ):
-
         policy = self._makePolicy( 's_aged', s_max_age_secs=86400 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -251,7 +242,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getSMaxAgeSecs(), 86400)
 
     def test_noCache( self ):
-
         policy = self._makePolicy( 'noCache', no_cache=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -266,7 +256,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( headers[2][1] , 'no-cache' )
 
     def test_noStore( self ):
-
         policy = self._makePolicy( 'noStore', no_store=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -279,7 +268,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( headers[1][1] , 'no-store' )
 
     def test_mustRevalidate( self ):
-
         policy = self._makePolicy( 'mustRevalidate', must_revalidate=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -292,7 +280,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( headers[1][1] , 'must-revalidate' )
 
     def test_proxyRevalidate( self ):
-
         policy = self._makePolicy( 'proxyRevalidate', proxy_revalidate=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -306,7 +293,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getProxyRevalidate(), 1)
 
     def test_public( self ):
-
         policy = self._makePolicy( 'public', public=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -320,7 +306,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getPublic(), 1)
 
     def test_private( self ):
-
         policy = self._makePolicy( 'private', private=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -334,7 +319,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getPrivate(), 1)
 
     def test_noTransform( self ):
-
         policy = self._makePolicy( 'noTransform', no_transform=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -348,7 +332,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getNoTransform(), 1)
 
     def test_lastModified( self ):
-
         policy = self._makePolicy( 'lastModified', last_modified=0 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -357,7 +340,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getLastModified(), 0)
 
     def test_preCheck( self ):
-
         policy = self._makePolicy( 'preCheck', pre_check=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -372,7 +354,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getPostCheck(), None)
 
     def test_postCheck( self ):
-
         policy = self._makePolicy( 'postCheck', post_check=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -387,7 +368,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual(policy.getPreCheck(), None)
 
     def test_ETag( self ):
-
         # With an empty etag_func, no ETag should be produced
         policy = self._makePolicy( 'ETag', etag_func='' )
         context = self._makeContext()
@@ -410,7 +390,6 @@ class CachingPolicyTests(unittest.TestCase):
         self.assertEqual( headers[1][1], 'foo' )
 
     def test_combined( self ):
-
         policy = self._makePolicy( 'noStore', no_cache=1, no_store=1 )
         context = self._makeContext()
         headers = policy.getHeaders( context )
@@ -429,10 +408,13 @@ class CachingPolicyManagerTests(unittest.TestCase):
 
     layer = TraversingZCMLLayer
 
-    def _makeOne(self, *args, **kw):
+    def _getTargetClass(self):
         from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
 
-        return CachingPolicyManager(*args, **kw)
+        return CachingPolicyManager
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
         self._epoch = DateTime()
@@ -448,7 +430,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         verifyClass(ICachingPolicyManager, CachingPolicyManager)
 
     def test_empty( self ):
-
         mgr = self._makeOne()
 
         self.assertEqual( len( mgr.listPolicies() ), 0 )
@@ -466,7 +447,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertRaises( KeyError, mgr._reorderPolicy, 'xyzzy', -1 )
 
     def test_addAndUpdatePolicy( self ):
-
         mgr = self._makeOne()
         mgr.addPolicy('first', 'python:1', 'mtime', 1, 0, 1, 0, 'vary',
                       'etag', None, 2, 1, 0, 1, 0, 1, 0, 2, 3)
@@ -513,7 +493,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual(p.getPostCheck(), 2)
 
     def test_reorder( self ):
-
         mgr = self._makeOne()
 
         policy_ids = ( 'foo', 'bar', 'baz', 'qux' )
@@ -532,7 +511,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual( ids, ( 'foo', 'baz', 'qux', 'bar' ) )
 
     def _makeOneWithPolicies( self ):
-
         mgr = self._makeOne()
 
         policy_tuples = ( ( 'foo', None  )
@@ -549,7 +527,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         return mgr
 
     def test_lookupNoMatch( self ):
-
         mgr = self._makeOneWithPolicies()
         headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
                                            , view_method='foo_view'
@@ -559,7 +536,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual( len( headers ), 0 )
 
     def test_lookupMatchFoo( self ):
-
         mgr = self._makeOneWithPolicies()
         headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
                                            , view_method='foo_view'
@@ -572,7 +548,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
                         , rfc1123_date(self._epoch.timeTime()) )
 
     def test_lookupMatchBar( self ):
-
         mgr = self._makeOneWithPolicies()
         headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
                                            , view_method='foo_view'
@@ -590,7 +565,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual( headers[2][1], 'max-age=0' )
 
     def test_lookupMatchBaz( self ):
-
         mgr = self._makeOneWithPolicies()
         headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
                                            , view_method='foo_view'
@@ -611,7 +585,6 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual( headers[2][1] , 'max-age=3600' )
 
     def test_lookupMatchQux( self ):
-
         mgr = self._makeOneWithPolicies()
         headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
                                            , view_method='foo_view'
@@ -632,21 +605,31 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual( headers[2][1] , 'max-age=86400' )
 
 
-class CachingPolicyManager304Tests(TransactionalTest, FSDVTest):
+class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
 
-    layer = FunctionalZCMLLayer
+    layer = TraversingZCMLLayer
+
+    def _getTargetClass(self):
+        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+
+        return CachingPolicyManager
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        from Products.CMFCore import CachingPolicyManager
+        from Products.CMFCore.interfaces import ICachingPolicyManager
 
-        TransactionalTest.setUp(self)
+        SecurityTest.setUp(self)
         FSDVTest.setUp(self)
 
         now = DateTime()
 
         # Create a fake portal and the tools we need
         self.portal = DummySite(id='portal').__of__(self.app)
+        cpm = self._makeOne()
         sm = getSiteManager()
+        sm.registerUtility(cpm, ICachingPolicyManager)
         sm.registerUtility(DummyTool(), IMembershipTool)
         sm.registerUtility(DummyTool(), ITypesTool)
 
@@ -671,9 +654,6 @@ class CachingPolicyManager304Tests(TransactionalTest, FSDVTest):
         self.portal.doc1.modified_date = now
         self.portal.doc2.modified_date = now
         self.portal.doc3.modified_date = now
-
-        CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
-        cpm = self.portal.caching_policy_manager
 
         # This policy only applies to doc1. It will not emit any ETag header
         # but it enables If-modified-since handling.
@@ -715,11 +695,8 @@ class CachingPolicyManager304Tests(TransactionalTest, FSDVTest):
                       enable_304s = 0)
 
     def tearDown(self):
-        sm = getSiteManager()
-        sm.unregisterUtility(provided=IMembershipTool)
-        sm.registerUtility(provided=ITypesTool)
-        TransactionalTest.tearDown(self)
         FSDVTest.tearDown(self)
+        SecurityTest.tearDown(self)
 
     def _cleanup(self):
         # Clean up request and response
@@ -890,16 +867,25 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
 
     layer = TraversingZCMLLayer
 
+    def _getTargetClass(self):
+        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+
+        return CachingPolicyManager
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
+
     def setUp(self):
-        from Products.CMFCore import CachingPolicyManager
+        from Products.CMFCore.interfaces import ICachingPolicyManager
 
         FSObjMaker.setUp(self)
         TransactionalTest.setUp(self)
 
         # Create a fake portal and the tools we need
         self.portal = DummySite(id='portal').__of__(self.app)
-        CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
+        self.cpm = self._makeOne()
         sm = getSiteManager()
+        sm.registerUtility(self.cpm, ICachingPolicyManager)
         sm.registerUtility(DummyTool(), IMembershipTool)
         sm.registerUtility(DummyTool(), ITypesTool)
 
@@ -912,7 +898,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         # set up site
         portal = self.portal
         now = DateTime()
-        cpm = portal.caching_policy_manager
+        cpm = self.cpm
         cpm.addPolicy(policy_id = 'policy_op2',
                       predicate = 'python:view=="output_page_2"',
                       mtime_func = '',
@@ -947,7 +933,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         # not activate the bug because RESPONSE is not passed in
         portal = self.portal
         now = DateTime()
-        cpm = portal.caching_policy_manager
+        cpm = self.cpm
         cpm.addPolicy(policy_id = 'policy_op4',
                       predicate = 'python:view=="output_page_4"',
                       mtime_func = '',
@@ -985,7 +971,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         # set up site
         portal = self.portal
         now = DateTime()
-        cpm = portal.caching_policy_manager
+        cpm = self.cpm
         cpm.addPolicy(policy_id = 'policy_nv1',
                       predicate = 'python:view=="nested_view_1"',
                       mtime_func = '',
@@ -1027,7 +1013,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         # set up site
         now = DateTime()
         portal = self.portal
-        cpm = portal.caching_policy_manager
+        cpm = self.cpm
         cpm.addPolicy(policy_id = 'policy_nv1',
                       predicate = 'python:view=="nested_view_1"',
                       mtime_func = '',
@@ -1084,7 +1070,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
             doc.modified_date = modified_date
             self.portal._setObject(id, doc)
 
-        cpm = self.portal.caching_policy_manager
+        cpm = self.cpm
 
         # This policy only applies to doc2.
         cpm.addPolicy(policy_id = 'policy_doc2',
@@ -1146,7 +1132,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
             doc.modified_date = modified_date
             self.portal._setObject(id, doc)
 
-        cpm = self.portal.caching_policy_manager
+        cpm = self.cpm
 
         # This policy only applies to doc1.
         cpm.addPolicy(policy_id = 'policy_doc1',
@@ -1211,8 +1197,16 @@ class OFSCacheTests(TransactionalTest):
 
     layer = FunctionalZCMLLayer
 
+    def _getTargetClass(self):
+        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+
+        return CachingPolicyManager
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
+
     def setUp(self):
-        from Products.CMFCore import CachingPolicyManager
+        from Products.CMFCore.interfaces import ICachingPolicyManager
 
         TransactionalTest.setUp(self)
 
@@ -1220,9 +1214,11 @@ class OFSCacheTests(TransactionalTest):
         self.portal = DummySite(id='portal').__of__(self.app)
         self.portal._setObject('doc1', CacheableDummyContent('doc1'))
         self.portal._setObject('doc2', CacheableDummyContent('doc2'))
-        CachingPolicyManager.manage_addCachingPolicyManager(self.portal)
-        cpm = self.portal.caching_policy_manager
-        getSiteManager().registerUtility(DummyTool(), IMembershipTool)
+        cpm = self._makeOne()
+        self.portal._setObject('caching_policy_manager', cpm)
+        sm = getSiteManager()
+        sm.registerUtility(cpm, ICachingPolicyManager)
+        sm.registerUtility(DummyTool(), IMembershipTool)
 
         # This policy only applies to doc1. It will not emit any ETag header
         # but it enables If-modified-since handling.
@@ -1238,11 +1234,14 @@ class OFSCacheTests(TransactionalTest):
                       enable_304s=0)
 
     def tearDown(self):
-        getSiteManager().unregisterUtility(provided=IMembershipTool)
+        from Products.CMFCore.interfaces import ICachingPolicyManager
+
+        sm = getSiteManager()
+        sm.unregisterUtility(provided=ICachingPolicyManager)
+        sm.unregisterUtility(provided=IMembershipTool)
         TransactionalTest.tearDown(self)
 
     def test_empty(self):
-
         from Products.CMFCore.CachingPolicyManager import CPMCache
 
         cpm = self.portal.caching_policy_manager

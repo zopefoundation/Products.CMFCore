@@ -21,25 +21,32 @@ import re
 
 from Acquisition import aq_base
 from App.Common import rfc1123_date
+from DateTime import DateTime
+from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import TraversingZCMLLayer
+from Products.CMFCore.tests.base.dummy import DummyCachingManager
+from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
 from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 
 class FSReSTMaker(FSDVTest):
 
     def setUp(self):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+
         FSDVTest.setUp(self)
         main = ZopePageTemplate('main_template', _TEST_MAIN_TEMPLATE)
-        self.root._setOb('main_template', main)
+        self.app._setOb('main_template', main)
 
     def _makeOne( self, id, filename ):
         from Products.CMFCore.FSMetadata import FSMetadata
         from Products.CMFCore.FSReSTMethod import FSReSTMethod
+
         path = os.path.join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
@@ -78,64 +85,61 @@ def _normalize_whitespace(text):
     return ' '.join(WS.split(text.rstrip()))
 
 
-class FSReSTMethodTests(RequestTest, FSReSTMaker):
+class FSReSTMethodTests(TransactionalTest, FSReSTMaker):
 
     layer = TraversingZCMLLayer
 
     def setUp(self):
-        RequestTest.setUp(self)
+        TransactionalTest.setUp(self)
         FSReSTMaker.setUp(self)
 
     def tearDown(self):
         FSReSTMaker.tearDown(self)
-        RequestTest.tearDown(self)
+        TransactionalTest.tearDown(self)
 
-    def test___call__( self ):
-        script = self._makeOne( 'testReST', 'testReST.rst' )
+    def test___call__(self):
+        script = self._makeOne('testReST', 'testReST.rst')
         script = script.__of__(self.app)
         self.assertEqual(_normalize_whitespace(script(self.REQUEST)),
                          _normalize_whitespace(_EXPECTED_HTML))
 
-    def test_caching( self ):
+    def test_caching(self):
         #   Test HTTP caching headers.
-        from Products.CMFCore.tests.base.dummy import DummyCachingManager
-        self.root.caching_policy_manager = DummyCachingManager()
-        original_len = len( self.RESPONSE.headers )
-        script = self._makeOne('testReST', 'testReST.rst')
-        script = script.__of__(self.root)
-        script(self.REQUEST, self.RESPONSE)
-        self.failUnless( len( self.RESPONSE.headers ) >= original_len + 2 )
-        self.failUnless( 'foo' in self.RESPONSE.headers.keys() )
-        self.failUnless( 'bar' in self.RESPONSE.headers.keys() )
+        cpm = DummyCachingManager()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
+        original_len = len(self.RESPONSE.headers)
+        obj = self._makeOne('testReST', 'testReST.rst')
+        obj = obj.__of__(self.app)
+        obj(self.REQUEST, self.RESPONSE)
+        self.failUnless(len(self.RESPONSE.headers) >= original_len + 2)
+        self.failUnless('foo' in self.RESPONSE.headers.keys())
+        self.failUnless('bar' in self.RESPONSE.headers.keys())
 
-    def test_ownership( self ):
-        script = self._makeOne( 'testReST', 'testReST.rst' )
-        script = script.__of__(self.root)
+    def test_ownership(self):
+        script = self._makeOne('testReST', 'testReST.rst')
+        script = script.__of__(self.app)
         # FSReSTMethod has no owner
         owner_tuple = script.getOwnerTuple()
         self.assertEqual(owner_tuple, None)
 
         # and ownership is not acquired [CMF/450]
-        self.root._owner= ('/foobar', 'baz')
+        self.app._owner = ('/foobar', 'baz')
         owner_tuple = script.getOwnerTuple()
         self.assertEqual(owner_tuple, None)
 
-    def test_304_response_from_cpm( self ):
+    def test_304_response_from_cpm(self):
         # test that we get a 304 response from the cpm via this template
-        from DateTime import DateTime
-        from Products.CMFCore.tests.base.dummy \
-            import DummyCachingManagerWithPolicy
-
         mod_time = DateTime()
-        self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
+        cpm = DummyCachingManagerWithPolicy()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
         script = self._makeOne('testReST', 'testReST.rst')
-        script = script.__of__(self.root)
-        self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date( mod_time+3600 )
+        script = script.__of__(self.app)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'
+                            ] = '%s;' % rfc1123_date(mod_time + 3600)
         data = script(self.REQUEST, self.RESPONSE)
 
-        self.assertEqual( data, '' )
-        self.assertEqual( self.RESPONSE.getStatus(), 304 )
+        self.assertEqual(data, '')
+        self.assertEqual(self.RESPONSE.getStatus(), 304)
 
 
 ADD_ZPT = 'Add page templates'
@@ -184,12 +188,12 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
     def test_customize_alternate_root( self ):
         from OFS.Folder import Folder
 
-        self.root.other = Folder('other')
+        self.app.other = Folder('other')
 
-        self.fsReST.manage_doCustomize(folder_path='other', root=self.root)
+        self.fsReST.manage_doCustomize(folder_path='other', root=self.app)
 
         self.failIf('testReST' in self.custom.objectIds())
-        self.failUnless('testReST' in self.root.other.objectIds())
+        self.failUnless('testReST' in self.app.other.objectIds())
 
     def test_customize_fpath_as_dot( self ):
 
@@ -213,7 +217,7 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
         from Products.StandardCacheManagers import RAMCacheManager
         cache_id = 'gofast'
         self.custom.all_meta_types = ZPT_META_TYPES
-        RAMCacheManager.manage_addRAMCacheManager( self.root
+        RAMCacheManager.manage_addRAMCacheManager( self.app
                                                  , cache_id
                                                  , REQUEST=None
                                                  )

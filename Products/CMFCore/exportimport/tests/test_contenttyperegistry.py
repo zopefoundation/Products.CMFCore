@@ -17,12 +17,14 @@ import unittest
 import Testing
 
 from OFS.Folder import Folder
+from zope.component import getSiteManager
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
+from Products.CMFCore.interfaces import IContentTypeRegistry
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
 _TEST_PREDICATES = (
@@ -165,20 +167,19 @@ class _ContentTypeRegistrySetup(BaseRegistryTests):
     def _initSite(self, mit_predikat=False):
         from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
 
-        self.root.site = Folder(id='site')
-        site = self.root.site
+        site = Folder(id='site').__of__(self.app)
         ctr = ContentTypeRegistry()
-        site._setObject( ctr.getId(), ctr )
+        getSiteManager().registerUtility(ctr, IContentTypeRegistry)
 
         if mit_predikat:
             for (predicate_id, predicate_type, edit_args, content_type_name
                 ) in _TEST_PREDICATES:
-                ctr.addPredicate(predicate_id, predicate_type) 
+                ctr.addPredicate(predicate_id, predicate_type)
                 predicate = ctr.getPredicate(predicate_id)
                 predicate.edit(*edit_args)
                 ctr.assignTypeName(predicate_id, content_type_name)
 
-        return site
+        return site, ctr
 
 
 class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
@@ -189,7 +190,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
         from Products.CMFCore.exportimport.contenttyperegistry \
                 import exportContentTypeRegistry
 
-        site = self._initSite(mit_predikat=False)
+        site, _ctr = self._initSite(mit_predikat=False)
         context = DummyExportContext(site)
         exportContentTypeRegistry(context)
 
@@ -203,7 +204,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
         from Products.CMFCore.exportimport.contenttyperegistry \
                 import exportContentTypeRegistry
 
-        site = self._initSite(mit_predikat=True)
+        site, _ctr = self._initSite(mit_predikat=True)
         context = DummyExportContext(site)
         exportContentTypeRegistry(context)
 
@@ -225,8 +226,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
         from Products.CMFCore.exportimport.contenttyperegistry \
                 import importContentTypeRegistry
 
-        site = self._initSite(mit_predikat=False)
-        ctr = site.content_type_registry
+        site, ctr = self._initSite(mit_predikat=False)
         self.assertEqual(len(ctr.listPredicates()), 0)
 
         context = DummyImportContext(site)
@@ -260,8 +260,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
         from Products.CMFCore.exportimport.contenttyperegistry \
                 import importContentTypeRegistry
 
-        site = self._initSite(mit_predikat=True)
-        ctr = site.content_type_registry
+        site, ctr = self._initSite(mit_predikat=True)
         self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))
         self.assertEqual(ctr.predicate_ids, ('plain_text', 'stylesheets',
                                              'images', 'logfiles'))
@@ -278,8 +277,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
         from Products.CMFCore.exportimport.contenttyperegistry \
                 import importContentTypeRegistry
 
-        site = self._initSite(mit_predikat=True)
-        ctr = site.content_type_registry
+        site, ctr = self._initSite(mit_predikat=True)
         self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))
         self.assertEqual(ctr.predicate_ids, ('plain_text', 'stylesheets',
                                              'images', 'logfiles'))

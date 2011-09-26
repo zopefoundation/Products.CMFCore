@@ -17,6 +17,7 @@ import unittest
 import Testing
 
 from OFS.Folder import Folder
+from zope.component import getSiteManager
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
@@ -24,6 +25,8 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
+from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
 _CP_XML = """\
@@ -84,8 +87,6 @@ class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase,
                       'object/modified', 600, 0, 0, 0, '', '')
 
     def setUp(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
-
         self._obj = CachingPolicyManager()
         self._BODY = _CPM_BODY
 
@@ -121,15 +122,12 @@ class _CachingPolicyManagerSetup(BaseRegistryTests):
        PREDICATE, S_MAX_AGE_SECS, VARY)
 
     def _initSite(self, with_policy=False):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
-
-        self.root.site = Folder(id='site')
-        site = self.root.site
-        mgr = CachingPolicyManager()
-        site._setObject( mgr.getId(), mgr )
+        site = Folder(id='site').__of__(self.app)
+        cpm = CachingPolicyManager()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
 
         if with_policy:
-            mgr.addPolicy( policy_id=self.POLICY_ID
+            cpm.addPolicy(policy_id=self.POLICY_ID
                          , predicate=self.PREDICATE
                          , mtime_func=self.MTIME_FUNC
                          , max_age_secs=self.MAX_AGE_SECS
@@ -149,7 +147,7 @@ class _CachingPolicyManagerSetup(BaseRegistryTests):
                          , post_check=self.POST_CHECK
                          )
 
-        return site
+        return site, cpm
 
 
 class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
@@ -160,7 +158,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         from Products.CMFCore.exportimport.cachingpolicymgr \
                 import exportCachingPolicyManager
 
-        site = self._initSite(with_policy=False)
+        site, _cpm = self._initSite(with_policy=False)
         context = DummyExportContext(site)
         exportCachingPolicyManager(context)
 
@@ -174,7 +172,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         from Products.CMFCore.exportimport.cachingpolicymgr \
                 import exportCachingPolicyManager
 
-        site = self._initSite(with_policy=True)
+        site, _cpm = self._initSite(with_policy=True)
         context = DummyExportContext(site)
         exportCachingPolicyManager(context)
 
@@ -193,8 +191,7 @@ class importCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         from Products.CMFCore.exportimport.cachingpolicymgr \
                 import importCachingPolicyManager
 
-        site = self._initSite(with_policy=False)
-        cpm = site.caching_policy_manager
+        site, cpm = self._initSite(with_policy=False)
         self.assertEqual(len(cpm.listPolicies()), 0)
 
         context = DummyImportContext(site)
@@ -202,7 +199,7 @@ class importCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         importCachingPolicyManager(context)
 
         self.assertEqual(len(cpm.listPolicies()), 1)
-        policy_id, policy = cpm.listPolicies()[0]
+        _policy_id, policy = cpm.listPolicies()[0]
         self.assertEqual(policy.getPolicyId(), self.POLICY_ID)
         self.assertEqual(policy.getPredicate(), self.PREDICATE)
         self.assertEqual(policy.getMTimeFunc(), self.MTIME_FUNC)

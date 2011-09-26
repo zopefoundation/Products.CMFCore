@@ -23,64 +23,64 @@ from os.path import join as path_join
 from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
+from zope.component import getSiteManager
 from zope.tales.tales import Undefined
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.FSPageTemplate import FSPageTemplate
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import TraversingZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 
 class FSPTMaker(FSDVTest):
 
-    def _makeOne( self, id, filename ):
+    def _makeOne(self, id, filename):
+        from Products.CMFCore.FSPageTemplate import FSPageTemplate
+
         path = path_join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
         return FSPageTemplate( id, path, properties=metadata.getProperties() )
 
 
-class FSPageTemplateTests( RequestTest, FSPTMaker ):
+class FSPageTemplateTests(TransactionalTest, FSPTMaker):
 
     layer = TraversingZCMLLayer
 
     def setUp(self):
+        TransactionalTest.setUp(self)
         FSPTMaker.setUp(self)
-        RequestTest.setUp(self)
 
     def tearDown(self):
-        RequestTest.tearDown(self)
         FSPTMaker.tearDown(self)
+        TransactionalTest.tearDown(self)
 
-    def _setupCachingPolicyManager(self, cpm_object):
-        self.root.caching_policy_manager = cpm_object
-
-    def test_Call( self ):
-        script = self._makeOne( 'testPT', 'testPT.pt' )
+    def test___call__(self):
+        script = self._makeOne('testPT', 'testPT.pt')
         script = script.__of__(self.app)
         self.assertEqual(script(), 'nohost')
 
     def test_ContentType(self):
         script = self._makeOne( 'testXMLPT', 'testXMLPT.pt' )
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
         script()
         self.assertEqual(script.content_type, 'text/xml; charset=utf-8')
         self.assertEqual(self.RESPONSE.getHeader('content-type'), 'text/xml; charset=utf-8')
         # purge RESPONSE Content-Type header for new test
         del self.RESPONSE.headers['content-type']
         script = self._makeOne( 'testPT', 'testPT.pt' )
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
         script()
         self.assertEqual(script.content_type, 'text/html')
         self.assertEqual(self.RESPONSE.getHeader('content-type'), 'text/html')
 
     def test_ContentTypeOverride(self):
         script = self._makeOne( 'testPT_utf8', 'testPT_utf8.pt' )
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
         script()
         self.assertEqual( self.RESPONSE.getHeader('content-type')
                         , 'text/html; charset=utf-8')
@@ -89,7 +89,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         # Test to see if a content_type specified in a .metadata file
         # is respected
         script = self._makeOne('testPT2', 'testPT2.pt')
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
         script()
         self.assertEqual( self.RESPONSE.getHeader('content-type')
                         , 'text/xml'
@@ -99,7 +99,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         # testPT3 is an UTF-16 encoded file (see its .metadatafile)
         # is respected
         script = self._makeOne('testPT3', 'testPT3.pt')
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
         data = script.read()
         self.failUnless(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html')
@@ -108,21 +108,21 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         # testPT4 is an UTF-8 encoded file (see its .metadatafile)
         # is respected
         script = self._makeOne('testPT4', 'testPT4.pt')
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
         data = script.read()
         self.failUnless(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFromContentTypeMetadata(self):
         script = self._makeOne('testPT5', 'testPT5.pt')
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
         data = script.read()
         self.failUnless(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html; charset=utf-16')
 
     def test_BadCall( self ):
         script = self._makeOne( 'testPTbad', 'testPTbad.pt' )
-        script = script.__of__(self.root)
+        script = script.__of__(self.app)
 
         try: # can't use assertRaises, because different types raised.
             script()
@@ -131,16 +131,17 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         else:
             self.fail('Calling a bad template did not raise an exception')
 
-    def test_caching( self ):
+    def test_caching(self):
         #   Test HTTP caching headers.
-        self._setupCachingPolicyManager(DummyCachingManager())
-        original_len = len( self.RESPONSE.headers )
-        script = self._makeOne('testPT', 'testPT.pt')
-        script = script.__of__(self.root)
-        script()
-        self.failUnless( len( self.RESPONSE.headers ) >= original_len + 2 )
-        self.failUnless( 'foo' in self.RESPONSE.headers.keys() )
-        self.failUnless( 'bar' in self.RESPONSE.headers.keys() )
+        cpm = DummyCachingManager()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
+        original_len = len(self.RESPONSE.headers)
+        obj = self._makeOne('testPT', 'testPT.pt')
+        obj = obj.__of__(self.app)
+        obj()
+        self.failUnless(len(self.RESPONSE.headers) >= original_len + 2)
+        self.failUnless('foo' in self.RESPONSE.headers.keys())
+        self.failUnless('bar' in self.RESPONSE.headers.keys())
 
     def test_pt_properties( self ):
         script = self._makeOne( 'testPT', 'testPT.pt' )
@@ -152,7 +153,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         for fformat in ('unix', 'dos', 'mac'):
             script = self._makeOne(fformat,
                                    'testPT_multiline_python_%s.pt' % fformat)
-            script = script.__of__(self.root)
+            script = script.__of__(self.app)
             self.assertEqual(script(), 'foo bar spam eggs\n')
 
 
@@ -176,12 +177,12 @@ class FSPageTemplateCustomizationTests(SecurityTest, FSPTMaker):
         self.failUnless( 'testPT' in self.custom.objectIds() )
 
     def test_customize_alternate_root( self ):
-        self.root.other = Folder('other')
+        self.app.other = Folder('other')
 
-        self.fsPT.manage_doCustomize( folder_path='other', root=self.root )
+        self.fsPT.manage_doCustomize(folder_path='other', root=self.app)
 
         self.failIf( 'testPT' in self.custom.objectIds() )  
-        self.failUnless( 'testPT' in self.root.other.objectIds() )  
+        self.failUnless( 'testPT' in self.app.other.objectIds() )  
 
     def test_customize_fspath_as_dot( self ):
         self.fsPT.manage_doCustomize( folder_path='.' )
@@ -200,7 +201,7 @@ class FSPageTemplateCustomizationTests(SecurityTest, FSPTMaker):
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
         cache_id = 'gofast'
-        RAMCacheManager.manage_addRAMCacheManager( self.root
+        RAMCacheManager.manage_addRAMCacheManager( self.app
                                                  , cache_id
                                                  , REQUEST=None
                                                  )

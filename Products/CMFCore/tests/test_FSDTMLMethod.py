@@ -23,85 +23,88 @@ from App.Common import rfc1123_date
 from DateTime import DateTime
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
+from zope.component import getSiteManager
 from zope.site.hooks import setHooks
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 from Products.CMFCore.FSMetadata import FSMetadata
+from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 
 class FSDTMLMaker(FSDVTest):
 
     def _makeOne( self, id, filename ):
+        from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
+
         path = path_join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
         return FSDTMLMethod( id, path, properties=metadata.getProperties() )
 
 
-class FSDTMLMethodTests(RequestTest, FSDTMLMaker):
+class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
 
     def setUp(self):
+        TransactionalTest.setUp(self)
         FSDTMLMaker.setUp(self)
-        RequestTest.setUp(self)
         setHooks()
 
     def tearDown(self):
-        RequestTest.tearDown(self)
+        cleanUp()
         FSDTMLMaker.tearDown(self)
+        TransactionalTest.tearDown(self)
 
-    def _setupCachingPolicyManager(self, cpm_object):
-        self.root.caching_policy_manager = cpm_object
-
-    def test_Call( self ):
-        script = self._makeOne( 'testDTML', 'testDTML.dtml' )
+    def test___call__(self):
+        script = self._makeOne('testDTML', 'testDTML.dtml')
         script = script.__of__(self.app)
         self.assertEqual(script(self.app, self.REQUEST), 'nohost\n')
 
-    def test_caching( self ):
+    def test_caching(self):
         #   Test HTTP caching headers.
-        self._setupCachingPolicyManager(DummyCachingManager())
-        original_len = len( self.RESPONSE.headers )
-        script = self._makeOne('testDTML', 'testDTML.dtml')
-        script = script.__of__(self.root)
-        script(self.root, self.REQUEST, self.RESPONSE)
-        self.failUnless( len( self.RESPONSE.headers ) >= original_len + 2 )
-        self.failUnless( 'foo' in self.RESPONSE.headers.keys() )
-        self.failUnless( 'bar' in self.RESPONSE.headers.keys() )
+        cpm = DummyCachingManager()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
+        original_len = len(self.RESPONSE.headers)
+        obj = self._makeOne('testDTML', 'testDTML.dtml')
+        obj = obj.__of__(self.app)
+        obj(self.app, self.REQUEST, self.RESPONSE)
+        self.failUnless(len(self.RESPONSE.headers) >= original_len + 2)
+        self.failUnless('foo' in self.RESPONSE.headers.keys())
+        self.failUnless('bar' in self.RESPONSE.headers.keys())
 
-    def test_ownership( self ):
-        script = self._makeOne( 'testDTML', 'testDTML.dtml' )
-        script = script.__of__(self.root)
+    def test_ownership(self):
+        script = self._makeOne('testDTML', 'testDTML.dtml')
+        script = script.__of__(self.app)
         # fsdtmlmethod has no owner
         owner_tuple = script.getOwnerTuple()
         self.assertEqual(owner_tuple, None)
 
         # and ownership is not acquired [CMF/450]
-        self.root._owner= ('/foobar', 'baz')
+        self.app._owner = ('/foobar', 'baz')
         owner_tuple = script.getOwnerTuple()
         self.assertEqual(owner_tuple, None)
 
-    def test_304_response_from_cpm( self ):
+    def test_304_response_from_cpm(self):
         # test that we get a 304 response from the cpm via this template
         mod_time = DateTime()
-        self._setupCachingPolicyManager(DummyCachingManagerWithPolicy())
+        cpm = DummyCachingManagerWithPolicy()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
         content = DummyContent(id='content')
         content.modified_date = mod_time
-        content = content.__of__(self.root)
+        content = content.__of__(self.app)
         script = self._makeOne('testDTML', 'testDTML.dtml')
         script = script.__of__(content)
-        self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date( mod_time+3600 )
+        self.REQUEST.environ['IF_MODIFIED_SINCE'
+                            ] = '%s;' % rfc1123_date(mod_time + 3600)
         data = script(content, self.REQUEST, self.RESPONSE)
 
-        self.assertEqual( data, '' )
-        self.assertEqual( self.RESPONSE.getStatus(), 304 )
+        self.assertEqual(data, '')
+        self.assertEqual(self.RESPONSE.getStatus(), 304)
 
 
 class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
@@ -125,12 +128,12 @@ class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
         self.failUnless( 'testDTML' in self.custom.objectIds() )
 
     def test_customize_alternate_root( self ):
-        self.root.other = Folder('other')
+        self.app.other = Folder('other')
 
-        self.fsDTML.manage_doCustomize( folder_path='other', root=self.root )
+        self.fsDTML.manage_doCustomize(folder_path='other', root=self.app)
 
         self.failIf( 'testDTML' in self.custom.objectIds() )
-        self.failUnless( 'testDTML' in self.root.other.objectIds() )
+        self.failUnless( 'testDTML' in self.app.other.objectIds() )
 
     def test_customize_fspath_as_dot( self ):
 
@@ -150,7 +153,7 @@ class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
         cache_id = 'gofast'
-        RAMCacheManager.manage_addRAMCacheManager( self.root
+        RAMCacheManager.manage_addRAMCacheManager( self.app
                                                  , cache_id
                                                  , REQUEST=None
                                                  )

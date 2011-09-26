@@ -7,10 +7,7 @@ Products.CMFCore Changelog
 - exportimport.tests.test_mailhost:  Accomodate 'smtp_queue' and
   'smtp_queue_directory' exports (newly added in GenericSetup).
 
-- tools: Converted several tools into utilities.
-  ActionsTool, CatalogTool, CookieCrumbler, MemberDataTool, MembershipTool,
-  RegistrationTool, SkinsTool, TypesTool, URLTool and WorkflowTool are now
-  local utilities.
+- tools: Converted all tools into local utilities.
 
 - MemberDataTool: Changed property modes to 'w' and added 'fullname' property.
 

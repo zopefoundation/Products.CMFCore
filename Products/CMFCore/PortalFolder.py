@@ -24,6 +24,7 @@ from App.class_init import InitializeClass
 from OFS.Folder import Folder
 from OFS.OrderSupport import OrderSupport
 from zope.component import getUtility
+from zope.component import queryUtility
 from zope.component.factory import Factory
 from zope.interface import implements
 
@@ -32,6 +33,7 @@ from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import BadRequest
 from Products.CMFCore.exceptions import zExceptions_Unauthorized
+from Products.CMFCore.interfaces import IContentTypeRegistry
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.interfaces import IMutableMinimalDublinCore
 from Products.CMFCore.interfaces import ISiteRoot
@@ -44,7 +46,6 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import ManageProperties
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import getToolByName
 
 
 class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
@@ -265,11 +266,11 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         Returns -- Bare and empty object of the appropriate type (or None, if
         we don't know what to do)
         """
-        registry = getToolByName(self, 'content_type_registry', None)
-        if registry is None:
+        ctr = queryUtility(IContentTypeRegistry)
+        if ctr is None:
             return None
 
-        typeObjectName = registry.findTypeName( name, typ, body )
+        typeObjectName = ctr.findTypeName(name, typ, body)
         if typeObjectName is None:
             return None
 

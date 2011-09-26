@@ -14,35 +14,41 @@
 """
 
 import unittest
+import Testing
 
 import os
-from App.Common import rfc1123_date
 
+from App.Common import rfc1123_date
+from zope.component import getSiteManager
+from zope.testing.cleanup import cleanUp
+
+from Products.CMFCore.interfaces import ICachingPolicyManager
+from Products.CMFCore.tests.base.dummy import DummyCachingManager
+from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
 from Products.CMFCore.tests.base.dummy import FAKE_ETAG
 from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import RequestTest
+from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 
-class FSFileTests(RequestTest, FSDVTest):
+class FSFileTests(TransactionalTest, FSDVTest):
 
     def setUp(self):
+        TransactionalTest.setUp(self)
         FSDVTest.setUp(self)
-        RequestTest.setUp(self)
 
     def tearDown(self):
-        RequestTest.tearDown(self)
+        cleanUp()
         FSDVTest.tearDown(self)
+        TransactionalTest.tearDown(self)
 
-    def _makeOne( self, id, filename ):
+    def _makeOne(self, id, filename):
         from Products.CMFCore.FSFile import FSFile
         from Products.CMFCore.FSMetadata import FSMetadata
 
         full_path = os.path.join(self.skin_path_name, filename)
         metadata = FSMetadata(full_path)
         metadata.read()
-        fsfile_ob = FSFile(id, full_path, properties=metadata.getProperties())
-
-        return fsfile_ob
+        return FSFile(id, full_path, properties=metadata.getProperties())
 
     def _extractFile( self, filename ):
         path = os.path.join(self.skin_path_name, filename)
@@ -55,19 +61,18 @@ class FSFileTests(RequestTest, FSDVTest):
         return path, data
 
     def test_ctor( self ):
-
-        path, ref = self._extractFile('test_file.swf')
+        _path, ref = self._extractFile('test_file.swf')
 
         file = self._makeOne( 'test_file', 'test_file.swf' )
-        file = file.__of__( self.root )
+        file = file.__of__(self.app)
 
         self.assertEqual( file.get_size(), len( ref ) )
         self.assertEqual( file._readFile(0), ref )
 
     def test_str( self ):
-        path, ref = self._extractFile('test_file.swf')
+        _path, ref = self._extractFile('test_file.swf')
         file = self._makeOne( 'test_file', 'test_file.swf' )
-        file = file.__of__( self.root )
+        file = file.__of__(self.app)
         self.assertEqual( len(str(file)), len( ref ) )
 
     def test_index_html( self ):
@@ -75,7 +80,7 @@ class FSFileTests(RequestTest, FSDVTest):
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file.swf' )
-        file = file.__of__( self.root )
+        file = file.__of__(self.app)
 
         data = file.index_html( self.REQUEST, self.RESPONSE )
 
@@ -90,11 +95,11 @@ class FSFileTests(RequestTest, FSDVTest):
                         , rfc1123_date( mod_time ) )
 
     def test_index_html_with_304( self ):
-        path, ref = self._extractFile('test_file.swf')
+        path, _ref = self._extractFile('test_file.swf')
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file.swf' )
-        file = file.__of__( self.root )
+        file = file.__of__(self.app)
 
         self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
                             ] = '%s;' % rfc1123_date( mod_time+3600 )
@@ -104,15 +109,15 @@ class FSFileTests(RequestTest, FSDVTest):
         self.assertEqual( data, '' )
         # test that we don't supply a content-length
         self.assertEqual( self.RESPONSE.getHeader('Content-Length'.lower()),
-                                               None )
+                                                  None )
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
     def test_index_html_without_304( self ):
-        path, ref = self._extractFile('test_file.swf')
+        path, _ref = self._extractFile('test_file.swf')
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file.swf' )
-        file = file.__of__( self.root )
+        file = file.__of__(self.app)
 
         self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
                             ] = '%s;' % rfc1123_date( mod_time-3600 )
@@ -122,54 +127,53 @@ class FSFileTests(RequestTest, FSDVTest):
         self.failUnless( data, '' )
         self.assertEqual( self.RESPONSE.getStatus(), 200 )
 
-    def test_index_html_with_304_from_cpm( self ):
-        from Products.CMFCore.tests.base.dummy \
-            import DummyCachingManagerWithPolicy
-        self.root.caching_policy_manager = DummyCachingManagerWithPolicy()
-        path, ref = self._extractFile('test_file.swf')
-        file = self._makeOne( 'test_file', 'test_file.swf' )
-        file = file.__of__( self.root )
+    def test_index_html_with_304_from_cpm(self):
+        cpm = DummyCachingManagerWithPolicy()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
+        path, _ref = self._extractFile('test_file.swf')
+        file = self._makeOne('test_file', 'test_file.swf')
+        file = file.__of__(self.app)
 
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date( mod_time )
-        self.REQUEST.environ[ 'IF_NONE_MATCH'
+        self.REQUEST.environ['IF_MODIFIED_SINCE'
+                            ] = '%s;' % rfc1123_date(mod_time)
+        self.REQUEST.environ['IF_NONE_MATCH'
                             ] = '%s;' % FAKE_ETAG
 
-        data = file.index_html( self.REQUEST, self.RESPONSE )
-        self.assertEqual( len(data), 0 )
-        self.assertEqual( self.RESPONSE.getStatus(), 304 )
+        data = file.index_html(self.REQUEST, self.RESPONSE)
+        self.assertEqual(len(data), 0)
+        self.assertEqual(self.RESPONSE.getStatus(), 304)
 
-    def test_index_html_200_with_cpm( self ):
+    def test_index_html_200_with_cpm(self):
         # should behave the same as without cpm installed
-        from Products.CMFCore.tests.base.dummy import DummyCachingManager
-        self.root.caching_policy_manager = DummyCachingManager()
+        cpm = DummyCachingManagerWithPolicy()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
         path, ref = self._extractFile('test_file.swf')
-        file = self._makeOne( 'test_file', 'test_file.swf' )
-        file = file.__of__( self.root )
-
-        mod_time = os.stat( path )[ 8 ]
-
-        data = file.index_html( self.REQUEST, self.RESPONSE )
-
-        self.assertEqual( len( data ), len( ref ) )
-        self.assertEqual( data, ref )
-        # ICK!  'HTTPResponse.getHeader' doesn't case-flatten the key!
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Length'.lower() )
-                        , str(len(ref)) )
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Type'.lower() )
-                        , 'application/octet-stream' )
-        self.assertEqual( self.RESPONSE.getHeader( 'Last-Modified'.lower() )
-                        , rfc1123_date( mod_time ) )
-
-    def test_caching( self ):
-        from Products.CMFCore.tests.base.dummy import DummyCachingManager
-        self.root.caching_policy_manager = DummyCachingManager()
-        original_len = len(self.RESPONSE.headers)
         file = self._makeOne('test_file', 'test_file.swf')
-        file = file.__of__(self.root)
-        file.index_html(self.REQUEST, self.RESPONSE)
+        file = file.__of__(self.app)
+
+        mod_time = os.stat(path)[8]
+
+        data = file.index_html(self.REQUEST, self.RESPONSE)
+
+        self.assertEqual(len(data), len(ref))
+        self.assertEqual(data, ref)
+        # ICK!  'HTTPResponse.getHeader' doesn't case-flatten the key!
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower())
+                        , str(len(ref)))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower())
+                        , 'application/octet-stream')
+        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower())
+                        , rfc1123_date(mod_time))
+
+    def test_caching(self):
+        cpm = DummyCachingManager()
+        getSiteManager().registerUtility(cpm, ICachingPolicyManager)
+        original_len = len(self.RESPONSE.headers)
+        obj = self._makeOne('test_file', 'test_file.swf')
+        obj = obj.__of__(self.app)
+        obj.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
         self.failUnless(len(headers) >= original_len + 3)
         self.failUnless('foo' in headers.keys())
@@ -181,7 +185,7 @@ class FSFileTests(RequestTest, FSDVTest):
         mod_time = os.stat( path )[ 8 ]
 
         file = self._makeOne( 'test_file', 'test_file_two.swf' )
-        file = file.__of__( self.root )
+        file = file.__of__(self.app)
 
         data = file.index_html( self.REQUEST, self.RESPONSE )
 
@@ -197,10 +201,11 @@ class FSFileTests(RequestTest, FSDVTest):
 
     def test_utf8charset_detection( self ):
         import mimetypes
+
         file_name = 'testUtf8.js'
-        mtype, ignore_enc = mimetypes.guess_type(file_name)
+        mtype, _ignore_enc = mimetypes.guess_type(file_name)
         file = self._makeOne(file_name, file_name)
-        file = file.__of__(self.root)
+        file = file.__of__(self.app)
         file.index_html(self.REQUEST, self.RESPONSE)
         self.assertEqual(self.RESPONSE.getHeader('content-type'),
                          '%s; charset=utf-8' % mtype)

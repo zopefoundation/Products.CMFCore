@@ -31,6 +31,7 @@ from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import registerToolInterface
 
 
 class MajorMinorPredicate( SimpleItem ):
@@ -547,7 +548,8 @@ class ContentTypeRegistry( SimpleItem ):
 
         return None
 
-InitializeClass( ContentTypeRegistry )
+InitializeClass(ContentTypeRegistry)
+registerToolInterface('content_type_registry', IContentTypeRegistry)
 
 
 def manage_addRegistry( self, REQUEST=None ):
