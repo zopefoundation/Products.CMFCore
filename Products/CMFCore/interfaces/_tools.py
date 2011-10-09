@@ -1270,6 +1270,34 @@ class ISyndicationTool(Interface):
             """,
             )
 
+    period = Attribute(
+        """
+        :str
+        Syndication period for the site: 'hourly', 'daily', 'weekly', 'monthly'
+        """
+        )
+
+    frequency = Attribute(
+        """
+        :int
+        frequency * period calculates the actual update time
+        """
+        )
+
+    base = Attribute(
+        """
+        :datetime
+        The baseline timestamp for site syndication
+        """
+        )
+
+    max_items = Attribute(
+        """
+        :int
+        The maximum number of items to be included in a feed
+        """
+        )
+
     def enableSyndication(obj):
         """ Enable syndication for the passed-in object
 
@@ -1362,20 +1390,10 @@ class ISyndicationTool(Interface):
 class ISyndicationInfo(Interface):
     """ Provides syndication about a particular object"""
 
-    def get_info():
-        """
-        Return the syndication information from the object if available
-        or from the site settings if not.
-
-        Syndication information is a dictionary
-        """
-
-    def set_info(period, frequency, base, max_items):
-        """ Set syndication for an object."""
-
     enabled = Attribute(
         """
-        Boolean as to whether syndication is available for the object or not.
+        :`bool`
+        Whether syndication is available for the object or not.
         For this to be true both site syndication and object syndication must
         be enabled.
 
@@ -1383,9 +1401,39 @@ class ISyndicationInfo(Interface):
         """
         )
 
+    period = Attribute(
+        """
+        :`str`
+        The period (daily, weekly, monthly) when the feed
+        is updated
+        """
+        )
+
+    frequency = Attribute(
+        """
+        :`int`
+        The frequency of the period for updates
+        """
+        )
+
+    base = Attribute(
+        """
+        :`datetime.datime`
+        The baseline timestamp for calculating updates
+        """
+        )
+
+    max_items = Attribute(
+        """
+        :`int`
+        The maximum number of items included in a feed
+        """
+        )
+
     def revert():
         """
-        Remove any folderish specific syndication settings.
+        Remove any object specific syndication settings and revert to site
+        settings
         """
 
     def enable():
