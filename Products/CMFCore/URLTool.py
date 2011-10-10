@@ -14,10 +14,12 @@
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
-from zope.component import getUtility
+from zope.component import queryUtility
 from zope.globalrequest import getRequest
 from zope.interface import implements
 from ZPublisher.BaseRequest import RequestContainer
@@ -73,7 +75,11 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
         """ Get the portal object itself.
         """
         request_container = RequestContainer(REQUEST=getRequest())
-        return getUtility(ISiteRoot).__of__(request_container)
+        portal_obj = queryUtility(ISiteRoot)
+        if portal_obj is None:
+            # fallback for bootstrap
+            portal_obj = aq_parent(aq_inner(self))
+        return portal_obj.__of__(request_container)
 
     security.declarePublic('getRelativeContentPath')
     def getRelativeContentPath(self, content):
