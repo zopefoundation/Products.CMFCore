@@ -473,14 +473,14 @@ class CatalogToolTests(SecurityTest):
         ctool.catalog_object(site.dummy, '/dummy')
 
         query = {'meta_type': 'Dummy'}
-        setRequest(self.REQUEST)
         brain = ctool.searchResults(query)[0]
-        clearRequest()
 
+        setRequest(self.REQUEST)
         self.assertEqual('/dummy', brain.getPath())
         self.assertEqual('http://nohost/dummy', brain.getURL())
         self.assertEqual(site.dummy, brain.getObject())
         self.assertTrue(hasattr(brain.getObject(), 'REQUEST'))
+        clearRequest()
 
     def test_refreshCatalog(self):
         site = DummySite('site')
