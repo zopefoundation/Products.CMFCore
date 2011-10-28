@@ -113,6 +113,8 @@ class OldDiscussable(Implicit):
 
         return ""
 
+InitializeClass(OldDiscussable)
+
 
 class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
 

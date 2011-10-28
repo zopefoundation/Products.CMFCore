@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.5 (unreleased)
 ------------------
 
+- Added two missing explicit InitializeClass calls.
+
 
 2.2.4 (2011-04-02)
 ------------------

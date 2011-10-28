@@ -119,6 +119,8 @@ class CPMCache(Cache):
 
         return _setCacheHeaders(ob, extra_context={})
 
+InitializeClass(CPMCache)
+
 
 class CachingPolicy:
     """
