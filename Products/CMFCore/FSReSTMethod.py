@@ -23,7 +23,6 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-from Products.ZReST.ZReST import Warnings
 
 from Products.CMFCore.DirectoryView import registerFileExtension
 from Products.CMFCore.DirectoryView import registerMetaType
@@ -65,6 +64,15 @@ COOKED TEXT HERE
 </body>
 </html>
 """
+
+class Warnings(object):
+
+    def __init__(self):
+        self.messages = []
+
+    def write(self, message):
+        self.messages.append(message)
+
 
 class FSReSTMethod(FSObject):
     """ A chunk of StructuredText, rendered as a skin method of a CMF site.
