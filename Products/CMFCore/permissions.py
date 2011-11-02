@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" CMFCore product permissions.
-
-$Id$
-"""
+""" CMFCore product permissions. """
 
 from AccessControl import Permissions
 from AccessControl.Permission import _registeredPermissions

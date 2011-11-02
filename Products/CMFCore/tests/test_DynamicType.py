@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for DynamicType module.
-
-$Id$
-"""
+""" Unit tests for DynamicType module. """
 
 import unittest
 import Testing

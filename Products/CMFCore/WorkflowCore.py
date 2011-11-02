@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Common pieces of the workflow architecture.
-
-$Id$
-"""
+""" Common pieces of the workflow architecture. """
 
 from zope.interface import implements
 from zope.component.interfaces import ObjectEvent

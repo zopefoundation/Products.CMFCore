@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Workflow tool xml adapters and setup handlers.
-
-$Id$
-"""
+"""Workflow tool xml adapters and setup handlers. """
 
 from zope.component import adapts
 

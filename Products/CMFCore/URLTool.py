@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" CMFCore portal_url tool.
-
-$Id$
-"""
+""" CMFCore portal_url tool. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_inner

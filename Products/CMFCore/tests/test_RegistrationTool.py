@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for RegistrationTool module.
-
-$Id$
-"""
+""" Unit tests for RegistrationTool module. """
 
 import unittest
 import Testing

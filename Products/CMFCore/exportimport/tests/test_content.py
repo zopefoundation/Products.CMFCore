@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Filesystem exporter / importer adapter unit tests.
-
-$Id$
-"""
+"""Filesystem exporter / importer adapter unit tests. """
 
 import unittest
 import Testing

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for Expression module.
-
-$Id$
-"""
+""" Unit tests for Expression module. """
 
 import unittest
 import Testing

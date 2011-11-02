@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for URLTool module.
-
-$Id$
-"""
+""" Unit tests for URLTool module. """
 
 import unittest
 import Testing

@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Site properties xml adapter and setup handler unit tests.
-
-$Id$
-"""
+"""Site properties xml adapter and setup handler unit tests. """
 
 import unittest
 import Testing

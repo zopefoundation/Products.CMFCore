@@ -10,7 +10,4 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""CMFCore export / import support unit tests.
-
-$Id$
-"""
+"""CMFCore export / import support unit tests. """

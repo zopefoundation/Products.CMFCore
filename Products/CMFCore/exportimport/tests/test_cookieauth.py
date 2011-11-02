@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Cookie crumbler xml adapter and setup handler unit tests.
-
-$Id$
-"""
+"""Cookie crumbler xml adapter and setup handler unit tests. """
 
 import unittest
 import Testing

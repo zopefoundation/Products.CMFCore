@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic workflow tool.
-
-$Id$
-"""
+""" Basic workflow tool. """
 
 import sys
 from warnings import warn

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Customizable DTML methods that come from the filesystem.
-
-$Id$
-"""
+""" Customizable DTML methods that come from the filesystem. """
 
 try:
     from OFS.role import RoleManager

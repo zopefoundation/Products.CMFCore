@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSImage module.
-
-$Id$
-"""
+""" Unit tests for FSImage module. """
 
 import unittest
 import Testing

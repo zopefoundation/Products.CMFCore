@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Caching policy manager xml adapters and setup handlers.
-
-$Id$
-"""
+"""Caching policy manager xml adapters and setup handlers. """
 
 from zope.component import adapts
 from zope.component import queryMultiAdapter

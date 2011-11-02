@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for PortalContent module.
-
-$Id$
-"""
+""" Unit tests for PortalContent module. """
 
 import unittest
 import Testing

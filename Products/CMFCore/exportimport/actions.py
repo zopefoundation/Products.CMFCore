@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Actions tool node adapters.
-
-$Id$
-"""
+"""Actions tool node adapters. """
 
 from zope.component import adapts
 

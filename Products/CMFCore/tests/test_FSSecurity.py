@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for security on FS* modules.
-
-$Id$
-"""
+""" Unit tests for security on FS* modules. """
 
 import unittest
 import Testing

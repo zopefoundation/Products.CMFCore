@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""CMFCore export / import support.
-
-$Id$
-"""
+"""CMFCore export / import support. """
 
 from content import exportSiteStructure
 from content import importSiteStructure

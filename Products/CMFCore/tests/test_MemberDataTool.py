@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for MemberDataTool module.
-
-$Id$
-"""
+""" Unit tests for MemberDataTool module. """
 
 import unittest
 import Testing

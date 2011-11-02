@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Content type registry xml adapter and setup handler unit tests.
-
-$Id$
-"""
+"""Content type registry xml adapter and setup handler unit tests. """
 
 import unittest
 import Testing

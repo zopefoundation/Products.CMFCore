@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic portal discussion access tool.
-
-$Id$
-"""
+""" Basic portal discussion access tool. """
 
 import urllib
 

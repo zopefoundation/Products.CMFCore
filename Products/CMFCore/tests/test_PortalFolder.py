@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for PortalFolder module.
-
-$Id$
-"""
+""" Unit tests for PortalFolder module. """
 
 import unittest
 import Testing

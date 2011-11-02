@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Actions tool node adapter unit tests.
-
-$Id$
-"""
+"""Actions tool node adapter unit tests. """
 
 import unittest
 import Testing

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Customizable objects that come from the filesystem (base class).
-
-$Id$
-"""
+""" Customizable objects that come from the filesystem (base class). """
 
 import os
 

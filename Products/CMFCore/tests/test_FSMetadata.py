@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSMetadata module.
-
-$Id$
-"""
+""" Unit tests for FSMetadata module. """
 
 import unittest
 import Testing

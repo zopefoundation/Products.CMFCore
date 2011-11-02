@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Views of filesystem directories as folders.
-
-$Id$
-"""
+""" Views of filesystem directories as folders. """
 
 import logging
 import re

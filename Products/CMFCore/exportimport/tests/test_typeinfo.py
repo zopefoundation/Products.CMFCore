@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Types tool xml adapter and setup handler unit tests.
-
-$Id$
-"""
+"""Types tool xml adapter and setup handler unit tests. """
 
 import unittest
 import Testing

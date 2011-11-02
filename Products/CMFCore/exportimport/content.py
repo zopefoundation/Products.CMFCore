@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Filesystem exporter / importer adapters.
-
-$Id$
-"""
+"""Filesystem exporter / importer adapters. """
 
 from csv import reader
 from csv import writer

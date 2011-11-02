@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit test security.
-
-$Id$
-"""
+""" Unit test security. """
 
 from AccessControl.PermissionRole import rolesForPermissionOn
 from Acquisition import Implicit

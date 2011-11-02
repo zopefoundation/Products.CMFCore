@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Customizable page templates that come from the filesystem.
-
-$Id$
-"""
+""" Customizable page templates that come from the filesystem. """
 
 import re
 

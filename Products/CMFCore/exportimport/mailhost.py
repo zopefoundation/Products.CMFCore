@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Mailhost setup handlers.
-
-$Id$
-"""
+"""Mailhost setup handlers. """
 
 from Products.MailHost.interfaces import IMailHost
 

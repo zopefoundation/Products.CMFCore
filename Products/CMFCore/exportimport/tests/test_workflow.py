@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Workflow tool xml adapter and setup handler unit tests.
-
-$Id$
-"""
+"""Workflow tool xml adapter and setup handler unit tests. """
 
 import unittest
 import Testing

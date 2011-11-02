@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic action list tool.
-
-$Id$
-"""
+""" Basic action list tool. """
 
 from warnings import warn
 

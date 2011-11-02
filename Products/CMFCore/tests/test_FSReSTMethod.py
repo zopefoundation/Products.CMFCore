@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSReSTMethod module.
-
-$Id$
-"""
+""" Unit tests for FSReSTMethod module. """
 import unittest
 import Testing
 

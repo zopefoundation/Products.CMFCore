@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" CMF test utils.
-
-$Id$
-"""
+""" CMF test utils. """
 
 def has_path( catalog, path ):
     """

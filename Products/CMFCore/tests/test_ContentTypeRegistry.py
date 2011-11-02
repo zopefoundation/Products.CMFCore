@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for ContentTypeRegistry module.
-
-$Id$
-"""
+""" Unit tests for ContentTypeRegistry module. """
 
 import unittest
 import Testing

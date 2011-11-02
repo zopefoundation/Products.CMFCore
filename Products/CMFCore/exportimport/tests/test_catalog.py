@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Catalog tool setup handler unit tests.
-
-$Id$
-"""
+"""Catalog tool setup handler unit tests. """
 
 import unittest
 from Testing import ZopeTestCase

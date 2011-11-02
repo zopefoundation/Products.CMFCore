@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Customizable image objects that come from the filesystem.
-
-$Id$
-"""
+""" Customizable image objects that come from the filesystem. """
 
 import codecs
 import os

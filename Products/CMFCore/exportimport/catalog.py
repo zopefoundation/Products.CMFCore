@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Catalog tool setup handlers.
-
-$Id$
-"""
+"""Catalog tool setup handlers. """
 
 from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import importObjects

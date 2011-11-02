@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic membership tool.
-
-$Id$
-"""
+""" Basic membership tool. """
 
 import logging
 from warnings import warn

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSFile module.
-
-$Id$
-"""
+""" Unit tests for FSFile module. """
 
 import unittest
 import Testing

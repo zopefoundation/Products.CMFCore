@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for IOpaqueItems implementations.
-
-$Id$
-"""
+""" Unit tests for IOpaqueItems implementations. """
 
 import unittest
 import Testing

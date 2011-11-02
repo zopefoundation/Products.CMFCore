@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSPythonScript module.
-
-$Id$
-"""
+""" Unit tests for FSPythonScript module. """
 
 import unittest
 from Testing import ZopeTestCase

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""CookieCrumbler tests.
-
-$Id$
-"""
+"""CookieCrumbler tests. """
 
 import unittest
 import Testing

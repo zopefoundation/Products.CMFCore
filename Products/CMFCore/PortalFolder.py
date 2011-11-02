@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" PortalFolder: CMF-enabled Folder objects.
-
-$Id$
-"""
+""" PortalFolder: CMF-enabled Folder objects. """
 
 import base64
 import marshal

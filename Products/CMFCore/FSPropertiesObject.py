@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Customizable properties that come from the filesystem.
-
-$Id$
-"""
+""" Customizable properties that come from the filesystem. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper

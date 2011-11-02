@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Types tool xml adapters and setup handlers.
-
-$Id$
-"""
+"""Types tool xml adapters and setup handlers. """
 
 from zope.component import adapts
 

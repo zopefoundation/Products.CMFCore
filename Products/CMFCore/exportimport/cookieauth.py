@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Cookie crumbler xml adapters and setup handlers.
-
-$Id$
-"""
+"""Cookie crumbler xml adapters and setup handlers. """
 
 from zope.component import adapts
 

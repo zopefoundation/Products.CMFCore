@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit tests for CMFCatalogAware.
-
-$Id$
-"""
+"""Unit tests for CMFCatalogAware. """
 
 import unittest
 import Testing

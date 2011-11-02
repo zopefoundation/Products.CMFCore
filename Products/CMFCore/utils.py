@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Utility functions.
-
-$Id$
-"""
+""" Utility functions. """
 
 import re
 from copy import deepcopy

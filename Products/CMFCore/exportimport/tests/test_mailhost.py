@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Mailhost setup handler unit tests.
-
-$Id$
-"""
+"""Mailhost setup handler unit tests. """
 
 import unittest
 import Testing

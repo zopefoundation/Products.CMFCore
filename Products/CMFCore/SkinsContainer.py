@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Base class for objects that supply skins.
-
-$Id$
-"""
+""" Base class for objects that supply skins. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base

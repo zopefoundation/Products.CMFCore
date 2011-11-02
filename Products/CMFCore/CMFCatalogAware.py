@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Base class for catalog aware content items.
-
-$Id$
-"""
+""" Base class for catalog aware content items. """
 
 import logging
 

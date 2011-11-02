@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for CachingPolicyManager module.
-
-$Id$
-"""
+""" Unit tests for CachingPolicyManager module. """
 
 import unittest
 import Testing

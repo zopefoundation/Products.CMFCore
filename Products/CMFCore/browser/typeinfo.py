@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""TypeInformation browser views.
-
-$Id$
-"""
+"""TypeInformation browser views. """
 
 from xml.dom.minidom import parseString
 

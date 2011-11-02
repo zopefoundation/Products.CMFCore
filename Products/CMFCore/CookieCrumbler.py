@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-""" Cookie Crumbler: Enable cookies for non-cookie user folders.
-
-$Id$
-"""
+""" Cookie Crumbler: Enable cookies for non-cookie user folders. """
 
 from base64 import encodestring, decodestring
 from urllib import quote, unquote

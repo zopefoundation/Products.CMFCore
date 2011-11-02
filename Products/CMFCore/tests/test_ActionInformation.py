@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for ActionInformation module.
-
-$Id$
-"""
+""" Unit tests for ActionInformation module. """
 
 import unittest
 import Testing

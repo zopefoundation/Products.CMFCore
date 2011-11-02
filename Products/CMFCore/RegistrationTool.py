@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic user registration tool.
-
-$Id$
-"""
+""" Basic user registration tool. """
 
 from random import choice
 import re

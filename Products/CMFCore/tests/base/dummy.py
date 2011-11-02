@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit test dummies.
-
-$Id$
-"""
+""" Unit test dummies. """
 
 from Acquisition import Implicit, aq_base, aq_inner, aq_parent
 from OFS.event import ObjectWillBeAddedEvent

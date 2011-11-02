@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" FSSTXMethod: Filesystem methodish Structured Text document.
-
-$Id$
-"""
+""" FSSTXMethod: Filesystem methodish Structured Text document. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for CMFBTreeFolder module.
-
-$Id$
-"""
+""" Unit tests for CMFBTreeFolder module. """
 
 import unittest
 import Testing

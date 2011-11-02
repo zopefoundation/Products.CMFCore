@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" CMFCore product exceptions.
-
-$Id$
-"""
+""" CMFCore product exceptions. """
 
 from AccessControl import ModuleSecurityInfo
 from AccessControl import Unauthorized as AccessControl_Unauthorized

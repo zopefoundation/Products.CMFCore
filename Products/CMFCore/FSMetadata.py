@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Handles reading the properties for an object that comes from the filesystem.
-
-$Id$
-"""
+""" Handles reading the properties for an object that comes from the filesystem. """
 
 import logging
 from os.path import exists

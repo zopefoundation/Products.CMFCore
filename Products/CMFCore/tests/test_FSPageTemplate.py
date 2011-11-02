@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSPageTemplate module.
-
-$Id$
-"""
+""" Unit tests for FSPageTemplate module. """
 
 import unittest
 from Testing import ZopeTestCase

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Information about customizable actions.
-
-$Id$
-"""
+""" Information about customizable actions. """
 
 from UserDict import UserDict
 

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" DynamicType: Mixin for dynamic properties.
-
-$Id$
-"""
+""" DynamicType: Mixin for dynamic properties. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass

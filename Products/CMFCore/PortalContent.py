@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" PortalContent: Base class for all CMF content.
-
-$Id$
-"""
+""" PortalContent: Base class for all CMF content. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" CMFCore event interfaces.
-
-$Id$
-"""
+""" CMFCore event interfaces. """
 from zope.interface import Attribute
 from zope.component.interfaces import IObjectEvent
 

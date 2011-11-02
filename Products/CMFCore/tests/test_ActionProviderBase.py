@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for ActionProviderBase module.
-
-$Id$
-"""
+""" Unit tests for ActionProviderBase module. """
 
 import unittest
 import Testing

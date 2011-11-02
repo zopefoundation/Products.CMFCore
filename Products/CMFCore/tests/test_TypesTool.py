@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for TypesTool module.
-
-$Id$
-"""
+""" Unit tests for TypesTool module. """
 
 import unittest
 

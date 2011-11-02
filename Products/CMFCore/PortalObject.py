@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" PortalObject: The portal root object class
-
-$Id$
-"""
+""" PortalObject: The portal root object class """
 
 from App.class_init import InitializeClass
 from five.localsitemanager.registry import PersistentComponents

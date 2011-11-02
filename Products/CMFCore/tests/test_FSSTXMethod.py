@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSSTXMethod module.
-
-$Id$
-"""
+""" Unit tests for FSSTXMethod module. """
 import unittest
 import Testing
 

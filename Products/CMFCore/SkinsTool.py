@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Portal skins tool.
-
-$Id$
-"""
+"""Portal skins tool. """
 
 from difflib import unified_diff
 

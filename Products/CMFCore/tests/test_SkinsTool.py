@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for SkinsTool module.
-
-$Id$
-"""
+""" Unit tests for SkinsTool module. """
 
 import unittest
 import Testing

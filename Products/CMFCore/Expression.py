@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Expressions in a web-configurable workflow.
-
-$Id$
-"""
+""" Expressions in a web-configurable workflow. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base

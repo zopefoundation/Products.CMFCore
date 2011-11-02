@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Skins tool xml adapters and setup handlers.
-
-$Id$
-"""
+"""Skins tool xml adapters and setup handlers. """
 
 from Acquisition import aq_inner
 from Acquisition import aq_parent

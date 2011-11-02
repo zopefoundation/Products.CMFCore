@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic Site content type registry
-
-$Id$
-"""
+""" Basic Site content type registry """
 
 import os
 import re

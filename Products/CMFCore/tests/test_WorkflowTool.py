@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for WorkflowTool module.
-
-$Id$
-"""
+""" Unit tests for WorkflowTool module. """
 
 import unittest
 import Testing

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Namespace for CMF specific add views.
-
-$Id$
-"""
+"""Namespace for CMF specific add views. """
 
 from zope.component import adapts
 from zope.component import queryMultiAdapter

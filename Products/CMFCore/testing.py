@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit test mixin classes and layers.
-
-$Id$
-"""
+""" Unit test mixin classes and layers. """
 
 from OFS.SimpleItem import SimpleItem
 from Testing.ZopeTestCase import installPackage

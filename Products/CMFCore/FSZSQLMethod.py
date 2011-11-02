@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Customizable ZSQL methods that come from the filesystem.
-
-$Id$
-"""
+""" Customizable ZSQL methods that come from the filesystem. """
 
 import logging
 

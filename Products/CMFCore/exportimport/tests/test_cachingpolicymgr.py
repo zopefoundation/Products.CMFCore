@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Caching policy manager xml adapter and setup handler unit tests.
-
-$Id$
-"""
+"""Caching policy manager xml adapter and setup handler unit tests. """
 
 import unittest
 import Testing

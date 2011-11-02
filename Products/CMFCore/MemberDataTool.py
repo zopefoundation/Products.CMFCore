@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic member data tool.
-
-$Id$
-"""
+""" Basic member data tool. """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_inner, aq_parent, aq_base

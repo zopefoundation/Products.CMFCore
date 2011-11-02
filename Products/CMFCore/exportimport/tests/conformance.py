@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Mix-in classes for testing interface conformance.
-
-$Id$
-"""
+""" Mix-in classes for testing interface conformance. """
 
 class ConformsToISimpleItem:
 

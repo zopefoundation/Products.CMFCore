@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Site properties xml adapters and setup handlers.
-
-$Id$
-"""
+"""Site properties xml adapters and setup handlers. """
 
 from zope.component import adapts
 from zope.component import queryMultiAdapter

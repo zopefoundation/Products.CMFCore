@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Implement a shared base for tools which provide actions.
-
-$Id$
-"""
+""" Implement a shared base for tools which provide actions. """
 
 from warnings import warn
 

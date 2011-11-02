@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" FSReSTMethod: Filesystem methodish Structured Text document.
-
-$Id$
-"""
+""" FSReSTMethod: Filesystem methodish Structured Text document. """
 
 from docutils.core import publish_parts
 from docutils.writers.html4css1 import Writer

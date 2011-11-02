@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Unit tests for FSDTMLMethod module.
-
-$Id$
-"""
+""" Unit tests for FSDTMLMethod module. """
 
 import unittest
 import Testing

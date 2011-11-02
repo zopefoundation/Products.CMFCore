@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Basic portal catalog.
-
-$Id$
-"""
+""" Basic portal catalog. """
 
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.SecurityInfo import ClassSecurityInfo

@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""CMFCore ZCML directives.
-
-$Id$
-"""
+"""CMFCore ZCML directives. """
 
 from os import path
 

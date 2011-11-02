@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Customizable Python scripts that come from the filesystem.
-
-$Id$
-"""
+""" Customizable Python scripts that come from the filesystem. """
 
 from difflib import unified_diff
 

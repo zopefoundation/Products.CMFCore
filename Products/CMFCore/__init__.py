@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Portal services base objects
-
-$Id$
-"""
+""" Portal services base objects """
 
 import PortalFolder
 import MembershipTool, WorkflowTool, CatalogTool, DiscussionTool

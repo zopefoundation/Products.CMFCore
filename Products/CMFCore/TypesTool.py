@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Type registration tool.
-
-$Id$
-"""
+""" Type registration tool. """
 
 import logging
 from warnings import warn

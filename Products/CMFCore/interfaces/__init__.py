@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" CMFCore.interfaces package.
-
-$Id$
-"""
+""" CMFCore.interfaces package. """
 
 from _content import *
 from _tools import *

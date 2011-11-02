@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Skins tool xml adapter and setup handler unit tests.
-
-$Id$
-"""
+"""Skins tool xml adapter and setup handler unit tests. """
 
 import unittest
 from Testing import ZopeTestCase

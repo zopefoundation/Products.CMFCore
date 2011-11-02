@@ -10,10 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Content type registry xml adapters and setup handlers.
-
-$Id$
-"""
+"""Content type registry xml adapters and setup handlers. """
 
 from zope.component import adapts
 
