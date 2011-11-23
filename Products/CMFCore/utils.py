@@ -838,7 +838,9 @@ def _FSCacheHeaders(obj):
 
     RESPONSE = REQUEST.RESPONSE
     header = REQUEST.getHeader('If-Modified-Since', None)
-    last_mod = obj._file_mod_time
+    # Reduce resolution to one second, else if-modified-since would
+    # always be older if system resolution is higher
+    last_mod = int(obj._file_mod_time)
 
     if header is not None:
         header = header.split(';')[0]

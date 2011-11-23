@@ -125,7 +125,7 @@ class FSImageTests(TransactionalTest, FSDVTest):
         file = self._makeOne('test_file', 'test_image.gif')
         file = file.__of__(self.app)
 
-        mod_time = os.stat(path)[8]
+        mod_time = os.stat(path).st_mtime
 
         self.REQUEST.environ['IF_MODIFIED_SINCE'
                             ] = '%s;' % rfc1123_date(mod_time)
@@ -144,7 +144,7 @@ class FSImageTests(TransactionalTest, FSDVTest):
         file = self._makeOne('test_file', 'test_image.gif')
         file = file.__of__(self.app)
 
-        mod_time = os.stat(path)[8]
+        mod_time = os.stat(path).st_mtime
 
         data = file.index_html(self.REQUEST, self.RESPONSE)
 
