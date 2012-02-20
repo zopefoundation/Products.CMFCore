@@ -124,6 +124,10 @@ class DynamicType:
             if not relative_to_portal:
                 # Relative to REQUEST['BASEPATH1']
                 icon = '%s/%s' % (utool(relative=1), icon)
+        try:
+            utool.getPortalObject().unrestrictedTraverse(icon)
+        except (AttributeError, KeyError):
+            icon = ''
         return icon
 
     # deprecated alias
