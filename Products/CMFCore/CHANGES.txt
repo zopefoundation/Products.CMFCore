@@ -6,6 +6,10 @@ Products.CMFCore Changelog
 
 - Avoid a shallow dependency on `Products.ZReST`. (Merged [122078])
 
+- Fix slow debug-mode performance on Windows.  (Merged [120174])
+  [rossp]
+
+
 2.2.5 (2011-11-01)
 ------------------
 

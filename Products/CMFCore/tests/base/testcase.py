@@ -156,10 +156,13 @@ class WritableFSDVTest(FSDVTest):
     # Base class for FSDV test, creates a fake skin
     # copy that can be edited.
 
-    def _writeFile(self, filename, stuff):
+    def _writeFile(self, filename, stuff, use_dir_mtime=False):
         # write some stuff to a file on disk
         # make sure the file's modification time has changed
         # also make sure the skin folder mod time has changed
+        if use_dir_mtime:
+            dir_mtime = stat(self.skin_path_name).st_mtime
+        thePath = join(self.skin_path_name, filename)
         try:
             dir_mtime = stat(self.skin_path_name)[8]
         except:  # XXX Why bare except?
@@ -175,24 +178,19 @@ class WritableFSDVTest(FSDVTest):
             f.write(stuff)
             f.close()
             mtime2 = stat(thePath)[8]
-        self._addedOrRemoved(dir_mtime)
+        if use_dir_mtime:
+            self._addedOrRemoved(dir_mtime)
 
-    def _deleteFile(self,filename):
-        try:
-            dir_mtime = stat(self.skin_path_name)[8]
-        except:  # XXX Why bare except?
-            dir_mtime = 0
+    def _deleteFile(self, filename, use_dir_mtime=False):
+        if use_dir_mtime:
+            dir_mtime = stat(self.skin_path_name).st_mtime
         remove(join(self.skin_path_name, filename))
-        self._addedOrRemoved(dir_mtime)
+        if use_dir_mtime:
+            self._addedOrRemoved(dir_mtime)
 
     def _addedOrRemoved(self, old_mtime):
         # Called after adding/removing a file from self.skin_path_name.
 
-        if sys.platform == 'win32':
-            # Windows doesn't reliably update directory mod times, so
-            # DirectoryView has an expensive workaround.  The
-            # workaround does not rely on directory mod times.
-            return
         limit = time.time() + 60  # If it takes 60 seconds, give up.
         new_mtime = old_mtime
         while new_mtime == old_mtime:

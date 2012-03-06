@@ -102,13 +102,30 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
 
 class DebugModeTests( FSSecurityBase ):
 
-    def test_addPRM( self ):
+class DebugModeTests(WritableFSDVTest, MetadataChecker):
+
+    def setUp(self):
+        from Products.CMFCore.DirectoryView import _dirreg
+
+        WritableFSDVTest.setUp(self)
+        self._registerDirectory(self)
+        info = _dirreg.getDirectoryInfo(self.ob.fake_skin._dirpath)
+        self.use_dir_mtime = info.use_dir_mtime
+        self.saved_cfg_debug_mode = getConfiguration().debug_mode
+        getConfiguration().debug_mode = True
+
+    def tearDown(self):
+        getConfiguration().debug_mode = self.saved_cfg_debug_mode
+        WritableFSDVTest.tearDown(self)
+
+    def test_addPRM(self):
         # Test adding of a .metadata
         # baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
         # add
         self._writeFile('test5.py.metadata',
-                        '[security]\nView = 1:Manager')
+                        '[security]\nView = 1:Manager',
+                        self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
@@ -120,7 +137,7 @@ class DebugModeTests( FSSecurityBase ):
                         '[security]\nView = 1:Manager')
         self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
         # delete
-        self._deleteFile('test5.py.metadata')
+        self._deleteFile('test4.py.metadata', self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
@@ -139,7 +156,8 @@ class DebugModeTests( FSSecurityBase ):
                             'View',0,['Manager','Anonymous'])
         # edit
         self._writeFile('test5.py.metadata',
-                        '[security]\nView = 1:Manager')
+                        '[security]\nView = 1:Manager',
+                        self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
@@ -148,23 +166,19 @@ class DebugModeTests( FSSecurityBase ):
         # baseline
         self._writeFile('test5.py.metadata','[security]\nView = 0:Manager')
         # delete
-        self._deleteFile('test5.py.metadata')
-        self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
-
-        # we need to wait a second here or the mtime will actually
-        # have the same value, no human makes two edits in less
-        # than a second ;-)
-        sleep(1)
-
+        self._deleteFile('test4.py.metadata', self.use_dir_mtime)
+        self._checkSettings(self.ob.fake_skin.test4, 'View', 1, [])
         # add back
         self._writeFile('test5.py.metadata',
-                        '[security]\nView = 0:Manager,Anonymous')
+                        '[security]\nView = 0:Manager,Anonymous',
+                        self.use_dir_mtime)
         self._checkSettings(self.ob.fake_skin.test5,
                             'View',0,['Manager','Anonymous'])
 
         # edit
         self._writeFile('test5.py.metadata',
-                        '[security]\nView = 1:Manager')
+                        '[security]\nView = 1:Manager',
+                        self.use_dir_mtime)
         # test
         self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 

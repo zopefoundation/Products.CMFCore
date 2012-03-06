@@ -103,6 +103,7 @@ def _findProductForPath(path, subdir=None):
 
 class DirectoryInformation:
     data = None
+    use_dir_mtime = True
     _v_last_read = 0
     _v_last_filelist = [] # Only used on Win32
 
@@ -111,6 +112,7 @@ class DirectoryInformation:
         self._reg_key = reg_key
         self.ignore = base_ignore + tuple(ignore)
         if platform == 'win32':
+            self.use_dir_mtime = False
             self._walker = _walker(self.ignore)
         subdirs = []
         for entry in _filtered_listdir(self._filepath, ignore=self.ignore):
@@ -160,7 +162,7 @@ class DirectoryInformation:
         filelist=[]
         try:
             mtime = os.stat(self._filepath)[8]
-            if platform == 'win32':
+            if not self.use_dir_mtime:
                 # some Windows directories don't change mtime
                 # when a file is added to or deleted from them :-(
                 # So keep a list of files as well, and see if that
