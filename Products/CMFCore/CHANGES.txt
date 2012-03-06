@@ -6,8 +6,11 @@ Products.CMFCore Changelog
 
 - Avoid a shallow dependency on `Products.ZReST`. (Merged [122078])
 
-- Fix slow debug-mode performance on Windows.  (Merged [120174])
-  [rossp]
+- DirectoryView: Improved debug mode speed on NTFS partitions.  The
+  much faster non-Windows implementation is now used on Windows as
+  well if non-FAT32 time stamps are detected. In rare cases that
+  heuristic approach might fail to detected NTFS partitions.
+  (Merged [120174])
 
 
 2.2.5 (2011-11-01)
