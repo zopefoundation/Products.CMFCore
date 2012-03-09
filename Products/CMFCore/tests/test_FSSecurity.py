@@ -100,7 +100,6 @@ class FSSecurityTests( FSSecurityBase, LogInterceptor ):
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
-class DebugModeTests( FSSecurityBase ):
 
 class DebugModeTests(WritableFSDVTest, MetadataChecker):
 
