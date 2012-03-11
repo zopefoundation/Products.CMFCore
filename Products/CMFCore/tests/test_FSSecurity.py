@@ -18,13 +18,14 @@ import Testing
 from time import sleep
 
 from AccessControl.Permission import Permission
+from App.config import getConfiguration
 
 from Products.CMFCore.tests.base.testcase import LogInterceptor
 from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFCore.tests.base.testcase import WritableFSDVTest
 
 
-class FSSecurityBase(RequestTest, WritableFSDVTest, LogInterceptor):
+class MetadataChecker(object):
 
     def _checkSettings(self, object, permissionname, acquire=0, roles=[]):
         # check the roles and acquire settings for a permission on an
@@ -47,6 +48,10 @@ class FSSecurityBase(RequestTest, WritableFSDVTest, LogInterceptor):
         if not happy:
             raise ValueError("'%s' not found in inherited permissions."
                              % permissionname)
+
+
+class FSSecurityBase(RequestTest, WritableFSDVTest, LogInterceptor,
+                     MetadataChecker):
 
     def setUp( self ):
         # initialise skins
