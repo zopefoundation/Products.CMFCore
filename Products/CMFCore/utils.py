@@ -74,7 +74,7 @@ security.declarePrivate('registerToolInterface')
 def registerToolInterface(tool_id, tool_interface):
     """ Register a tool ID for an interface
 
-    This method can go away when getToolByName is going away (CMF 2.3).
+    This method can go away when getToolByName is going away
     """
     global  _tool_interface_registry
     _tool_interface_registry[tool_id] = tool_interface
