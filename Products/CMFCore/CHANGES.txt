@@ -117,8 +117,8 @@ Products.CMFCore Changelog
 - Added a permissions.zcml file defining our own permissions. This was
   formerly done in Zope 2's Products.Five.
 
-- Actions and TypeInformation: Clear the compiled *_expr_object
-  property when the *_expr property is cleared.
+- Actions and TypeInformation: Clear the compiled NNN_expr_object
+  property when the NNN_expr property is cleared.
 
 - Changed GenericSetup import handlers to fail silently if they
   are called in a context that does not contain the items they 
