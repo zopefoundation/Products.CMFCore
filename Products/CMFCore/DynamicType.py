@@ -94,7 +94,11 @@ class DynamicType:
         """
         ti = self.getTypeInfo()
         if ti is None:
-            utool = getUtility(IURLTool)
+            try:
+                utool = getUtility(IURLTool)
+            except ComponentLookupError:
+                # BBB: fallback for CMF 2.2 instances
+                utool = aq_get(self, 'portal_url')
             return '%s/misc_/OFSP/dtmldoc.gif' % utool()
         icon_expr_object = ti.getIconExprObject()
         if icon_expr_object is None:
