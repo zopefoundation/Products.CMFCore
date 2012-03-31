@@ -1,8 +1,8 @@
 Products.CMFCore Changelog
 ==========================
 
-2.3.0 (unreleased)
-------------------
+2.3.0-beta2 (2012-03-31)
+------------------------
 
 - added fixes for migrating CMF 2.2 sites.
 
