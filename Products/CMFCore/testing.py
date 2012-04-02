@@ -16,11 +16,11 @@
 from OFS.SimpleItem import SimpleItem
 from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import adapts
+from zope.component.hooks import setHooks
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.interface import implements
 from zope.interface.verify import verifyClass
 from zope.publisher.interfaces.http import IHTTPRequest
-from zope.site.hooks import setHooks
 from zope.testing.cleanup import cleanUp
 from Zope2.App import zcml
 

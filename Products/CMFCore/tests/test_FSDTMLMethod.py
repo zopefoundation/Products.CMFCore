@@ -24,7 +24,7 @@ from DateTime import DateTime
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
 from zope.component import getSiteManager
-from zope.site.hooks import setHooks
+from zope.component.hooks import setHooks
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSMetadata import FSMetadata
