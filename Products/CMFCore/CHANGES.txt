@@ -101,34 +101,11 @@ Products.CMFCore Changelog
 - testing: Removed broken run function.
   Unit test modules are no longer directly executable.
 
-- DateTime 2.12.5 does away with a special case representing
-  DateTime values for midnight (00:00:00) without their time and
-  time zone values. So DateTimes formerly rendered as
-  ``2010/01/01`` in the UTC timezone now render as
-  ``2010/01/01 00:00:00 UTC``. Several unit tests that relied on 
-  the old-style representation had to be fixed.
-
-- Get most tests working under Zope 2.13.0a2.
-
-- Added dependency on the new ``Products.ZSQLMethods`` distribution and updated
-  Zope2 requirement accordingly.
-
 - CookieCrumbler: Removed redirect support.
   The Unauthorized handling and redirects are now part of CMFDefault.
 
-- Use the standard libraries doctest module.
-
-- Updated setDefaultRoles to use the addPermission API if available.
-
 - Added a permissions.zcml file defining our own permissions. This was
   formerly done in Zope 2's Products.Five.
-
-- Actions and TypeInformation: Clear the compiled NNN_expr_object
-  property when the NNN_expr property is cleared.
-
-- Changed GenericSetup import handlers to fail silently if they
-  are called in a context that does not contain the items they 
-  import.
 
 - Removed zope.app.testing dependency.
 
@@ -147,6 +124,67 @@ Products.CMFCore Changelog
   'expandpath' and 'minimalpath' are no longer available.
 
 - DirectoryView: Removed support for deprecated old API.
+
+
+2.2.5 (2011-11-01)
+------------------
+
+- Added two missing explicit InitializeClass calls.
+
+
+2.2.4 (2011-04-02)
+------------------
+
+- Fix content exportimport when Title or Description are unicode.
+
+
+2.2.3 (2010-10-31)
+------------------
+
+- Make the error raised when trying to rename an instance of ImmutableId
+  indicate the id of the object.
+
+- DateTime 2.12.5 does away with a special case representing
+  DateTime values for midnight (00:00:00) without their time and
+  time zone values. So DateTimes formerly rendered as
+  ``2010/01/01`` in the UTC timezone now render as
+  ``2010/01/01 00:00:00 UTC``. Several unit tests that relied on 
+  the old-style representation had to be fixed.
+
+- Get most tests working under Zope 2.13.0a2.
+
+- Added dependency on the new ``Products.ZSQLMethods`` distribution and updated
+  Zope2 requirement accordingly.
+
+
+2.2.2 (2010-07-04)
+------------------
+
+- Backport test setup fixes for Zope 2.13 compatibility.
+
+- Use the standard libraries doctest module.
+
+- Updated setDefaultRoles to use the addPermission API if available.
+
+- Updated test to work with zope.contenttype >= 3.4.3.
+
+
+2.2.1 (2010-04-07)
+------------------
+
+- Actions and TypeInformation: Clear the compiled NNN_expr_object
+  property when the NNN_expr property is cleared.
+
+- Actions: Return None if 'link_target' is an empty string.
+  This helps to avoid invalid empty 'target' attributes in HTML output.
+
+
+2.2.0 (2010-01-04)
+------------------
+
+- Changed GenericSetup import handlers to fail silently if they
+  are called in a context that does not contain the items they 
+  import.
 
 
 2.2.0-beta (2009-12-06)
@@ -394,7 +432,7 @@ Products.CMFCore Changelog
   (https://bugs.launchpad.net/zope-cmf/+bug/176328)
 
 
-2.1.1-beta (2007-12/29)
+2.1.1-beta (2007-12-29)
 -----------------------
 
 - Testing: Derive test layers from ZopeLite layer if available.
