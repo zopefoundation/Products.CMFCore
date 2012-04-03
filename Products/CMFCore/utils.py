@@ -33,7 +33,6 @@ from Acquisition.interfaces import IAcquirer
 from App.class_init import InitializeClass
 from App.Common import package_home
 from App.Common import rfc1123_date
-from App.Dialogs import MessageDialog
 from App.ImageFile import ImageFile
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
@@ -502,10 +501,8 @@ class ImmutableId(Base):
         """ Never allow renaming!
         """
         if id != self.getId():
-            raise ValueError(MessageDialog(
-                title='Invalid Id',
-                message='Cannot change the id of this object',
-                action='./manage_main'))
+            raise ValueError('Changing the id of this object is forbidden: %s'
+                             % self.getId())
 
 
 class UniqueObject (ImmutableId):
