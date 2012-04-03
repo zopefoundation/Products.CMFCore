@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Portal services base objects
-
-$Id$
 """
 
 import PortalFolder

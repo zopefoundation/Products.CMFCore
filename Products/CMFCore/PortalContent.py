@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ PortalContent: Base class for all CMF content.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo

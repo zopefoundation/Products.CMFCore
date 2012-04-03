@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Customizable page templates that come from the filesystem.
-
-$Id$
 """
 
 import re

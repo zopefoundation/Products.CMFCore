@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Handles reading the properties for an object that comes from the filesystem.
-
-$Id$
 """
 
 import logging

@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """CMFCore export / import support.
-
-$Id$
 """
 
 from content import exportSiteStructure

@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """TypeInformation browser views.
-
-$Id$
 """
 
 from xml.dom.minidom import parseString

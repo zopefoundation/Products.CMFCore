@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Mailhost setup handlers.
-
-$Id$
 """
 
 from Products.MailHost.interfaces import IMailHost

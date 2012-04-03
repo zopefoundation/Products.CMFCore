@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Common pieces of the workflow architecture.
-
-$Id$
 """
 
 from zope.interface import implements

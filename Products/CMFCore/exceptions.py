@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ CMFCore product exceptions.
-
-$Id$
 """
 
 from AccessControl import ModuleSecurityInfo

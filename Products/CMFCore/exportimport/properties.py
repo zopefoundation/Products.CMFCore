@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """Site properties xml adapters and setup handlers.
-
-$Id$
 """
 
 from zope.component import adapts

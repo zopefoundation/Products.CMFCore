@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Mix-in classes for testing interface conformance.
-
-$Id$
 """
 
 class ConformsToISimpleItem:

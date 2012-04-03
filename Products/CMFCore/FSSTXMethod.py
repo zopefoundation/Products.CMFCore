@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """ FSSTXMethod: Filesystem methodish Structured Text document.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo

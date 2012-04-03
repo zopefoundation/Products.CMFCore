@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Implement a shared base for tools which provide actions.
-
-$Id$
 """
 
 from warnings import warn

@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Base class for objects that supply skins.
-
-$Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo

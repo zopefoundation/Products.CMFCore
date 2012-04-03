@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """ Customizable Python scripts that come from the filesystem.
-
-$Id$
 """
 
 from difflib import unified_diff

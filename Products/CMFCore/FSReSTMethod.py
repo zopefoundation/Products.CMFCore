@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """ FSReSTMethod: Filesystem methodish Structured Text document.
-
-$Id$
 """
 
 from docutils.core import publish_parts
