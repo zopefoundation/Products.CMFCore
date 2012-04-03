@@ -62,8 +62,6 @@ Products.CMFCore Changelog
 
 - permissions: Marked 'setDefaultRoles' as deprecated.
 
-- Require at least Zope 2.13.4.
-
 - DirectoryView: Added 'bobobase_modification_time' method to FSObject.
   The "Contents" tab in the ZMI now shows useful 'Last Modified' values.
 
@@ -124,6 +122,8 @@ Products.CMFCore Changelog
   'expandpath' and 'minimalpath' are no longer available.
 
 - DirectoryView: Removed support for deprecated old API.
+
+- Require at least Zope 2.13.12.
 
 
 2.2.5 (2011-11-01)
