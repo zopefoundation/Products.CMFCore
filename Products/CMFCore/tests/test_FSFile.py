@@ -50,9 +50,9 @@ class FSFileTests(TransactionalTest, FSDVTest):
         metadata.read()
         return FSFile(id, full_path, properties=metadata.getProperties())
 
-    def _extractFile( self, filename ):
+    def _extractFile(self, filename):
         path = os.path.join(self.skin_path_name, filename)
-        f = open( path, 'rb' )
+        f = open(path, 'rb')
         try:
             data = f.read()
         finally:
@@ -60,72 +60,72 @@ class FSFileTests(TransactionalTest, FSDVTest):
 
         return path, data
 
-    def test_ctor( self ):
+    def test_ctor(self):
         _path, ref = self._extractFile('test_file.swf')
 
-        file = self._makeOne( 'test_file', 'test_file.swf' )
+        file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
 
-        self.assertEqual( file.get_size(), len( ref ) )
-        self.assertEqual( file._readFile(0), ref )
+        self.assertEqual(file.get_size(), len(ref))
+        self.assertEqual(file._readFile(0), ref)
 
-    def test_str( self ):
+    def test_str(self):
         _path, ref = self._extractFile('test_file.swf')
-        file = self._makeOne( 'test_file', 'test_file.swf' )
+        file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
-        self.assertEqual( len(str(file)), len( ref ) )
+        self.assertEqual(len(str(file)), len(ref))
 
-    def test_index_html( self ):
+    def test_index_html(self):
         path, ref = self._extractFile('test_file.swf')
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        file = self._makeOne( 'test_file', 'test_file.swf' )
+        file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
 
-        data = file.index_html( self.REQUEST, self.RESPONSE )
+        data = file.index_html(self.REQUEST, self.RESPONSE)
 
-        self.assertEqual( len( data ), len( ref ) )
-        self.assertEqual( data, ref )
+        self.assertEqual(len(data), len(ref))
+        self.assertEqual(data, ref)
         # ICK!  'HTTPResponse.getHeader' doesn't case-flatten the key!
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Length'.lower() )
-                        , str(len(ref)) )
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Type'.lower() )
-                        , 'application/octet-stream' )
-        self.assertEqual( self.RESPONSE.getHeader( 'Last-Modified'.lower() )
-                        , rfc1123_date( mod_time ) )
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
+                         str(len(ref)))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower()),
+                         'application/octet-stream')
+        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower()),
+                         rfc1123_date(mod_time))
 
-    def test_index_html_with_304( self ):
+    def test_index_html_with_304(self):
         path, _ref = self._extractFile('test_file.swf')
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        file = self._makeOne( 'test_file', 'test_file.swf' )
+        file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
 
-        self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date( mod_time+3600 )
+        self.REQUEST.environ['IF_MODIFIED_SINCE'
+                            ] = '%s;' % rfc1123_date(mod_time + 3600)
 
-        data = file.index_html( self.REQUEST, self.RESPONSE )
+        data = file.index_html(self.REQUEST, self.RESPONSE)
 
-        self.assertEqual( data, '' )
+        self.assertEqual(data, '')
         # test that we don't supply a content-length
-        self.assertEqual( self.RESPONSE.getHeader('Content-Length'.lower()),
-                                                  None )
-        self.assertEqual( self.RESPONSE.getStatus(), 304 )
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
+                                                  None)
+        self.assertEqual(self.RESPONSE.getStatus(), 304)
 
-    def test_index_html_without_304( self ):
+    def test_index_html_without_304(self):
         path, _ref = self._extractFile('test_file.swf')
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        file = self._makeOne( 'test_file', 'test_file.swf' )
+        file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
 
-        self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date( mod_time-3600 )
+        self.REQUEST.environ['IF_MODIFIED_SINCE'
+                            ] = '%s;' % rfc1123_date(mod_time - 3600)
 
-        data = file.index_html( self.REQUEST, self.RESPONSE )
+        data = file.index_html(self.REQUEST, self.RESPONSE)
 
-        self.failUnless( data, '' )
-        self.assertEqual( self.RESPONSE.getStatus(), 200 )
+        self.assertTrue(data, '')
+        self.assertEqual(self.RESPONSE.getStatus(), 200)
 
     def test_index_html_with_304_from_cpm(self):
         cpm = DummyCachingManagerWithPolicy()
@@ -161,12 +161,12 @@ class FSFileTests(TransactionalTest, FSDVTest):
         self.assertEqual(len(data), len(ref))
         self.assertEqual(data, ref)
         # ICK!  'HTTPResponse.getHeader' doesn't case-flatten the key!
-        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower())
-                        , str(len(ref)))
-        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower())
-                        , 'application/octet-stream')
-        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower())
-                        , rfc1123_date(mod_time))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
+                         str(len(ref)))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower()),
+                         'application/octet-stream')
+        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower()),
+                         rfc1123_date(mod_time))
 
     def test_caching(self):
         cpm = DummyCachingManager()
@@ -176,31 +176,31 @@ class FSFileTests(TransactionalTest, FSDVTest):
         obj = obj.__of__(self.app)
         obj.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
-        self.failUnless(len(headers) >= original_len + 3)
-        self.failUnless('foo' in headers.keys())
-        self.failUnless('bar' in headers.keys())
+        self.assertTrue(len(headers) >= original_len + 3)
+        self.assertTrue('foo' in headers.keys())
+        self.assertTrue('bar' in headers.keys())
         self.assertEqual(headers['test_path'], '/test_file')
 
-    def test_forced_content_type( self ):
+    def test_forced_content_type(self):
         path, ref = self._extractFile('test_file_two.swf')
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        file = self._makeOne( 'test_file', 'test_file_two.swf' )
+        file = self._makeOne('test_file', 'test_file_two.swf')
         file = file.__of__(self.app)
 
-        data = file.index_html( self.REQUEST, self.RESPONSE )
+        data = file.index_html(self.REQUEST, self.RESPONSE)
 
-        self.assertEqual( len( data ), len( ref ) )
-        self.assertEqual( data, ref )
+        self.assertEqual(len(data), len(ref))
+        self.assertEqual(data, ref)
         # ICK!  'HTTPResponse.getHeader' doesn't case-flatten the key!
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Length'.lower() )
-                        , str(len(ref)) )
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Type'.lower() )
-                        , 'application/x-shockwave-flash' )
-        self.assertEqual( self.RESPONSE.getHeader( 'Last-Modified'.lower() )
-                        , rfc1123_date( mod_time ) )
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
+                         str(len(ref)))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower()),
+                         'application/x-shockwave-flash')
+        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower()),
+                         rfc1123_date(mod_time))
 
-    def test_utf8charset_detection( self ):
+    def test_utf8charset_detection(self):
         import mimetypes
 
         file_name = 'testUtf8.js'
@@ -214,34 +214,36 @@ class FSFileTests(TransactionalTest, FSDVTest):
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246
         invalidated = []
+
         def fake_invalidate(*args, **kw):
             invalidated.append(True)
-        file = self._makeOne( 'test_file', 'test_file.swf' )
+
+        file = self._makeOne('test_file', 'test_file.swf')
         file.ZCacheable_invalidate = fake_invalidate
 
         # First pass: The internal file modification representation
         # equals the filesystem modification time.
         del invalidated[:]
         file._readFile(True)
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         del invalidated[:]
         file._parsed = False
         file._updateFromFS()
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         # Second pass: Forcing a different internal file modification
         # time onto the instance. Now the file will be invalidated.
         del invalidated[:]
         file._file_mod_time = 0
         file._readFile(True)
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
         del invalidated[:]
         file._file_mod_time = 0
         file._parsed = False
         file._updateFromFS()
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
 
 def test_suite():

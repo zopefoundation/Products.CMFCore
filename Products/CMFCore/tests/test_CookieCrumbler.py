@@ -122,117 +122,112 @@ class CookieCrumblerTests(unittest.TestCase):
 
     def testNoCookies(self):
         # verify the cookie crumbler doesn't break when no cookies are given
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, _credentials = self._makeSite()
         req.traverse('/')
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'Anonymous User')
 
     def testCookieLogin(self):
         # verify the user and auth cookie get set
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, credentials = self._makeSite()
 
         req.cookies['__ac_name'] = 'abraham'
         req.cookies['__ac_password'] = 'pass-w'
         req.traverse('/')
 
-        self.failUnless(req.has_key('AUTHENTICATED_USER'))
-        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
-                         'abraham')
+        self.assertTrue('AUTHENTICATED_USER' in req)
+        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(), 'abraham')
         resp = req.response
-        self.failUnless(resp.cookies.has_key('__ac'))
-        self.assertEqual(resp.cookies['__ac']['value'],
-                         credentials)
+        self.assertTrue('__ac' in resp.cookies)
+        self.assertEqual(resp.cookies['__ac']['value'], credentials)
         self.assertEqual(resp.cookies['__ac']['path'], '/')
 
     def testCookieResume(self):
         # verify the cookie crumbler continues the session
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, credentials = self._makeSite()
         req.cookies['__ac'] = credentials
         req.traverse('/')
-        self.failUnless(req.has_key('AUTHENTICATED_USER'))
-        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
-                         'abraham')
+        self.assertTrue('AUTHENTICATED_USER' in req)
+        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(), 'abraham')
 
     def testPasswordShredding(self):
         # verify the password is shredded before the app gets the request
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, _credentials = self._makeSite()
         req.cookies['__ac_name'] = 'abraham'
         req.cookies['__ac_password'] = 'pass-w'
-        self.failUnless(req.has_key('__ac_password'))
+        self.assertTrue('__ac_password' in req)
         req.traverse('/')
-        self.failIf( req.has_key('__ac_password'))
-        self.failIf( req.has_key('__ac'))
+        self.assertFalse('__ac_password' in req)
+        self.assertFalse('__ac' in req)
 
     def testCredentialsNotRevealed(self):
         # verify the credentials are shredded before the app gets the request
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, credentials = self._makeSite()
         req.cookies['__ac'] = credentials
-        self.failUnless(req.has_key('__ac'))
+        self.assertTrue('__ac' in req)
         req.traverse('/')
-        self.failIf( req.has_key('__ac'))
+        self.assertFalse('__ac' in req)
 
     def testCacheHeaderAnonymous(self):
         # Should not set cache-control
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, _credentials = self._makeSite()
         req.traverse('/')
-        self.assertEqual(
-            req.response.headers.get('cache-control', ''), '')
+        self.assertEqual(req.response.headers.get('cache-control', ''), '')
 
     def testCacheHeaderLoggingIn(self):
         # Should set cache-control
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, _credentials = self._makeSite()
         req.cookies['__ac_name'] = 'abraham'
         req.cookies['__ac_password'] = 'pass-w'
         req.traverse('/')
-        self.assertEqual(
-            req.response.headers.get('cache-control', ''), 'private')
+        self.assertEqual(req.response.headers.get('cache-control', ''),
+                         'private')
 
     def testCacheHeaderAuthenticated(self):
         # Should set cache-control
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, credentials = self._makeSite()
         req.cookies['__ac'] = credentials
         req.traverse('/')
-        self.assertEqual(
-            req.response.headers.get('cache-control', ''), 'private')
+        self.assertEqual(req.response.headers.get('cache-control', ''),
+                         'private')
 
     def testCacheHeaderDisabled(self):
         # Should not set cache-control
-        root, cc, req, credentials = self._makeSite()
+        _root, cc, req, credentials = self._makeSite()
         cc.cache_header_value = ''
         req.cookies['__ac'] = credentials
         req.traverse('/')
-        self.assertEqual(
-            req.response.headers.get('cache-control', ''), '')
+        self.assertEqual(req.response.headers.get('cache-control', ''), '')
 
     def testLoginRatherThanResume(self):
         # When the user presents both a session resume and new
         # credentials, choose the new credentials (so that it's
         # possible to log in without logging out)
-        root, cc, req, credentials = self._makeSite()
+        _root, _cc, req, credentials = self._makeSite()
         req.cookies['__ac_name'] = 'isaac'
         req.cookies['__ac_password'] = 'pass-w'
         req.cookies['__ac'] = credentials
         req.traverse('/')
 
-        self.failUnless(req.has_key('AUTHENTICATED_USER'))
-        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
-                         'isaac')
+        self.assertTrue('AUTHENTICATED_USER' in req)
+        self.assertEqual(req['AUTHENTICATED_USER'].getUserName(), 'isaac')
 
     def test_before_traverse_hooks(self):
         from OFS.Folder import Folder
+
         container = Folder()
         cc = self._makeOne()
 
         marker = []
         bt_before = getattr(container, '__before_traverse__', marker)
-        self.failUnless(bt_before is marker)
+        self.assertTrue(bt_before is marker)
 
         container._setObject(cc.id, cc)
 
         bt_added = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_added.items()), 1)
         k, v = bt_added.items()[0]
-        self.failUnless(k[1].startswith(self._getTargetClass().meta_type))
+        self.assertTrue(k[1].startswith(self._getTargetClass().meta_type))
         self.assertEqual(v.name, cc.id)
 
         container._delObject(cc.id)

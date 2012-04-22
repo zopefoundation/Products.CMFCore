@@ -29,16 +29,16 @@ class CMFBTreeFolderTests(ConformsToFolder, unittest.TestCase):
     def _makeOne(self, *args, **kw):
         return self._getTargetClass()(*args, **kw)
 
-    def test_empty( self ):
+    def test_empty(self):
         empty = self._makeOne('test')
-        self.assertEqual( len( empty.objectIds() ), 0 )
+        self.assertEqual(len(empty.objectIds()), 0)
 
 # this test doesn't work with ZopeTestCase.ZopeLite.installProduct
 ##    def test___module_aliases__( self ):
 ##        from Products.BTreeFolder2.CMFBTreeFolder \
 ##            import CMFBTreeFolder as BBB
 ##
-##        self.failUnless( BBB is self._getTargetClass() )
+##        self.assertTrue( BBB is self._getTargetClass() )
 
 
 def test_suite():

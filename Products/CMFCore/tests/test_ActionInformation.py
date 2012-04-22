@@ -50,11 +50,11 @@ class ActionCategoryTests(unittest.TestCase):
         from Products.CMFCore.ActionInformation import Action
 
         ac = self._makeOne('foo')
-        self.assertEqual( ac.listActions(), () )
+        self.assertEqual(ac.listActions(), ())
 
         baz = Action('baz')
         ac._setObject('baz', baz)
-        self.assertEqual( ac.listActions(), (baz,) )
+        self.assertEqual(ac.listActions(), (baz,))
 
 
 class ActionTests(unittest.TestCase):
@@ -71,11 +71,11 @@ class ActionTests(unittest.TestCase):
         verifyClass(IAction, Action)
 
     def test_getInfoData_empty(self):
-        WANTED = ( {'available': True, 'category': '', 'description': '',
-                    'id': 'foo', 'icon': '', 'permissions': (), 'title': '',
-                    'url': '', 'visible': True, 'link_target': None}, [] )
+        WANTED = ({'available': True, 'category': '', 'description': '',
+                   'id': 'foo', 'icon': '', 'permissions': (), 'title': '',
+                   'url': '', 'visible': True, 'link_target': None}, [])
         a = self._makeOne('foo')
-        self.assertEqual( a.getInfoData(), WANTED )
+        self.assertEqual(a.getInfoData(), WANTED)
 
     def test_getInfoData_normal(self):
         a = self._makeOne('foo',
@@ -87,21 +87,24 @@ class ActionTests(unittest.TestCase):
                           permissions=('View',),
                           visible=False,
                           link_target='_top')
-        WANTED = ( {'available': True, 'category': '',
-                    'description': 'Foo description.',
-                    'id': 'foo', 'icon': a.icon_expr_object,
-                    'permissions': ('View',), 'title': 'Foo Title',
-                    'url': a.url_expr_object, 'visible': False,
-                    'link_target': a.link_target },
-                   ['url', 'icon'] )
-        self.assertEqual( a.getInfoData(), WANTED )
+        WANTED = ({'available': True, 'category': '',
+                   'description': 'Foo description.',
+                   'id': 'foo', 'icon': a.icon_expr_object,
+                   'permissions': ('View',), 'title': 'Foo Title',
+                   'url': a.url_expr_object, 'visible': False,
+                   'link_target': a.link_target},
+                  ['url', 'icon'])
+        self.assertEqual(a.getInfoData(), WANTED)
 
     def test_manage_propertiesForm_allows_adding(self):
         from OFS.SimpleItem import SimpleItem
+
         def _header(*args, **kw):
             return 'HEADER'
+
         def _footer(*args, **kw):
             return 'HEADER'
+
         container = SimpleItem()
 
         container.REQUEST = request = DummyRequest()
@@ -117,7 +120,7 @@ class ActionTests(unittest.TestCase):
         a = self._makeOne('extensible').__of__(container)
         form_html = a.manage_propertiesForm(request)
 
-        self.failUnless('value=" Add "' in form_html)
+        self.assertTrue('value=" Add "' in form_html)
 
     def test_clearExprObjects(self):
         """When a *_expr property is set, a *_expr_object attribute is
@@ -132,27 +135,33 @@ class ActionTests(unittest.TestCase):
                           permissions=('View',),
                           visible=False,
                           link_target='_top')
-        self.failUnless(hasattr(a, 'icon_expr_object'))
-        self.failUnless(hasattr(a, 'url_expr_object'))
-        self.failIf(hasattr(a, 'available_expr_object'))
+        self.assertTrue(hasattr(a, 'icon_expr_object'))
+        self.assertTrue(hasattr(a, 'url_expr_object'))
+        self.assertFalse(hasattr(a, 'available_expr_object'))
         a.manage_changeProperties(
             icon_expr='', url_expr='', available_expr='')
-        self.failIf(hasattr(a, 'icon_expr_object'))
-        self.failIf(hasattr(a, 'url_expr_object'))
-        self.failIf(hasattr(a, 'available_expr_object'))
+        self.assertFalse(hasattr(a, 'icon_expr_object'))
+        self.assertFalse(hasattr(a, 'url_expr_object'))
+        self.assertFalse(hasattr(a, 'available_expr_object'))
 
 
 class DummyRequest:
+
     def __init__(self):
         self._data = {}
+
     def set(self, k, v):
         self._data[k] = v
+
     def get(self, k, default):
         return self._data.get(k, default)
+
     def __getitem__(self, k):
         return self._data[k]
+
     def __len__(self):
         return len(self._data)
+
 
 class ActionInfoTests(unittest.TestCase):
 
@@ -178,15 +187,15 @@ class ActionInfoTests(unittest.TestCase):
         ec = None
         ai = self._makeOne(action, ec)
 
-        self.assertEqual( ai['id'], WANTED['id'] )
-        self.assertEqual( ai['title'], WANTED['title'] )
-        self.assertEqual( ai['description'], WANTED['description'] )
-        self.assertEqual( ai['url'], WANTED['url'] )
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['visible'], WANTED['visible'] )
-        self.assertEqual( ai['available'], WANTED['available'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
-        self.assertEqual( ai, WANTED )
+        self.assertEqual(ai['id'], WANTED['id'])
+        self.assertEqual(ai['title'], WANTED['title'])
+        self.assertEqual(ai['description'], WANTED['description'])
+        self.assertEqual(ai['url'], WANTED['url'])
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['visible'], WANTED['visible'])
+        self.assertEqual(ai['available'], WANTED['available'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
+        self.assertEqual(ai, WANTED)
 
     def test_create_from_ActionInformation(self):
         from Products.CMFCore.ActionInformation import ActionInformation
@@ -199,35 +208,35 @@ class ActionInfoTests(unittest.TestCase):
         ec = None
         ai = self._makeOne(action, ec)
 
-        self.assertEqual( ai['id'], WANTED['id'] )
-        self.assertEqual( ai['title'], WANTED['title'] )
-        self.assertEqual( ai['description'], WANTED['description'] )
-        self.assertEqual( ai['url'], WANTED['url'] )
-        self.assertEqual( ai['icon'], WANTED['icon'] )
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['visible'], WANTED['visible'] )
-        self.assertEqual( ai['available'], WANTED['available'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
-        self.assertEqual( ai, WANTED )
+        self.assertEqual(ai['id'], WANTED['id'])
+        self.assertEqual(ai['title'], WANTED['title'])
+        self.assertEqual(ai['description'], WANTED['description'])
+        self.assertEqual(ai['url'], WANTED['url'])
+        self.assertEqual(ai['icon'], WANTED['icon'])
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['visible'], WANTED['visible'])
+        self.assertEqual(ai['available'], WANTED['available'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
+        self.assertEqual(ai, WANTED)
 
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'id': 'foo', 'title': 'foo', 'url': '', 'visible': True,
-                  'icon': '' , 'link_target': None}
+                  'icon': '', 'link_target': None}
 
         action = {'name': 'foo', 'url': ''}
         ec = None
         ai = self._makeOne(action, ec)
 
-        self.assertEqual( ai['id'], WANTED['id'] )
-        self.assertEqual( ai['title'], WANTED['title'] )
-        self.assertEqual( ai['url'], WANTED['url'] )
-        self.assertEqual( ai['icon'], WANTED['icon'] )
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['visible'], WANTED['visible'] )
-        self.assertEqual( ai['available'], WANTED['available'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
-        self.assertEqual( ai, WANTED )
+        self.assertEqual(ai['id'], WANTED['id'])
+        self.assertEqual(ai['title'], WANTED['title'])
+        self.assertEqual(ai['url'], WANTED['url'])
+        self.assertEqual(ai['icon'], WANTED['icon'])
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['visible'], WANTED['visible'])
+        self.assertEqual(ai['available'], WANTED['available'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
+        self.assertEqual(ai, WANTED)
 
 
 class ActionInfoSecurityTests(SecurityTest):
@@ -256,15 +265,15 @@ class ActionInfoSecurityTests(SecurityTest):
         ec = createExprContext(self.site, self.site, None)
         ai = self._makeOne(action, ec)
 
-        self.assertEqual( ai['id'], WANTED['id'] )
-        self.assertEqual( ai['title'], WANTED['title'] )
-        self.assertEqual( ai['url'], WANTED['url'] )
-        self.assertEqual( ai['icon'], WANTED['icon'] )
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['visible'], WANTED['visible'] )
-        self.assertEqual( ai['available'], WANTED['available'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
-        self.assertEqual( ai, WANTED )
+        self.assertEqual(ai['id'], WANTED['id'])
+        self.assertEqual(ai['title'], WANTED['title'])
+        self.assertEqual(ai['url'], WANTED['url'])
+        self.assertEqual(ai['icon'], WANTED['icon'])
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['visible'], WANTED['visible'])
+        self.assertEqual(ai['available'], WANTED['available'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
+        self.assertEqual(ai, WANTED)
 
     def test_category_object(self):
         # Permissions for action category 'object*' should be
@@ -279,8 +288,8 @@ class ActionInfoSecurityTests(SecurityTest):
         ec = createExprContext(self.site, self.site, self.object)
         ai = self._makeOne(action, ec)
 
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
 
     def test_category_folder(self):
         # Permissions for action category 'folder*' should be
@@ -296,8 +305,8 @@ class ActionInfoSecurityTests(SecurityTest):
         ai = self._makeOne(action, ec)
         ai['category'] = 'folder' # pfff
 
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
 
     def test_category_workflow(self):
         # Permissions for action category 'workflow*' should be
@@ -313,8 +322,8 @@ class ActionInfoSecurityTests(SecurityTest):
         ai = self._makeOne(action, ec)
         ai['category'] = 'workflow' # pfff
 
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
 
     def test_category_document(self):
         # Permissions for action category 'document*' should be
@@ -330,8 +339,8 @@ class ActionInfoSecurityTests(SecurityTest):
         ai = self._makeOne(action, ec)
         ai['category'] = 'document' # pfff
 
-        self.assertEqual( ai['category'], WANTED['category'] )
-        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+        self.assertEqual(ai['category'], WANTED['category'])
+        self.assertEqual(ai['allowed'], WANTED['allowed'])
 
     def test_copy(self):
         action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
@@ -339,11 +348,11 @@ class ActionInfoSecurityTests(SecurityTest):
         ai = self._makeOne(action, ec)
         ai2 = ai.copy()
 
-        self.assertEqual( ai._lazy_keys, ['allowed'] )
-        self.assertEqual( ai2._lazy_keys, ['allowed'] )
-        self.failIf( ai2._lazy_keys is ai._lazy_keys )
-        self.assertEqual( ai['allowed'], True )
-        self.assertEqual( ai2['allowed'], True )
+        self.assertEqual(ai._lazy_keys, ['allowed'])
+        self.assertEqual(ai2._lazy_keys, ['allowed'])
+        self.assertFalse(ai2._lazy_keys is ai._lazy_keys)
+        self.assertEqual(ai['allowed'], True)
+        self.assertEqual(ai2['allowed'], True)
 
 
 class ActionInformationTests(TransactionalTest):
@@ -403,16 +412,16 @@ class ActionInformationTests(TransactionalTest):
     def test_setActionExpression_with_string_prefix(self):
         ai = self._makeOne(id='view', category='folder')
         ai.setActionExpression('string:blah')
-        self.failUnless(isinstance(ai.action,Expression))
+        self.assertTrue(isinstance(ai.action, Expression))
         self.assertEqual(ai.getActionExpression(), 'string:blah')
 
     def test_construction_with_Expressions(self):
-        ai = self._makeOne( id='view',
-                            title='View',
-                            action=Expression(text='view'),
-                            condition=Expression(text='member'),
-                            category='global',
-                            visible=False )
+        ai = self._makeOne(id='view',
+                           title='View',
+                           action=Expression(text='view'),
+                           condition=Expression(text='member'),
+                           category='global',
+                           visible=False)
 
         self.assertEqual(ai.getId(), 'view')
         self.assertEqual(ai.Title(), 'View')
@@ -427,15 +436,15 @@ class ActionInformationTests(TransactionalTest):
         portal = self.portal
         folder = self.folder
         object = self.object
-        ai = self._makeOne( id='view',
-                            title='View',
-                            action=Expression(text='view'),
-                            condition=Expression(text='member'),
-                            category='global',
-                            visible=True )
+        ai = self._makeOne(id='view',
+                           title='View',
+                           action=Expression(text='view'),
+                           condition=Expression(text='member'),
+                           category='global',
+                           visible=True)
         ec = createExprContext(folder, portal, object)
 
-        self.failIf(ai.testCondition(ec))
+        self.assertFalse(ai.testCondition(ec))
 
     def test_Condition_PathExpression(self):
         portal = self.portal
@@ -444,23 +453,23 @@ class ActionInformationTests(TransactionalTest):
         manage_addPythonScript(self.app, 'test_script')
         script = self.app.test_script
         script.ZPythonScript_edit('', 'return context.getId()')
-        ai = self._makeOne( id='view',
-                            title='View',
-                            action=Expression(text='view'),
-                            condition=Expression(text='portal/test_script'),
-                            category='global',
-                            visible=True )
+        ai = self._makeOne(id='view',
+                           title='View',
+                           action=Expression(text='view'),
+                           condition=Expression(text='portal/test_script'),
+                           category='global',
+                           visible=True)
         ec = createExprContext(folder, portal, object)
 
-        self.failUnless(ai.testCondition(ec))
+        self.assertTrue(ai.testCondition(ec))
 
     def test_getInfoData_empty(self):
-        WANTED = ( {'available': True, 'category': 'object',
-                    'description': '', 'id': 'foo', 'permissions': (),
-                    'title': 'foo', 'url': '', 'visible': True, 'icon': '',
-                    'link_target': None},[])
+        WANTED = ({'available': True, 'category': 'object',
+                   'description': '', 'id': 'foo', 'permissions': (),
+                   'title': 'foo', 'url': '', 'visible': True, 'icon': '',
+                   'link_target': None}, [])
         a = self._makeOne('foo')
-        self.assertEqual( a.getInfoData(), WANTED )
+        self.assertEqual(a.getInfoData(), WANTED)
 
     def test_getInfoData_normal(self):
         a = self._makeOne('foo',
@@ -472,14 +481,14 @@ class ActionInformationTests(TransactionalTest):
                           permissions=('View',),
                           visible=False,
                           link_target='_top')
-        WANTED = ( {'available': True, 'category': 'object',
-                    'description': 'Foo description.', 'id': 'foo',
-                    'permissions': ('View',), 'title': 'Foo Title',
-                    'url': a._getActionObject(), 'visible': False,
-                    'icon': a._getIconExpressionObject(), 
-                    'link_target': a.link_target },
-                   ['url', 'icon'] )
-        self.assertEqual( a.getInfoData(), WANTED )
+        WANTED = ({'available': True, 'category': 'object',
+                   'description': 'Foo description.', 'id': 'foo',
+                   'permissions': ('View',), 'title': 'Foo Title',
+                   'url': a._getActionObject(), 'visible': False,
+                   'icon': a._getIconExpressionObject(),
+                   'link_target': a.link_target},
+                  ['url', 'icon'])
+        self.assertEqual(a.getInfoData(), WANTED)
 
 
 def test_suite():

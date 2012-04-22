@@ -77,43 +77,43 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
         ttool = TypesTool()
         getSiteManager().registerUtility(ttool, ITypesTool)
         fti = FTIDATA_CMF[0].copy()
-        ttool._setObject( 'Dummy Content 15', FTI(**fti) )
-        self.site._setObject( 'foo', DummyContent() )
-        dummy_view = self.site._setObject( 'dummy_view', DummyObject() )
+        ttool._setObject('Dummy Content 15', FTI(**fti))
+        self.site._setObject('foo', DummyContent())
+        dummy_view = self.site._setObject('dummy_view', DummyObject())
 
     def tearDown(self):
         cleanUp()
 
     def test_default_view_from_fti(self):
         response = HTTPResponse()
-        environment = { 'URL': '',
-                        'PARENTS': [self.site],
-                        'REQUEST_METHOD': 'GET',
-                        'SERVER_PORT': '80',
-                        'REQUEST_METHOD': 'GET',
-                        'steps': [],
-                        'SERVER_NAME': 'localhost',
-                        '_hacked_path': 0 }
+        environment = {'URL': '',
+                       'PARENTS': [self.site],
+                       'REQUEST_METHOD': 'GET',
+                       'SERVER_PORT': '80',
+                       'REQUEST_METHOD': 'GET',
+                       'steps': [],
+                       'SERVER_NAME': 'localhost',
+                       '_hacked_path': 0}
         r = HTTPRequest(StringIO(), environment, response)
         r.other.update(environment)
         alsoProvides(r, IBrowserRequest)
 
         r.traverse('foo')
-        self.assertEqual( r.URL, '/foo/dummy_view' )
-        self.assertEqual( r.response.base, '/foo/',
+        self.assertEqual(r.URL, '/foo/dummy_view')
+        self.assertEqual(r.response.base, '/foo/',
                           'CMF Collector issue #192 (wrong base): %s'
-                          % (r.response.base or 'empty',) )
+                          % (r.response.base or 'empty',))
 
     def test_default_viewname_but_no_view_doesnt_override_fti(self):
         response = HTTPResponse()
-        environment = { 'URL': '',
-                        'PARENTS': [self.site],
-                        'REQUEST_METHOD': 'GET',
-                        'SERVER_PORT': '80',
-                        'REQUEST_METHOD': 'GET',
-                        'steps': [],
-                        'SERVER_NAME': 'localhost',
-                        '_hacked_path': 0 }
+        environment = {'URL': '',
+                       'PARENTS': [self.site],
+                       'REQUEST_METHOD': 'GET',
+                       'SERVER_PORT': '80',
+                       'REQUEST_METHOD': 'GET',
+                       'steps': [],
+                       'SERVER_NAME': 'localhost',
+                       '_hacked_path': 0}
         r = HTTPRequest(StringIO(), environment, response)
         r.other.update(environment)
         alsoProvides(r, IBrowserRequest)
@@ -122,19 +122,19 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
         # corresponding view, no change in behaviour expected
         defineDefaultViewName('index.html', DummyContent)
         r.traverse('foo')
-        self.assertEqual( r.URL, '/foo/dummy_view' )
-        self.assertEqual( r.response.base, '/foo/' )
+        self.assertEqual(r.URL, '/foo/dummy_view')
+        self.assertEqual(r.response.base, '/foo/')
 
     def test_default_viewname_overrides_fti(self):
         response = HTTPResponse()
-        environment = { 'URL': '',
-                        'PARENTS': [self.site],
-                        'REQUEST_METHOD': 'GET',
-                        'SERVER_PORT': '80',
-                        'REQUEST_METHOD': 'GET',
-                        'steps': [],
-                        'SERVER_NAME': 'localhost',
-                        '_hacked_path': 0 }
+        environment = {'URL': '',
+                       'PARENTS': [self.site],
+                       'REQUEST_METHOD': 'GET',
+                       'SERVER_PORT': '80',
+                       'REQUEST_METHOD': 'GET',
+                       'steps': [],
+                       'SERVER_NAME': 'localhost',
+                       '_hacked_path': 0}
         r = HTTPRequest(StringIO(), environment, response)
         r.other.update(environment)
         alsoProvides(r, IBrowserRequest)
@@ -147,8 +147,8 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
             'index.html')
 
         r.traverse('foo')
-        self.assertEqual( r.URL, '/foo/index.html' )
-        self.assertEqual( r.response.base, '/foo/' )
+        self.assertEqual(r.URL, '/foo/index.html')
+        self.assertEqual(r.response.base, '/foo/')
 
 
 class DynamicTypeSecurityTests(SecurityTest):
@@ -158,8 +158,8 @@ class DynamicTypeSecurityTests(SecurityTest):
         self.site = DummySite('site').__of__(self.app)
         ttool = TypesTool()
         fti = FTIDATA_CMF[0].copy()
-        ttool._setObject( 'Dummy Content 15', FTI(**fti) )
-        self.site._setObject( 'foo', DummyContent() )
+        ttool._setObject('Dummy Content 15', FTI(**fti))
+        self.site._setObject('foo', DummyContent())
         sm = getSiteManager()
         sm.registerUtility(DummyTool(), IMembershipTool)
         sm.registerUtility(DummyTool().__of__(self.site), IURLTool)
@@ -171,11 +171,11 @@ class DynamicTypeSecurityTests(SecurityTest):
 
     def test_getTypeInfo(self):
         foo = self.site.foo
-        self.assertEqual( foo.getTypeInfo().getId(), 'Dummy Content 15' )
+        self.assertEqual(foo.getTypeInfo().getId(), 'Dummy Content 15')
 
     def test_getActionInfo(self):
         foo = self.site.foo
-        self.assertEqual( foo.getActionInfo('object/view')['id'], 'view' )
+        self.assertEqual(foo.getActionInfo('object/view')['id'], 'view')
 
         # The following is nasty, but I want to make sure the ValueError
         # carries some useful information
@@ -185,7 +185,7 @@ class DynamicTypeSecurityTests(SecurityTest):
         except ValueError, e:
             message = e.args[0]
             detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)
-            self.failUnless(message.find(INVALID_ID) != -1, detail)
+            self.assertTrue(message.find(INVALID_ID) != -1, detail)
 
 
 def test_suite():

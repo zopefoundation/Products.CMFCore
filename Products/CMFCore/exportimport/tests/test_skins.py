@@ -373,7 +373,6 @@ class importSkinsToolTests(_SkinsSetup):
     _FRAGMENT7_IMPORT = _FRAGMENT7_IMPORT
     _NORMAL_EXPORT = _NORMAL_EXPORT
 
-
     def test_remove_skin_path(self):
         from Products.CMFCore.exportimport.skins import importSkinsTool
 
@@ -382,14 +381,13 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
-        self.failUnless(skins_tool._getSelections().has_key('fancy'))
+        self.assertTrue('fancy' in skins_tool._getSelections())
 
         context = DummyImportContext(site)
         context._files['skins.xml'] = self._FRAGMENT6_IMPORT
         importSkinsTool(context)
 
-        self.failIf(skins_tool._getSelections().has_key('fancy'))
-
+        self.assertFalse('fancy' in skins_tool._getSelections())
 
     def test_empty_default_purge(self):
         from Products.CMFCore.exportimport.skins import importSkinsTool
@@ -399,7 +397,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
-        self.failIf(site._skin_setup_called)
+        self.assertFalse(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
         self.assertEqual(len(skins_tool.objectItems()), 3)
 
@@ -409,9 +407,9 @@ class importSkinsToolTests(_SkinsSetup):
 
         self.assertEqual(skins_tool.default_skin, "default_skin")
         self.assertEqual(skins_tool.request_varname, "request_varname")
-        self.failIf(skins_tool.allow_any)
-        self.failIf(skins_tool.cookie_persistence)
-        self.failUnless(site._skin_setup_called)
+        self.assertFalse(skins_tool.allow_any)
+        self.assertFalse(skins_tool.cookie_persistence)
+        self.assertTrue(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 0)
         self.assertEqual(len(skins_tool.objectItems()), 0)
 
@@ -423,7 +421,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
-        self.failIf(site._skin_setup_called)
+        self.assertFalse(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
         self.assertEqual(len(skins_tool.objectItems()), 3)
 
@@ -433,9 +431,9 @@ class importSkinsToolTests(_SkinsSetup):
 
         self.assertEqual(skins_tool.default_skin, "default_skin")
         self.assertEqual(skins_tool.request_varname, "request_varname")
-        self.failIf(skins_tool.allow_any)
-        self.failIf(skins_tool.cookie_persistence)
-        self.failUnless(site._skin_setup_called)
+        self.assertFalse(skins_tool.allow_any)
+        self.assertFalse(skins_tool.cookie_persistence)
+        self.assertTrue(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 0)
         self.assertEqual(len(skins_tool.objectItems()), 0)
 
@@ -447,7 +445,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
-        self.failIf(site._skin_setup_called)
+        self.assertFalse(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
         self.assertEqual(len(skins_tool.objectItems()), 3)
 
@@ -457,9 +455,9 @@ class importSkinsToolTests(_SkinsSetup):
 
         self.assertEqual(skins_tool.default_skin, "default_skin")
         self.assertEqual(skins_tool.request_varname, "request_varname")
-        self.failIf(skins_tool.allow_any)
-        self.failIf(skins_tool.cookie_persistence)
-        self.failUnless(site._skin_setup_called)
+        self.assertFalse(skins_tool.allow_any)
+        self.assertFalse(skins_tool.cookie_persistence)
+        self.assertTrue(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
         self.assertEqual(len(skins_tool.objectItems()), 3)
 
@@ -468,7 +466,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite()
 
-        self.failIf(site._skin_setup_called)
+        self.assertFalse(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 0)
         self.assertEqual(len(skins_tool.objectItems()), 0)
 
@@ -478,9 +476,9 @@ class importSkinsToolTests(_SkinsSetup):
 
         self.assertEqual(skins_tool.default_skin, "basic")
         self.assertEqual(skins_tool.request_varname, "skin_var")
-        self.failUnless(skins_tool.allow_any)
-        self.failUnless(skins_tool.cookie_persistence)
-        self.failUnless(site._skin_setup_called)
+        self.assertTrue(skins_tool.allow_any)
+        self.assertTrue(skins_tool.cookie_persistence)
+        self.assertTrue(site._skin_setup_called)
         self.assertEqual(len(skins_tool.getSkinPaths()), 2)
         self.assertEqual(len(skins_tool.objectItems()), 3)
 
@@ -492,7 +490,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
-        self.failIf(site._skin_setup_called)
+        self.assertFalse(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'one'))
@@ -505,9 +503,9 @@ class importSkinsToolTests(_SkinsSetup):
 
         self.assertEqual(skins_tool.default_skin, "default_skin")
         self.assertEqual(skins_tool.request_varname, "request_varname")
-        self.failIf(skins_tool.allow_any)
-        self.failIf(skins_tool.cookie_persistence)
-        self.failUnless(site._skin_setup_called)
+        self.assertFalse(skins_tool.allow_any)
+        self.assertFalse(skins_tool.cookie_persistence)
+        self.assertTrue(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'one,three'))
@@ -519,9 +517,9 @@ class importSkinsToolTests(_SkinsSetup):
 
         self.assertEqual(skins_tool.default_skin, "default_skin")
         self.assertEqual(skins_tool.request_varname, "request_varname")
-        self.failIf(skins_tool.allow_any)
-        self.failIf(skins_tool.cookie_persistence)
-        self.failUnless(site._skin_setup_called)
+        self.assertFalse(skins_tool.allow_any)
+        self.assertFalse(skins_tool.cookie_persistence)
+        self.assertTrue(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'one,three,four'))
@@ -536,7 +534,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
-        self.failIf(site._skin_setup_called)
+        self.assertFalse(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'one'))
@@ -549,9 +547,9 @@ class importSkinsToolTests(_SkinsSetup):
 
         self.assertEqual(skins_tool.default_skin, "default_skin")
         self.assertEqual(skins_tool.request_varname, "request_varname")
-        self.failIf(skins_tool.allow_any)
-        self.failIf(skins_tool.cookie_persistence)
-        self.failUnless(site._skin_setup_called)
+        self.assertFalse(skins_tool.allow_any)
+        self.assertFalse(skins_tool.cookie_persistence)
+        self.assertTrue(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'three,one,four'))
@@ -577,7 +575,7 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._FRAGMENT3_IMPORT
         importSkinsTool(context)
 
-        self.failUnless(site._skin_setup_called)
+        self.assertTrue(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'three,one,four'))
@@ -589,7 +587,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         importSkinsTool(context)
 
-        self.failUnless(site._skin_setup_called)
+        self.assertTrue(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'one,four'))
@@ -615,7 +613,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         importSkinsTool(context)
 
-        self.failUnless(site._skin_setup_called)
+        self.assertTrue(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 4)
         self.assertEqual(skin_paths[0], ('basic', 'one,three,four'))
@@ -643,7 +641,7 @@ class importSkinsToolTests(_SkinsSetup):
 
         importSkinsTool(context)
 
-        self.failUnless(site._skin_setup_called)
+        self.assertTrue(site._skin_setup_called)
         skin_paths = skins_tool.getSkinPaths()
         self.assertEqual(len(skin_paths), 1)
         self.assertEqual(skin_paths[0], ('existing', 'one,two,three,four'))

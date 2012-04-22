@@ -22,9 +22,7 @@ from zope.globalrequest import setRequest
 from zope.interface import implements
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.interfaces import IIndexableObject
 from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
@@ -33,11 +31,6 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 
 class FakeFolder(Implicit):
     id = 'portal'
-
-
-class FakeCatalog(Implicit):
-    implements(ICatalogTool)
-    id = 'portal_catalog'
 
 
 class FakeWorkflowTool(Implicit):
@@ -50,16 +43,6 @@ class FakeWorkflowTool(Implicit):
         return self._vars
 
 
-class CatalogDummyContent(DummyContent):
-
-    """ Dummy content that already provides IIndexableObject
-        and therefore does not need a wrapper to be registered
-    """
-
-    implements(IIndexableObject)
-    allowedRolesAndUsers = ['Manager'] # default value
-
-
 class IndexableObjectWrapperTests(unittest.TestCase):
 
     def _getTargetClass(self):
@@ -68,13 +51,17 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         return IndexableObjectWrapper
 
     def _makeOne(self, vars, obj):
+        from Products.CMFCore.interfaces import ICatalogTool
+
+        class FakeCatalog(Implicit):
+            implements(ICatalogTool)
+            id = 'portal_catalog'
+
         getSiteManager().registerUtility(FakeWorkflowTool(vars), IWorkflowTool)
         catalog = FakeCatalog().__of__(FakeFolder())
         return self._getTargetClass()(obj, catalog)
 
     def _makeContent(self, *args, **kw):
-        from Products.CMFCore.tests.base.dummy import DummyContent
-
         return DummyContent(*args, **kw)
 
     def tearDown(self):
@@ -118,9 +105,9 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
         obj = self._makeContent()
         w = self._makeOne({}, obj)
-        self.failUnless(IContentish.providedBy(w))
-        self.failUnless(IIndexableObjectWrapper.providedBy(w))
-        self.failUnless(IIndexableObject.providedBy(w))
+        self.assertTrue(IContentish.providedBy(w))
+        self.assertTrue(IIndexableObjectWrapper.providedBy(w))
+        self.assertTrue(IIndexableObject.providedBy(w))
 
     def test_adapts(self):
         from zope.component import adaptedBy
@@ -142,6 +129,17 @@ class CatalogToolTests(SecurityTest):
         return self._getTargetClass()(*args, **kw)
 
     def _makeContent(self, *args, **kw):
+        from Products.CMFCore.interfaces import IIndexableObject
+
+        class CatalogDummyContent(DummyContent):
+
+            """ Dummy content that already provides IIndexableObject
+                and therefore does not need a wrapper to be registered
+            """
+
+            implements(IIndexableObject)
+            allowedRolesAndUsers = ['Manager'] # default value
+
         return CatalogDummyContent(*args, **kw)
 
     def test_interfaces(self):
@@ -168,8 +166,10 @@ class CatalogToolTests(SecurityTest):
 
     def setupProxyRoles(self, *proxy_roles):
         from AccessControl import getSecurityManager
+
         class FauxExecutable:
             _proxy_roles = proxy_roles
+
         sm = getSecurityManager()
         sm.addContext(FauxExecutable())
 
@@ -201,7 +201,7 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('meta_type', 'FieldIndex')
         dummy = self._makeContent(catalog=1)
-        dummy.allowedRolesAndUsers = ('Blob', )
+        dummy.allowedRolesAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Blob')
@@ -215,7 +215,7 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('meta_type', 'FieldIndex')
         dummy = self._makeContent(catalog=1)
-        dummy.allowedRolesAndUsers = ('Blob', )
+        dummy.allowedRolesAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Blob')
@@ -230,7 +230,7 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('meta_type', 'FieldIndex')
         dummy = self._makeContent(catalog=1)
-        dummy.allowedRoleAndUsers = ('Blob', )
+        dummy.allowedRoleAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Waggle')
@@ -244,7 +244,7 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         catalog.addIndex('meta_type', 'FieldIndex')
         dummy = self._makeContent(catalog=1)
-        dummy.allowedRolesAndUsers = ('Blob', )
+        dummy.allowedRolesAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Waggle')
@@ -263,21 +263,21 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('meta_type', 'FieldIndex')
         now = DateTime()
         dummy = self._makeContent(catalog=1)
-        dummy.allowedRolesAndUsers = ('Blob', )
+        dummy.allowedRolesAndUsers = ('Blob',)
 
         self.loginWithRoles('Blob')
 
         # not yet effective
-        dummy.effective = now+1
-        dummy.expires = now+2
+        dummy.effective = now + 1
+        dummy.expires = now + 2
         catalog.catalog_object(dummy, '/dummy')
         query = {'meta_type': 'Dummy'}
         self.assertEqual(1, len(catalog._catalog.searchResults(query)))
         self.assertEqual(0, len(catalog.searchResults(query)))
 
         # already expired
-        dummy.effective = now-2
-        dummy.expires = now-1
+        dummy.effective = now - 2
+        dummy.expires = now - 1
         catalog.catalog_object(dummy, '/dummy')
         self.assertEqual(1, len(catalog._catalog.searchResults(query)))
         self.assertEqual(0, len(catalog.searchResults(query)))
@@ -295,29 +295,29 @@ class CatalogToolTests(SecurityTest):
         self.loginManager()
 
         # already expired
-        dummy.effective = now-4
-        dummy.expires = now-2
+        dummy.effective = now - 4
+        dummy.expires = now - 2
         catalog.catalog_object(dummy, '/dummy')
         query = {'meta_type': 'Dummy'}
         self.assertEqual(1, len(catalog._catalog.searchResults(query)))
         self.assertEqual(1, len(catalog.searchResults(query)))
 
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now-3, 'range': 'min'})))
+            expires={'query': now - 3, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now-1, 'range': 'min'})))
+            expires={'query': now - 1, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now-3, 'range': 'max'})))
+            expires={'query': now - 3, 'range': 'max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now-1, 'range': 'max'})))
+            expires={'query': now - 1, 'range': 'max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': (now-3, now-1), 'range': 'min:max'})))
+            expires={'query': (now - 3, now - 1), 'range': 'min:max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': (now-3, now-1), 'range': 'minmax'})))
+            expires={'query': (now - 3, now - 1), 'range': 'minmax'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now-2})))
+            expires={'query': now - 2})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now-2, 'range': None})))
+            expires={'query': now - 2, 'range': None})))
 
     def test_search_restrict_inactive(self):
         from DateTime.DateTime import DateTime
@@ -328,31 +328,31 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('meta_type', 'FieldIndex')
         now = DateTime()
         dummy = self._makeContent(catalog=1)
-        dummy.allowedRolesAndUsers = ('Blob', )
+        dummy.allowedRolesAndUsers = ('Blob',)
 
         self.loginWithRoles('Blob')
 
         # already expired
-        dummy.effective = now-4
-        dummy.expires = now-2
+        dummy.effective = now - 4
+        dummy.expires = now - 2
         catalog.catalog_object(dummy, '/dummy')
         query = {'meta_type': 'Dummy'}
         self.assertEqual(1, len(catalog._catalog.searchResults(query)))
         self.assertEqual(0, len(catalog.searchResults(query)))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now-3, 'range': 'min'})))
+            expires={'query': now - 3, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now-3, 'range': 'max'})))
+            expires={'query': now - 3, 'range': 'max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now+3, 'range': 'min'})))
+            expires={'query': now + 3, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now+3, 'range': 'max'})))
+            expires={'query': now + 3, 'range': 'max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': (now-3, now-1), 'range': 'min:max'})))
+            expires={'query': (now - 3, now - 1), 'range': 'min:max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': (now-3, now-1), 'range': 'minmax'})))
+            expires={'query': (now - 3, now - 1), 'range': 'minmax'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now-2, 'range': None})))
+            expires={'query': now - 2, 'range': None})))
 
     def test_search_restrict_visible(self):
         from DateTime.DateTime import DateTime
@@ -364,79 +364,79 @@ class CatalogToolTests(SecurityTest):
 
         now = DateTime()
         dummy = self._makeContent(catalog=1)
-        dummy.allowedRolesAndUsers = ('Blob', )
+        dummy.allowedRolesAndUsers = ('Blob',)
 
         self.loginWithRoles('Blob')
 
         # visible
-        dummy.effective = now-2
-        dummy.expires = now+2
+        dummy.effective = now - 2
+        dummy.expires = now + 2
         catalog.catalog_object(dummy, '/dummy')
         query = {'meta_type': 'Dummy'}
         self.assertEqual(1, len(catalog._catalog.searchResults(query)))
         self.assertEqual(1, len(catalog.searchResults(query)))
 
         self.assertEqual(0, len(catalog.searchResults(
-            effective={'query': now-1, 'range': 'min'})))
+            effective={'query': now - 1, 'range': 'min'})))
         self.assertEqual(1, len(catalog.searchResults(
-            effective={'query': now-1, 'range': 'max'})))
+            effective={'query': now - 1, 'range': 'max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            effective={'query': now+1, 'range': 'min'})))
+            effective={'query': now + 1, 'range': 'min'})))
         self.assertEqual(1, len(catalog.searchResults(
-            effective={'query': now+1, 'range': 'max'})))
+            effective={'query': now + 1, 'range': 'max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            effective={'query': (now-1, now+1), 'range': 'min:max'})))
+            effective={'query': (now - 1, now + 1), 'range': 'min:max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            effective={'query': (now-1, now+1), 'range': 'minmax'})))
+            effective={'query': (now - 1, now + 1), 'range': 'minmax'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now-2, 'range': None})))
+            expires={'query': now - 2, 'range': None})))
 
         self.assertEqual(1, len(catalog.searchResults(
-            effective={'query': now-3, 'range': 'min'})))
+            effective={'query': now - 3, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            effective={'query': now-3, 'range': 'max'})))
+            effective={'query': now - 3, 'range': 'max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            effective={'query': now+3, 'range': 'min'})))
+            effective={'query': now + 3, 'range': 'min'})))
         self.assertEqual(1, len(catalog.searchResults(
-            effective={'query': now+3, 'range': 'max'})))
+            effective={'query': now + 3, 'range': 'max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            effective={'query': (now-3, now+3), 'range': 'min:max'})))
+            effective={'query': (now - 3, now + 3), 'range': 'min:max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            effective={'query': (now-3, now+3), 'range': 'minmax'})))
+            effective={'query': (now - 3, now + 3), 'range': 'minmax'})))
 
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now-1, 'range': 'min'})))
+            expires={'query': now - 1, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now-1, 'range': 'max'})))
+            expires={'query': now - 1, 'range': 'max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now+1, 'range': 'min'})))
+            expires={'query': now + 1, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now+1, 'range': 'max'})))
+            expires={'query': now + 1, 'range': 'max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': (now-1, now+1), 'range': 'min:max'})))
+            expires={'query': (now - 1, now + 1), 'range': 'min:max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': (now-1, now+1), 'range': 'minmax'})))
+            expires={'query': (now - 1, now + 1), 'range': 'minmax'})))
 
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now-3, 'range': 'min'})))
+            expires={'query': now - 3, 'range': 'min'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now-3, 'range': 'max'})))
+            expires={'query': now - 3, 'range': 'max'})))
         self.assertEqual(0, len(catalog.searchResults(
-            expires={'query': now+3, 'range': 'min'})))
+            expires={'query': now + 3, 'range': 'min'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': now+3, 'range': 'max'})))
+            expires={'query': now + 3, 'range': 'max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': (now-3, now+3), 'range': 'min:max'})))
+            expires={'query': (now - 3, now + 3), 'range': 'min:max'})))
         self.assertEqual(1, len(catalog.searchResults(
-            expires={'query': (now-3, now+3), 'range': 'minmax'})))
+            expires={'query': (now - 3, now + 3), 'range': 'minmax'})))
 
         self.assertEqual(1, len(catalog.searchResults(
-            effective={'query': now-1, 'range': 'max'},
-            expires={'query': now+1, 'range': 'min'})))
+            effective={'query': now - 1, 'range': 'max'},
+            expires={'query': now + 1, 'range': 'min'})))
 
         self.assertEqual(0, len(catalog.searchResults(
-            effective={'query': now+1, 'range': 'max'},
-            expires={'query': now+3, 'range': 'min'})))
+            effective={'query': now + 1, 'range': 'max'},
+            expires={'query': now + 3, 'range': 'min'})))
 
     def test_convertQuery(self):
         convert = self._makeOne()._convertQuery
@@ -507,28 +507,28 @@ class CatalogToolTests(SecurityTest):
 
         # First case, no proxy roles set at all
         arus = catalog._listAllowedRolesAndUsers(user)
-        self.assertEquals(len(arus), 3)
-        self.failUnless('Anonymous' in arus)
-        self.failUnless('Blob' in arus)
-        self.failUnless('user:%s' % user.getId() in arus)
+        self.assertEqual(len(arus), 3)
+        self.assertTrue('Anonymous' in arus)
+        self.assertTrue('Blob' in arus)
+        self.assertTrue('user:%s' % user.getId() in arus)
 
         # Second case, a proxy role is set
         self.setupProxyRoles('Waggle')
         arus = catalog._listAllowedRolesAndUsers(user)
-        self.assertEquals(len(arus), 3)
-        self.failUnless('Anonymous' in arus)
-        self.failUnless('Waggle' in arus)
-        self.failUnless('user:%s' % user.getId() in arus)
+        self.assertEqual(len(arus), 3)
+        self.assertTrue('Anonymous' in arus)
+        self.assertTrue('Waggle' in arus)
+        self.assertTrue('user:%s' % user.getId() in arus)
 
         # Third case, proxy roles are an empty tuple. This happens if
         # proxy roles are unset using the ZMI. The behavior should
         # mirror the first case with no proxy role setting at all.
         self.setupProxyRoles()
         arus = catalog._listAllowedRolesAndUsers(user)
-        self.assertEquals(len(arus), 3)
-        self.failUnless('Anonymous' in arus)
-        self.failUnless('Blob' in arus)
-        self.failUnless('user:%s' % user.getId() in arus)
+        self.assertEqual(len(arus), 3)
+        self.assertTrue('Anonymous' in arus)
+        self.assertTrue('Blob' in arus)
+        self.assertTrue('user:%s' % user.getId() in arus)
 
     def test_wrapping1(self):
         # DummyContent implements IIndexableObject
@@ -554,6 +554,8 @@ class CatalogToolTests(SecurityTest):
     def test_wrapping3(self):
         # DummyContent does not implement IIndexableObject
         # wrapper registered - should look this up
+        from Products.CMFCore.interfaces import ICatalogTool
+        from Products.CMFCore.interfaces import IIndexableObject
 
         def FakeWrapper(object, catalog):
             return object

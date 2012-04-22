@@ -444,16 +444,16 @@ class importActionProvidersTests(_ActionSetup):
         site, atool = self._initSite(2, 0)
 
         self.assertEqual(len(atool.listActionProviders()), 2)
-        self.failUnless('portal_foo' in atool.listActionProviders())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertTrue('portal_foo' in atool.listActionProviders())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
 
         context = DummyImportContext(site)
         context._files['actions.xml'] = _EMPTY_EXPORT
         importActionProviders(context)
 
         self.assertEqual(len(atool.listActionProviders()), 1)
-        self.failIf('portal_foo' in atool.listActionProviders())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertFalse('portal_foo' in atool.listActionProviders())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
         self.assertEqual(len(atool.objectIds()), 0)
 
     def test_empty_explicit_purge(self):
@@ -463,16 +463,16 @@ class importActionProvidersTests(_ActionSetup):
         site, atool = self._initSite(2, 0)
 
         self.assertEqual(len(atool.listActionProviders()), 2)
-        self.failUnless('portal_foo' in atool.listActionProviders())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertTrue('portal_foo' in atool.listActionProviders())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
 
         context = DummyImportContext(site, True)
         context._files['actions.xml'] = _EMPTY_EXPORT
         importActionProviders(context)
 
         self.assertEqual(len(atool.listActionProviders()), 1)
-        self.failIf('portal_foo' in atool.listActionProviders())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertFalse('portal_foo' in atool.listActionProviders())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
         self.assertEqual(len(atool.objectIds()), 0)
 
     def test_empty_skip_purge(self):
@@ -482,16 +482,16 @@ class importActionProvidersTests(_ActionSetup):
         site, atool = self._initSite(2, 0)
 
         self.assertEqual(len(atool.listActionProviders()), 2)
-        self.failUnless('portal_foo' in atool.listActionProviders())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertTrue('portal_foo' in atool.listActionProviders())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
 
         context = DummyImportContext(site, False)
         context._files['actions.xml'] = _EMPTY_EXPORT
         importActionProviders(context)
 
         self.assertEqual(len(atool.listActionProviders()), 2)
-        self.failUnless('portal_foo' in atool.listActionProviders())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertTrue('portal_foo' in atool.listActionProviders())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
 
     def test_normal(self):
         from Products.CMFCore.exportimport.actions \
@@ -504,30 +504,30 @@ class importActionProvidersTests(_ActionSetup):
         bar = site.portal_bar
 
         self.assertEqual(len(atool.listActionProviders()), 1)
-        self.failIf('portal_foo' in atool.listActionProviders())
-        self.failIf(foo.listActions())
-        self.failIf('portal_bar' in atool.listActionProviders())
-        self.failIf(bar.listActions())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertFalse('portal_foo' in atool.listActionProviders())
+        self.assertFalse(foo.listActions())
+        self.assertFalse('portal_bar' in atool.listActionProviders())
+        self.assertFalse(bar.listActions())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
 
         context = DummyImportContext(site)
         context._files['actions.xml'] = _OLD_EXPORT
         importActionProviders(context)
 
         self.assertEqual(len(atool.listActionProviders()), 3)
-        self.failUnless('portal_bar' in atool.listActionProviders())
-        self.failUnless('portal_foo' in atool.listActionProviders())
-        self.failUnless('portal_actions' in atool.listActionProviders())
+        self.assertTrue('portal_bar' in atool.listActionProviders())
+        self.assertTrue('portal_foo' in atool.listActionProviders())
+        self.assertTrue('portal_actions' in atool.listActionProviders())
 
         self.assertEqual(len(atool.objectIds()), 1)
-        self.failUnless('dummy' in atool.objectIds())
+        self.assertTrue('dummy' in atool.objectIds())
         # Only one action appears. The importer only deals with actions
         # defined by the actions tool. Other tools are responsible for
         # exporting/importing actions themselves.
-        self.assertEqual(len(atool.dummy.objectIds()) , 1)
-        self.failUnless('baz' in atool.dummy.objectIds())
-        self.failIf(foo.listActions())
-        self.failIf(bar.listActions())
+        self.assertEqual(len(atool.dummy.objectIds()), 1)
+        self.assertTrue('baz' in atool.dummy.objectIds())
+        self.assertFalse(foo.listActions())
+        self.assertFalse(bar.listActions())
 
         # complete the roundtrip
         context = DummyExportContext(site)
@@ -597,7 +597,7 @@ class importActionProvidersTests(_ActionSetup):
         site, atool = self._initSite(2, 2)
 
         self.assertEqual(atool.listActionProviders(),
-                          ['portal_actions', 'portal_foo', 'portal_bar'])
+                         ['portal_actions', 'portal_foo', 'portal_bar'])
 
         context = DummyImportContext(site, False)
         context._files['actions.xml'] = _REMOVE_IMPORT

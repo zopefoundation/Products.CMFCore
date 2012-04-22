@@ -71,7 +71,8 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         obj._setPropValue('title', 'Foo')
         obj._setProperty('default_charset', 'iso-8859-1', 'string')
         obj._setProperty('foo_string', 'foo', 'string')
-        obj._setProperty('bar_string', u'B\xe4r'.encode('iso-8859-1'), 'string')
+        obj._setProperty('bar_string', u'B\xe4r'.encode('iso-8859-1'),
+                         'string')
         obj._setProperty('foo_boolean', False, 'boolean')
 
     def _verifyImport(self, obj):
@@ -96,8 +97,8 @@ class _SitePropertiesSetup(BaseRegistryTests):
     def _initSite(self, foo=2, bar=2):
         from Products.CMFCore.PortalObject import PortalObjectBase
 
-        self.root.site = PortalObjectBase('foo_site')
-        site = self.root.site
+        self.app.site = PortalObjectBase('foo_site')
+        site = self.app.site
 
         if foo > 0:
             site._setProperty('foo', '', 'string')
@@ -105,10 +106,10 @@ class _SitePropertiesSetup(BaseRegistryTests):
             site._updateProperty('foo', 'Foo')
 
         if bar > 0:
-            site._setProperty( 'bar', (), 'tokens' )
-            site._setProperty( 'moo', (), 'tokens' )
+            site._setProperty('bar', (), 'tokens')
+            site._setProperty('moo', (), 'tokens')
         if bar > 1:
-            site._updateProperty( 'bar', ('Bar',) )
+            site._updateProperty('bar', ('Bar',))
             site.moo = ['Moo']
 
         return site
@@ -137,7 +138,7 @@ class exportSitePropertiesTests(_SitePropertiesSetup):
                 import exportSiteProperties
 
         site = self._initSite()
-        context = DummyExportContext( site )
+        context = DummyExportContext(site)
         exportSiteProperties(context)
 
         self.assertEqual(len(context._wrote), 1)
@@ -157,17 +158,17 @@ class importSitePropertiesTests(_SitePropertiesSetup):
 
         site = self._initSite()
 
-        self.assertEqual( len( site.propertyIds() ), 4 )
-        self.failUnless( 'foo' in site.propertyIds() )
-        self.assertEqual( site.getProperty('foo'), 'Foo' )
-        self.failUnless( 'bar' in site.propertyIds() )
-        self.assertEqual( site.getProperty('bar'), ('Bar',) )
+        self.assertEqual(len(site.propertyIds()), 4)
+        self.assertTrue('foo' in site.propertyIds())
+        self.assertEqual(site.getProperty('foo'), 'Foo')
+        self.assertTrue('bar' in site.propertyIds())
+        self.assertEqual(site.getProperty('bar'), ('Bar',))
 
         context = DummyImportContext(site)
         context._files['properties.xml'] = _EMPTY_EXPORT
         importSiteProperties(context)
 
-        self.assertEqual( len( site.propertyIds() ), 1 )
+        self.assertEqual(len(site.propertyIds()), 1)
 
     def test_empty_explicit_purge(self):
         from Products.CMFCore.exportimport.properties \
@@ -175,17 +176,17 @@ class importSitePropertiesTests(_SitePropertiesSetup):
 
         site = self._initSite()
 
-        self.assertEqual( len( site.propertyIds() ), 4 )
-        self.failUnless( 'foo' in site.propertyIds() )
-        self.assertEqual( site.getProperty('foo'), 'Foo' )
-        self.failUnless( 'bar' in site.propertyIds() )
-        self.assertEqual( site.getProperty('bar'), ('Bar',) )
+        self.assertEqual(len(site.propertyIds()), 4)
+        self.assertTrue('foo' in site.propertyIds())
+        self.assertEqual(site.getProperty('foo'), 'Foo')
+        self.assertTrue('bar' in site.propertyIds())
+        self.assertEqual(site.getProperty('bar'), ('Bar',))
 
         context = DummyImportContext(site, True)
         context._files['properties.xml'] = _EMPTY_EXPORT
         importSiteProperties(context)
 
-        self.assertEqual( len( site.propertyIds() ), 1 )
+        self.assertEqual(len(site.propertyIds()), 1)
 
     def test_empty_skip_purge(self):
         from Products.CMFCore.exportimport.properties \
@@ -193,39 +194,39 @@ class importSitePropertiesTests(_SitePropertiesSetup):
 
         site = self._initSite()
 
-        self.assertEqual( len( site.propertyIds() ), 4 )
-        self.failUnless( 'foo' in site.propertyIds() )
-        self.assertEqual( site.getProperty('foo'), 'Foo' )
-        self.failUnless( 'bar' in site.propertyIds() )
-        self.assertEqual( site.getProperty('bar'), ('Bar',) )
+        self.assertEqual(len(site.propertyIds()), 4)
+        self.assertTrue('foo' in site.propertyIds())
+        self.assertEqual(site.getProperty('foo'), 'Foo')
+        self.assertTrue('bar' in site.propertyIds())
+        self.assertEqual(site.getProperty('bar'), ('Bar',))
 
         context = DummyImportContext(site, False)
         context._files['properties.xml'] = _EMPTY_EXPORT
         importSiteProperties(context)
 
-        self.assertEqual( len( site.propertyIds() ), 4 )
-        self.failUnless( 'foo' in site.propertyIds() )
-        self.assertEqual( site.getProperty('foo'), 'Foo' )
-        self.failUnless( 'bar' in site.propertyIds() )
-        self.assertEqual( site.getProperty('bar'), ('Bar',) )
+        self.assertEqual(len(site.propertyIds()), 4)
+        self.assertTrue('foo' in site.propertyIds())
+        self.assertEqual(site.getProperty('foo'), 'Foo')
+        self.assertTrue('bar' in site.propertyIds())
+        self.assertEqual(site.getProperty('bar'), ('Bar',))
 
     def test_normal(self):
         from Products.CMFCore.exportimport.properties \
                 import importSiteProperties
 
-        site = self._initSite(0,0)
+        site = self._initSite(0, 0)
 
-        self.assertEqual( len( site.propertyIds() ), 1 )
+        self.assertEqual(len(site.propertyIds()), 1)
 
         context = DummyImportContext(site)
         context._files['properties.xml'] = _NORMAL_EXPORT
         importSiteProperties(context)
 
-        self.assertEqual( len( site.propertyIds() ), 4 )
-        self.failUnless( 'foo' in site.propertyIds() )
-        self.assertEqual( site.getProperty('foo'), 'Foo' )
-        self.failUnless( 'bar' in site.propertyIds() )
-        self.assertEqual( site.getProperty('bar'), ('Bar',) )
+        self.assertEqual(len(site.propertyIds()), 4)
+        self.assertTrue('foo' in site.propertyIds())
+        self.assertEqual(site.getProperty('foo'), 'Foo')
+        self.assertTrue('bar' in site.propertyIds())
+        self.assertEqual(site.getProperty('bar'), ('Bar',))
 
 
 class roundtripSitePropertiesTests(_SitePropertiesSetup):
@@ -242,23 +243,23 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         site = self._initSite(foo=0, bar=0)
         site._updateProperty('title', NONASCII)
 
-        self.assertEquals(site.title, NONASCII)
+        self.assertEqual(site.title, NONASCII)
 
         # export the site properties
-        context = DummyExportContext( site )
+        context = DummyExportContext(site)
         exportSiteProperties(context)
-        filename, text, content_type = context._wrote[0]
+        _filename, text, _content_type = context._wrote[0]
 
         # Clear the title property
         site._updateProperty('title', '')
-        self.assertEquals(site.title, '')
+        self.assertEqual(site.title, '')
 
         # Import from the previous export
         context = DummyImportContext(site)
         context._files['properties.xml'] = text
         importSiteProperties(context)
 
-        self.assertEquals(site.title, NONASCII)
+        self.assertEqual(site.title, NONASCII)
 
 
 def test_suite():

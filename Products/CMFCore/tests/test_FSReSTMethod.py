@@ -43,14 +43,14 @@ class FSReSTMaker(FSDVTest):
         main = ZopePageTemplate('main_template', _TEST_MAIN_TEMPLATE)
         self.app._setOb('main_template', main)
 
-    def _makeOne( self, id, filename ):
+    def _makeOne(self, id, filename):
         from Products.CMFCore.FSMetadata import FSMetadata
         from Products.CMFCore.FSReSTMethod import FSReSTMethod
 
         path = os.path.join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
-        return FSReSTMethod( id, path, properties=metadata.getProperties() )
+        return FSReSTMethod(id, path, properties=metadata.getProperties())
 
 _EXPECTED_HTML = """\
 <html>
@@ -111,9 +111,9 @@ class FSReSTMethodTests(TransactionalTest, FSReSTMaker):
         obj = self._makeOne('testReST', 'testReST.rst')
         obj = obj.__of__(self.app)
         obj(self.REQUEST, self.RESPONSE)
-        self.failUnless(len(self.RESPONSE.headers) >= original_len + 2)
-        self.failUnless('foo' in self.RESPONSE.headers.keys())
-        self.failUnless('bar' in self.RESPONSE.headers.keys())
+        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
+        self.assertTrue('foo' in self.RESPONSE.headers.keys())
+        self.assertTrue('bar' in self.RESPONSE.headers.keys())
 
     def test_ownership(self):
         script = self._makeOne('testReST', 'testReST.rst')
@@ -143,12 +143,9 @@ class FSReSTMethodTests(TransactionalTest, FSReSTMaker):
 
 
 ADD_ZPT = 'Add page templates'
-ZPT_META_TYPES = ( { 'name'        : 'Page Template'
-                   , 'action'      : 'manage_addPageTemplate'
-                   , 'permission'  : ADD_ZPT
-                   }
-                 ,
-                 )
+ZPT_META_TYPES = ({'name': 'Page Template',
+                   'action': 'manage_addPageTemplate',
+                   'permission': ADD_ZPT},)
 
 
 class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
@@ -164,7 +161,7 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
         FSReSTMaker.tearDown(self)
         SecurityTest.tearDown(self)
 
-    def test_customize( self ):
+    def test_customize(self):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
         from Products.CMFCore.FSReSTMethod import _CUSTOMIZED_TEMPLATE_ZPT
 
@@ -173,10 +170,10 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
         self.fsReST.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.failUnless('testReST' in self.custom.objectIds())
+        self.assertTrue('testReST' in self.custom.objectIds())
         target = self.custom._getOb('testReST')
 
-        self.failUnless(isinstance(target, ZopePageTemplate))
+        self.assertTrue(isinstance(target, ZopePageTemplate))
 
         propinfo = target.propdict()['rest']
         self.assertEqual(propinfo['type'], 'text')
@@ -185,42 +182,40 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
         self.assertEqual(_normalize_whitespace(target.document_src()),
                          _normalize_whitespace(_CUSTOMIZED_TEMPLATE_ZPT))
 
-    def test_customize_alternate_root( self ):
+    def test_customize_alternate_root(self):
         from OFS.Folder import Folder
 
         self.app.other = Folder('other')
 
         self.fsReST.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.failIf('testReST' in self.custom.objectIds())
-        self.failUnless('testReST' in self.app.other.objectIds())
+        self.assertFalse('testReST' in self.custom.objectIds())
+        self.assertTrue('testReST' in self.app.other.objectIds())
 
-    def test_customize_fpath_as_dot( self ):
+    def test_customize_fpath_as_dot(self):
 
         self.fsReST.manage_doCustomize(folder_path='.')
 
-        self.failIf('testReST' in self.custom.objectIds())
-        self.failUnless('testReST' in self.skins.objectIds())
+        self.assertFalse('testReST' in self.custom.objectIds())
+        self.assertTrue('testReST' in self.skins.objectIds())
 
-    def test_customize_manual_clone( self ):
+    def test_customize_manual_clone(self):
         from OFS.Folder import Folder
 
         clone = Folder('testReST')
 
         self.fsReST.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.failUnless('testReST' in self.custom.objectIds())
-        self.failUnless(aq_base(self.custom._getOb('testReST')) is clone)
+        self.assertTrue('testReST' in self.custom.objectIds())
+        self.assertTrue(aq_base(self.custom._getOb('testReST')) is clone)
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
         from Products.StandardCacheManagers import RAMCacheManager
         cache_id = 'gofast'
         self.custom.all_meta_types = ZPT_META_TYPES
-        RAMCacheManager.manage_addRAMCacheManager( self.app
-                                                 , cache_id
-                                                 , REQUEST=None
-                                                 )
+        RAMCacheManager.manage_addRAMCacheManager(self.app, cache_id,
+                                                  REQUEST=None)
         self.fsReST.ZCacheable_setManagerId(cache_id, REQUEST=None)
 
         self.assertEqual(self.fsReST.ZCacheable_getManagerId(), cache_id)

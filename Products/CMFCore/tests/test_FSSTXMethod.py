@@ -36,14 +36,14 @@ from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 class FSSTXMaker(FSDVTest):
 
-    def _makeOne( self, id, filename ):
+    def _makeOne(self, id, filename):
         from Products.CMFCore.FSMetadata import FSMetadata
         from Products.CMFCore.FSSTXMethod import FSSTXMethod
 
         path = os.path.join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
-        return FSSTXMethod( id, path, properties=metadata.getProperties() )
+        return FSSTXMethod(id, path, properties=metadata.getProperties())
 
 _EXPECTED_HTML = """\
 <html>
@@ -138,9 +138,9 @@ class FSSTXMethodTests(TransactionalTest, FSSTXMaker, _TemplateSwitcher):
         obj = self._makeOne('testSTX', 'testSTX.stx')
         obj = obj.__of__(self.app)
         obj(self.REQUEST, self.RESPONSE)
-        self.failUnless(len(self.RESPONSE.headers) >= original_len + 2)
-        self.failUnless('foo' in self.RESPONSE.headers.keys())
-        self.failUnless('bar' in self.RESPONSE.headers.keys())
+        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
+        self.assertTrue('foo' in self.RESPONSE.headers.keys())
+        self.assertTrue('bar' in self.RESPONSE.headers.keys())
 
     def test_ownership(self):
         script = self._makeOne('testSTX', 'testSTX.stx')
@@ -170,12 +170,9 @@ class FSSTXMethodTests(TransactionalTest, FSSTXMaker, _TemplateSwitcher):
 
 
 ADD_ZPT = 'Add page templates'
-ZPT_META_TYPES = ( { 'name'        : 'Page Template'
-                   , 'action'      : 'manage_addPageTemplate'
-                   , 'permission'  : ADD_ZPT
-                   }
-                 ,
-                 )
+ZPT_META_TYPES = ({'name': 'Page Template',
+                   'action': 'manage_addPageTemplate',
+                   'permission': ADD_ZPT},)
 
 
 class FSSTXMethodCustomizationTests(SecurityTest,
@@ -196,7 +193,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         SecurityTest.tearDown(self)
         _TemplateSwitcher.tearDown(self)
 
-    def test_customize_alternate_root( self ):
+    def test_customize_alternate_root(self):
         from OFS.Folder import Folder
 
         self._setWhichTemplate('DTML')
@@ -204,18 +201,18 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
         self.fsSTX.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.failIf('testSTX' in self.custom.objectIds())
-        self.failUnless('testSTX' in self.app.other.objectIds())
+        self.assertFalse('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.app.other.objectIds())
 
-    def test_customize_fspath_as_dot( self ):
+    def test_customize_fspath_as_dot(self):
         self._setWhichTemplate('DTML')
 
         self.fsSTX.manage_doCustomize(folder_path='.')
 
-        self.failIf('testSTX' in self.custom.objectIds())
-        self.failUnless('testSTX' in self.skins.objectIds())
+        self.assertFalse('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.skins.objectIds())
 
-    def test_customize_manual_clone( self ):
+    def test_customize_manual_clone(self):
         from OFS.Folder import Folder
 
         clone = Folder('testSTX')
@@ -224,10 +221,10 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
         self.fsSTX.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.failUnless('testSTX' in self.custom.objectIds())
-        self.failUnless(aq_base(self.custom._getOb('testSTX')) is clone)
+        self.assertTrue('testSTX' in self.custom.objectIds())
+        self.assertTrue(aq_base(self.custom._getOb('testSTX')) is clone)
 
-    def test_customize_with_DTML( self ):
+    def test_customize_with_DTML(self):
         from OFS.DTMLDocument import DTMLDocument
         from Products.CMFCore.FSSTXMethod import _CUSTOMIZED_TEMPLATE_DTML
 
@@ -236,10 +233,10 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         self.fsSTX.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.failUnless('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.custom.objectIds())
         target = self.custom._getOb('testSTX')
 
-        self.failUnless(isinstance(target, DTMLDocument))
+        self.assertTrue(isinstance(target, DTMLDocument))
 
         propinfo = target.propdict()['stx']
         self.assertEqual(propinfo['type'], 'text')
@@ -247,7 +244,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
         self.assertEqual(target.document_src(), _CUSTOMIZED_TEMPLATE_DTML)
 
-    def test_customize_with_ZPT( self ):
+    def test_customize_with_ZPT(self):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
         from Products.CMFCore.FSSTXMethod import _CUSTOMIZED_TEMPLATE_ZPT
 
@@ -257,10 +254,10 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         self.fsSTX.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.failUnless('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.custom.objectIds())
         target = self.custom._getOb('testSTX')
 
-        self.failUnless(isinstance(target, ZopePageTemplate))
+        self.assertTrue(isinstance(target, ZopePageTemplate))
 
         propinfo = target.propdict()['stx']
         self.assertEqual(propinfo['type'], 'text')
@@ -275,10 +272,8 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         cache_id = 'gofast'
         self._setWhichTemplate('ZPT')
         self.custom.all_meta_types = ZPT_META_TYPES
-        RAMCacheManager.manage_addRAMCacheManager( self.app
-                                                 , cache_id
-                                                 , REQUEST=None
-                                                 )
+        RAMCacheManager.manage_addRAMCacheManager(self.app, cache_id,
+                                                  REQUEST=None)
         self.fsSTX.ZCacheable_setManagerId(cache_id, REQUEST=None)
 
         self.assertEqual(self.fsSTX.ZCacheable_getManagerId(), cache_id)

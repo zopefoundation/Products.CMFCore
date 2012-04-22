@@ -28,57 +28,47 @@ class CoreUtilsTests(unittest.TestCase):
     def test_normalize(self):
         from Products.CMFCore.utils import normalize
 
-        self.assertEqual( normalize('foo/bar'), 'foo/bar' )
-        self.assertEqual( normalize('foo\\bar'), 'foo/bar' )
+        self.assertEqual(normalize('foo/bar'), 'foo/bar')
+        self.assertEqual(normalize('foo\\bar'), 'foo/bar')
 
     def test_keywordsplitter_empty(self):
         from Products.CMFCore.utils import keywordsplitter
 
-        for x in [ '', ' ', ',', ',,', ';', ';;' ]:
-            self.assertEqual( keywordsplitter({'Keywords': x}), 
-                              [] )
+        for x in ['', ' ', ',', ',,', ';', ';;']:
+            self.assertEqual(keywordsplitter({'Keywords': x}), [])
 
     def test_keywordsplitter_single(self):
         from Products.CMFCore.utils import keywordsplitter
 
-        for x in [ 'foo', ' foo ', 'foo,', 'foo ,,', 'foo;', 'foo ;;' ]:
-            self.assertEqual( keywordsplitter({'Keywords': x}), 
-                              ['foo'] )
+        for x in ['foo', ' foo ', 'foo,', 'foo ,,', 'foo;', 'foo ;;']:
+            self.assertEqual(keywordsplitter({'Keywords': x}), ['foo'])
 
     def test_keywordsplitter_multi(self):
         from Products.CMFCore.utils import keywordsplitter
 
-        for x in [ 'foo, bar, baz'
-                 , 'foo, bar , baz'
-                 , 'foo, bar,, baz'
-                 , 'foo; bar; baz'
-                 ]:
-            self.assertEqual( keywordsplitter({'Keywords': x}), 
-                              ['foo', 'bar', 'baz'] )
+        for x in ['foo, bar, baz', 'foo, bar , baz', 'foo, bar,, baz',
+                  'foo; bar; baz']:
+            self.assertEqual(keywordsplitter({'Keywords': x}),
+                             ['foo', 'bar', 'baz'])
 
     def test_contributorsplitter_emtpy(self):
         from Products.CMFCore.utils import contributorsplitter
 
-        for x in [ '', ' ', ';', ';;' ]:
-            self.assertEqual( contributorsplitter({'Contributors': x}), 
-                              [] )
+        for x in ['', ' ', ';', ';;']:
+            self.assertEqual(contributorsplitter({'Contributors': x}), [])
 
     def test_contributorsplitter_single(self):
         from Products.CMFCore.utils import contributorsplitter
 
-        for x in [ 'foo', ' foo ', 'foo;', 'foo ;;' ]:
-            self.assertEqual( contributorsplitter({'Contributors': x}), 
-                              ['foo'] )
+        for x in ['foo', ' foo ', 'foo;', 'foo ;;']:
+            self.assertEqual(contributorsplitter({'Contributors': x}), ['foo'])
 
     def test_contributorsplitter_multi(self):
         from Products.CMFCore.utils import contributorsplitter
 
-        for x in [ 'foo; bar; baz'
-                 , 'foo; bar ; baz'
-                 , 'foo; bar;; baz'
-                 ]:
-            self.assertEqual( contributorsplitter({'Contributors': x}), 
-                              ['foo', 'bar', 'baz'] )
+        for x in ['foo; bar; baz', 'foo; bar ; baz', 'foo; bar;; baz']:
+            self.assertEqual(contributorsplitter({'Contributors': x}),
+                             ['foo', 'bar', 'baz'])
 
     def test_getPackageName(self):
         from Products.CMFCore.utils import getPackageName
@@ -91,11 +81,11 @@ class CoreUtilsTests(unittest.TestCase):
         from Products.CMFCore.utils import getContainingPackage
 
         self.assertEqual(getContainingPackage('Products.CMFCore.exceptions'),
-                'Products.CMFCore')
+                         'Products.CMFCore')
         self.assertEqual(getContainingPackage('Products.CMFCore'),
-                'Products.CMFCore')
+                         'Products.CMFCore')
         self.assertEqual(getContainingPackage('zope.interface.verify'),
-                'zope.interface')
+                         'zope.interface')
 
     def test_ImmutableId(self):
         from Products.CMFCore.utils import ImmutableId
@@ -179,8 +169,8 @@ class CoreUtilsSecurityTests(SecurityTest):
         class _DummyObject(Owned, DummyObject):
             pass
 
-        site = DummySite('site').__of__(self.root)
-        site._setObject( 'acl_users', DummyUserFolder() )
+        site = DummySite('site').__of__(self.app)
+        site._setObject('acl_users', DummyUserFolder())
         site._setObject('foo_dummy', _DummyObject(id='foo_dummy'))
         site._setObject('bar_dummy', _DummyObject(id='bar_dummy'))
 
@@ -198,25 +188,25 @@ class CoreUtilsSecurityTests(SecurityTest):
         site = self._makeSite()
         newSecurityManager(None, site.acl_users.user_foo)
         o = site.bar_dummy
-        Permission('View',(),o).setRoles(('Anonymous',))
-        Permission('WebDAV access',(),o).setRoles(('Authenticated',))
-        Permission('Manage users',(),o).setRoles(('Manager',))
+        Permission('View', (), o).setRoles(('Anonymous',))
+        Permission('WebDAV access', (), o).setRoles(('Authenticated',))
+        Permission('Manage users', (), o).setRoles(('Manager',))
         eo = site.foo_dummy
         eo._owner = (['acl_users'], 'all_powerful_Oz')
         getSecurityManager().addContext(eo)
-        self.failUnless( _checkPermission('View', o) )
-        self.failUnless( _checkPermission('WebDAV access', o) )
-        self.failIf( _checkPermission('Manage users', o) )
+        self.assertTrue(_checkPermission('View', o))
+        self.assertTrue(_checkPermission('WebDAV access', o))
+        self.assertFalse(_checkPermission('Manage users', o))
 
         eo._proxy_roles = ('Authenticated',)
-        self.failIf( _checkPermission('View', o) )
-        self.failUnless( _checkPermission('WebDAV access', o) )
-        self.failIf( _checkPermission('Manage users', o) )
+        self.assertFalse(_checkPermission('View', o))
+        self.assertTrue(_checkPermission('WebDAV access', o))
+        self.assertFalse(_checkPermission('Manage users', o))
 
         eo._proxy_roles = ('Manager',)
-        self.failIf( _checkPermission('View', o) )
-        self.failIf( _checkPermission('WebDAV access', o) )
-        self.failUnless( _checkPermission('Manage users', o) )
+        self.assertFalse(_checkPermission('View', o))
+        self.assertFalse(_checkPermission('WebDAV access', o))
+        self.assertTrue(_checkPermission('Manage users', o))
 
     def test_mergedLocalRolesManipulation(self):
         # The _mergedLocalRoles function used to return references to

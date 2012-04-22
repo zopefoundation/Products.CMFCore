@@ -43,23 +43,22 @@ class FSPOTests(SecurityTest, FSDVTest):
         path = join(self.skin_path_name, filename)
         return self._getTargetClass()(id, path)
 
-    def test__readFile( self ):
+    def test__readFile(self):
         from DateTime.DateTime import DateTime
 
         _stool, _custom, _fsdir, fspo = self._makeContext('test_props',
                                                           'test_props.props')
 
-        self.assertEqual( fspo.getProperty( 'title' ), 'Test properties' )
-        self.assertEqual( fspo.getProperty( 'value1' ), 'one' )
-        self.assertEqual( fspo.getProperty( 'value2' ), 'two' )
-        self.assertEqual( fspo.getProperty( 'an_int' ), 42 )
-        self.assertEqual( fspo.getProperty( 'a_float' ), 3.1415926 )
-        self.assertEqual( fspo.getProperty( 'a_boolean' ), False )
-        self.assertEqual( fspo.getProperty( 'a_long' ), 40000000000 )
-        self.assertEqual( fspo.getProperty( 'a_date' )
-                        , DateTime( '01/01/2001' ) )
-        self.assertEqual( fspo.getProperty( 'a_tokens' )
-                        , [ 'peter', 'paul', 'mary' ] )
+        self.assertEqual(fspo.getProperty('title'), 'Test properties')
+        self.assertEqual(fspo.getProperty('value1'), 'one')
+        self.assertEqual(fspo.getProperty('value2'), 'two')
+        self.assertEqual(fspo.getProperty('an_int'), 42)
+        self.assertEqual(fspo.getProperty('a_float'), 3.1415926)
+        self.assertEqual(fspo.getProperty('a_boolean'), False)
+        self.assertEqual(fspo.getProperty('a_long'), 40000000000)
+        self.assertEqual(fspo.getProperty('a_date'), DateTime('01/01/2001'))
+        self.assertEqual(fspo.getProperty('a_tokens'),
+                         ['peter', 'paul', 'mary'])
 
     def test__createZODBClone(self):
         from OFS.Folder import Folder
@@ -68,19 +67,19 @@ class FSPOTests(SecurityTest, FSDVTest):
                                                           'test_props.props')
 
         target = fspo._createZODBClone()
-        self.failUnless( isinstance( target, Folder ) )
+        self.assertTrue(isinstance(target, Folder))
         for prop_id in fspo.propertyIds():
-            self.assertEqual( target.getProperty( prop_id )
-                            , fspo.getProperty( prop_id ) )
+            self.assertEqual(target.getProperty(prop_id),
+                             fspo.getProperty(prop_id))
 
     def test_manage_doCustomize(self):
         _stool, custom, _fsdir, fspo = self._makeContext('test_props',
                                                          'test_props.props')
 
-        fspo.manage_doCustomize( folder_path='custom' )
+        fspo.manage_doCustomize(folder_path='custom')
 
-        self.assertEqual( len( custom.objectIds() ), 1 )
-        self.failUnless( 'test_props' in custom.objectIds() )  
+        self.assertEqual(len(custom.objectIds()), 1)
+        self.assertTrue('test_props' in custom.objectIds())
 
     def test_manage_doCustomize_alternate_root(self):
         from OFS.Folder import Folder
@@ -91,16 +90,16 @@ class FSPOTests(SecurityTest, FSDVTest):
 
         fspo.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.failIf('test_props' in custom.objectIds())
-        self.failUnless('test_props' in self.app.other.objectIds())
+        self.assertFalse('test_props' in custom.objectIds())
+        self.assertTrue('test_props' in self.app.other.objectIds())
 
     def test_manage_doCustomize_fspath_as_dot(self):
         stool, custom, _fsdir, fspo = self._makeContext('test_props',
                                                         'test_props.props')
-        fspo.manage_doCustomize( folder_path='.' )
+        fspo.manage_doCustomize(folder_path='.')
 
-        self.failIf( 'test_props' in custom.objectIds() )  
-        self.failUnless( 'test_props' in stool.objectIds() )  
+        self.assertFalse('test_props' in custom.objectIds())
+        self.assertTrue('test_props' in stool.objectIds())
 
     def test_manage_doCustomize_manual_clone(self):
         from OFS.Folder import Folder
@@ -108,13 +107,13 @@ class FSPOTests(SecurityTest, FSDVTest):
         _stool, custom, _fsdir, fspo = self._makeContext('test_props',
                                                          'test_props.props')
         clone = Folder('test_props')
-        fspo.manage_doCustomize( folder_path='custom', obj=clone )
+        fspo.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.failUnless( 'test_props' in custom.objectIds() )  
-        self.failUnless( aq_base(custom._getOb('test_props')) is clone )  
+        self.assertTrue('test_props' in custom.objectIds())
+        self.assertTrue(aq_base(custom._getOb('test_props')) is clone)
 
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite( FSPOTests ),
+        unittest.makeSuite(FSPOTests),
         ))

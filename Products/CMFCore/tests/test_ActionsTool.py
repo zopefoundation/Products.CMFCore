@@ -93,7 +93,7 @@ class ActionsToolTests(unittest.TestCase, WarningInterceptor):
         rval = tool.getActionObject('object/an_id')
         self.assertEqual(rval, tool._actions[0])
         warning = self._our_stderr_stream.getvalue()
-        self.failUnless(
+        self.assertTrue(
             'DeprecationWarning: '
             'Old-style actions are deprecated and will be removed in CMF '
             '2.4. Use Action and Action Category objects instead.' in warning)
@@ -159,9 +159,7 @@ class ActionsToolSecurityTests(SecurityTest):
                                 permissions=('List folder contents',),
                                 category='folder',
                                 link_target='_top',
-                                visible=1)
-            ,
-            )
+                                visible=1),)
 
         newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
         self.assertEqual(tool.listFilteredActionsFor(self.app.foo),

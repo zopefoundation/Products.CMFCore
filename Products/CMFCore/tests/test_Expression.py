@@ -28,24 +28,21 @@ from Products.CMFCore.tests.base.dummy import DummyTool as DummyMembershipTool
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
 
-class ExpressionTests( SecurityTest ):
+class ExpressionTests(SecurityTest):
 
-    def setUp( self ):
-
+    def setUp(self):
         SecurityTest.setUp(self)
-        root = self.root
-        root._setObject('portal', DummyContent('portal', url='url_portal'))
-        portal = self.portal = root.portal
+        app = self.app
+        app._setObject('portal', DummyContent('portal', url='url_portal'))
+        self.portal = app.portal
         self.folder = DummyContent('foo', url='url_foo')
         self.object = DummyContent('bar', url='url_bar')
-        self.ai = ActionInformation(id='view'
-                                  , title='View'
-                                  , action=Expression(
-                  text='view')
-                                  , condition=Expression(
-                  text='member')
-                                  , category='global'
-                                  , visible=1)
+        self.ai = ActionInformation(id='view',
+                                    title='View',
+                                    action=Expression(text='view'),
+                                    condition=Expression(text='member'),
+                                    category='global',
+                                    visible=1)
 
     def tearDown(self):
         cleanUp()
@@ -56,7 +53,7 @@ class ExpressionTests( SecurityTest ):
         sm.registerUtility(DummyMembershipTool(), IMembershipTool)
         ec = createExprContext(self.folder, self.portal, self.object)
         member = ec.contexts['member']
-        self.failIf(member)
+        self.assertFalse(member)
 
     def test_authenticatedUser_ec(self):
         sm = getSiteManager()
@@ -72,13 +69,13 @@ class ExpressionTests( SecurityTest ):
         object = ec.contexts['object']
         portal = ec.contexts['portal']
         folder = ec.contexts['folder']
-        self.failUnless(object)
+        self.assertTrue(object)
         self.assertEqual(object.id, 'bar')
         self.assertEqual(object.absolute_url(), 'url_bar')
-        self.failUnless(portal)
+        self.assertTrue(portal)
         self.assertEqual(portal.id, 'portal')
         self.assertEqual(portal.absolute_url(), 'url_portal')
-        self.failUnless(folder)
+        self.assertTrue(folder)
         self.assertEqual(folder.id, 'foo')
         self.assertEqual(folder.absolute_url(), 'url_foo')
 

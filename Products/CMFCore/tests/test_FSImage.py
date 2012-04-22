@@ -47,9 +47,9 @@ class FSImageTests(TransactionalTest, FSDVTest):
 
         return FSImage(id, path_join(self.skin_path_name, filename))
 
-    def _extractFile( self ):
+    def _extractFile(self):
         path = path_join(self.skin_path_name, 'test_image.gif')
-        f = open( path, 'rb' )
+        f = open(path, 'rb')
         try:
             data = f.read()
         finally:
@@ -57,66 +57,66 @@ class FSImageTests(TransactionalTest, FSDVTest):
 
         return path, data
 
-    def test_ctor( self ):
+    def test_ctor(self):
         _path, ref = self._extractFile()
 
-        image = self._makeOne( 'test_image', 'test_image.gif' )
+        image = self._makeOne('test_image', 'test_image.gif')
         image = image.__of__(self.app)
 
-        self.assertEqual( image.get_size(), len( ref ) )
-        self.assertEqual( image._data, ref )
+        self.assertEqual(image.get_size(), len(ref))
+        self.assertEqual(image._data, ref)
 
-    def test_index_html( self ):
+    def test_index_html(self):
         path, ref = self._extractFile()
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        image = self._makeOne( 'test_image', 'test_image.gif' )
+        image = self._makeOne('test_image', 'test_image.gif')
         image = image.__of__(self.app)
 
-        data = image.index_html( self.REQUEST, self.RESPONSE )
+        data = image.index_html(self.REQUEST, self.RESPONSE)
 
-        self.assertEqual( len( data ), len( ref ) )
-        self.assertEqual( data, ref )
+        self.assertEqual(len(data), len(ref))
+        self.assertEqual(data, ref)
         # ICK!  'HTTPResponse.getHeader' doesn't case-flatten the key!
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Length'.lower() )
-                        , str(len(ref)) )
-        self.assertEqual( self.RESPONSE.getHeader( 'Content-Type'.lower() )
-                        , 'image/gif' )
-        self.assertEqual( self.RESPONSE.getHeader( 'Last-Modified'.lower() )
-                        , rfc1123_date( mod_time ) )
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
+                         str(len(ref)))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower()),
+                         'image/gif')
+        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower()),
+                         rfc1123_date(mod_time))
 
-    def test_index_html_with_304( self ):
+    def test_index_html_with_304(self):
         path, _ref = self._extractFile()
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        image = self._makeOne( 'test_image', 'test_image.gif' )
+        image = self._makeOne('test_image', 'test_image.gif')
         image = image.__of__(self.app)
 
-        self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date( mod_time+3600 )
+        self.REQUEST.environ['IF_MODIFIED_SINCE'
+                            ] = '%s;' % rfc1123_date(mod_time + 3600)
 
-        data = image.index_html( self.REQUEST, self.RESPONSE )
+        data = image.index_html(self.REQUEST, self.RESPONSE)
 
-        self.assertEqual( data, '' )
+        self.assertEqual(data, '')
         # test that we don't supply a content-length
-        self.assertEqual( self.RESPONSE.getHeader('Content-Length'.lower()),
-                                                  None )
-        self.assertEqual( self.RESPONSE.getStatus(), 304 )
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
+                                                  None)
+        self.assertEqual(self.RESPONSE.getStatus(), 304)
 
-    def test_index_html_without_304( self ):
+    def test_index_html_without_304(self):
         path, _ref = self._extractFile()
-        mod_time = os.stat( path )[ 8 ]
+        mod_time = os.stat(path)[8]
 
-        image = self._makeOne( 'test_image', 'test_image.gif' )
+        image = self._makeOne('test_image', 'test_image.gif')
         image = image.__of__(self.app)
 
-        self.REQUEST.environ[ 'IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date( mod_time-3600 )
+        self.REQUEST.environ['IF_MODIFIED_SINCE'
+                            ] = '%s;' % rfc1123_date(mod_time - 3600)
 
-        data = image.index_html( self.REQUEST, self.RESPONSE )
+        data = image.index_html(self.REQUEST, self.RESPONSE)
 
-        self.failUnless( data, '' )
-        self.assertEqual( self.RESPONSE.getStatus(), 200 )
+        self.assertTrue(data, '')
+        self.assertEqual(self.RESPONSE.getStatus(), 200)
 
     def test_index_html_with_304_from_cpm(self):
         cpm = DummyCachingManagerWithPolicy()
@@ -151,12 +151,12 @@ class FSImageTests(TransactionalTest, FSDVTest):
         self.assertEqual(len(data), len(ref))
         self.assertEqual(data, ref)
         # ICK!  'HTTPResponse.getHeader' doesn't case-flatten the key!
-        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower())
-                        , str(len(ref)))
-        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower())
-                        , 'image/gif')
-        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower())
-                        , rfc1123_date(mod_time))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
+                         str(len(ref)))
+        self.assertEqual(self.RESPONSE.getHeader('Content-Type'.lower()),
+                         'image/gif')
+        self.assertEqual(self.RESPONSE.getHeader('Last-Modified'.lower()),
+                         rfc1123_date(mod_time))
 
     def test_caching(self):
         cpm = DummyCachingManager()
@@ -166,9 +166,9 @@ class FSImageTests(TransactionalTest, FSDVTest):
         obj = obj.__of__(self.app)
         obj.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
-        self.failUnless(len(headers) >= original_len + 3)
-        self.failUnless('foo' in headers.keys())
-        self.failUnless('bar' in headers.keys())
+        self.assertTrue(len(headers) >= original_len + 3)
+        self.assertTrue('foo' in headers.keys())
+        self.assertTrue('bar' in headers.keys())
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_index_html_with_304_and_caching(self):
@@ -191,9 +191,9 @@ class FSImageTests(TransactionalTest, FSDVTest):
         self.assertEqual(self.RESPONSE.getStatus(), 304)
 
         headers = self.RESPONSE.headers
-        self.failUnless(len(headers) >= original_len + 3)
-        self.failUnless('foo' in headers.keys())
-        self.failUnless('bar' in headers.keys())
+        self.assertTrue(len(headers) >= original_len + 3)
+        self.assertTrue('foo' in headers.keys())
+        self.assertTrue('bar' in headers.keys())
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_tag_with_acquired_clashing_attrs(self):
@@ -206,43 +206,45 @@ class FSImageTests(TransactionalTest, FSDVTest):
         self.app.height = Clash()
         self.app.width = Clash()
 
-        image = self._makeOne( 'test_image', 'test_image.gif' )
+        image = self._makeOne('test_image', 'test_image.gif')
         image = image.__of__(self.app)
 
         tag = image.tag()
-        self.failUnless('alt=""' in tag)
+        self.assertTrue('alt=""' in tag)
 
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246
         invalidated = []
+
         def fake_invalidate(*args, **kw):
             invalidated.append(True)
-        image = self._makeOne( 'test_image', 'test_image.gif' )
+
+        image = self._makeOne('test_image', 'test_image.gif')
         image.ZCacheable_invalidate = fake_invalidate
 
         # First pass: The images internal file modification representation
         # equals the filesystem modification time.
         del invalidated[:]
         image._readFile(True)
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         del invalidated[:]
         image._parsed = False
         image._updateFromFS()
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         # Second pass: Forcing a different internal file modification
         # time onto the image instance. Now the image will be invalidated.
         del invalidated[:]
         image._file_mod_time = 0
         image._readFile(True)
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
         del invalidated[:]
         image._file_mod_time = 0
         image._parsed = False
         image._updateFromFS()
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
 
 def test_suite():

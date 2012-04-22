@@ -212,7 +212,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
             self.assertEqual(objects[index][1], TEST_INI_AWARE)
 
-            filename, text, content_type = context._wrote[index+2]
+            filename, text, content_type = context._wrote[index + 2]
             self.assertEqual(filename, 'structure/%s.ini' % ITEM_IDS[index])
             object = site._getOb(ITEM_IDS[index])
             self.assertEqual(text.strip(),
@@ -255,7 +255,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
             self.assertEqual(objects[index][1], TEST_INI_AWARE)
 
-            filename, text, content_type = context._wrote[index+2]
+            filename, text, content_type = context._wrote[index + 2]
             self.assertEqual(filename, 'structure/%s.ini' % ITEM_IDS[index])
             object = site._getOb(ITEM_IDS[index])
             self.assertEqual(text.strip(),
@@ -301,7 +301,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
             self.assertEqual(objects[index][1], TEST_INI_AWARE)
 
-            filename, text, content_type = context._wrote[index+2]
+            filename, text, content_type = context._wrote[index + 2]
             self.assertEqual(filename, 'structure/%s.ini' % ITEM_IDS[index])
             object = site._getOb(ITEM_IDS[index])
             self.assertEqual(text.strip(),
@@ -350,7 +350,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
             self.assertEqual(objects[index][1], TEST_INI_AWARE)
 
-            filename, text, content_type = context._wrote[index+2]
+            filename, text, content_type = context._wrote[index + 2]
             self.assertEqual(filename, 'structure/%s.ini' % ITEM_IDS[index])
             object = site._getOb(ITEM_IDS[index])
             self.assertEqual(text.strip(),
@@ -385,7 +385,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         exporter = self._getExporter()
         exporter(context)
 
-        self.assertEqual(len(context._wrote), 2 + (2 *len(FOLDER_IDS)))
+        self.assertEqual(len(context._wrote), 2 + (2 * len(FOLDER_IDS)))
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
@@ -506,7 +506,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         for id in FOLDER_IDS:
             context._files['structure/%s/.objects' % id] = ''
             context._files['structure/%s/.properties' % id] = (
-                _PROPERTIES_TEMPLATE % id )
+                _PROPERTIES_TEMPLATE % id)
 
         _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_FOLDER)
                                         for id in FOLDER_IDS])
@@ -595,7 +595,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(len(context._notes), len(ITEM_IDS))
         for _level, component, message in context._notes:
             self.assertEqual(component, 'SFWA')
-            self.failUnless(message.startswith("Couldn't make"))
+            self.assertTrue(message.startswith("Couldn't make"))
 
     def test_reimport_no_structure_no_delete(self):
         self._setUpAdapters()
@@ -639,7 +639,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         self.assertEqual(len(site.objectIds()), len(ITEM_IDS))
         for obj in site.objectValues():
-            self.failIf(hasattr(obj, 'before'))
+            self.assertFalse(hasattr(obj, 'before'))
 
     def test_reimport_with_structure_and_preserve(self):
         self._setUpAdapters()
@@ -728,9 +728,9 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         after = site.objectIds()
         self.assertEqual(len(after), len(ITEM_IDS) - 1)
-        self.failIf('baz' in after)
+        self.assertFalse('baz' in after)
         self.assertEqual(getattr(site.foo, 'before', None), True)
-        self.failIf(hasattr(site.bar, 'before'))
+        self.assertFalse(hasattr(site.bar, 'before'))
 
     def test_import_site_with_subfolders_and_preserve(self):
         self._setUpAdapters()
@@ -894,6 +894,7 @@ def _makeFolder(id, site_folder=False):
     class _TypeInfo(DummyType):
         def _getId(self):
             return self._id
+
         def constructInstance(self, container, id, *args, **kw):
             portal_type = self._getId()
             if portal_type == TEST_FOLDER:
@@ -906,7 +907,7 @@ def _makeFolder(id, site_folder=False):
             elif portal_type == TEST_CSV_AWARE:
                 content = _makeCSVAware(id)
             else:
-                raise ValueError, 'Ugh'
+                raise ValueError('Ugh')
             content.portal_type = portal_type
             container._setObject(id, content)
             return container._getOb(id)

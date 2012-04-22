@@ -45,17 +45,22 @@ class SimpleFolder(Folder):
     def __init__(self, id):
         self._setId(id)
 
+
 class DummyRoot(SimpleFolder):
     def getPhysicalRoot(self):
         return self
 
+
 class DummyOldBrain:
+
     def __init__(self, ob, path):
         self.ob = ob
         self.id = ob.getId()
         self.path = path
+
     def getPath(self):
         return self.path
+
     def getObject(self):
         if self.id == 'missing':
             if self.ob.GETOBJECT_RAISES:
@@ -66,29 +71,39 @@ class DummyOldBrain:
             raise ValueError("security problem for this object")
         return self.ob
 
+
 class DummyBrain(DummyOldBrain):
+
     def _unrestrictedGetObject(self):
         if self.id == 'missing':
             return self.getObject()
         return self.ob
 
+
 class DummyCatalog(SimpleItem):
+
     brain_class = DummyBrain
+
     def __init__(self):
         self.log = []
         self.obs = []
+
     def indexObject(self, ob):
         self.log.append('index %s' % physicalpath(ob))
+
     def reindexObject(self, ob, idxs=[], update_metadata=0, uid=None):
         self.log.append('reindex %s %s' % (physicalpath(ob), idxs))
+
     def unindexObject(self, ob):
         self.log.append('unindex %s' % physicalpath(ob))
+
     def setObs(self, obs):
         self.obs = [(ob, physicalpath(ob)) for ob in obs]
+
     def unrestrictedSearchResults(self, path):
         res = []
         for ob, obpath in self.obs:
-            if not (obpath+'/').startswith(path+'/'):
+            if not (obpath + '/').startswith(path + '/'):
                 continue
             res.append(self.brain_class(ob, obpath))
         return res
@@ -138,27 +153,27 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo = self.site.foo
         cat = self.ctool
         foo.indexObject()
-        self.assertEquals(cat.log, ["index /site/foo"])
+        self.assertEqual(cat.log, ["index /site/foo"])
 
     def test_unindexObject(self):
         foo = self.site.foo
         cat = self.ctool
         foo.unindexObject()
-        self.assertEquals(cat.log, ["unindex /site/foo"])
+        self.assertEqual(cat.log, ["unindex /site/foo"])
 
     def test_reindexObject(self):
         foo = self.site.foo
         cat = self.ctool
         foo.reindexObject()
-        self.assertEquals(cat.log, ["reindex /site/foo []"])
-        self.assert_(foo.notified)
+        self.assertEqual(cat.log, ["reindex /site/foo []"])
+        self.assertTrue(foo.notified)
 
     def test_reindexObject_idxs(self):
         foo = self.site.foo
         cat = self.ctool
         foo.reindexObject(idxs=['bar'])
-        self.assertEquals(cat.log, ["reindex /site/foo ['bar']"])
-        self.failIf(foo.notified)
+        self.assertEqual(cat.log, ["reindex /site/foo ['bar']"])
+        self.assertFalse(foo.notified)
 
     def test_reindexObjectSecurity(self):
         foo = self.site.foo
@@ -171,14 +186,14 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo.reindexObjectSecurity()
         l = list(cat.log)
         l.sort()
-        self.assertEquals(l, [
-            "reindex /site/foo %s"%str(CMF_SECURITY_INDEXES),
-            "reindex /site/foo/bar %s"%str(CMF_SECURITY_INDEXES),
-            "reindex /site/foo/hop %s"%str(CMF_SECURITY_INDEXES),
+        self.assertEqual(l, [
+            "reindex /site/foo %s" % str(CMF_SECURITY_INDEXES),
+            "reindex /site/foo/bar %s" % str(CMF_SECURITY_INDEXES),
+            "reindex /site/foo/hop %s" % str(CMF_SECURITY_INDEXES),
             ])
-        self.failIf(foo.notified)
-        self.failIf(bar.notified)
-        self.failIf(hop.notified)
+        self.assertFalse(foo.notified)
+        self.assertFalse(bar.notified)
+        self.assertFalse(hop.notified)
 
     def test_reindexObjectSecurity_missing_raise(self):
         # Exception raised for missing object (Zope 2.8 brains)
@@ -192,7 +207,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         finally:
             self._ignore_log_errors()
         self.assertRaises(NotFound, foo.reindexObjectSecurity)
-        self.failIf( self.logged ) # no logging due to raise
+        self.assertFalse(self.logged) # no logging due to raise
 
     def test_reindexObjectSecurity_missing_noraise(self):
         # Raising disabled
@@ -203,11 +218,11 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         cat = self.ctool
         cat.setObs([foo, missing])
         foo.reindexObjectSecurity()
-        self.assertEquals(cat.log,
-                          ["reindex /site/foo %s"%str(CMF_SECURITY_INDEXES)])
-        self.failIf(foo.notified)
-        self.failIf(missing.notified)
-        self.assertEqual( len(self.logged), 1 ) # logging because no raise
+        self.assertEqual(cat.log,
+                         ["reindex /site/foo %s" % str(CMF_SECURITY_INDEXES)])
+        self.assertFalse(foo.notified)
+        self.assertFalse(missing.notified)
+        self.assertEqual(len(self.logged), 1) # logging because no raise
 
     def test_catalog_tool(self):
         foo = self.site.foo
@@ -237,14 +252,10 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         transaction.savepoint(optimistic=True)
         return site
 
-    def _initPolicyAndUser( self
-                          , a_lambda=None
-                          , v_lambda=None
-                          , c_lambda=None
-                          ):
+    def _initPolicyAndUser(self, a_lambda=None, v_lambda=None, c_lambda=None):
         from AccessControl import SecurityManager
 
-        def _promiscuous( *args, **kw ):
+        def _promiscuous(*args, **kw):
             return 1
 
         if a_lambda is None:
@@ -256,10 +267,10 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         if c_lambda is None:
             c_lambda = _promiscuous
 
-        scp = _SensitiveSecurityPolicy( v_lambda, c_lambda )
-        SecurityManager.setSecurityPolicy( scp )
-        newSecurityManager( None
-                          , _AllowedUser(a_lambda).__of__(self.app.acl_users))
+        scp = _SensitiveSecurityPolicy(v_lambda, c_lambda)
+        SecurityManager.setSecurityPolicy(scp)
+        newSecurityManager(None,
+                           _AllowedUser(a_lambda).__of__(self.app.acl_users))
 
     def test_object_indexed_after_adding(self):
 
@@ -267,7 +278,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         bar = TheClass('bar')
         site._setObject('bar', bar)
         cat = self.ctool
-        self.assertEquals(cat.log, ["index /site/bar"])
+        self.assertEqual(cat.log, ["index /site/bar"])
 
     def test_object_unindexed_after_removing(self):
 
@@ -277,7 +288,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         cat = self.ctool
         cat.log = []
         site._delObject('bar')
-        self.assertEquals(cat.log, ["unindex /site/bar"])
+        self.assertEqual(cat.log, ["unindex /site/bar"])
 
     def test_object_indexed_after_copy_and_pasting(self):
 
@@ -298,7 +309,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         cookie = folder1.manage_copyObjects(ids=['bar'])
         folder2.manage_pasteObjects(cookie)
 
-        self.assertEquals(cat.log, ["index /site/folder2/bar"])
+        self.assertEqual(cat.log, ["index /site/folder2/bar"])
 
     def test_object_reindexed_after_cut_and_paste(self):
 
@@ -319,8 +330,8 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         cookie = folder1.manage_cutObjects(ids=['bar'])
         folder2.manage_pasteObjects(cookie)
 
-        self.assertEquals(cat.log, ["unindex /site/folder1/bar",
-                                    "index /site/folder2/bar"])
+        self.assertEqual(cat.log, ["unindex /site/folder1/bar",
+                                   "index /site/folder2/bar"])
 
     def test_object_reindexed_after_moving(self):
 
@@ -335,8 +346,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         transaction.savepoint(optimistic=True)
 
         site.manage_renameObject(id='bar', new_id='baz')
-        self.assertEquals(cat.log, ["unindex /site/bar",
-                                    "index /site/baz"])
+        self.assertEqual(cat.log, ["unindex /site/bar", "index /site/baz"])
 
 
 def test_suite():

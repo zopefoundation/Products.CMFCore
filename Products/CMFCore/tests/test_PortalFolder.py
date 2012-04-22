@@ -50,6 +50,7 @@ def extra_meta_types():
     return [{'name': 'Dummy', 'action': 'manage_addFolder',
              'permission': 'View'}]
 
+
 class DummyCatalogTool:
     implements(ICatalogTool)
 
@@ -115,16 +116,16 @@ class PortalFolderFactoryTests(SecurityTest):
 
     def test_invokeFactory(self):
         f = self.f
-        self.failIf( 'foo' in f.objectIds() )
+        self.assertFalse('foo' in f.objectIds())
 
         f.manage_addProduct = {'FooProduct': DummyFactoryDispatcher(f)}
-        f.invokeFactory( type_name='Dummy Content', id='foo' )
+        f.invokeFactory(type_name='Dummy Content', id='foo')
 
-        self.failUnless( 'foo' in f.objectIds() )
+        self.assertTrue('foo' in f.objectIds())
         foo = f.foo
-        self.assertEqual( foo.getId(), 'foo' )
-        self.assertEqual( foo.getPortalTypeName(), 'Dummy Content' )
-        self.assertEqual( foo.Type(), 'Dummy Content Title' )
+        self.assertEqual(foo.getId(), 'foo')
+        self.assertEqual(foo.getPortalTypeName(), 'Dummy Content')
+        self.assertEqual(foo.Type(), 'Dummy Content Title')
 
     def test_invokeFactory_disallowed_type(self):
         f = self.f
@@ -135,7 +136,7 @@ class PortalFolderFactoryTests(SecurityTest):
 
         ftype.allowed_content_types = (self._PORTAL_TYPE,)
         f.invokeFactory(self._PORTAL_TYPE, id='sub')
-        self.failUnless('sub' in f.objectIds())
+        self.assertTrue('sub' in f.objectIds())
         self.assertRaises(ValueError, f.invokeFactory, 'Dummy Content', 'foo')
 
 
@@ -177,38 +178,38 @@ class PortalFolderSecurityTests(SecurityTest):
         getSiteManager().registerUtility(ttool, ITypesTool)
 
         f = self._makeOne('foo')
-        self.assertEqual( f.objectValues(), [] )
-        self.assertEqual( f.contentIds(), [] )
-        self.assertEqual( f.contentItems(), [] )
-        self.assertEqual( f.contentValues(), [] )
-        self.assertEqual( f.listFolderContents(), [] )
-        self.assertEqual( f.listDAVObjects(), [] )
+        self.assertEqual(f.objectValues(), [])
+        self.assertEqual(f.contentIds(), [])
+        self.assertEqual(f.contentItems(), [])
+        self.assertEqual(f.contentValues(), [])
+        self.assertEqual(f.listFolderContents(), [])
+        self.assertEqual(f.listDAVObjects(), [])
 
-        f._setObject('sub1', DummyContent('sub1') )
-        self.assertEqual( f.objectValues(), [f.sub1] )
-        self.assertEqual( f.contentIds(), [] )
-        self.assertEqual( f.contentItems(), [] )
-        self.assertEqual( f.contentValues(), [] )
-        self.assertEqual( f.listFolderContents(), [] )
-        self.assertEqual( f.listDAVObjects(), [f.sub1] )
+        f._setObject('sub1', DummyContent('sub1'))
+        self.assertEqual(f.objectValues(), [f.sub1])
+        self.assertEqual(f.contentIds(), [])
+        self.assertEqual(f.contentItems(), [])
+        self.assertEqual(f.contentValues(), [])
+        self.assertEqual(f.listFolderContents(), [])
+        self.assertEqual(f.listDAVObjects(), [f.sub1])
 
         fti = FTIDATA_DUMMY[0].copy()
-        ttool._setObject( 'Dummy Content', FTI(**fti) )
-        self.assertEqual( f.objectValues(), [f.sub1] )
-        self.assertEqual( f.contentIds(), ['sub1'] )
-        self.assertEqual( f.contentItems(), [ ('sub1', f.sub1) ] )
-        self.assertEqual( f.contentValues(), [f.sub1] )
-        self.assertEqual( f.listFolderContents(), [f.sub1] )
-        self.assertEqual( f.listDAVObjects(), [f.sub1] )
+        ttool._setObject('Dummy Content', FTI(**fti))
+        self.assertEqual(f.objectValues(), [f.sub1])
+        self.assertEqual(f.contentIds(), ['sub1'])
+        self.assertEqual(f.contentItems(), [('sub1', f.sub1)])
+        self.assertEqual(f.contentValues(), [f.sub1])
+        self.assertEqual(f.listFolderContents(), [f.sub1])
+        self.assertEqual(f.listDAVObjects(), [f.sub1])
 
-        f._setObject('hidden_sub2', DummyContent('hidden_sub2') )
-        self.assertEqual( f.objectValues(), [f.sub1, f.hidden_sub2] )
-        self.assertEqual( f.contentIds(), ['sub1', 'hidden_sub2'] )
-        self.assertEqual( f.contentItems(), [ ('sub1', f.sub1),
-                                            ('hidden_sub2', f.hidden_sub2) ] )
-        self.assertEqual( f.contentValues(), [f.sub1, f.hidden_sub2] )
-        self.assertEqual( f.listFolderContents(), [f.sub1] )
-        self.assertEqual( f.listDAVObjects(), [f.sub1, f.hidden_sub2] )
+        f._setObject('hidden_sub2', DummyContent('hidden_sub2'))
+        self.assertEqual(f.objectValues(), [f.sub1, f.hidden_sub2])
+        self.assertEqual(f.contentIds(), ['sub1', 'hidden_sub2'])
+        self.assertEqual(f.contentItems(), [('sub1', f.sub1),
+                                            ('hidden_sub2', f.hidden_sub2)])
+        self.assertEqual(f.contentValues(), [f.sub1, f.hidden_sub2])
+        self.assertEqual(f.listFolderContents(), [f.sub1])
+        self.assertEqual(f.listDAVObjects(), [f.sub1, f.hidden_sub2])
 
     def test_deletePropagation(self):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
@@ -216,23 +217,23 @@ class PortalFolderSecurityTests(SecurityTest):
         test = self._makeOne('test')
         foo = DummyContent('foo')
         foo.reset()
-        self.failIf( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertFalse(foo.after_add_called)
+        self.assertFalse(foo.before_delete_called)
 
         test._setObject('foo', foo)
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertTrue(foo.after_add_called)
+        self.assertFalse(foo.before_delete_called)
 
         foo.reset()
         test._delObject('foo')
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
+        self.assertFalse(foo.after_add_called)
+        self.assertTrue(foo.before_delete_called)
 
         foo.reset()
         test._setObject('foo', foo)
         test._delOb('foo')    # doesn't propagate
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertTrue(foo.after_add_called)
+        self.assertFalse(foo.before_delete_called)
 
     def test_manageDelObjects(self):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
@@ -242,9 +243,9 @@ class PortalFolderSecurityTests(SecurityTest):
 
         test._setObject('foo', foo)
         foo.reset()
-        test.manage_delObjects( ids=['foo'] )
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
+        test.manage_delObjects(ids=['foo'])
+        self.assertFalse(foo.after_add_called)
+        self.assertTrue(foo.before_delete_called)
 
     def test_catalogUnindexAndIndex(self):
         #
@@ -260,16 +261,16 @@ class PortalFolderSecurityTests(SecurityTest):
         sm.registerUtility(ctool, ICatalogTool)
         sm.registerUtility(TypesTool(), ITypesTool)
 
-        test._setObject('foo', DummyContent('foo' , catalog=1))
+        test._setObject('foo', DummyContent('foo', catalog=1))
         foo = test.foo
-        self.failUnless(foo.after_add_called)
-        self.failIf(foo.before_delete_called)
+        self.assertTrue(foo.after_add_called)
+        self.assertFalse(foo.before_delete_called)
         self.assertEqual(len(ctool), 1)
 
         foo.reset()
         test._delObject('foo')
-        self.failIf(foo.after_add_called)
-        self.failUnless(foo.before_delete_called)
+        self.assertFalse(foo.after_add_called)
+        self.assertTrue(foo.before_delete_called)
         self.assertEqual(len(ctool), 0)
 
     def test_portalfolder_cataloging(self):
@@ -302,21 +303,21 @@ class PortalFolderSecurityTests(SecurityTest):
         getSiteManager().registerUtility(ctool, ICatalogTool)
         self.assertEqual(len(ctool), 0)
 
-        test._setObject( 'sub', PortalFolder( 'sub', '' ) )
+        test._setObject('sub', PortalFolder('sub', ''))
         sub = test.sub
 
-        sub._setObject( 'foo', DummyContent( 'foo', catalog=1 ) )
+        sub._setObject('foo', DummyContent('foo', catalog=1))
         foo = sub.foo
 
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
-        self.assertEqual( len(ctool), 1 )
+        self.assertTrue(foo.after_add_called)
+        self.assertFalse(foo.before_delete_called)
+        self.assertEqual(len(ctool), 1)
 
         foo.reset()
         test._delObject('sub')
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
-        self.assertEqual( len(ctool), 0 )
+        self.assertFalse(foo.after_add_called)
+        self.assertTrue(foo.before_delete_called)
+        self.assertEqual(len(ctool), 0)
 
     def test_manageAddFolder(self):
         #
@@ -330,54 +331,50 @@ class PortalFolderSecurityTests(SecurityTest):
         test = self._makeOne('test')
 
         ttool = TypesTool()
-        ttool._setObject( 'Folder'
-                        , FTI( id='Folder'
-                             , title='Folder or Directory'
-                             , meta_type=PortalFolder.meta_type
-                             , factory='cmf.folder'
-                             , filter_content_types=0
-                             )
-                        )
-        ttool._setObject( 'Grabbed'
-                        , FTI( 'Grabbed'
-                             , title='Grabbed Content'
-                             , meta_type=PortalFolder.meta_type
-                             , factory='cmf.folder'
-                             )
-                        )
+        ttool._setObject('Folder',
+                         FTI(id='Folder',
+                             title='Folder or Directory',
+                             meta_type=PortalFolder.meta_type,
+                             factory='cmf.folder',
+                             filter_content_types=0))
+        ttool._setObject('Grabbed',
+                         FTI('Grabbed',
+                             title='Grabbed Content',
+                             meta_type=PortalFolder.meta_type,
+                             factory='cmf.folder'))
         sm = getSiteManager()
         sm.registerUtility(ttool, ITypesTool)
         sm.registerUtility(PortalFolderFactory, IFactory, 'cmf.folder')
 
         # First, test default behavior
         test.manage_addFolder(id='simple', title='Simple')
-        self.assertEqual( test.simple.getPortalTypeName(), 'Folder' )
-        self.assertEqual( test.simple.Type(), 'Folder or Directory' )
-        self.assertEqual( test.simple.getId(), 'simple' )
-        self.assertEqual( test.simple.Title(), 'Simple' )
+        self.assertEqual(test.simple.getPortalTypeName(), 'Folder')
+        self.assertEqual(test.simple.Type(), 'Folder or Directory')
+        self.assertEqual(test.simple.getId(), 'simple')
+        self.assertEqual(test.simple.Title(), 'Simple')
 
         # Now, test overridden behavior
-        ttool.Folder.setMethodAliases( {'mkdir': 'grabbed'} )
+        ttool.Folder.setMethodAliases({'mkdir': 'grabbed'})
 
         class Grabbed:
 
             _grabbed_with = None
 
-            def __init__( self, context ):
+            def __init__(self, context):
                 self._context = context
 
-            def __call__( self, id ):
+            def __call__(self, id):
                 self._grabbed_with = id
-                self._context._setOb( id, PortalFolder( id ) )
-                self._context._getOb( id )._setPortalTypeName( 'Grabbed' )
+                self._context._setOb(id, PortalFolder(id))
+                self._context._getOb(id)._setPortalTypeName('Grabbed')
 
         self.app.grabbed = Grabbed(test)
 
         test.manage_addFolder(id='indirect', title='Indirect')
-        self.assertEqual( test.indirect.getPortalTypeName(), 'Grabbed' )
-        self.assertEqual( test.indirect.Type(), 'Grabbed Content' )
-        self.assertEqual( test.indirect.getId(), 'indirect' )
-        self.assertEqual( test.indirect.Title(), 'Indirect' )
+        self.assertEqual(test.indirect.getPortalTypeName(), 'Grabbed')
+        self.assertEqual(test.indirect.Type(), 'Grabbed Content')
+        self.assertEqual(test.indirect.getId(), 'indirect')
+        self.assertEqual(test.indirect.Title(), 'Indirect')
 
     def test_contentPasteAllowedTypes(self):
         #
@@ -386,10 +383,10 @@ class PortalFolderSecurityTests(SecurityTest):
         ttool = TypesTool()
         getSiteManager().registerUtility(ttool, ITypesTool)
         fti = FTIDATA_DUMMY[0].copy()
-        ttool._setObject( 'Dummy Content', FTI(**fti) )
-        ttool._setObject( 'Folder', FTI(**fti) )
+        ttool._setObject('Dummy Content', FTI(**fti))
+        ttool._setObject('Folder', FTI(**fti))
         sub1 = self._makeOne('sub1')
-        sub1._setObject( 'dummy', DummyContent( 'dummy' ) )
+        sub1._setObject('dummy', DummyContent('dummy'))
         sub2 = self._makeOne('sub2')
         sub2.all_meta_types = extra_meta_types()
 
@@ -397,15 +394,15 @@ class PortalFolderSecurityTests(SecurityTest):
         ttool.Folder.manage_changeProperties(filter_content_types=False)
 
         # Copy/paste should work fine
-        cookie = sub1.manage_copyObjects( ids = ['dummy'] )
-        sub2.manage_pasteObjects( cookie )
+        cookie = sub1.manage_copyObjects(ids=['dummy'])
+        sub2.manage_pasteObjects(cookie)
 
         # Disallow adding of Dummy Content
         ttool.Folder.manage_changeProperties(filter_content_types=True)
 
         # Now copy/paste should raise a ValueError
-        cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
-        self.assertRaises( ValueError, sub2.manage_pasteObjects, cookie )
+        cookie = sub1.manage_copyObjects(ids=('dummy',))
+        self.assertRaises(ValueError, sub2.manage_pasteObjects, cookie)
 
     def test_contentPasteFollowsWorkflowGuards(self):
         #
@@ -509,7 +506,7 @@ class PortalFolderSecurityTests(SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.user_foo)
 
-        self.assert_(sub.checkIdAvailable('.foo'))
+        self.assertTrue(sub.checkIdAvailable('.foo'))
 
     def test__checkId_Five(self):
         test = self._makeOne('test')
@@ -524,7 +521,7 @@ class PortalFolderSecurityTests(SecurityTest):
         newSecurityManager(None, acl_users.all_powerful_Oz)
         test = self._makeOne('test')
         test._setObject('foo', DummyContent('foo'))
-        self.failIf(test.checkIdAvailable('foo'))
+        self.assertFalse(test.checkIdAvailable('foo'))
 
 
 class PortalFolderMoveTests(SecurityTest):
@@ -539,7 +536,7 @@ class PortalFolderMoveTests(SecurityTest):
     def _makeOne(self, id, *args, **kw):
         from Products.CMFCore.PortalFolder import PortalFolder
 
-        return self.site._setObject( id, PortalFolder(id, *args, **kw) )
+        return self.site._setObject(id, PortalFolder(id, *args, **kw))
 
     def test_folderMove(self):
         #
@@ -553,44 +550,41 @@ class PortalFolderMoveTests(SecurityTest):
         sm = getSiteManager()
         sm.registerUtility(TypesTool(), ITypesTool)
         sm.registerUtility(ctool, ICatalogTool)
-        self.assertEqual( len(ctool), 0 )
+        self.assertEqual(len(ctool), 0)
 
         folder = self._makeOne('folder')
-        folder._setObject( 'sub', PortalFolder( 'sub', '' ) )
-        folder.sub._setObject( 'foo', DummyContent( 'foo', catalog=1 ) )
-        self.assertEqual( len(ctool), 1 )
-        self.failUnless( has_id(ctool, 'foo') )
-        self.failUnless( has_path(ctool,
-                                  '/bar/site/folder/sub/foo') )
+        folder._setObject('sub', PortalFolder('sub', ''))
+        folder.sub._setObject('foo', DummyContent('foo', catalog=1))
+        self.assertEqual(len(ctool), 1)
+        self.assertTrue(has_id(ctool, 'foo'))
+        self.assertTrue(has_path(ctool, '/bar/site/folder/sub/foo'))
 
         transaction.savepoint(optimistic=True)
         folder.manage_renameObject(id='sub', new_id='new_sub')
-        self.assertEqual( len(ctool), 1 )
-        self.failUnless( has_id(ctool, 'foo') )
-        self.failUnless( has_path(ctool,
-                                  '/bar/site/folder/new_sub/foo') )
+        self.assertEqual(len(ctool), 1)
+        self.assertTrue(has_id(ctool, 'foo'))
+        self.assertTrue(has_path(ctool, '/bar/site/folder/new_sub/foo'))
 
-        folder._setObject( 'bar', DummyContent( 'bar', catalog=1 ) )
-        self.assertEqual( len(ctool), 2 )
-        self.failUnless( has_id(ctool, 'bar') )
-        self.failUnless( has_path(ctool, '/bar/site/folder/bar') )
+        folder._setObject('bar', DummyContent('bar', catalog=1))
+        self.assertEqual(len(ctool), 2)
+        self.assertTrue(has_id(ctool, 'bar'))
+        self.assertTrue(has_path(ctool, '/bar/site/folder/bar'))
 
-        folder._setObject( 'sub2', PortalFolder( 'sub2', '' ) )
+        folder._setObject('sub2', PortalFolder('sub2', ''))
         sub2 = folder.sub2
         # Waaa! force sub2 to allow paste of Dummy object.
         sub2.all_meta_types = []
-        sub2.all_meta_types.extend( sub2.all_meta_types )
-        sub2.all_meta_types.extend( extra_meta_types() )
+        sub2.all_meta_types.extend(sub2.all_meta_types)
+        sub2.all_meta_types.extend(extra_meta_types())
 
         transaction.savepoint(optimistic=True)
         cookie = folder.manage_cutObjects(ids=['bar'])
         sub2.manage_pasteObjects(cookie)
 
-        self.failUnless( has_id( ctool, 'foo' ) )
-        self.failUnless( has_id( ctool, 'bar' ) )
-        self.assertEqual( len(ctool), 2 )
-        self.failUnless( has_path(ctool,
-                                  '/bar/site/folder/sub2/bar') )
+        self.assertTrue(has_id(ctool, 'foo'))
+        self.assertTrue(has_id(ctool, 'bar'))
+        self.assertEqual(len(ctool), 2)
+        self.assertTrue(has_path(ctool, '/bar/site/folder/sub2/bar'))
 
     def test_contentPaste(self):
         #
@@ -601,342 +595,322 @@ class PortalFolderMoveTests(SecurityTest):
         ctool = DummyCatalogTool()
         ttool = TypesTool()
         fti = FTIDATA_DUMMY[0].copy()
-        ttool._setObject( 'Dummy Content', FTI(**fti) )
+        ttool._setObject('Dummy Content', FTI(**fti))
         sub1 = self._makeOne('sub1')
         sub2 = self._makeOne('sub2')
         sub3 = self._makeOne('sub3')
-        self.assertEqual( len(ctool), 0 )
+        self.assertEqual(len(ctool), 0)
         sm = getSiteManager()
         sm.registerUtility(ctool, ICatalogTool)
         sm.registerUtility(ttool, ITypesTool)
 
-        sub1._setObject( 'dummy', DummyContent( 'dummy', catalog=1 ) )
-        self.failUnless( 'dummy' in sub1.objectIds() )
-        self.failUnless( 'dummy' in sub1.contentIds() )
-        self.failIf( 'dummy' in sub2.objectIds() )
-        self.failIf( 'dummy' in sub2.contentIds() )
-        self.failIf( 'dummy' in sub3.objectIds() )
-        self.failIf( 'dummy' in sub3.contentIds() )
-        self.failUnless( has_path(ctool, '/bar/site/sub1/dummy') )
-        self.failIf( has_path(ctool, '/bar/site/sub2/dummy') )
-        self.failIf( has_path(ctool, '/bar/site/sub3/dummy') )
+        sub1._setObject('dummy', DummyContent('dummy', catalog=1))
+        self.assertTrue('dummy' in sub1.objectIds())
+        self.assertTrue('dummy' in sub1.contentIds())
+        self.assertFalse('dummy' in sub2.objectIds())
+        self.assertFalse('dummy' in sub2.contentIds())
+        self.assertFalse('dummy' in sub3.objectIds())
+        self.assertFalse('dummy' in sub3.contentIds())
+        self.assertTrue(has_path(ctool, '/bar/site/sub1/dummy'))
+        self.assertFalse(has_path(ctool, '/bar/site/sub2/dummy'))
+        self.assertFalse(has_path(ctool, '/bar/site/sub3/dummy'))
 
-        cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
+        cookie = sub1.manage_copyObjects(ids=('dummy',))
         # Waaa! force sub2 to allow paste of Dummy object.
         sub2.all_meta_types = []
-        sub2.all_meta_types.extend( sub2.all_meta_types )
-        sub2.all_meta_types.extend( extra_meta_types() )
-        sub2.manage_pasteObjects( cookie )
-        self.failUnless( 'dummy' in sub1.objectIds() )
-        self.failUnless( 'dummy' in sub1.contentIds() )
-        self.failUnless( 'dummy' in sub2.objectIds() )
-        self.failUnless( 'dummy' in sub2.contentIds() )
-        self.failIf( 'dummy' in sub3.objectIds() )
-        self.failIf( 'dummy' in sub3.contentIds() )
-        self.failUnless( has_path(ctool, '/bar/site/sub1/dummy') )
-        self.failUnless( has_path(ctool, '/bar/site/sub2/dummy') )
-        self.failIf( has_path(ctool, '/bar/site/sub3/dummy') )
+        sub2.all_meta_types.extend(sub2.all_meta_types)
+        sub2.all_meta_types.extend(extra_meta_types())
+        sub2.manage_pasteObjects(cookie)
+        self.assertTrue('dummy' in sub1.objectIds())
+        self.assertTrue('dummy' in sub1.contentIds())
+        self.assertTrue('dummy' in sub2.objectIds())
+        self.assertTrue('dummy' in sub2.contentIds())
+        self.assertFalse('dummy' in sub3.objectIds())
+        self.assertFalse('dummy' in sub3.contentIds())
+        self.assertTrue(has_path(ctool, '/bar/site/sub1/dummy'))
+        self.assertTrue(has_path(ctool, '/bar/site/sub2/dummy'))
+        self.assertFalse(has_path(ctool, '/bar/site/sub3/dummy'))
 
         transaction.savepoint(optimistic=True)
-        cookie = sub1.manage_cutObjects( ids = ('dummy',) )
+        cookie = sub1.manage_cutObjects(ids=('dummy',))
         # Waaa! force sub2 to allow paste of Dummy object.
         sub3.all_meta_types = []
         sub3.all_meta_types.extend(sub3.all_meta_types)
-        sub3.all_meta_types.extend( extra_meta_types() )
+        sub3.all_meta_types.extend(extra_meta_types())
         sub3.manage_pasteObjects(cookie)
-        self.failIf( 'dummy' in sub1.objectIds() )
-        self.failIf( 'dummy' in sub1.contentIds() )
-        self.failUnless( 'dummy' in sub2.objectIds() )
-        self.failUnless( 'dummy' in sub2.contentIds() )
-        self.failUnless( 'dummy' in sub3.objectIds() )
-        self.failUnless( 'dummy' in sub3.contentIds() )
-        self.failIf( has_path(ctool, '/bar/site/sub1/dummy') )
-        self.failUnless( has_path(ctool, '/bar/site/sub2/dummy') )
-        self.failUnless( has_path(ctool, '/bar/site/sub3/dummy') )
+        self.assertFalse('dummy' in sub1.objectIds())
+        self.assertFalse('dummy' in sub1.contentIds())
+        self.assertTrue('dummy' in sub2.objectIds())
+        self.assertTrue('dummy' in sub2.contentIds())
+        self.assertTrue('dummy' in sub3.objectIds())
+        self.assertTrue('dummy' in sub3.contentIds())
+        self.assertFalse(has_path(ctool, '/bar/site/sub1/dummy'))
+        self.assertTrue(has_path(ctool, '/bar/site/sub2/dummy'))
+        self.assertTrue(has_path(ctool, '/bar/site/sub3/dummy'))
 
 
 class ContentFilterTests(unittest.TestCase):
 
-    def setUp( self ):
-        self.dummy=DummyContent('Dummy')
+    def setUp(self):
+        self.dummy = DummyContent('Dummy')
 
-    def test_empty( self ):
-
+    def test_empty(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
         cfilter = ContentFilter()
         dummy = self.dummy
-        assert cfilter( dummy )
-        desc = str( cfilter )
-        lines = filter( None, desc.split('; ') )
-        assert not lines
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
+        lines = filter(None, desc.split('; '))
+        self.assertFalse(lines)
 
-    def test_Type( self ):
-
+    def test_Type(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( Type='foo' )
+        cfilter = ContentFilter(Type='foo')
         dummy = self.dummy
-        assert not cfilter( dummy )
-        cfilter = ContentFilter( Type='Dummy Content Title' )
-        assert cfilter( dummy )
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        cfilter = ContentFilter(Type='Dummy Content Title')
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Type: Dummy Content Title'
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Type: Dummy Content Title')
 
-        cfilter = ContentFilter( Type=( 'foo', 'bar' ) )
+        cfilter = ContentFilter(Type=('foo', 'bar'))
         dummy = self.dummy
-        assert not cfilter( dummy )
-        cfilter = ContentFilter( Type=( 'Dummy Content Title',
-                                        'something else' ) )
-        assert cfilter( dummy )
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        cfilter = ContentFilter(Type=('Dummy Content Title', 'something else'))
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Type: Dummy Content Title, something else'
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Type: Dummy Content Title, something else')
 
-    def test_portal_type( self ):
-
+    def test_portal_type(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( portal_type='some_pt' )
+        cfilter = ContentFilter(portal_type='some_pt')
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.portal_type = 'asdf'
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.portal_type = 'some_ptyyy'
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.portal_type = 'xxxsome_ptyyy'
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.portal_type = 'some_pt'
-        assert cfilter( dummy )
-        desc = str( cfilter )
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Portal Type: some_pt'
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Portal Type: some_pt')
 
-    def test_Title( self ):
-
+    def test_Title(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( Title='foo' )
+        cfilter = ContentFilter(Title='foo')
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.title = 'asdf'
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.title = 'foolish'
-        assert cfilter( dummy )
+        self.assertTrue(cfilter(dummy))
         dummy.title = 'ohsofoolish'
-        assert cfilter( dummy )
-        desc = str( cfilter )
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Title: foo'
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Title: foo')
 
-    def test_Creator( self ):
-
+    def test_Creator(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( Creator='moe' )
+        cfilter = ContentFilter(Creator='moe')
         dummy = self.dummy
-        self.failIf( cfilter(dummy) )
+        self.assertFalse(cfilter(dummy))
         dummy.creators = ('curly',)
-        self.failIf( cfilter(dummy) )
+        self.assertFalse(cfilter(dummy))
         dummy.creators = ('moe',)
-        self.failUnless( cfilter(dummy) )
+        self.assertTrue(cfilter(dummy))
         dummy.creators = ('moe', 'curly')
-        self.failUnless( cfilter(dummy) )
-        desc = str( cfilter )
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        self.assertEqual(len( lines ),1)
-        self.assertEqual(lines[0],'Creator: moe')
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Creator: moe')
 
-    def test_Description( self ):
-
+    def test_Description(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( Description='funny' )
+        cfilter = ContentFilter(Description='funny')
         dummy = self.dummy
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.description = 'sad'
-        assert not cfilter( dummy )
+        self.assertFalse(cfilter(dummy))
         dummy.description = 'funny'
-        assert cfilter( dummy )
+        self.assertTrue(cfilter(dummy))
         dummy.description = 'it is funny you should mention it...'
-        assert cfilter( dummy )
-        desc = str( cfilter )
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Description: funny'
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Description: funny')
 
-    def test_Subject( self ):
-
+    def test_Subject(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( Subject=('foo',) )
+        cfilter = ContentFilter(Subject=('foo',))
         dummy = self.dummy
-        assert not cfilter( dummy )
-        dummy.subject = ( 'bar', )
-        assert not cfilter( dummy )
-        dummy.subject = ( 'foo', )
-        assert cfilter( dummy )
-        dummy.subject = ( 'foo', 'bar', )
-        assert cfilter( dummy )
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        dummy.subject = ('bar',)
+        self.assertFalse(cfilter(dummy))
+        dummy.subject = ('foo',)
+        self.assertTrue(cfilter(dummy))
+        dummy.subject = ('foo', 'bar',)
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Subject: foo'
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Subject: foo')
 
-    def test_Subject2( self ):
+    def test_Subject2(self):
         # Now test with mutli-valued
-
         from Products.CMFCore.PortalFolder import ContentFilter
 
-        cfilter = ContentFilter( Subject=('foo', 'bar' ) )
+        cfilter = ContentFilter(Subject=('foo', 'bar'))
         dummy = self.dummy
-        assert not cfilter( dummy )
-        dummy.subject = ( 'baz', )
-        assert not cfilter( dummy )
-        dummy.subject = ( 'bar', )
-        assert cfilter( dummy )
-        dummy.subject = ( 'foo', )
-        assert cfilter( dummy )
-        dummy.subject = ( 'foo', 'bar', )
-        assert cfilter( dummy )
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        dummy.subject = ('baz',)
+        self.assertFalse(cfilter(dummy))
+        dummy.subject = ('bar',)
+        self.assertTrue(cfilter(dummy))
+        dummy.subject = ('foo',)
+        self.assertTrue(cfilter(dummy))
+        dummy.subject = ('foo', 'bar',)
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        assert len( lines ) == 1
-        assert lines[0] == 'Subject: foo, bar'
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0], 'Subject: foo, bar')
 
-    def test_created( self ):
-
+    def test_created(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
-        cfilter = ContentFilter( created=creation_date
-                               , created_usage='range:min' )
+        cfilter = ContentFilter(created=creation_date,
+                                created_usage='range:min')
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2000/12/31' )
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/12/31' )
-        self.failUnless(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2000/12/31')
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2001/12/31')
+        self.assertTrue(cfilter(dummy))
+        dummy.created_date = DateTime('2001/01/01')
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        self.assertEquals(len(lines), 1)
-        self.assertEquals( lines[0]
-                         , 'Created since: 2001/01/01 00:00:00 %s' % tz
-                         )
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0],
+                         'Created since: 2001/01/01 00:00:00 %s' % tz)
 
-    def test_created2( self ):
-
+    def test_created2(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
-        cfilter = ContentFilter( created=creation_date
-                               , created_usage='range:max' )
+        cfilter = ContentFilter(created=creation_date,
+                                created_usage='range:max')
 
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2000/12/31' )
-        self.failUnless(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2000/12/31')
+        self.assertTrue(cfilter(dummy))
+        dummy.created_date = DateTime('2001/12/31')
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2001/01/01')
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        self.assertEquals(len(lines), 1)
-        self.assertEquals( lines[0]
-                         , 'Created before: 2001/01/01 00:00:00 %s' % tz
-                         )
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0],
+                         'Created before: 2001/01/01 00:00:00 %s' % tz)
 
-    def test_modified( self ):
-
+    def test_modified(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
-        cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
-                               , modified_usage='range:min' )
+        cfilter = ContentFilter(modified=DateTime('2001/01/01'),
+                                modified_usage='range:min')
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
-        dummy.modified_date = DateTime( '2000/12/31' )
-        self.failIf(cfilter(dummy))
-        dummy.modified_date = DateTime( '2001/12/31' )
-        self.failUnless(cfilter(dummy))
-        dummy.modified_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        dummy.modified_date = DateTime('2000/12/31')
+        self.assertFalse(cfilter(dummy))
+        dummy.modified_date = DateTime('2001/12/31')
+        self.assertTrue(cfilter(dummy))
+        dummy.modified_date = DateTime('2001/01/01')
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        self.assertEquals(len(lines), 1)
-        self.assertEquals( lines[0]
-                         , 'Modified since: 2001/01/01 00:00:00 %s' % tz
-                         )
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0],
+                         'Modified since: 2001/01/01 00:00:00 %s' % tz)
 
-    def test_modified2( self ):
-
+    def test_modified2(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
-        cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
-                               , modified_usage='range:max' )
+        cfilter = ContentFilter(modified=DateTime('2001/01/01'),
+                                modified_usage='range:max')
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
-        dummy.modified_date = DateTime( '2000/12/31' )
-        self.failUnless(cfilter(dummy))
-        dummy.modified_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
-        dummy.modified_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
-        desc = str( cfilter )
+        self.assertFalse(cfilter(dummy))
+        dummy.modified_date = DateTime('2000/12/31')
+        self.assertTrue(cfilter(dummy))
+        dummy.modified_date = DateTime('2001/12/31')
+        self.assertFalse(cfilter(dummy))
+        dummy.modified_date = DateTime('2001/01/01')
+        self.assertTrue(cfilter(dummy))
+        desc = str(cfilter)
         lines = desc.split('; ')
-        self.assertEquals(len(lines), 1)
-        self.assertEquals( lines[0]
-                         , 'Modified before: 2001/01/01 00:00:00 %s' % tz
-                         )
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[0],
+                         'Modified before: 2001/01/01 00:00:00 %s' % tz)
 
-    def test_mixed( self ):
-
+    def test_mixed(self):
         from Products.CMFCore.PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
-        cfilter = ContentFilter( created=DateTime( '2001/01/01' )
-                               , created_usage='range:max'
-                               , Title='foo'
-                               )
+        cfilter = ContentFilter(created=DateTime('2001/01/01'),
+                                created_usage='range:max', Title='foo')
 
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2000/12/31' )
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/01/01' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2000/12/31')
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2001/12/31')
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2001/01/01')
+        self.assertFalse(cfilter(dummy))
 
         dummy.title = 'ohsofoolish'
         del dummy.created_date
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2000/12/31' )
-        self.failUnless(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
-        dummy.created_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2000/12/31')
+        self.assertTrue(cfilter(dummy))
+        dummy.created_date = DateTime('2001/12/31')
+        self.assertFalse(cfilter(dummy))
+        dummy.created_date = DateTime('2001/01/01')
+        self.assertTrue(cfilter(dummy))
 
-        desc = str( cfilter )
+        desc = str(cfilter)
         lines = desc.split('; ')
-        self.assertEquals(len(lines), 2)
-        self.failUnless('Created before: 2001/01/01 00:00:00 %s' % tz in lines)
-        self.failUnless('Title: foo' in lines)
+        self.assertEqual(len(lines), 2)
+        self.assertTrue('Created before: 2001/01/01 00:00:00 %s' % tz in lines)
+        self.assertTrue('Title: foo' in lines)
 
 
 #------------------------------------------------------------------------------
@@ -944,38 +918,38 @@ class ContentFilterTests(unittest.TestCase):
 #   / head OFS.tests.testCopySupport (see Collector #259).
 #------------------------------------------------------------------------------
 ADD_IMAGES_AND_FILES = 'Add images and files'
-FILE_META_TYPES = ( { 'name'        : 'File'
-                    , 'action'      : 'manage_addFile'
-                    , 'permission'  : ADD_IMAGES_AND_FILES
-                    }
-                  ,
-                  )
+FILE_META_TYPES = ({'name': 'File',
+                    'action': 'manage_addFile',
+                    'permission': ADD_IMAGES_AND_FILES},)
+
+
 class _SensitiveSecurityPolicy:
 
-    def __init__( self, validate_lambda, checkPermission_lambda ):
-        self._lambdas = ( validate_lambda, checkPermission_lambda )
+    def __init__(self, validate_lambda, checkPermission_lambda):
+        self._lambdas = (validate_lambda, checkPermission_lambda)
 
-    def validate( self, *args, **kw ):
-        if self._lambdas[ 0 ]( *args, **kw ):
+    def validate(self, *args, **kw):
+        if self._lambdas[0](*args, **kw):
             return True
         raise Unauthorized
 
-    def checkPermission( self, *args, **kw ) :
-        return self._lambdas[ 1 ]( *args, **kw )
+    def checkPermission(self, *args, **kw):
+        return self._lambdas[1](*args, **kw)
 
-class _AllowedUser( Implicit ):
 
-    def __init__( self, allowed_lambda ):
-        self._lambdas = ( allowed_lambda, )
+class _AllowedUser(Implicit):
 
-    def getId( self ):
+    def __init__(self, allowed_lambda):
+        self._lambdas = (allowed_lambda,)
+
+    def getId(self):
         return 'unit_tester'
 
     def getUserName(self):
         return 'Unit Tester'
 
-    def allowed( self, object, object_roles=None ):
-        return self._lambdas[ 0 ]( object, object_roles )
+    def allowed(self, object, object_roles=None):
+        return self._lambdas[0](object, object_roles)
 
 
 class PortalFolderCopySupportTests(SecurityTest):
@@ -985,53 +959,43 @@ class PortalFolderCopySupportTests(SecurityTest):
     def _initFolders(self):
         from Products.CMFCore.PortalFolder import PortalFolder
 
-        self.app._setObject( 'folder1', PortalFolder( 'folder1' ) )
-        self.app._setObject( 'folder2', PortalFolder( 'folder2' ) )
-        folder1 = getattr( self.app, 'folder1' )
+        self.app._setObject('folder1', PortalFolder('folder1'))
+        self.app._setObject('folder2', PortalFolder('folder2'))
+        folder1 = getattr(self.app, 'folder1')
         manage_addFile(folder1, 'file', file='', content_type='text/plain')
 
         # Hack, we need a _p_mtime for the file, so we make sure that it
         # has one. We use a subtransaction, which means we can rollback
         # later and pretend we didn't touch the ZODB.
         transaction.savepoint(optimistic=True)
-        return self.app._getOb( 'folder1' ), self.app._getOb( 'folder2' )
+        return self.app._getOb('folder1'), self.app._getOb('folder2')
 
-    def _assertCopyErrorUnauth( self, callable, *args, **kw ):
-
+    def _assertCopyErrorUnauth(self, callable, *args, **kw):
         import re
-        from zExceptions import Unauthorized
         from OFS.CopySupport import CopyError
+        from Products.CMFCore.exceptions import zExceptions_Unauthorized
 
-        ce_regex = kw.get( 'ce_regex' )
+        ce_regex = kw.get('ce_regex')
         if ce_regex is not None:
-            del kw[ 'ce_regex' ]
+            del kw['ce_regex']
 
         try:
-            callable( *args, **kw )
-
+            callable(*args, **kw)
         except CopyError, e:
-
             if ce_regex is not None:
-
-                pattern = re.compile( ce_regex, re.DOTALL )
+                pattern = re.compile(ce_regex, re.DOTALL)
                 if pattern.search(str(e)) is None:
-                    self.fail( "Paste failed; didn't match pattern:\n%s" % e )
-
+                    self.fail("Paste failed; didn't match pattern:\n%s" % e)
             else:
-                self.fail( "Paste failed; no pattern:\n%s" % e )
+                self.fail("Paste failed; no pattern:\n%s" % e)
 
-        except Unauthorized, e:
+        except zExceptions_Unauthorized, e:
             pass
-
         else:
-            self.fail( "Paste allowed unexpectedly." )
+            self.fail("Paste allowed unexpectedly.")
 
-    def _initPolicyAndUser( self
-                          , a_lambda=None
-                          , v_lambda=None
-                          , c_lambda=None
-                          ):
-        def _promiscuous( *args, **kw ):
+    def _initPolicyAndUser(self, a_lambda=None, v_lambda=None, c_lambda=None):
+        def _promiscuous(*args, **kw):
             return 1
 
         if a_lambda is None:
@@ -1043,104 +1007,97 @@ class PortalFolderCopySupportTests(SecurityTest):
         if c_lambda is None:
             c_lambda = _promiscuous
 
-        scp = _SensitiveSecurityPolicy( v_lambda, c_lambda )
-        SecurityManager.setSecurityPolicy( scp )
+        scp = _SensitiveSecurityPolicy(v_lambda, c_lambda)
+        SecurityManager.setSecurityPolicy(scp)
 
-        newSecurityManager( None
-                          , _AllowedUser(a_lambda).__of__(self.app.acl_users))
+        newSecurityManager(None,
+                           _AllowedUser(a_lambda).__of__(self.app.acl_users))
 
-    def test_copy_baseline( self ):
+    def test_copy_baseline(self):
 
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
         self._initPolicyAndUser()
 
-        self.failUnless( 'file' in folder1.objectIds() )
-        self.failIf( 'file' in folder2.objectIds() )
+        self.assertTrue('file' in folder1.objectIds())
+        self.assertFalse('file' in folder2.objectIds())
 
-        cookie = folder1.manage_copyObjects( ids=( 'file', ) )
-        folder2.manage_pasteObjects( cookie )
+        cookie = folder1.manage_copyObjects(ids=('file',))
+        folder2.manage_pasteObjects(cookie)
 
-        self.failUnless( 'file' in folder1.objectIds() )
-        self.failUnless( 'file' in folder2.objectIds() )
+        self.assertTrue('file' in folder1.objectIds())
+        self.assertTrue('file' in folder2.objectIds())
 
-    def test_copy_cant_read_source( self ):
+    def test_copy_cant_read_source(self):
 
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
-        a_file = folder1._getOb( 'file' )
+        a_file = folder1._getOb('file')
 
-        def _validate( a, c, n, v, *args, **kw ):
-            return aq_base( v ) is not aq_base( a_file )
+        def _validate(a, c, n, v, *args, **kw):
+            return aq_base(v) is not aq_base(a_file)
 
-        self._initPolicyAndUser( v_lambda=_validate )
+        self._initPolicyAndUser(v_lambda=_validate)
 
-        cookie = folder1.manage_copyObjects( ids=( 'file', ) )
-        self._assertCopyErrorUnauth( folder2.manage_pasteObjects
-                                   , cookie
-                                   , ce_regex='Insufficient privileges'
-                                   )
+        cookie = folder1.manage_copyObjects(ids=('file',))
+        self._assertCopyErrorUnauth(folder2.manage_pasteObjects,
+                                    cookie,
+                                    ce_regex='Insufficient privileges')
 
-    def test_copy_cant_create_target_metatype_not_supported( self ):
+    def test_copy_cant_create_target_metatype_not_supported(self):
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = ()
 
         self._initPolicyAndUser()
 
-        cookie = folder1.manage_copyObjects( ids=( 'file', ) )
-        self._assertCopyErrorUnauth( folder2.manage_pasteObjects
-                                   , cookie
-                                   , ce_regex='Not Supported'
-                                   )
+        cookie = folder1.manage_copyObjects(ids=('file',))
+        self._assertCopyErrorUnauth(folder2.manage_pasteObjects, cookie,
+                                    ce_regex='Not Supported')
 
-    def test_move_baseline( self ):
+    def test_move_baseline(self):
 
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
-        self.failUnless( 'file' in folder1.objectIds() )
-        self.failIf( 'file' in folder2.objectIds() )
+        self.assertTrue('file' in folder1.objectIds())
+        self.assertFalse('file' in folder2.objectIds())
 
         self._initPolicyAndUser()
 
-        cookie = folder1.manage_cutObjects( ids=( 'file', ) )
-        folder2.manage_pasteObjects( cookie )
+        cookie = folder1.manage_cutObjects(ids=('file',))
+        folder2.manage_pasteObjects(cookie)
 
-        self.failIf( 'file' in folder1.objectIds() )
-        self.failUnless( 'file' in folder2.objectIds() )
+        self.assertFalse('file' in folder1.objectIds())
+        self.assertTrue('file' in folder2.objectIds())
 
-    def test_move_cant_read_source( self ):
+    def test_move_cant_read_source(self):
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
-        a_file = folder1._getOb( 'file' )
+        a_file = folder1._getOb('file')
 
-        def _validate( a, c, n, v, *args, **kw ):
-            return aq_base( v ) is not aq_base( a_file )
+        def _validate(a, c, n, v, *args, **kw):
+            return aq_base(v) is not aq_base(a_file)
 
-        self._initPolicyAndUser( v_lambda=_validate )
+        self._initPolicyAndUser(v_lambda=_validate)
 
-        cookie = folder1.manage_cutObjects( ids=( 'file', ) )
-        self._assertCopyErrorUnauth( folder2.manage_pasteObjects
-                                   , cookie
-                                   , ce_regex='Insufficient privileges'
-                                   )
+        cookie = folder1.manage_cutObjects(ids=('file',))
+        self._assertCopyErrorUnauth(folder2.manage_pasteObjects, cookie,
+                                    ce_regex='Insufficient privileges')
 
-    def test_move_cant_create_target_metatype_not_supported( self ):
+    def test_move_cant_create_target_metatype_not_supported(self):
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = ()
 
         self._initPolicyAndUser()
 
-        cookie = folder1.manage_cutObjects( ids=( 'file', ) )
-        self._assertCopyErrorUnauth( folder2.manage_pasteObjects
-                                   , cookie
-                                   , ce_regex='Not Supported'
-                                   )
+        cookie = folder1.manage_cutObjects(ids=('file',))
+        self._assertCopyErrorUnauth(folder2.manage_pasteObjects, cookie,
+                                    ce_regex='Not Supported')
 
-    def test_move_cant_create_target_metatype_not_allowed( self ):
+    def test_move_cant_create_target_metatype_not_allowed(self):
 
         #
         #   This test can't succeed on Zope's earlier than 2.7.3 because
@@ -1154,43 +1111,39 @@ class PortalFolderCopySupportTests(SecurityTest):
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
-        def _no_manage_addFile( a, c, n, v, *args, **kw ):
+        def _no_manage_addFile(a, c, n, v, *args, **kw):
             return n != 'manage_addFile'
 
         def _no_add_images_and_files(permission, object, context):
             return permission != ADD_IMAGES_AND_FILES
 
-        self._initPolicyAndUser( v_lambda=_no_manage_addFile,
-                                 c_lambda=_no_add_images_and_files )
+        self._initPolicyAndUser(v_lambda=_no_manage_addFile,
+                                c_lambda=_no_add_images_and_files)
 
-        cookie = folder1.manage_cutObjects( ids=( 'file', ) )
-        self._assertCopyErrorUnauth( folder2.manage_pasteObjects
-                                   , cookie
-                                   , ce_regex='Insufficient Privileges'
-                                             + '.*%s' % ADD_IMAGES_AND_FILES
-                                   )
+        cookie = folder1.manage_cutObjects(ids=('file',))
+        self._assertCopyErrorUnauth(folder2.manage_pasteObjects, cookie,
+                                    ce_regex='Insufficient Privileges'
+                                            + '.*%s' % ADD_IMAGES_AND_FILES)
 
     def test_move_cant_delete_source(self):
         from AccessControl.Permissions import delete_objects as DeleteObjects
         from Products.CMFCore.PortalFolder import PortalFolder
 
         folder1, folder2 = self._initFolders()
-        folder1.manage_permission( DeleteObjects, roles=(), acquire=0 )
+        folder1.manage_permission(DeleteObjects, roles=(), acquire=0)
 
-        folder1._setObject( 'sub', PortalFolder( 'sub' ) )
+        folder1._setObject('sub', PortalFolder('sub'))
         transaction.savepoint(optimistic=True) # get a _p_jar for 'sub'
 
         def _no_delete_objects(permission, object, context):
             return permission != DeleteObjects
 
-        self._initPolicyAndUser( c_lambda=_no_delete_objects )
+        self._initPolicyAndUser(c_lambda=_no_delete_objects)
 
-        cookie = folder1.manage_cutObjects( ids=( 'sub', ) )
-        self._assertCopyErrorUnauth( folder2.manage_pasteObjects
-                                   , cookie
-                                   , ce_regex='Insufficient Privileges'
-                                             + '.*%s' % DeleteObjects
-                                   )
+        cookie = folder1.manage_cutObjects(ids=('sub',))
+        self._assertCopyErrorUnauth(folder2.manage_pasteObjects, cookie,
+                                    ce_regex='Insufficient Privileges'
+                                            + '.*%s' % DeleteObjects)
 
     def test_paste_with_restricted_item_content_type_not_allowed(self):
         #   Test from CMF Collector #216 (Plone #2186), for the case
@@ -1209,23 +1162,19 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         ttool = TypesTool()
         ttool._setObject(RESTRICTED_TYPE,
-                                FTI(id=RESTRICTED_TYPE
-                                  , title=RESTRICTED_TYPE
-                                  , meta_type=PortalFolder.meta_type
-                                  , product='CMFCore'
-                                  , factory='manage_addPortalFolder'
-                                  , global_allow=0
-                                  )
-                             )
+                         FTI(id=RESTRICTED_TYPE,
+                             title=RESTRICTED_TYPE,
+                             meta_type=PortalFolder.meta_type,
+                             product='CMFCore',
+                             factory='manage_addPortalFolder',
+                             global_allow=0))
         ttool._setObject(UNRESTRICTED_TYPE,
-                                FTI(id=UNRESTRICTED_TYPE
-                                  , title=UNRESTRICTED_TYPE
-                                  , meta_type=PortalFolder.meta_type
-                                  , product='CMFCore'
-                                  , factory='manage_addPortalFolder'
-                                  , filter_content_types=0
-                                  )
-                             )
+                         FTI(id=UNRESTRICTED_TYPE,
+                             title=UNRESTRICTED_TYPE,
+                             meta_type=PortalFolder.meta_type,
+                             product='CMFCore',
+                             factory='manage_addPortalFolder',
+                             filter_content_types=0))
         getSiteManager().registerUtility(ttool, ITypesTool)
 
         # copy and pasting the object into the folder should raise
@@ -1250,31 +1199,27 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         ttool = TypesTool()
         ttool._setObject(RESTRICTED_TYPE,
-                                FTI(id=RESTRICTED_TYPE
-                                  , title=RESTRICTED_TYPE
-                                  , meta_type=PortalFolder.meta_type
-                                  , product='CMFCore'
-                                  , factory='manage_addPortalFolder'
-                                  , global_allow=0
-                                  )
-                             )
+                         FTI(id=RESTRICTED_TYPE,
+                             title=RESTRICTED_TYPE,
+                             meta_type=PortalFolder.meta_type,
+                             product='CMFCore',
+                             factory='manage_addPortalFolder',
+                             global_allow=0))
         ttool._setObject(UNRESTRICTED_TYPE,
-                                FTI(id=UNRESTRICTED_TYPE
-                                  , title=UNRESTRICTED_TYPE
-                                  , meta_type=PortalFolder.meta_type
-                                  , product='CMFCore'
-                                  , factory='manage_addPortalFolder'
-                                  , filter_content_types=1
-                                  , allowed_content_types=[RESTRICTED_TYPE]
-                                  )
-                             )
+                         FTI(id=UNRESTRICTED_TYPE,
+                             title=UNRESTRICTED_TYPE,
+                             meta_type=PortalFolder.meta_type,
+                             product='CMFCore',
+                             factory='manage_addPortalFolder',
+                             filter_content_types=1,
+                             allowed_content_types=[RESTRICTED_TYPE]))
         getSiteManager().registerUtility(ttool, ITypesTool)
 
         # copy and pasting the object into the folder should *not* raise
         # an exception, because the folder's type allows it.
         copy_cookie = self.app.manage_copyObjects(ids=['folder2'])
         folder1.manage_pasteObjects(copy_cookie)
-        self.failUnless('folder2' in folder1.objectIds())
+        self.assertTrue('folder2' in folder1.objectIds())
 
     def test_paste_with_restricted_container_content_type(self):
         #   Test from CMF Collector #216 (Plone #2186), for the case
@@ -1293,24 +1238,20 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         ttool = TypesTool()
         ttool._setObject(RESTRICTED_TYPE,
-                                FTI(id=RESTRICTED_TYPE
-                                  , title=RESTRICTED_TYPE
-                                  , meta_type=PortalFolder.meta_type
-                                  , product='CMFCore'
-                                  , factory='manage_addPortalFolder'
-                                  , filter_content_types=1
-                                  , allowed_content_types=()
-                                  )
-                             )
+                         FTI(id=RESTRICTED_TYPE,
+                             title=RESTRICTED_TYPE,
+                             meta_type=PortalFolder.meta_type,
+                             product='CMFCore',
+                             factory='manage_addPortalFolder',
+                             filter_content_types=1,
+                             allowed_content_types=()))
         ttool._setObject(UNRESTRICTED_TYPE,
-                                FTI(id=UNRESTRICTED_TYPE
-                                  , title=UNRESTRICTED_TYPE
-                                  , meta_type=PortalFolder.meta_type
-                                  , product='CMFCore'
-                                  , factory='manage_addPortalFolder'
-                                  , global_allow=1
-                                  )
-                             )
+                         FTI(id=UNRESTRICTED_TYPE,
+                            title=UNRESTRICTED_TYPE,
+                            meta_type=PortalFolder.meta_type,
+                            product='CMFCore',
+                            factory='manage_addPortalFolder',
+                            global_allow=1))
         getSiteManager().registerUtility(ttool, ITypesTool)
 
         # copy and pasting the object into the folder should raise

@@ -44,7 +44,7 @@ class FSPTMaker(FSDVTest):
         path = path_join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
-        return FSPageTemplate( id, path, properties=metadata.getProperties() )
+        return FSPageTemplate(id, path, properties=metadata.getProperties())
 
 
 class FSPageTemplateTests(TransactionalTest, FSPTMaker):
@@ -65,25 +65,26 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         self.assertEqual(script(), 'nohost')
 
     def test_ContentType(self):
-        script = self._makeOne( 'testXMLPT', 'testXMLPT.pt' )
+        script = self._makeOne('testXMLPT', 'testXMLPT.pt')
         script = script.__of__(self.app)
         script()
         self.assertEqual(script.content_type, 'text/xml; charset=utf-8')
-        self.assertEqual(self.RESPONSE.getHeader('content-type'), 'text/xml; charset=utf-8')
+        self.assertEqual(self.RESPONSE.getHeader('content-type'),
+                         'text/xml; charset=utf-8')
         # purge RESPONSE Content-Type header for new test
         del self.RESPONSE.headers['content-type']
-        script = self._makeOne( 'testPT', 'testPT.pt' )
+        script = self._makeOne('testPT', 'testPT.pt')
         script = script.__of__(self.app)
         script()
         self.assertEqual(script.content_type, 'text/html')
         self.assertEqual(self.RESPONSE.getHeader('content-type'), 'text/html')
 
     def test_ContentTypeOverride(self):
-        script = self._makeOne( 'testPT_utf8', 'testPT_utf8.pt' )
+        script = self._makeOne('testPT_utf8', 'testPT_utf8.pt')
         script = script.__of__(self.app)
         script()
-        self.assertEqual( self.RESPONSE.getHeader('content-type')
-                        , 'text/html; charset=utf-8')
+        self.assertEqual(self.RESPONSE.getHeader('content-type'),
+                         'text/html; charset=utf-8')
 
     def test_ContentTypeFromFSMetadata(self):
         # Test to see if a content_type specified in a .metadata file
@@ -91,9 +92,8 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = self._makeOne('testPT2', 'testPT2.pt')
         script = script.__of__(self.app)
         script()
-        self.assertEqual( self.RESPONSE.getHeader('content-type')
-                        , 'text/xml'
-                        )
+        self.assertEqual(self.RESPONSE.getHeader('content-type'),
+                         'text/xml')
 
     def test_CharsetFromFSMetadata(self):
         # testPT3 is an UTF-16 encoded file (see its .metadatafile)
@@ -101,7 +101,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = self._makeOne('testPT3', 'testPT3.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.failUnless(u'123üöäß' in data)
+        self.assertTrue(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFrom2FSMetadata(self):
@@ -110,18 +110,18 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = self._makeOne('testPT4', 'testPT4.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.failUnless(u'123üöäß' in data)
+        self.assertTrue(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFromContentTypeMetadata(self):
         script = self._makeOne('testPT5', 'testPT5.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.failUnless(u'123üöäß' in data)
+        self.assertTrue(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html; charset=utf-16')
 
-    def test_BadCall( self ):
-        script = self._makeOne( 'testPTbad', 'testPTbad.pt' )
+    def test_BadCall(self):
+        script = self._makeOne('testPTbad', 'testPTbad.pt')
         script = script.__of__(self.app)
 
         try: # can't use assertRaises, because different types raised.
@@ -139,16 +139,16 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         obj = self._makeOne('testPT', 'testPT.pt')
         obj = obj.__of__(self.app)
         obj()
-        self.failUnless(len(self.RESPONSE.headers) >= original_len + 2)
-        self.failUnless('foo' in self.RESPONSE.headers.keys())
-        self.failUnless('bar' in self.RESPONSE.headers.keys())
+        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
+        self.assertTrue('foo' in self.RESPONSE.headers.keys())
+        self.assertTrue('bar' in self.RESPONSE.headers.keys())
 
-    def test_pt_properties( self ):
-        script = self._makeOne( 'testPT', 'testPT.pt' )
-        self.assertEqual( script.pt_source_file(), 'file:%s'
-                               % path_join(self.skin_path_name, 'testPT.pt') )
+    def test_pt_properties(self):
+        script = self._makeOne('testPT', 'testPT.pt')
+        self.assertEqual(script.pt_source_file(), 'file:%s'
+                               % path_join(self.skin_path_name, 'testPT.pt'))
 
-    def test_foreign_line_endings( self ):
+    def test_foreign_line_endings(self):
         # Lead the various line ending files and get their output
         for fformat in ('unix', 'dos', 'mac'):
             script = self._makeOne(fformat,
@@ -170,41 +170,39 @@ class FSPageTemplateCustomizationTests(SecurityTest, FSPTMaker):
         SecurityTest.tearDown(self)
         FSPTMaker.tearDown(self)
 
-    def test_customize( self ):
-        self.fsPT.manage_doCustomize( folder_path='custom' )
+    def test_customize(self):
+        self.fsPT.manage_doCustomize(folder_path='custom')
 
-        self.assertEqual( len( self.custom.objectIds() ), 1 )
-        self.failUnless( 'testPT' in self.custom.objectIds() )
+        self.assertEqual(len(self.custom.objectIds()), 1)
+        self.assertTrue('testPT' in self.custom.objectIds())
 
-    def test_customize_alternate_root( self ):
+    def test_customize_alternate_root(self):
         self.app.other = Folder('other')
 
         self.fsPT.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.failIf( 'testPT' in self.custom.objectIds() )  
-        self.failUnless( 'testPT' in self.app.other.objectIds() )  
+        self.assertFalse('testPT' in self.custom.objectIds())
+        self.assertTrue('testPT' in self.app.other.objectIds())
 
-    def test_customize_fspath_as_dot( self ):
-        self.fsPT.manage_doCustomize( folder_path='.' )
+    def test_customize_fspath_as_dot(self):
+        self.fsPT.manage_doCustomize(folder_path='.')
 
-        self.failIf( 'testPT' in self.custom.objectIds() )  
-        self.failUnless( 'testPT' in self.skins.objectIds() )  
+        self.assertFalse('testPT' in self.custom.objectIds())
+        self.assertTrue('testPT' in self.skins.objectIds())
 
-    def test_customize_manual_clone( self ):
+    def test_customize_manual_clone(self):
         clone = Folder('testPT')
 
-        self.fsPT.manage_doCustomize( folder_path='custom', obj=clone )
+        self.fsPT.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.failUnless( 'testPT' in self.custom.objectIds() )  
-        self.failUnless( aq_base(self.custom._getOb('testPT')) is clone )  
+        self.assertTrue('testPT' in self.custom.objectIds())
+        self.assertTrue(aq_base(self.custom._getOb('testPT')) is clone)
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
         cache_id = 'gofast'
-        RAMCacheManager.manage_addRAMCacheManager( self.app
-                                                 , cache_id
-                                                 , REQUEST=None
-                                                 )
+        RAMCacheManager.manage_addRAMCacheManager(self.app, cache_id,
+                                                  REQUEST=None)
         self.fsPT.ZCacheable_setManagerId(cache_id, REQUEST=None)
 
         self.assertEqual(self.fsPT.ZCacheable_getManagerId(), cache_id)
@@ -214,12 +212,11 @@ class FSPageTemplateCustomizationTests(SecurityTest, FSPTMaker):
 
         self.assertEqual(custom_pt.ZCacheable_getManagerId(), cache_id)
 
-
-    def test_dontExpandOnCreation( self ):
-        self.fsPT.manage_doCustomize( folder_path='custom' )
+    def test_dontExpandOnCreation(self):
+        self.fsPT.manage_doCustomize(folder_path='custom')
 
         customized = self.custom.testPT
-        self.failIf( customized.expand )
+        self.assertFalse(customized.expand)
 
 
 def test_suite():

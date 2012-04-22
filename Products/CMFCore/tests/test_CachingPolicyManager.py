@@ -41,7 +41,7 @@ from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import TransactionalTest
 
-ACCLARK = DateTime( '2001/01/01' )
+ACCLARK = DateTime('2001/01/01')
 portal_owner = 'portal_owner'
 
 
@@ -49,14 +49,15 @@ class DummyContent2:
 
     __allow_access_to_unprotected_subobjects__ = 1
 
-    def __init__(self, modified ):
+    def __init__(self, modified):
         self.modified = modified
 
-    def Type( self ):
+    def Type(self):
         return 'Dummy'
 
-    def modified( self ):
+    def modified(self):
         return self.modified
+
 
 class CacheableDummyContent(Implicit, Cacheable):
 
@@ -70,7 +71,7 @@ class CacheableDummyContent(Implicit, Cacheable):
         """ """
         return self.id
 
-    def modified( self ):
+    def modified(self):
         return self.modified
 
     def __call__(self):
@@ -86,6 +87,7 @@ class CacheableDummyContent(Implicit, Cacheable):
 
         self.ZCacheable_set(None)
 
+
 class DummyView(CacheableDummyContent):
 
     meta_type = 'DTML Method'
@@ -95,16 +97,16 @@ class CachingPolicyTests(unittest.TestCase):
 
     layer = TraversingZCMLLayer
 
-    def _makePolicy( self, policy_id, **kw ):
+    def _makePolicy(self, policy_id, **kw):
         from Products.CMFCore.CachingPolicyManager import CachingPolicy
 
-        return CachingPolicy( policy_id, **kw )
+        return CachingPolicy(policy_id, **kw)
 
-    def _makeContext( self, **kw ):
+    def _makeContext(self, **kw):
         from Products.CMFCore.CachingPolicyManager import createCPContext
 
-        return createCPContext( DummyContent2(self._epoch)
-                              , 'foo_view', kw, self._epoch )
+        return createCPContext(DummyContent2(self._epoch),
+                               'foo_view', kw, self._epoch)
 
     def setUp(self):
         self._epoch = DateTime(0)
@@ -116,292 +118,272 @@ class CachingPolicyTests(unittest.TestCase):
 
         verifyClass(ICachingPolicy, CachingPolicy)
 
-    def test_empty( self ):
-        policy = self._makePolicy( 'empty' )
+    def test_empty(self):
+        policy = self._makePolicy('empty')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 1 )
-        self.assertEqual( headers[0][0], 'Last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0][0], 'Last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
 
-    def test_noPassPredicate( self ):
-        policy = self._makePolicy( 'noPassPredicate', predicate='nothing' )
+    def test_noPassPredicate(self):
+        policy = self._makePolicy('noPassPredicate', predicate='nothing')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(headers), 0)
 
-    def test_typePredicate( self ):
-        policy = self._makePolicy( 'typePredicate'
-                           , predicate='python:object.Type() == "Dummy"' )
+    def test_typePredicate(self):
+        policy = self._makePolicy('typePredicate',
+                                  predicate='python:object.Type() == "Dummy"')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 1 )
-        self.assertEqual( headers[0][0] , 'Last-modified' )
-        self.assertEqual( headers[0][1] , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0][0], 'Last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
 
-    def test_typePredicateMiss( self ):
-        policy = self._makePolicy( 'typePredicate'
-                        , predicate='python:object.Type() == "Foolish"' )
+    def test_typePredicateMiss(self):
+        policy = self._makePolicy('typePredicate',
+                                 predicate='python:object.Type() == "Foolish"')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(headers), 0)
 
-    def test_viewPredicate( self ):
-        policy = self._makePolicy( 'viewPredicate'
-                                 , predicate='python:view == "foo_view"' )
+    def test_viewPredicate(self):
+        policy = self._makePolicy('viewPredicate',
+                                  predicate='python:view == "foo_view"')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 1 )
-        self.assertEqual( headers[0][0], 'Last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0][0], 'Last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
 
-    def test_viewPredicateMiss( self ):
-        policy = self._makePolicy( 'viewPredicateMiss'
-                           , predicate='python:view == "bar_view"' )
+    def test_viewPredicateMiss(self):
+        policy = self._makePolicy('viewPredicateMiss',
+                                  predicate='python:view == "bar_view"')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(headers), 0)
 
-    def test_kwPredicate( self ):
-        policy = self._makePolicy( 'kwPredicate'
-                                 , predicate='python:"foo" in keywords.keys()' )
-        context = self._makeContext( foo=1 )
-        headers = policy.getHeaders( context )
+    def test_kwPredicate(self):
+        policy = self._makePolicy('kwPredicate',
+                                  predicate='python:"foo" in keywords.keys()')
+        context = self._makeContext(foo=1)
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 1 )
-        self.assertEqual( headers[0][0], 'Last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0][0], 'Last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
 
-    def test_kwPredicateMiss( self ):
-        policy = self._makePolicy( 'kwPredicateMiss'
-                                 , predicate='python:"foo" in keywords.keys()' )
-        context = self._makeContext( bar=1 )
-        headers = policy.getHeaders( context )
+    def test_kwPredicateMiss(self):
+        policy = self._makePolicy('kwPredicateMiss',
+                                  predicate='python:"foo" in keywords.keys()')
+        context = self._makeContext(bar=1)
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(headers), 0)
 
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(headers), 0)
 
-    def test_mtimeFunc( self ):
-        policy = self._makePolicy( 'mtimeFunc'
-                                 , mtime_func='string:2001/01/01' )
+    def test_mtimeFunc(self):
+        policy = self._makePolicy('mtimeFunc', mtime_func='string:2001/01/01')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 1 )
-        self.assertEqual( headers[0][0], 'Last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(ACCLARK.timeTime()) )
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0][0], 'Last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(ACCLARK.timeTime()))
 
-    def test_mtimeFuncNone( self ):
-        policy = self._makePolicy( 'mtimeFuncNone'
-                                 , mtime_func='nothing' )
+    def test_mtimeFuncNone(self):
+        policy = self._makePolicy('mtimeFuncNone', mtime_func='nothing')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(headers), 0)
 
-    def test_maxAge( self ):
-        policy = self._makePolicy( 'aged', max_age_secs=86400 )
+    def test_maxAge(self):
+        policy = self._makePolicy('aged', max_age_secs=86400)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 3 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'expires' )
-        self.assertEqual( headers[1][1]
-                        , rfc1123_date((self._epoch+1).timeTime()) )
-        self.assertEqual( headers[2][0].lower() , 'cache-control' )
-        self.assertEqual( headers[2][1] , 'max-age=86400' )
+        self.assertEqual(len(headers), 3)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'expires')
+        self.assertEqual(headers[1][1],
+                         rfc1123_date((self._epoch + 1).timeTime()))
+        self.assertEqual(headers[2][0].lower(), 'cache-control')
+        self.assertEqual(headers[2][1], 'max-age=86400')
 
-    def test_sMaxAge( self ):
-        policy = self._makePolicy( 's_aged', s_max_age_secs=86400 )
+    def test_sMaxAge(self):
+        policy = self._makePolicy('s_aged', s_max_age_secs=86400)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 's-maxage=86400' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 's-maxage=86400')
         self.assertEqual(policy.getSMaxAgeSecs(), 86400)
 
-    def test_noCache( self ):
-        policy = self._makePolicy( 'noCache', no_cache=1 )
+    def test_noCache(self):
+        policy = self._makePolicy('noCache', no_cache=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 3 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'pragma' )
-        self.assertEqual( headers[1][1] , 'no-cache' )
-        self.assertEqual( headers[2][0].lower() , 'cache-control' )
-        self.assertEqual( headers[2][1] , 'no-cache' )
+        self.assertEqual(len(headers), 3)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'pragma')
+        self.assertEqual(headers[1][1], 'no-cache')
+        self.assertEqual(headers[2][0].lower(), 'cache-control')
+        self.assertEqual(headers[2][1], 'no-cache')
 
-    def test_noStore( self ):
-        policy = self._makePolicy( 'noStore', no_store=1 )
+    def test_noStore(self):
+        policy = self._makePolicy('noStore', no_store=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'no-store' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'no-store')
 
-    def test_mustRevalidate( self ):
-        policy = self._makePolicy( 'mustRevalidate', must_revalidate=1 )
+    def test_mustRevalidate(self):
+        policy = self._makePolicy('mustRevalidate', must_revalidate=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'must-revalidate' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'must-revalidate')
 
-    def test_proxyRevalidate( self ):
-        policy = self._makePolicy( 'proxyRevalidate', proxy_revalidate=1 )
+    def test_proxyRevalidate(self):
+        policy = self._makePolicy('proxyRevalidate', proxy_revalidate=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'proxy-revalidate' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'proxy-revalidate')
         self.assertEqual(policy.getProxyRevalidate(), 1)
 
-    def test_public( self ):
-        policy = self._makePolicy( 'public', public=1 )
+    def test_public(self):
+        policy = self._makePolicy('public', public=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'public' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'public')
         self.assertEqual(policy.getPublic(), 1)
 
-    def test_private( self ):
-        policy = self._makePolicy( 'private', private=1 )
+    def test_private(self):
+        policy = self._makePolicy('private', private=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'private' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'private')
         self.assertEqual(policy.getPrivate(), 1)
 
-    def test_noTransform( self ):
-        policy = self._makePolicy( 'noTransform', no_transform=1 )
+    def test_noTransform(self):
+        policy = self._makePolicy('noTransform', no_transform=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'no-transform' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'no-transform')
         self.assertEqual(policy.getNoTransform(), 1)
 
-    def test_lastModified( self ):
-        policy = self._makePolicy( 'lastModified', last_modified=0 )
+    def test_lastModified(self):
+        policy = self._makePolicy('lastModified', last_modified=0)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(headers), 0)
         self.assertEqual(policy.getLastModified(), 0)
 
-    def test_preCheck( self ):
-        policy = self._makePolicy( 'preCheck', pre_check=1 )
+    def test_preCheck(self):
+        policy = self._makePolicy('preCheck', pre_check=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'pre-check=1' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'pre-check=1')
         self.assertEqual(policy.getPreCheck(), 1)
         self.assertEqual(policy.getPostCheck(), None)
 
-    def test_postCheck( self ):
-        policy = self._makePolicy( 'postCheck', post_check=1 )
+    def test_postCheck(self):
+        policy = self._makePolicy('postCheck', post_check=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'cache-control' )
-        self.assertEqual( headers[1][1] , 'post-check=1' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'cache-control')
+        self.assertEqual(headers[1][1], 'post-check=1')
         self.assertEqual(policy.getPostCheck(), 1)
         self.assertEqual(policy.getPreCheck(), None)
 
-    def test_ETag( self ):
+    def test_ETag(self):
         # With an empty etag_func, no ETag should be produced
-        policy = self._makePolicy( 'ETag', etag_func='' )
+        policy = self._makePolicy('ETag', etag_func='')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 1)
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
 
-        policy = self._makePolicy( 'ETag', etag_func='string:foo' )
+        policy = self._makePolicy('ETag', etag_func='string:foo')
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 2)
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower(), 'etag' )
-        self.assertEqual( headers[1][1], 'foo' )
+        self.assertEqual(len(headers), 2)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'etag')
+        self.assertEqual(headers[1][1], 'foo')
 
-    def test_combined( self ):
-        policy = self._makePolicy( 'noStore', no_cache=1, no_store=1 )
+    def test_combined(self):
+        policy = self._makePolicy('noStore', no_cache=1, no_store=1)
         context = self._makeContext()
-        headers = policy.getHeaders( context )
+        headers = policy.getHeaders(context)
 
-        self.assertEqual( len( headers ), 3 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'pragma' )
-        self.assertEqual( headers[1][1] , 'no-cache' )
-        self.assertEqual( headers[2][0].lower() , 'cache-control' )
-        self.assertEqual( headers[2][1] , 'no-cache, no-store' )
+        self.assertEqual(len(headers), 3)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'pragma')
+        self.assertEqual(headers[1][1], 'no-cache')
+        self.assertEqual(headers[2][0].lower(), 'cache-control')
+        self.assertEqual(headers[2][1], 'no-cache, no-store')
 
 
 class CachingPolicyManagerTests(unittest.TestCase):
@@ -420,8 +402,8 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self._epoch = DateTime()
         getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
-    def assertEqualDelta( self, lhs, rhs, delta ):
-        self.failUnless( abs( lhs - rhs ) <= delta )
+    def assertEqualDelta(self, lhs, rhs, delta):
+        self.assertTrue(abs(lhs - rhs) <= delta)
 
     def test_interfaces(self):
         from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
@@ -429,24 +411,23 @@ class CachingPolicyManagerTests(unittest.TestCase):
 
         verifyClass(ICachingPolicyManager, CachingPolicyManager)
 
-    def test_empty( self ):
+    def test_empty(self):
         mgr = self._makeOne()
 
-        self.assertEqual( len( mgr.listPolicies() ), 0 )
-        headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
-                                           , view_method='foo_view'
-                                           , keywords={}
-                                           , time=self._epoch
-                                           )
-        self.assertEqual( len( headers ), 0 )
+        self.assertEqual(len(mgr.listPolicies()), 0)
+        headers = mgr.getHTTPCachingHeaders(content=DummyContent2(self._epoch),
+                                            view_method='foo_view',
+                                            keywords={},
+                                            time=self._epoch)
+        self.assertEqual(len(headers), 0)
 
-        self.assertRaises( KeyError, mgr._updatePolicy,
+        self.assertRaises(KeyError, mgr._updatePolicy,
                            'xyzzy', None, None, None, None, None, None, '',
-                           '', None, None, None, None, None )
-        self.assertRaises( KeyError, mgr._removePolicy, 'xyzzy' )
-        self.assertRaises( KeyError, mgr._reorderPolicy, 'xyzzy', -1 )
+                           '', None, None, None, None, None)
+        self.assertRaises(KeyError, mgr._removePolicy, 'xyzzy')
+        self.assertRaises(KeyError, mgr._reorderPolicy, 'xyzzy', -1)
 
-    def test_addAndUpdatePolicy( self ):
+    def test_addAndUpdatePolicy(self):
         mgr = self._makeOne()
         mgr.addPolicy('first', 'python:1', 'mtime', 1, 0, 1, 0, 'vary',
                       'etag', None, 2, 1, 0, 1, 0, 1, 0, 2, 3)
@@ -492,117 +473,106 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual(p.getPreCheck(), 3)
         self.assertEqual(p.getPostCheck(), 2)
 
-    def test_reorder( self ):
+    def test_reorder(self):
         mgr = self._makeOne()
 
-        policy_ids = ( 'foo', 'bar', 'baz', 'qux' )
+        policy_ids = ('foo', 'bar', 'baz', 'qux')
 
         for policy_id in policy_ids:
-            mgr._addPolicy( policy_id
-                          , 'python:"%s" in keywords.keys()' % policy_id
-                          , None, 0, 0, 0, 0, '', '' )
+            mgr._addPolicy(policy_id,
+                           'python:"%s" in keywords.keys()' % policy_id,
+                           None, 0, 0, 0, 0, '', '')
 
-        ids = tuple( map( lambda x: x[0], mgr.listPolicies() ) )
-        self.assertEqual( ids, policy_ids )
+        ids = tuple(map(lambda x: x[0], mgr.listPolicies()))
+        self.assertEqual(ids, policy_ids)
 
-        mgr._reorderPolicy( 'bar', 3 )
+        mgr._reorderPolicy('bar', 3)
 
-        ids = tuple( map( lambda x: x[0], mgr.listPolicies() ) )
-        self.assertEqual( ids, ( 'foo', 'baz', 'qux', 'bar' ) )
+        ids = tuple(map(lambda x: x[0], mgr.listPolicies()))
+        self.assertEqual(ids, ('foo', 'baz', 'qux', 'bar'))
 
-    def _makeOneWithPolicies( self ):
+    def _makeOneWithPolicies(self):
         mgr = self._makeOne()
 
-        policy_tuples = ( ( 'foo', None  )
-                        , ( 'bar', 0     )
-                        , ( 'baz', 3600  )
-                        , ( 'qux', 86400 )
-                        )
+        policy_tuples = (('foo', None),
+                         ('bar', 0),
+                         ('baz', 3600),
+                         ('qux', 86400))
 
         for policy_id, max_age_secs in policy_tuples:
-            mgr._addPolicy( policy_id
-                          , 'python:"%s" in keywords.keys()' % policy_id
-                          , None, max_age_secs, 0, 0, 0, '', '' )
+            mgr._addPolicy(policy_id,
+                           'python:"%s" in keywords.keys()' % policy_id,
+                           None, max_age_secs, 0, 0, 0, '', '')
 
         return mgr
 
-    def test_lookupNoMatch( self ):
+    def test_lookupNoMatch(self):
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
-                                           , view_method='foo_view'
-                                           , keywords={}
-                                           , time=self._epoch
-                                           )
-        self.assertEqual( len( headers ), 0 )
+        headers = mgr.getHTTPCachingHeaders(content=DummyContent2(self._epoch),
+                                            view_method='foo_view',
+                                            keywords={},
+                                            time=self._epoch)
+        self.assertEqual(len(headers), 0)
 
-    def test_lookupMatchFoo( self ):
+    def test_lookupMatchFoo(self):
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
-                                           , view_method='foo_view'
-                                           , keywords={ 'foo' : 1 }
-                                           , time=self._epoch
-                                           )
-        self.assertEqual( len( headers ), 1 )
-        self.assertEqual( headers[0][0].lower(), 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
+        headers = mgr.getHTTPCachingHeaders(content=DummyContent2(self._epoch),
+                                            view_method='foo_view',
+                                            keywords={'foo': 1},
+                                            time=self._epoch)
+        self.assertEqual(len(headers), 1)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
 
-    def test_lookupMatchBar( self ):
+    def test_lookupMatchBar(self):
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
-                                           , view_method='foo_view'
-                                           , keywords={ 'bar' : 1 }
-                                           , time=self._epoch
-                                           )
-        self.assertEqual( len( headers ), 3 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'expires' )
-        self.assertEqual( headers[1][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[2][0].lower() , 'cache-control' )
-        self.assertEqual( headers[2][1], 'max-age=0' )
+        headers = mgr.getHTTPCachingHeaders(content=DummyContent2(self._epoch),
+                                            view_method='foo_view',
+                                            keywords={'bar': 1},
+                                            time=self._epoch)
+        self.assertEqual(len(headers), 3)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'expires')
+        self.assertEqual(headers[1][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[2][0].lower(), 'cache-control')
+        self.assertEqual(headers[2][1], 'max-age=0')
 
-    def test_lookupMatchBaz( self ):
+    def test_lookupMatchBaz(self):
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
-                                           , view_method='foo_view'
-                                           , keywords={ 'baz' : 1 }
-                                           , time=self._epoch
-                                           )
-        self.assertEqual( len( headers ), 3 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'expires' )
+        headers = mgr.getHTTPCachingHeaders(content=DummyContent2(self._epoch),
+                                            view_method='foo_view',
+                                            keywords={'baz': 1},
+                                            time=self._epoch)
+        self.assertEqual(len(headers), 3)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'expires')
 
-        exp_time = DateTime( headers[1][1] )
-        target = self._epoch + ( 1.0 / 24.0 )
-        self.assertEqualDelta( exp_time, target, 0.01 )
+        exp_time = DateTime(headers[1][1])
+        target = self._epoch + (1.0 / 24.0)
+        self.assertEqualDelta(exp_time, target, 0.01)
 
-        self.assertEqual( headers[2][0].lower() , 'cache-control' )
-        self.assertEqual( headers[2][1] , 'max-age=3600' )
+        self.assertEqual(headers[2][0].lower(), 'cache-control')
+        self.assertEqual(headers[2][1], 'max-age=3600')
 
-    def test_lookupMatchQux( self ):
+    def test_lookupMatchQux(self):
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( content=DummyContent2(self._epoch)
-                                           , view_method='foo_view'
-                                           , keywords={ 'qux' : 1 }
-                                           , time=self._epoch
-                                           )
-        self.assertEqual( len( headers ), 3 )
-        self.assertEqual( headers[0][0].lower() , 'last-modified' )
-        self.assertEqual( headers[0][1]
-                        , rfc1123_date(self._epoch.timeTime()) )
-        self.assertEqual( headers[1][0].lower() , 'expires' )
+        headers = mgr.getHTTPCachingHeaders(content=DummyContent2(self._epoch),
+                                            view_method='foo_view',
+                                            keywords={'qux': 1},
+                                            time=self._epoch)
+        self.assertEqual(len(headers), 3)
+        self.assertEqual(headers[0][0].lower(), 'last-modified')
+        self.assertEqual(headers[0][1], rfc1123_date(self._epoch.timeTime()))
+        self.assertEqual(headers[1][0].lower(), 'expires')
 
-        exp_time = DateTime( headers[1][1] )
+        exp_time = DateTime(headers[1][1])
         target = self._epoch + 1.0
-        self.assertEqualDelta( exp_time, target, 0.01 )
+        self.assertEqualDelta(exp_time, target, 0.01)
 
-        self.assertEqual( headers[2][0].lower() , 'cache-control' )
-        self.assertEqual( headers[2][1] , 'max-age=86400' )
+        self.assertEqual(headers[2][0].lower(), 'cache-control')
+        self.assertEqual(headers[2][1], 'max-age=86400')
 
 
 class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
@@ -636,7 +606,8 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
         # This is a FSPageTemplate that will be used as the View for
         # our content objects. It doesn't matter what it returns.
         path = os.path.join(self.skin_path_name, 'testPT2.pt')
-        self.portal._setObject('dummy_view', FSPageTemplate('dummy_view', path))
+        self.portal._setObject('dummy_view',
+                               FSPageTemplate('dummy_view', path))
 
         uf = self.app.acl_users
         password = 'secret'
@@ -657,42 +628,42 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
 
         # This policy only applies to doc1. It will not emit any ETag header
         # but it enables If-modified-since handling.
-        cpm.addPolicy(policy_id = 'policy_no_etag',
-                      predicate = 'python:object.getId()=="doc1"',
-                      mtime_func = '',
-                      max_age_secs = 0,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = '',
-                      etag_func = '',
-                      enable_304s = 1)
+        cpm.addPolicy(policy_id='policy_no_etag',
+                      predicate='python:object.getId()=="doc1"',
+                      mtime_func='',
+                      max_age_secs=0,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='',
+                      etag_func='',
+                      enable_304s=1)
 
         # This policy only applies to doc2. It will emit an ETag with
         # the constant value "abc" and also enable if-modified-since handling.
-        cpm.addPolicy(policy_id = 'policy_etag',
-                      predicate = 'python:object.getId()=="doc2"',
-                      mtime_func = '',
-                      max_age_secs = 0,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = '',
-                      etag_func = 'string:abc',
-                      enable_304s = 1)
+        cpm.addPolicy(policy_id='policy_etag',
+                      predicate='python:object.getId()=="doc2"',
+                      mtime_func='',
+                      max_age_secs=0,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='',
+                      etag_func='string:abc',
+                      enable_304s=1)
 
         # This policy only applies to doc3. Etags with constant values of
         # "abc" are emitted, but if-modified-since handling is turned off.
-        cpm.addPolicy(policy_id = 'policy_disabled',
-                      predicate = 'python:object.getId()=="doc3"',
-                      mtime_func = '',
-                      max_age_secs = 0,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = '',
-                      etag_func = 'string:abc',
-                      enable_304s = 0)
+        cpm.addPolicy(policy_id='policy_disabled',
+                      predicate='python:object.getId()=="doc3"',
+                      mtime_func='',
+                      max_age_secs=0,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='',
+                      etag_func='string:abc',
+                      enable_304s=0)
 
     def tearDown(self):
         FSDVTest.tearDown(self)
@@ -702,10 +673,8 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
         # Clean up request and response
         req = self.portal.REQUEST
 
-        for header in ( 'IF_MODIFIED_SINCE'
-                      , 'HTTP_AUTHORIZATION'
-                      , 'IF_NONE_MATCH'
-                      ):
+        for header in ('IF_MODIFIED_SINCE', 'HTTP_AUTHORIZATION',
+                       'IF_NONE_MATCH'):
             if req.environ.get(header, None) is not None:
                 del req.environ[header]
 
@@ -852,15 +821,16 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
         self.assertEqual(response.getStatus(), 200)
         self._cleanup()
 
+
 class FSObjMaker(FSDVTest):
 
-    def _makeFSPageTemplate( self, id, filename ):
+    def _makeFSPageTemplate(self, id, filename):
         path = path_join(self.skin_path_name, filename)
-        return FSPageTemplate( id, path )
+        return FSPageTemplate(id, path)
 
-    def _makeFSDTMLMethod( self, id, filename ):
+    def _makeFSDTMLMethod(self, id, filename):
         path = path_join(self.skin_path_name, filename)
-        return FSDTMLMethod( id, path )
+        return FSDTMLMethod(id, path)
 
 
 class NestedTemplateTests(TransactionalTest, FSObjMaker):
@@ -893,21 +863,21 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         TransactionalTest.tearDown(self)
         FSObjMaker.tearDown(self)
 
-    def test_subtemplate_cpm_1( self ):
+    def test_subtemplate_cpm_1(self):
         # test that subtemplates dont call the cpm
         # set up site
         portal = self.portal
         now = DateTime()
         cpm = self.cpm
-        cpm.addPolicy(policy_id = 'policy_op2',
-                      predicate = 'python:view=="output_page_2"',
-                      mtime_func = '',
-                      max_age_secs = 100,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc1',
-                      etag_func = '',
+        cpm.addPolicy(policy_id='policy_op2',
+                      predicate='python:view=="output_page_2"',
+                      mtime_func='',
+                      max_age_secs=100,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc1',
+                      etag_func='',
                       s_max_age_secs=100
                       )
 
@@ -915,8 +885,10 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         content.modified_date = now
         portal._setObject('content', content)
 
-        output_page_1 = self._makeFSPageTemplate('output_page_1', 'output_page_1.zpt')
-        output_page_2 = self._makeFSPageTemplate('output_page_2', 'output_page_2.zpt')
+        output_page_1 = self._makeFSPageTemplate('output_page_1',
+                                                 'output_page_1.zpt')
+        output_page_2 = self._makeFSPageTemplate('output_page_2',
+                                                 'output_page_2.zpt')
         portal._setObject('output_page_1', output_page_1)
         portal._setObject('output_page_2', output_page_2)
 
@@ -924,25 +896,25 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
-    def test_subtemplate_cpm_2( self ):
+    def test_subtemplate_cpm_2(self):
         # test that calling content from a template doesnt call the cpm
         # just calling an FSDTMLMethod directly from another template does
         # not activate the bug because RESPONSE is not passed in
         portal = self.portal
         now = DateTime()
         cpm = self.cpm
-        cpm.addPolicy(policy_id = 'policy_op4',
-                      predicate = 'python:view=="output_page_4"',
-                      mtime_func = '',
-                      max_age_secs = 100,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc1',
-                      etag_func = '',
+        cpm.addPolicy(policy_id='policy_op4',
+                      predicate='python:view=="output_page_4"',
+                      mtime_func='',
+                      max_age_secs=100,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc1',
+                      etag_func='',
                       s_max_age_secs=100
                       )
 
@@ -953,50 +925,55 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         content2.modified_date = now
         portal._setObject('content2', content2)
 
-        output_page_3 = self._makeFSDTMLMethod('output_page_3', 'output_page_3.dtml')
-        output_page_4 = self._makeFSDTMLMethod('output_page_4', 'output_page_4.dtml')
-        portal._setObject('output_page_4',output_page_4)
-        portal._setObject('output_page_3',output_page_3)
+        output_page_3 = self._makeFSDTMLMethod('output_page_3',
+                                               'output_page_3.dtml')
+        output_page_4 = self._makeFSDTMLMethod('output_page_4',
+                                               'output_page_4.dtml')
+        portal._setObject('output_page_4', output_page_4)
+        portal._setObject('output_page_3', output_page_3)
 
         # call the content
         portal.content()
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
-    def test_subtemplate_cpm_3( self ):
+    def test_subtemplate_cpm_3(self):
         # test a bigger mix of zpt templates
         # set up site
         portal = self.portal
         now = DateTime()
         cpm = self.cpm
-        cpm.addPolicy(policy_id = 'policy_nv1',
-                      predicate = 'python:view=="nested_view_1"',
-                      mtime_func = '',
-                      max_age_secs = 100,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc1',
-                      etag_func = '',
+        cpm.addPolicy(policy_id='policy_nv1',
+                      predicate='python:view=="nested_view_1"',
+                      mtime_func='',
+                      max_age_secs=100,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc1',
+                      etag_func='',
                       s_max_age_secs=100
                       )
 
         doc1 = DummyContent(id='doc1', view_id='nested_view')
         doc1.modified_date = now
-        portal._setObject('doc1',doc1)
+        portal._setObject('doc1', doc1)
         doc2 = DummyContent(id='doc2', view_id='nested_view_1')
         doc2.modified_date = now
-        portal._setObject('doc2',doc2)
+        portal._setObject('doc2', doc2)
         doc3 = DummyContent(id='doc3', view_id='nested_view_2')
         doc3.modified_date = now
-        portal._setObject('doc3',doc3)
+        portal._setObject('doc3', doc3)
 
-        nested_view = self._makeFSPageTemplate('nested_view', 'nested_view.zpt')
-        nested_view_1 = self._makeFSPageTemplate('nested_view_1', 'nested_view_1.zpt')
-        nested_view_2 = self._makeFSPageTemplate('nested_view_2', 'nested_view_2.zpt')
+        nested_view = self._makeFSPageTemplate('nested_view',
+                                               'nested_view.zpt')
+        nested_view_1 = self._makeFSPageTemplate('nested_view_1',
+                                                 'nested_view_1.zpt')
+        nested_view_2 = self._makeFSPageTemplate('nested_view_2',
+                                                 'nested_view_2.zpt')
         portal._setObject('nested_view', nested_view)
         portal._setObject('nested_view_1', nested_view_1)
         portal._setObject('nested_view_2', nested_view_2)
@@ -1005,37 +982,43 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
-    def test_mixed_subtemplate_cpm( self ):
+    def test_mixed_subtemplate_cpm(self):
         # test a mix of zpt and dtml templates
         # set up site
         now = DateTime()
         portal = self.portal
         cpm = self.cpm
-        cpm.addPolicy(policy_id = 'policy_nv1',
-                      predicate = 'python:view=="nested_view_1"',
-                      mtime_func = '',
-                      max_age_secs = 100,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc1',
-                      etag_func = '',
+        cpm.addPolicy(policy_id='policy_nv1',
+                      predicate='python:view=="nested_view_1"',
+                      mtime_func='',
+                      max_age_secs=100,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc1',
+                      etag_func='',
                       s_max_age_secs=100
                       )
 
-        doc1 = DummyContent(id='doc1', view_id='nested_view', modified_date=now)
+        doc1 = DummyContent(id='doc1', view_id='nested_view',
+                            modified_date=now)
         portal._setObject('doc1', doc1)
-        doc2 = DummyContent(id='doc2', view_id='nested_view_1', modified_date=now)
+        doc2 = DummyContent(id='doc2', view_id='nested_view_1',
+                            modified_date=now)
         portal._setObject('doc2', doc2)
-        doc3 = DummyContent(id='doc3', view_id='nested_view_2', modified_date=now)
+        doc3 = DummyContent(id='doc3', view_id='nested_view_2',
+                            modified_date=now)
         portal._setObject('doc3', doc3)
 
-        nested_view = self._makeFSPageTemplate('nested_view', 'nested_view.zpt')
-        nested_view_1 = self._makeFSPageTemplate('nested_view_1', 'nested_view_1.zpt')
-        nested_view_2 = self._makeFSDTMLMethod('nested_view_2', 'nested_view_2.dtml')
+        nested_view = self._makeFSPageTemplate('nested_view',
+                                               'nested_view.zpt')
+        nested_view_1 = self._makeFSPageTemplate('nested_view_1',
+                                                 'nested_view_1.zpt')
+        nested_view_2 = self._makeFSDTMLMethod('nested_view_2',
+                                               'nested_view_2.dtml')
         portal._setObject('nested_view', nested_view)
         portal._setObject('nested_view_1', nested_view_1)
         portal._setObject('nested_view_2', nested_view_2)
@@ -1044,11 +1027,11 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_fireForSubtemplates(self):
-        # This is a FSPageTemplate that will be used as the View for 
+        # This is a FSPageTemplate that will be used as the View for
         # our content objects. It doesn't matter what it returns.
         dv = self._makeFSPageTemplate('dummy_view', 'testPT_CPM1.zpt')
         self.portal._setObject('dummy_view', dv)
@@ -1057,9 +1040,9 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         sv1 = self._makeFSPageTemplate('subview_1', 'testPT_CPM2.zpt')
         sv2 = self._makeFSDTMLMethod('subview_2', 'testDTML_CPM3.dtml')
         self.portal._setObject('subview_1', sv1)
-        self.portal._setObject( 'subview_2', sv2)
+        self.portal._setObject('subview_2', sv2)
 
-        for i in (1,2,3):
+        for i in (1, 2, 3):
             id = 'doc%i' % i
             title = 'Document %i' % i
             description = 'This is document %i' % i
@@ -1073,28 +1056,28 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         cpm = self.cpm
 
         # This policy only applies to doc2.
-        cpm.addPolicy(policy_id = 'policy_doc2',
-                      predicate = 'python:object.getId()=="doc2"',
-                      mtime_func = '',
-                      max_age_secs = 200,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc2',
-                      etag_func = '',
+        cpm.addPolicy(policy_id='policy_doc2',
+                      predicate='python:object.getId()=="doc2"',
+                      mtime_func='',
+                      max_age_secs=200,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc2',
+                      etag_func='',
                       pre_check=1
                       )
 
-        # This policy only applies to doc3. 
-        cpm.addPolicy(policy_id = 'policy_doc3',
-                      predicate = 'python:object.getId()=="doc3"',
-                      mtime_func = '',
-                      max_age_secs = 300,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc3',
-                      etag_func = '',
+        # This policy only applies to doc3.
+        cpm.addPolicy(policy_id='policy_doc3',
+                      predicate='python:object.getId()=="doc3"',
+                      mtime_func='',
+                      max_age_secs=300,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc3',
+                      etag_func='',
                       post_check=1
                       )
 
@@ -1106,11 +1089,11 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_fireForSubtemplates2(self):
-        # This is a FSPageTemplate that will be used as the View for 
+        # This is a FSPageTemplate that will be used as the View for
         # our content objects. It doesn't matter what it returns.
         dv = self._makeFSPageTemplate('dummy_view', 'testPT_CPM1.zpt')
         self.portal._setObject('dummy_view', dv)
@@ -1119,9 +1102,9 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         sv1 = self._makeFSPageTemplate('subview_1', 'testPT_CPM2.zpt')
         sv2 = self._makeFSDTMLMethod('subview_2', 'testDTML_CPM3.dtml')
         self.portal._setObject('subview_1', sv1)
-        self.portal._setObject( 'subview_2', sv2)
+        self.portal._setObject('subview_2', sv2)
 
-        for i in (1,2,3):
+        for i in (1, 2, 3):
             id = 'doc%i' % i
             title = 'Document %i' % i
             description = 'This is document %i' % i
@@ -1135,41 +1118,41 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         cpm = self.cpm
 
         # This policy only applies to doc1.
-        cpm.addPolicy(policy_id = 'policy_doc1',
-                      predicate = 'python:object.getId()=="doc1"',
-                      mtime_func = '',
-                      max_age_secs = 100,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc1',
-                      etag_func = '',
+        cpm.addPolicy(policy_id='policy_doc1',
+                      predicate='python:object.getId()=="doc1"',
+                      mtime_func='',
+                      max_age_secs=100,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc1',
+                      etag_func='',
                       s_max_age_secs=100
                       )
 
         # This policy only applies to doc2.
-        cpm.addPolicy(policy_id = 'policy_doc2',
-                      predicate = 'python:object.getId()=="doc2"',
-                      mtime_func = '',
-                      max_age_secs = 200,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc2',
-                      etag_func = '',
+        cpm.addPolicy(policy_id='policy_doc2',
+                      predicate='python:object.getId()=="doc2"',
+                      mtime_func='',
+                      max_age_secs=200,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc2',
+                      etag_func='',
                       pre_check=1
                       )
 
-        # This policy only applies to doc3. 
-        cpm.addPolicy(policy_id = 'policy_doc3',
-                      predicate = 'python:object.getId()=="doc3"',
-                      mtime_func = '',
-                      max_age_secs = 300,
-                      no_cache = 0,
-                      no_store = 0,
-                      must_revalidate = 0,
-                      vary = 'doc3',
-                      etag_func = '',
+        # This policy only applies to doc3.
+        cpm.addPolicy(policy_id='policy_doc3',
+                      predicate='python:object.getId()=="doc3"',
+                      mtime_func='',
+                      max_age_secs=300,
+                      no_cache=0,
+                      no_store=0,
+                      must_revalidate=0,
+                      vary='doc3',
+                      etag_func='',
                       post_check=1
                       )
 
@@ -1180,17 +1163,16 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         self.portal.doc1.dummy_view()
 
         # We want to make sure the correct policy (policy_doc1) has fired
-        # Just to be sure, change headers so they are definitely all 
+        # Just to be sure, change headers so they are definitely all
         # lower-cased
         headers = {}
         header_info = self.RESPONSE.headers.items()
         [headers.__setitem__(x[0].lower(), x[1]) for x in header_info]
 
-        self.failUnless(headers.get('x-cache-headers-set-by'))
-        self.assertEquals(headers.get('vary'), 'doc1')
-        self.assertEquals( headers.get('cache-control')
-                         , 'max-age=100, s-maxage=100'
-                         )
+        self.assertTrue(headers.get('x-cache-headers-set-by'))
+        self.assertEqual(headers.get('vary'), 'doc1')
+        self.assertEqual(headers.get('cache-control'),
+                         'max-age=100, s-maxage=100')
 
 
 class OFSCacheTests(TransactionalTest):
@@ -1246,21 +1228,20 @@ class OFSCacheTests(TransactionalTest):
 
         cpm = self.portal.caching_policy_manager
         doc1 = self.portal.doc1
-        self.failUnless(cpm._isCacheManager)
-        self.failUnless(isinstance(cpm.ZCacheManager_getCache(), CPMCache))
-        self.assertEquals( doc1.ZCacheable_getManagerIds()
-                         , ({'id':cpm.getId(), 'title':''},)
-                         )
+        self.assertTrue(cpm._isCacheManager)
+        self.assertTrue(isinstance(cpm.ZCacheManager_getCache(), CPMCache))
+        self.assertEqual(doc1.ZCacheable_getManagerIds(),
+                         ({'id': cpm.getId(), 'title': ''},))
 
     def test_no_association(self):
-        # Render an item that would match the CPM policy, but don't 
+        # Render an item that would match the CPM policy, but don't
         # associate it with the CPM.
         self.portal.doc1()
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_unsuitable_association(self):
         # Render an item that is associated with the CPM, but that does not
@@ -1273,8 +1254,8 @@ class OFSCacheTests(TransactionalTest):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_suitable_association(self):
         # Render a content item that will trigger the CPM
@@ -1285,17 +1266,15 @@ class OFSCacheTests(TransactionalTest):
         doc1()
 
         # Policy "policy_1" should have triggered
-        # Just to be sure, change headers so they are definitely all 
+        # Just to be sure, change headers so they are definitely all
         # lower-cased
         headers = {}
         header_info = self.RESPONSE.headers.items()
         [headers.__setitem__(x[0].lower(), x[1]) for x in header_info]
 
-        self.failUnless(headers.get('x-cache-headers-set-by'))
-        self.assertEquals(headers.get('vary'), 'doc1')
-        self.assertEquals( headers.get('cache-control')
-                         , 'max-age=100'
-                         )
+        self.assertTrue(headers.get('x-cache-headers-set-by'))
+        self.assertEqual(headers.get('vary'), 'doc1')
+        self.assertEqual(headers.get('cache-control'), 'max-age=100')
 
     def test_with_view(self):
         # Render a view for a content item that will trigger the CPM
@@ -1307,17 +1286,15 @@ class OFSCacheTests(TransactionalTest):
         doc1.a_view()
 
         # Policy "policy_1" should have triggered
-        # Just to be sure, change headers so they are definitely all 
+        # Just to be sure, change headers so they are definitely all
         # lower-cased
         headers = {}
         header_info = self.RESPONSE.headers.items()
         [headers.__setitem__(x[0].lower(), x[1]) for x in header_info]
 
-        self.failUnless(headers.get('x-cache-headers-set-by'))
-        self.assertEquals(headers.get('vary'), 'doc1')
-        self.assertEquals( headers.get('cache-control')
-                         , 'max-age=100'
-                         )
+        self.assertTrue(headers.get('x-cache-headers-set-by'))
+        self.assertEqual(headers.get('vary'), 'doc1')
+        self.assertEqual(headers.get('cache-control'), 'max-age=100')
 
 
 def test_suite():

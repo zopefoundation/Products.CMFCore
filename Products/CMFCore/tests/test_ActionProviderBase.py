@@ -36,30 +36,28 @@ from Products.CMFCore.ActionInformation import ActionInformation
 
 class DummyProvider(ActionProviderBase, DummyTool):
 
-    _actions = ( ActionInformation( id='an_id'
-                                  , title='A Title'
-                                  , action=''
-                                  , condition=''
-                                  , permissions=()
-                                  , category=''
-                                  , visible=False
-                                  ), )
+    _actions = (ActionInformation(id='an_id',
+                                  title='A Title',
+                                  action='',
+                                  condition='',
+                                  permissions=(),
+                                  category='',
+                                  visible=False),)
 
 
 class DummyAction:
 
-    def __init__( self, value ):
+    def __init__(self, value):
         self.value = value
 
-    def clone( self ):
-        return self.__class__( self.value )
+    def clone(self):
+        return self.__class__(self.value)
 
-    def __cmp__( self, other ):
-        return ( cmp( type( self ), type( other ) )
-              or cmp( self.__class__, other.__class__ )
-              or cmp( self.value, other.value )
-              or 0
-               )
+    def __cmp__(self, other):
+        return (cmp(type(self), type(other))
+                or cmp(self.__class__, other.__class__)
+                or cmp(self.value, other.value)
+                or 0)
 
 
 class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
@@ -67,7 +65,7 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
     def setUp(self):
         self._trap_warning_output()
         SecurityTest.setUp(self)
-        self.site = DummySite('site').__of__(self.root)
+        self.site = DummySite('site').__of__(self.app)
         sm = getSiteManager()
         sm.registerUtility(DummyTool(), IMembershipTool)
         sm.registerUtility(DummyTool().__of__(self.site), IURLTool)
@@ -77,7 +75,7 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
         SecurityTest.tearDown(self)
         self._free_warning_output()
 
-    def _makeProvider( self, dummy=0 ):
+    def _makeProvider(self, dummy=0):
 
         klass = dummy and DummyProvider or ActionProviderBase
         return klass()
@@ -87,20 +85,18 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
 
         verifyClass(IActionProvider, ActionProviderBase)
 
-    def test_addAction( self ):
-
+    def test_addAction(self):
         apb = self._makeProvider()
-        self.failIf( apb._actions )
+        self.assertFalse(apb._actions)
         old_actions = apb._actions
-        apb.addAction( id='foo'
-                     , name='foo_action'
-                     , action=''
-                     , condition=''
-                     , permission=''
-                     , category=''
-                     )
-        self.failUnless( apb._actions )
-        self.failIf( apb._actions is old_actions )
+        apb.addAction(id='foo',
+                      name='foo_action',
+                      action='',
+                      condition='',
+                      permission='',
+                      category='')
+        self.assertTrue(apb._actions)
+        self.assertFalse(apb._actions is old_actions)
 
     def test_addActionBlankPermission(self):
         # make sure a blank permission gets stored as an empty tuple
@@ -158,36 +154,33 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
         action = apb._extractAction(properties, index)
         self.assertEqual(action.permissions, ())
 
-
-    def test_changeActions( self ):
-
+    def test_changeActions(self):
         apb = DummyTool()
-        old_actions = list( apb._actions )
+        old_actions = list(apb._actions)
 
-        keys = [ ( 'id_%d', None )
-               , ( 'name_%d', None )
-               , ( 'action_%d', '' )
-               , ( 'condition_%d', '' )
-               , ( 'permission_%d', None )
-               , ( 'category_%d', None )
-               , ( 'visible_%d', 0 )
-               ]
+        keys = [('id_%d', None),
+                ('name_%d', None),
+                ('action_%d', ''),
+                ('condition_%d', ''),
+                ('permission_%d', None),
+                ('category_%d', None),
+                ('visible_%d', 0)]
 
         properties = {}
-        for i in range( len( old_actions ) ):
+        for i in range(len(old_actions)):
             for key, value in keys:
                 token = key % i
                 if value is None:
                     value = token
-                properties[ token ] = value
+                properties[token] = value
 
-        apb.changeActions( properties=properties )
+        apb.changeActions(properties=properties)
 
         marker = []
-        for i in range( len( apb._actions ) ):
+        for i in range(len(apb._actions)):
 
             for key, value in keys:
-                attr = key[ : -3 ]
+                attr = key[:-3]
 
                 if value is None:
                     value = key % i
@@ -197,49 +190,46 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
 
                 if attr == 'permission':    # WAAAA
                     attr = 'permissions'
-                    value = ( value, )
+                    value = (value,)
 
-                attr_value = getattr( apb._actions[i], attr, marker )
-                self.assertEqual( attr_value
-                                , value
-                                , '%s, %s != %s, %s'
-                                  % ( attr, attr_value, key, value )  )
-        self.failIf( apb._actions is old_actions )
+                attr_value = getattr(apb._actions[i], attr, marker)
+                self.assertEqual(attr_value, value, '%s, %s != %s, %s'
+                                 % (attr, attr_value, key, value))
+        self.assertFalse(apb._actions is old_actions)
 
-    def test_deleteActions( self ):
+    def test_deleteActions(self):
 
         apb = self._makeProvider()
-        apb._actions = tuple( map( DummyAction, [ '0', '1', '2' ] ) )
-        apb.deleteActions( selections=(0,2) )
-        self.assertEqual( len( apb._actions ), 1 )
-        self.failUnless( DummyAction('1') in apb._actions )
+        apb._actions = tuple(map(DummyAction, ['0', '1', '2']))
+        apb.deleteActions(selections=(0, 2))
+        self.assertEqual(len(apb._actions), 1)
+        self.assertTrue(DummyAction('1') in apb._actions)
 
-    def test_DietersNastySharingBug( self ):
+    def test_DietersNastySharingBug(self):
 
-        one = self._makeProvider( dummy=1 )
-        another = self._makeProvider( dummy=1 )
+        one = self._makeProvider(dummy=1)
+        another = self._makeProvider(dummy=1)
 
-        def idify( x ):
-            return id( x )
+        def idify(x):
+            return id(x)
 
-        old_ids = one_ids = map( idify, one.listActions() )
-        another_ids = map( idify, another.listActions() )
+        old_ids = one_ids = map(idify, one.listActions())
+        another_ids = map(idify, another.listActions())
 
-        self.assertEqual( one_ids, another_ids )
+        self.assertEqual(one_ids, another_ids)
 
-        one.changeActions( { 'id_0'            : 'different_id'
-                           , 'name_0'          : 'A Different Title'
-                           , 'action_0'        : 'arise_shine'
-                           , 'condition_0'     : 'always'
-                           , 'permissions_0'   : 'granted'
-                           , 'category_0'      : 'quality'
-                           , 'visible_0'       : 1
-                           } )
+        one.changeActions({'id_0': 'different_id',
+                           'name_0': 'A Different Title',
+                           'action_0': 'arise_shine',
+                           'condition_0': 'always',
+                           'permissions_0': 'granted',
+                           'category_0': 'quality',
+                           'visible_0': 1})
 
-        one_ids = map( idify, one.listActions() )
-        another_ids = map( idify, another.listActions() )
-        self.failIf( one_ids == another_ids )
-        self.assertEqual( old_ids, another_ids )
+        one_ids = map(idify, one.listActions())
+        another_ids = map(idify, another.listActions())
+        self.assertFalse(one_ids == another_ids)
+        self.assertEqual(old_ids, another_ids)
 
     def test_listActionInfos(self):
         wanted = [{'id': 'an_id', 'title': 'A Title', 'description': '',
@@ -247,16 +237,16 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
                    'available': True, 'allowed': True, 'link_target': None,
                    'icon': ''}]
 
-        apb = self.site._setObject( 'portal_apb', self._makeProvider(1) )
+        apb = self.site._setObject('portal_apb', self._makeProvider(1))
         rval = apb.listActionInfos()
-        self.assertEqual( rval, [] )
+        self.assertEqual(rval, [])
         rval = apb.listActionInfos(check_visibility=0)
-        self.assertEqual( rval, wanted )
+        self.assertEqual(rval, wanted)
         rval = apb.listActionInfos('foo/another_id', check_visibility=0)
-        self.assertEqual( rval, [] )
+        self.assertEqual(rval, [])
 
     def test_getActionObject(self):
-        apb = self.site._setObject( 'portal_apb', self._makeProvider(1) )
+        apb = self.site._setObject('portal_apb', self._makeProvider(1))
         rval = apb.getActionObject('object/an_id')
         self.assertEqual(rval, apb._actions[0])
         rval = apb.getActionObject('object/not_existing_id')
@@ -269,14 +259,13 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
                   'available': True, 'allowed': True, 'link_target': None,
                   'icon': ''}
 
-        apb = self.site._setObject( 'portal_apb', self._makeProvider(1) )
-        rval = apb.getActionInfo( ('object/an_id',) )
-        self.assertEqual( rval, wanted )
+        apb = self.site._setObject('portal_apb', self._makeProvider(1))
+        rval = apb.getActionInfo(('object/an_id',))
+        self.assertEqual(rval, wanted)
         rval = apb.getActionInfo('object/an_id')
-        self.assertEqual( rval, wanted )
-        self.assertRaises( ValueError,
-                           apb.getActionInfo,
-                           'object/an_id', check_visibility=1 )
+        self.assertEqual(rval, wanted)
+        self.assertRaises(ValueError, apb.getActionInfo, 'object/an_id',
+                          check_visibility=1)
 
         # The following is nasty, but I want to make sure the ValueError
         # carries some useful information
@@ -286,7 +275,7 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
         except ValueError, e:
             message = e.args[0]
             detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)
-            self.failUnless(message.find(INVALID_ID) != -1, detail)
+            self.assertTrue(message.find(INVALID_ID) != -1, detail)
 
 
 def test_suite():

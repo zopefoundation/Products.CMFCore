@@ -39,13 +39,13 @@ from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 class FSDTMLMaker(FSDVTest):
 
-    def _makeOne( self, id, filename ):
+    def _makeOne(self, id, filename):
         from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
 
         path = path_join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
-        return FSDTMLMethod( id, path, properties=metadata.getProperties() )
+        return FSDTMLMethod(id, path, properties=metadata.getProperties())
 
 
 class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
@@ -73,9 +73,9 @@ class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
         obj = self._makeOne('testDTML', 'testDTML.dtml')
         obj = obj.__of__(self.app)
         obj(self.app, self.REQUEST, self.RESPONSE)
-        self.failUnless(len(self.RESPONSE.headers) >= original_len + 2)
-        self.failUnless('foo' in self.RESPONSE.headers.keys())
-        self.failUnless('bar' in self.RESPONSE.headers.keys())
+        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
+        self.assertTrue('foo' in self.RESPONSE.headers.keys())
+        self.assertTrue('bar' in self.RESPONSE.headers.keys())
 
     def test_ownership(self):
         script = self._makeOne('testDTML', 'testDTML.dtml')
@@ -120,43 +120,41 @@ class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
         SecurityTest.tearDown(self)
         FSDTMLMaker.tearDown(self)
 
-    def test_customize( self ):
+    def test_customize(self):
 
-        self.fsDTML.manage_doCustomize( folder_path='custom' )
+        self.fsDTML.manage_doCustomize(folder_path='custom')
 
-        self.assertEqual( len( self.custom.objectIds() ), 1 )
-        self.failUnless( 'testDTML' in self.custom.objectIds() )
+        self.assertEqual(len(self.custom.objectIds()), 1)
+        self.assertTrue('testDTML' in self.custom.objectIds())
 
-    def test_customize_alternate_root( self ):
+    def test_customize_alternate_root(self):
         self.app.other = Folder('other')
 
         self.fsDTML.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.failIf( 'testDTML' in self.custom.objectIds() )
-        self.failUnless( 'testDTML' in self.app.other.objectIds() )
+        self.assertFalse('testDTML' in self.custom.objectIds())
+        self.assertTrue('testDTML' in self.app.other.objectIds())
 
-    def test_customize_fspath_as_dot( self ):
+    def test_customize_fspath_as_dot(self):
 
-        self.fsDTML.manage_doCustomize( folder_path='.' )
+        self.fsDTML.manage_doCustomize(folder_path='.')
 
-        self.failIf( 'testDTML' in self.custom.objectIds() )
-        self.failUnless( 'testDTML' in self.skins.objectIds() )
+        self.assertFalse('testDTML' in self.custom.objectIds())
+        self.assertTrue('testDTML' in self.skins.objectIds())
 
-    def test_customize_manual_clone( self ):
+    def test_customize_manual_clone(self):
         clone = Folder('testDTML')
 
-        self.fsDTML.manage_doCustomize( folder_path='custom', obj=clone )
+        self.fsDTML.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.failUnless( 'testDTML' in self.custom.objectIds() )
-        self.failUnless( aq_base(self.custom._getOb('testDTML')) is clone)
+        self.assertTrue('testDTML' in self.custom.objectIds())
+        self.assertTrue(aq_base(self.custom._getOb('testDTML')) is clone)
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
         cache_id = 'gofast'
-        RAMCacheManager.manage_addRAMCacheManager( self.app
-                                                 , cache_id
-                                                 , REQUEST=None
-                                                 )
+        RAMCacheManager.manage_addRAMCacheManager(self.app, cache_id,
+                                                  REQUEST=None)
         self.fsDTML.ZCacheable_setManagerId(cache_id, REQUEST=None)
 
         self.assertEqual(self.fsDTML.ZCacheable_getManagerId(), cache_id)

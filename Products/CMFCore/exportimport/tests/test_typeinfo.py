@@ -206,20 +206,20 @@ _FOO_EXPORT = """\
  <alias from="(Default)" to="foo_view"/>
  <alias from="view" to="foo_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${object_url}/foo_view" 
-    icon_expr="string:${portal_url}/preview_icon.png" link_target="_new" 
+    url_expr="string:${object_url}/foo_view"
+    icon_expr="string:${portal_url}/preview_icon.png" link_target="_new"
     visible="True">
   <permission value="View"/>
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
-    url_expr="string:${object_url}/foo_edit_form" 
-    icon_expr="string:${portal_url}/edit_icon.png" link_target="" 
+    url_expr="string:${object_url}/foo_edit_form"
+    icon_expr="string:${portal_url}/edit_icon.png" link_target=""
     visible="True">
   <permission value="Modify portal content"/>
  </action>
  <action title="Metadata" action_id="metadata" category="object"
     condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
-    icon_expr="string:${portal_url}/metadata_icon.png" link_target="" 
+    icon_expr="string:${portal_url}/metadata_icon.png" link_target=""
     visible="True">
   <permission value="Modify portal content"/>
  </action>
@@ -248,7 +248,7 @@ _BAR_EXPORT = """\
  <alias from="(Default)" to="bar_view"/>
  <alias from="view" to="bar_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${object_url}/bar_view" 
+    url_expr="string:${object_url}/bar_view"
     icon_expr="" link_target="" visible="True">
   <permission value="View"/>
  </action>
@@ -292,7 +292,7 @@ _BAR_CMF21_IMPORT = """\
  <alias from="(Default)" to="bar_view"/>
  <alias from="view" to="bar_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${object_url}/bar_view" 
+    url_expr="string:${object_url}/bar_view"
     icon_expr="" link_target="" visible="True">
   <permission value="View"/>
  </action>
@@ -335,7 +335,7 @@ class TypeInformationXMLAdapterTests(
     def _populate(self, obj):
         obj.setMethodAliases({'(Default)': 'foo', 'view': 'foo'})
         obj.addAction('foo_action', 'Foo', 'string:${object_url}/foo',
-                      'python:1', (), 'Bar', 
+                      'python:1', (), 'Bar',
                       icon_expr="string:${portal_url}/icon.png")
 
     def _verifyImport(self, obj):
@@ -355,8 +355,8 @@ class TypeInformationXMLAdapterTests(
         self.assertEqual(type(obj._actions[0].condition.text), str)
         self.assertEqual(obj._actions[0].condition.text, 'python:1')
         self.assertEqual(type(obj._actions[0].icon_expr.text), str)
-        self.assertEqual(obj._actions[0].icon_expr.text, 
-                                  "string:${portal_url}/icon.png")
+        self.assertEqual(obj._actions[0].icon_expr.text,
+                         "string:${portal_url}/icon.png")
 
     def setUp(self):
         self._obj = FactoryTypeInformation('foo_fti')
@@ -541,8 +541,8 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 2)
-        self.failUnless('foo' in tool.objectIds())
-        self.failUnless('bar' in tool.objectIds())
+        self.assertTrue('foo' in tool.objectIds())
+        self.assertTrue('bar' in tool.objectIds())
 
     def test_with_filenames(self):
         from Products.CMFCore.exportimport.typeinfo import importTypesTool
@@ -558,8 +558,8 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 2)
-        self.failUnless('foo object' in tool.objectIds())
-        self.failUnless('bar object' in tool.objectIds())
+        self.assertTrue('foo object' in tool.objectIds())
+        self.assertTrue('bar object' in tool.objectIds())
 
     def test_migration(self):
         from Products.CMFCore.exportimport.typeinfo import importTypesTool
@@ -575,8 +575,8 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 2)
-        self.failUnless('foo' in tool.objectIds())
-        self.failUnless('bar' in tool.objectIds())
+        self.assertTrue('foo' in tool.objectIds())
+        self.assertTrue('bar' in tool.objectIds())
         self.assertEqual(tool.bar.icon_expr, 'string:${portal_url}/bar.png')
 
     def test_normal_update(self):
@@ -632,7 +632,7 @@ class importTypesToolTests(_TypeInfoSetup):
         <object name="%s" meta_type="Factory-based Type Information">
          <property name="title">Baz</property>
          <action title="View" action_id="view" category="object"
-            condition_expr="" url_expr="string:${object_url}/baz_view" 
+            condition_expr="" url_expr="string:${object_url}/baz_view"
             icon_expr="" visible="True">
           <permission value="View"/>
          </action>
@@ -643,7 +643,7 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 1)
-        self.failUnless('baz' in tool.objectIds())
+        self.assertTrue('baz' in tool.objectIds())
         baz = tool['baz']
         actions = baz.listActions()
         self.assertEqual(len(actions), 1)
@@ -661,7 +661,7 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 1)
-        self.failUnless('baz' in tool.objectIds())
+        self.assertTrue('baz' in tool.objectIds())
         baz = tool['baz']
         actions = baz.listActions()
         self.assertEqual(len(actions), 0)
