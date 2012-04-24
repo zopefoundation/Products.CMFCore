@@ -68,12 +68,11 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
     implements(IAction)
 
-    manage_options = ( SimpleItemWithProperties.manage_options[:1]
-                     + ( {'label':'Aliases',
-                          'action':'manage_aliases'}, )
-                     + ActionProviderBase.manage_options
-                     + SimpleItemWithProperties.manage_options[1:]
-                     )
+    manage_options = (
+        SimpleItemWithProperties.manage_options[:1] +
+        ({'label': 'Aliases', 'action': 'manage_aliases'},) +
+        ActionProviderBase.manage_options +
+        SimpleItemWithProperties.manage_options[1:])
 
     security = ClassSecurityInfo()
 
@@ -82,16 +81,16 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
 
     _basic_properties = (
-        {'id':'title', 'type': 'string', 'mode':'w',
-         'label':'Title'},
-        {'id':'description', 'type': 'text', 'mode':'w',
-         'label':'Description'},
-        {'id':'i18n_domain', 'type': 'string', 'mode':'w',
-         'label':'I18n Domain'},
+        {'id': 'title', 'type': 'string', 'mode': 'w',
+         'label': 'Title'},
+        {'id': 'description', 'type': 'text', 'mode': 'w',
+         'label': 'Description'},
+        {'id': 'i18n_domain', 'type': 'string', 'mode': 'w',
+         'label': 'I18n Domain'},
         {'id': 'icon_expr', 'type': 'string', 'mode': 'w',
          'label': 'Icon (Expression)'},
-        {'id':'content_meta_type', 'type': 'string', 'mode':'w',
-         'label':'Product meta type'},
+        {'id': 'content_meta_type', 'type': 'string', 'mode': 'w',
+         'label': 'Product meta type'},
         )
 
     _advanced_properties = (
@@ -99,22 +98,17 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
          'label': 'Add view URL (Expression)'},
         {'id': 'link_target', 'type': 'string', 'mode': 'w',
          'label': 'Add view link target'},
-        {'id':'immediate_view', 'type': 'string', 'mode':'w',
-         'label':'Initial view name'},
-        {'id':'global_allow', 'type': 'boolean', 'mode':'w',
-         'label':'Implicitly addable?'},
-        {'id':'filter_content_types', 'type': 'boolean', 'mode':'w',
-         'label':'Filter content types?'},
-        {'id':'allowed_content_types'
-         , 'type': 'multiple selection'
-         , 'mode':'w'
-         , 'label':'Allowed content types'
-         , 'select_variable':'listContentTypes'
-         },
-        { 'id': 'allow_discussion', 'type': 'boolean', 'mode': 'w'
-          , 'label': 'Allow Discussion?'
-          },
-        )
+        {'id': 'immediate_view', 'type': 'string', 'mode': 'w',
+         'label': 'Initial view name'},
+        {'id': 'global_allow', 'type': 'boolean', 'mode': 'w',
+         'label': 'Implicitly addable?'},
+        {'id': 'filter_content_types', 'type': 'boolean', 'mode': 'w',
+         'label': 'Filter content types?'},
+        {'id': 'allowed_content_types', 'type': 'multiple selection',
+         'mode': 'w', 'label': 'Allowed content types',
+         'select_variable': 'listContentTypes'},
+        {'id': 'allow_discussion', 'type': 'boolean', 'mode': 'w',
+         'label': 'Allow Discussion?'})
 
     title = ''
     description = ''
@@ -140,8 +134,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
         kw = kw.copy()  # Get a modifiable dict.
 
-        if (not kw.has_key('content_meta_type')
-            and kw.has_key('meta_type')):
+        if (not 'content_meta_type' in kw
+            and 'meta_type' in kw):
             kw['content_meta_type'] = kw['meta_type']
 
         if 'content_icon' in kw or 'icon' in kw:
@@ -153,28 +147,28 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
                      DeprecationWarning, stacklevel=2)
             else:
                 warn('TypeInformation got a deprecated argument content_icon.'
-                     'Support for the content_icon argument will be removed in '
-                     'CMF 2.4. Please use the icon_expr argument instead.',
+                     'Support for the content_icon argument will be removed '
+                     'in CMF 2.4. Please use the icon_expr argument instead.',
                      DeprecationWarning, stacklevel=2)
 
             if 'icon_expr' not in kw:
-                kw['icon_expr'] = 'string:${portal_url}/%s' % kw['content_icon']
+                kw['icon_expr'] = ('string:${portal_url}/%s'
+                                   % kw['content_icon'])
 
         self.manage_changeProperties(**kw)
 
-        actions = kw.get( 'actions', () )
+        actions = kw.get('actions', ())
         for action in actions:
             self.addAction(
-                  id=action['id']
-                , name=action['title']
-                , action=action['action']
-                , condition=action.get('condition')
-                , permission=action.get( 'permissions', () )
-                , category=action.get('category', 'object')
-                , visible=action.get('visible', True)
-                , icon_expr=action.get('icon_expr', '')
-                , link_target=action.get('link_target', '')
-                )
+                id=action['id'],
+                name=action['title'],
+                action=action['action'],
+                condition=action.get('condition'),
+                permission=action.get('permissions', ()),
+                category=action.get('category', 'object'),
+                visible=action.get('visible', True),
+                icon_expr=action.get('icon_expr', ''),
+                link_target=action.get('link_target', ''))
 
         self.setMethodAliases(kw.get('aliases', {}))
 
@@ -182,7 +176,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_aliases')
-    manage_aliases = PageTemplateFile( 'typeinfoAliases.zpt', _wwwdir )
+    manage_aliases = PageTemplateFile('typeinfoAliases.zpt', _wwwdir)
 
     security.declareProtected(ManagePortal, 'manage_setMethodAliases')
     def manage_setMethodAliases(self, REQUEST):
@@ -197,8 +191,8 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
         _dict = {}
         for k, v in form['methods'].items():
-            if aliases.has_key(k):
-                _dict[ aliases[k] ] = v
+            if k in aliases:
+                _dict[aliases[k]] = v
         self.setMethodAliases(_dict)
         REQUEST.RESPONSE.redirect('%s/manage_aliases' % self.absolute_url())
 
@@ -257,13 +251,13 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         return getattr(self, 'icon_expr_object', None)
 
     security.declarePublic('allowType')
-    def allowType( self, contentType ):
+    def allowType(self, contentType):
         """
             Can objects of 'contentType' be added to containers whose
             type object we are?
         """
         if not self.filter_content_types:
-            ti = self.getTypeInfo( contentType )
+            ti = self.getTypeInfo(contentType)
             if ti is None or ti.globalAllow():
                 return 1
 
@@ -281,7 +275,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         return self.id
 
     security.declarePublic('allowDiscussion')
-    def allowDiscussion( self ):
+    def allowDiscussion(self):
         """
             Can this type of object support discussion?
         """
@@ -332,7 +326,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         for k, v in aliases.items():
             v = v.strip()
             if v:
-                _dict[ k.strip() ] = v
+                _dict[k.strip()] = v
         if not getattr(self, '_aliases', None) == _dict:
             self._aliases = _dict
             return True
@@ -349,7 +343,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         if isinstance(method_id, tuple):
             method_id = method_id[0]
         return method_id
-    
+
     security.declarePrivate('_checkWorkflowAllowed')
     def _checkWorkflowAllowed(self, container):
         """ Check if a workflow veto object creation
@@ -440,12 +434,12 @@ class FactoryTypeInformation(TypeInformation):
 
     security = ClassSecurityInfo()
 
-    _properties = (TypeInformation._basic_properties + (
-        {'id':'product', 'type': 'string', 'mode':'w',
-         'label':'Product name'},
-        {'id':'factory', 'type': 'string', 'mode':'w',
-         'label':'Product factory'},
-        ) + TypeInformation._advanced_properties)
+    _properties = (TypeInformation._basic_properties +
+                   ({'id': 'product', 'type': 'string', 'mode': 'w',
+                     'label': 'Product name'},
+                    {'id': 'factory', 'type': 'string', 'mode': 'w',
+                     'label': 'Product factory'}) +
+                   TypeInformation._advanced_properties)
 
     product = ''
     factory = ''
@@ -455,18 +449,18 @@ class FactoryTypeInformation(TypeInformation):
     #
     def _getFactoryMethod(self, container, check_security=1):
         if not self.product or not self.factory:
-            raise ValueError, ('Product factory for %s was undefined' %
-                               self.getId())
+            raise ValueError('Product factory for %s was undefined' %
+                             self.getId())
         p = container.manage_addProduct[self.product]
         m = getattr(p, self.factory, None)
         if m is None:
-            raise ValueError, ('Product factory for %s was invalid' %
-                               self.getId())
+            raise ValueError('Product factory for %s was invalid' %
+                             self.getId())
         if not check_security:
             return m
         if getSecurityManager().validate(p, p, self.factory, m):
             return m
-        raise AccessControl_Unauthorized( 'Cannot create %s' % self.getId() )
+        raise AccessControl_Unauthorized('Cannot create %s' % self.getId())
 
     def _queryFactoryMethod(self, container, default=None):
 
@@ -507,7 +501,7 @@ class FactoryTypeInformation(TypeInformation):
 
         c. Does the current user have the permission required in
         order to invoke the factory method?
-        
+
         d. Do all workflows authorize the creation?
         """
         ti_check = False
@@ -530,7 +524,7 @@ class FactoryTypeInformation(TypeInformation):
 
         if not ti_check:
             return False
-        else :
+        else:
             return self._checkWorkflowAllowed(container)
 
     security.declarePrivate('_constructInstance')
@@ -587,12 +581,12 @@ class ScriptableTypeInformation(TypeInformation):
 
     security = ClassSecurityInfo()
 
-    _properties = (TypeInformation._basic_properties + (
-        {'id':'permission', 'type': 'string', 'mode':'w',
-         'label':'Constructor permission'},
-        {'id':'constructor_path', 'type': 'string', 'mode':'w',
-         'label':'Constructor path'},
-        ) + TypeInformation._advanced_properties)
+    _properties = (TypeInformation._basic_properties +
+                   ({'id': 'permission', 'type': 'string', 'mode': 'w',
+                     'label': 'Constructor permission'},
+                    {'id': 'constructor_path', 'type': 'string', 'mode': 'w',
+                     'label': 'Constructor path'}) +
+                   TypeInformation._advanced_properties)
 
     permission = ''
     constructor_path = ''
@@ -607,7 +601,7 @@ class ScriptableTypeInformation(TypeInformation):
         order to construct an instance?
         """
         permission = self.permission
-        if permission and not _checkPermission( permission, container ):
+        if permission and not _checkPermission(permission, container):
             return 0
         return self._checkWorkflowAllowed(container)
 
@@ -617,13 +611,13 @@ class ScriptableTypeInformation(TypeInformation):
 
         Does not do any security checks.
         """
-        constructor = self.restrictedTraverse( self.constructor_path )
+        constructor = self.restrictedTraverse(self.constructor_path)
 
         # make sure ownership is explicit before switching the context
-        if not hasattr( aq_base(constructor), '_owner' ):
+        if not hasattr(aq_base(constructor), '_owner'):
             constructor._owner = aq_get(constructor, '_owner')
         #   Rewrap to get into container's context.
-        constructor = aq_base(constructor).__of__( container )
+        constructor = aq_base(constructor).__of__(container)
 
         id = str(id)
         obj = constructor(container, id, *args, **kw)
@@ -659,23 +653,21 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
 
     security = ClassSecurityInfo()
 
-    manage_options = ( OrderedFolder.manage_options[:1]
-                     + ( {'label':'Aliases',
-                          'action':'manage_aliases'}, )
-                     + ActionProviderBase.manage_options
-                     + ( {'label':'Overview',
-                          'action':'manage_overview'}, )
-                     + OrderedFolder.manage_options[1:]
-                     )
+    manage_options = (
+        OrderedFolder.manage_options[:1] +
+        ({'label': 'Aliases', 'action': 'manage_aliases'},) +
+        ActionProviderBase.manage_options +
+        ({'label': 'Overview', 'action': 'manage_overview'},) +
+        OrderedFolder.manage_options[1:])
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainTypesTool', _dtmldir )
+    manage_overview = DTMLFile('explainTypesTool', _dtmldir)
 
     security.declareProtected(ManagePortal, 'manage_aliases')
-    manage_aliases = PageTemplateFile( 'typesAliases.zpt', _wwwdir )
+    manage_aliases = PageTemplateFile('typesAliases.zpt', _wwwdir)
 
     #
     #   ObjectManager methods
@@ -706,8 +698,8 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                 klass = mt['instance']
                 break
         else:
-            raise ValueError, (
-                'Meta type %s is not a type class.' % add_meta_type)
+            raise ValueError('Meta type %s is not a type class.'
+                             % add_meta_type)
         id = str(id)
         ob = klass(id)
         self._setObject(id, ob)
@@ -727,14 +719,14 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
 
         for ti in self.listTypeInfo():
             _dict = {}
-            for k, v in form[ ti.getId() ].items():
-                if aliases.has_key(k):
-                    _dict[ aliases[k] ] = v
+            for k, v in form[ti.getId()].items():
+                if k in aliases:
+                    _dict[aliases[k]] = v
             ti.setMethodAliases(_dict)
         REQUEST.RESPONSE.redirect('%s/manage_aliases' % self.absolute_url())
 
     security.declareProtected(AccessContentsInformation, 'getTypeInfo')
-    def getTypeInfo( self, contentType ):
+    def getTypeInfo(self, contentType):
         """
             Return an instance which implements the
             TypeInformation interface, corresponding to
@@ -749,14 +741,14 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                     return None
             else:
                 return None
-        ob = getattr( self, contentType, None )
+        ob = getattr(self, contentType, None)
         if ITypeInformation.providedBy(ob):
             return ob
         else:
             return None
 
     security.declareProtected(AccessContentsInformation, 'listTypeInfo')
-    def listTypeInfo( self, container=None ):
+    def listTypeInfo(self, container=None):
         """
             Return a sequence of instances which implement the
             TypeInformation interface, one for each content
@@ -784,7 +776,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         removed when CMFCore/dtml/catalogFind.dtml doesn't need it anymore.
         """
         typenames = {}
-        for t in self.listTypeInfo( container ):
+        for t in self.listTypeInfo(container):
 
             if by_metatype:
                 warn('TypeInformation.listContentTypes(by_metatype=1) is '
@@ -795,39 +787,33 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                 name = t.getId()
 
             if name:
-                typenames[ name ] = None
+                typenames[name] = None
 
         result = typenames.keys()
         result.sort()
         return result
 
     security.declarePublic('constructContent')
-    def constructContent( self
-                        , type_name
-                        , container
-                        , id
-                        , RESPONSE=None
-                        , *args
-                        , **kw
-                        ):
+    def constructContent(self, type_name, container, id, RESPONSE=None, *args,
+                         **kw):
         """
             Build an instance of the appropriate content class in
             'container', using 'id'.
         """
-        info = self.getTypeInfo( type_name )
+        info = self.getTypeInfo(type_name)
         if info is None:
             raise ValueError('No such content type: %s' % type_name)
 
         ob = info.constructInstance(container, id, *args, **kw)
 
         if RESPONSE is not None:
-            immediate_url = '%s/%s' % ( ob.absolute_url()
-                                      , info.immediate_view )
-            RESPONSE.redirect( immediate_url )
+            immediate_url = '%s/%s' % (ob.absolute_url(),
+                                       info.immediate_view)
+            RESPONSE.redirect(immediate_url)
 
         return ob.getId()
 
-    security.declarePrivate( 'listActions' )
+    security.declarePrivate('listActions')
     def listActions(self, info=None, object=None):
         """ List all the actions defined by a provider.
         """
@@ -843,7 +829,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         if object is not None:
             type_info = self.getTypeInfo(object)
             if type_info is not None:
-                actions.extend( type_info.listActions(info, object) )
+                actions.extend(type_info.listActions(info, object))
 
         add_actions = [ ti for ti in self.objectValues()
                         if IAction.providedBy(ti) ]

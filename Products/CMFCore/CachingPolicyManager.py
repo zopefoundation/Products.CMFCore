@@ -54,7 +54,7 @@ VIEW_METATYPES = (
     )
 
 
-def createCPContext( content, view_method, keywords, time=None ):
+def createCPContext(content, view_method, keywords, time=None):
     """
         Construct an expression context for TALES expressions,
         for use by CachingPolicy objects.
@@ -70,18 +70,18 @@ def createCPContext( content, view_method, keywords, time=None ):
 
     # The name "content" is deprecated and will go away in CMF 2.0,
     # please use "object" in your policy
-    data = { 'content'  : content
-           , 'object'   : content
-           , 'view'     : view_method
-           , 'keywords' : keywords
-           , 'request'  : getattr( content, 'REQUEST', {} )
-           , 'member'   : member
-           , 'modules'  : SecureModuleImporter
-           , 'nothing'  : None
-           , 'time'     : time
-           }
+    data = {'content': content,
+            'object': content,
+            'view': view_method,
+            'keywords': keywords,
+            'request': getattr(content, 'REQUEST', {}),
+            'member': member,
+            'modules': SecureModuleImporter,
+            'nothing': None,
+            'time': time}
 
-    return getEngine().getContext( data )
+    return getEngine().getContext(data)
+
 
 class CPMCache(Cache):
     """ Simple OFS.Cache-implementation
@@ -92,7 +92,7 @@ class CPMCache(Cache):
     def ZCache_invalidate(self, ob):
         """ An object is forced out of the cache
 
-        This implementation stores nothing and does not attempt to 
+        This implementation stores nothing and does not attempt to
         communicate with cache servers, so this is a no-op.
         """
         pass
@@ -158,17 +158,17 @@ class CachingPolicy:
             set using 's_max_age_secs', if passed;  it should be an integer
             value in seconds.
 
-          - The "Vary" HTTP response headers will be set if a value is 
+          - The "Vary" HTTP response headers will be set if a value is
             provided. The Vary header is described in RFC 2616. In essence,
             it instructs caches that respect this header (such as Squid
             after version 2.4) to distinguish between requests not just by
             the request URL, but also by values found in the headers showing
-            in the Vary tag. "Vary: Cookie" would force Squid to also take 
-            Cookie headers into account when deciding what cached object to 
+            in the Vary tag. "Vary: Cookie" would force Squid to also take
+            Cookie headers into account when deciding what cached object to
             choose and serve in response to a request.
 
           - The "ETag" HTTP response header will be set if a value is
-            provided. The value is a TALES expression and the result 
+            provided. The value is a TALES expression and the result
             after evaluation will be used as the ETag header value.
 
           - Other tokens will be added to the "Cache-control" HTTP response
@@ -210,27 +210,25 @@ class CachingPolicy:
 
     implements(ICachingPolicy)
 
-    def __init__( self
-                , policy_id
-                , predicate=''
-                , mtime_func=''
-                , max_age_secs=None
-                , no_cache=0
-                , no_store=0
-                , must_revalidate=0
-                , vary=''
-                , etag_func=''
-                , s_max_age_secs=None
-                , proxy_revalidate=0
-                , public=0
-                , private=0
-                , no_transform=0
-                , enable_304s=0
-                , last_modified=1
-                , pre_check=None
-                , post_check=None
-                ):
-
+    def __init__(self,
+                 policy_id,
+                 predicate='',
+                 mtime_func='',
+                 max_age_secs=None,
+                 no_cache=0,
+                 no_store=0,
+                 must_revalidate=0,
+                 vary='',
+                 etag_func='',
+                 s_max_age_secs=None,
+                 proxy_revalidate=0,
+                 public=0,
+                 private=0,
+                 no_transform=0,
+                 enable_304s=0,
+                 last_modified=1,
+                 pre_check=None,
+                 post_check=None):
         if not predicate:
             predicate = 'python:1'
 
@@ -241,13 +239,13 @@ class CachingPolicy:
             if str(max_age_secs).strip() == '':
                 max_age_secs = None
             else:
-                max_age_secs = int( max_age_secs )
+                max_age_secs = int(max_age_secs)
 
         if s_max_age_secs is not None:
             if str(s_max_age_secs).strip() == '':
                 s_max_age_secs = None
             else:
-                s_max_age_secs = int( s_max_age_secs )
+                s_max_age_secs = int(s_max_age_secs)
 
         if pre_check is not None:
             if str(pre_check).strip() == '':
@@ -262,90 +260,90 @@ class CachingPolicy:
                 post_check = int(post_check)
 
         self._policy_id = policy_id
-        self._predicate = Expression( text=predicate )
-        self._mtime_func = Expression( text=mtime_func )
+        self._predicate = Expression(text=predicate)
+        self._mtime_func = Expression(text=mtime_func)
         self._max_age_secs = max_age_secs
         self._s_max_age_secs = s_max_age_secs
-        self._no_cache = int( no_cache )
-        self._no_store = int( no_store )
-        self._must_revalidate = int( must_revalidate )
-        self._proxy_revalidate = int( proxy_revalidate )
-        self._public = int( public )
-        self._private = int( private )
-        self._no_transform = int( no_transform )
+        self._no_cache = int(no_cache)
+        self._no_store = int(no_store)
+        self._must_revalidate = int(must_revalidate)
+        self._proxy_revalidate = int(proxy_revalidate)
+        self._public = int(public)
+        self._private = int(private)
+        self._no_transform = int(no_transform)
         self._vary = vary
-        self._etag_func = Expression( text=etag_func )
-        self._enable_304s = int ( enable_304s )
-        self._last_modified = int( last_modified )
+        self._etag_func = Expression(text=etag_func)
+        self._enable_304s = int(enable_304s)
+        self._last_modified = int(last_modified)
         self._pre_check = pre_check
         self._post_check = post_check
 
-    def getPolicyId( self ):
+    def getPolicyId(self):
         """
         """
         return self._policy_id
 
-    def getPredicate( self ):
+    def getPredicate(self):
         """
         """
         return self._predicate.text
 
-    def getMTimeFunc( self ):
+    def getMTimeFunc(self):
         """
         """
         return self._mtime_func.text
 
-    def getMaxAgeSecs( self ):
+    def getMaxAgeSecs(self):
         """
         """
         return self._max_age_secs
 
-    def getSMaxAgeSecs( self ):
+    def getSMaxAgeSecs(self):
         """
         """
         return getattr(self, '_s_max_age_secs', None)
 
-    def getNoCache( self ):
+    def getNoCache(self):
         """
         """
         return self._no_cache
 
-    def getNoStore( self ):
+    def getNoStore(self):
         """
         """
         return self._no_store
 
-    def getMustRevalidate( self ):
+    def getMustRevalidate(self):
         """
         """
         return self._must_revalidate
 
-    def getProxyRevalidate( self ):
+    def getProxyRevalidate(self):
         """
         """
         return getattr(self, '_proxy_revalidate', 0)
 
-    def getPublic( self ):
+    def getPublic(self):
         """
         """
         return getattr(self, '_public', 0)
 
-    def getPrivate( self ):
+    def getPrivate(self):
         """
         """
         return getattr(self, '_private', 0)
 
-    def getNoTransform( self ):
+    def getNoTransform(self):
         """
         """
         return getattr(self, '_no_transform', 0)
 
-    def getVary( self ):
+    def getVary(self):
         """
         """
         return getattr(self, '_vary', '')
 
-    def getETagFunc( self ):
+    def getETagFunc(self):
         """
         """
         etag_func_text = ''
@@ -379,7 +377,7 @@ class CachingPolicy:
         """ Does this request match our predicate?"""
         return self._predicate(expr_context)
 
-    def getHeaders( self, expr_context ):
+    def getHeaders(self, expr_context):
         """
             Does this request match our predicate?  If so, return a
             sequence of caching headers as ( key, value ) tuples.
@@ -387,49 +385,50 @@ class CachingPolicy:
         """
         headers = []
 
-        if self.testPredicate( expr_context ):
+        if self.testPredicate(expr_context):
 
             if self.getLastModified():
-                mtime = self._mtime_func( expr_context )
-                if type( mtime ) is type( '' ):
-                    mtime = DateTime( mtime )
+                mtime = self._mtime_func(expr_context)
+                if type(mtime) is type(''):
+                    mtime = DateTime(mtime)
                 if mtime is not None:
                     mtime_str = rfc1123_date(mtime.timeTime())
-                    headers.append( ( 'Last-modified', mtime_str ) )
+                    headers.append(('Last-modified', mtime_str))
 
             control = []
 
             if self.getMaxAgeSecs() is not None:
-                now = expr_context.vars[ 'time' ]
-                exp_time_str = rfc1123_date(now.timeTime() + self._max_age_secs)
-                headers.append( ( 'Expires', exp_time_str ) )
-                control.append( 'max-age=%d' % self._max_age_secs )
+                now = expr_context.vars['time']
+                exp_time_str = rfc1123_date(now.timeTime()
+                                            + self._max_age_secs)
+                headers.append(('Expires', exp_time_str))
+                control.append('max-age=%d' % self._max_age_secs)
 
             if self.getSMaxAgeSecs() is not None:
-                control.append( 's-maxage=%d' % self._s_max_age_secs )
+                control.append('s-maxage=%d' % self._s_max_age_secs)
 
             if self.getNoCache():
-                control.append( 'no-cache' )
+                control.append('no-cache')
                 # The following is for HTTP 1.0 clients
                 headers.append(('Pragma', 'no-cache'))
 
             if self.getNoStore():
-                control.append( 'no-store' )
+                control.append('no-store')
 
             if self.getPublic():
-                control.append( 'public' )
+                control.append('public')
 
             if self.getPrivate():
-                control.append( 'private' )
+                control.append('private')
 
             if self.getMustRevalidate():
-                control.append( 'must-revalidate' )
+                control.append('must-revalidate')
 
             if self.getProxyRevalidate():
-                control.append( 'proxy-revalidate' )
+                control.append('proxy-revalidate')
 
             if self.getNoTransform():
-                control.append( 'no-transform' )
+                control.append('no-transform')
 
             pre_check = self.getPreCheck()
             if pre_check is not None:
@@ -440,19 +439,18 @@ class CachingPolicy:
                 control.append('post-check=%d' % post_check)
 
             if control:
-                headers.append( ( 'Cache-control', ', '.join( control ) ) )
+                headers.append(('Cache-control', ', '.join(control)))
 
             if self.getVary():
-                headers.append( ( 'Vary', self._vary ) )
+                headers.append(('Vary', self._vary))
 
             if self.getETagFunc():
-                headers.append( ( 'ETag', self._etag_func( expr_context ) ) )
+                headers.append(('ETag', self._etag_func(expr_context)))
 
         return headers
 
 
-
-class CachingPolicyManager( SimpleItem, CacheManager ):
+class CachingPolicyManager(SimpleItem, CacheManager):
     """
         Manage the set of CachingPolicy objects for the site;  dispatch
         to them from skin methods.
@@ -466,54 +464,49 @@ class CachingPolicyManager( SimpleItem, CacheManager ):
 
     security = ClassSecurityInfo()
 
-    def __init__( self ):
+    def __init__(self):
         self._policy_ids = ()
         self._policies = PersistentMapping()
 
     #
     #   ZMI
     #
-    manage_options = ( ( { 'label'  : 'Policies'
-                         , 'action' : 'manage_cachingPolicies'
-                         , 'help'   : ('CMFCore', 'CPMPolicies.stx')
-                         }
-                       ,
-                       )
-                     + CacheManager.manage_options
-                     + SimpleItem.manage_options
-                     )
+    manage_options = (
+        ({'label': 'Policies', 'action': 'manage_cachingPolicies',
+          'help': ('CMFCore', 'CPMPolicies.stx')},) +
+        CacheManager.manage_options +
+        SimpleItem.manage_options)
 
-    security.declareProtected( ManagePortal, 'manage_cachingPolicies' )
-    manage_cachingPolicies = DTMLFile( 'cachingPolicies', _dtmldir )
+    security.declareProtected(ManagePortal, 'manage_cachingPolicies')
+    manage_cachingPolicies = DTMLFile('cachingPolicies', _dtmldir)
 
-    security.declarePublic( 'listPolicies' )
-    def listPolicies( self ):
+    security.declarePublic('listPolicies')
+    def listPolicies(self):
         """List '(id, (policy, typeObjectName))' tuples for all policies.
         """
         return tuple([ (id, self._policies[id]) for id in self._policy_ids ])
 
-    security.declareProtected( ManagePortal, 'addPolicy' )
-    def addPolicy( self
-                 , policy_id
-                 , predicate           # TALES expr (def. 'python:1')
-                 , mtime_func          # TALES expr (def. 'object/modified')
-                 , max_age_secs        # integer, seconds (def. 0)
-                 , no_cache            # boolean (def. 0)
-                 , no_store            # boolean (def. 0)
-                 , must_revalidate     # boolean (def. 0)
-                 , vary                # string value
-                 , etag_func           # TALES expr (def. '')
-                 , REQUEST=None
-                 , s_max_age_secs=None # integer, seconds (def. None)
-                 , proxy_revalidate=0  # boolean (def. 0)
-                 , public=0            # boolean (def. 0)
-                 , private=0           # boolean (def. 0)
-                 , no_transform=0      # boolean (def. 0)
-                 , enable_304s=0       # boolean (def. 0)
-                 , last_modified=1     # boolean (def. 1)
-                 , pre_check=None      # integer, default None
-                 , post_check=None     # integer, default None
-                 ):
+    security.declareProtected(ManagePortal, 'addPolicy')
+    def addPolicy(self,
+                  policy_id,
+                  predicate, # TALES expr (def. 'python:1')
+                  mtime_func, # TALES expr (def. 'object/modified')
+                  max_age_secs, # integer, seconds (def. 0)
+                  no_cache, # boolean (def. 0)
+                  no_store, # boolean (def. 0)
+                  must_revalidate, # boolean (def. 0)
+                  vary, # string value
+                  etag_func, # TALES expr (def. '')
+                  REQUEST=None,
+                  s_max_age_secs=None, # integer, seconds (def. None)
+                  proxy_revalidate=0, # boolean (def. 0)
+                  public=0, # boolean (def. 0)
+                  private=0, # boolean (def. 0)
+                  no_transform=0, # boolean (def. 0)
+                  enable_304s=0, # boolean (def. 0)
+                  last_modified=1, # boolean (def. 1)
+                  pre_check=None, # integer, default None
+                  post_check=None): # integer, default None
         """
             Add a caching policy.
         """
@@ -537,54 +530,51 @@ class CachingPolicyManager( SimpleItem, CacheManager ):
         else:
             post_check = int(post_check)
 
-        self._addPolicy( policy_id
-                       , predicate
-                       , mtime_func
-                       , max_age_secs
-                       , no_cache
-                       , no_store
-                       , must_revalidate
-                       , vary
-                       , etag_func
-                       , s_max_age_secs
-                       , proxy_revalidate
-                       , public
-                       , private
-                       , no_transform
-                       , enable_304s
-                       , last_modified
-                       , pre_check
-                       , post_check
-                       )
-        if REQUEST is not None: 
-            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                                          + '/manage_cachingPolicies'
-                                          + '?manage_tabs_message='
-                                          + 'Policy+added.'
-                                          )
+        self._addPolicy(policy_id,
+                        predicate,
+                        mtime_func,
+                        max_age_secs,
+                        no_cache,
+                        no_store,
+                        must_revalidate,
+                        vary,
+                        etag_func,
+                        s_max_age_secs,
+                        proxy_revalidate,
+                        public,
+                        private,
+                        no_transform,
+                        enable_304s,
+                        last_modified,
+                        pre_check,
+                        post_check)
+        if REQUEST is not None:
+            REQUEST['RESPONSE'].redirect(self.absolute_url()
+                                         + '/manage_cachingPolicies'
+                                         + '?manage_tabs_message='
+                                         + 'Policy+added.')
 
-    security.declareProtected( ManagePortal, 'updatePolicy' )
-    def updatePolicy( self
-                    , policy_id
-                    , predicate           # TALES expr (def. 'python:1')
-                    , mtime_func          # TALES expr (def. 'object/modified')
-                    , max_age_secs        # integer, seconds (def. 0)
-                    , no_cache            # boolean (def. 0)
-                    , no_store            # boolean (def. 0)
-                    , must_revalidate     # boolean (def. 0)
-                    , vary                # string value
-                    , etag_func           # TALES expr (def. '')
-                    , REQUEST=None
-                    , s_max_age_secs=None # integer, seconds (def. 0)
-                    , proxy_revalidate=0  # boolean (def. 0)
-                    , public=0            # boolean (def. 0)
-                    , private=0           # boolean (def. 0)
-                    , no_transform=0      # boolean (def. 0)
-                    , enable_304s=0       # boolean (def. 0)
-                    , last_modified=1     # boolean (def. 1)
-                    , pre_check=0         # integer, default=None
-                    , post_check=0        # integer, default=None
-                    ):
+    security.declareProtected(ManagePortal, 'updatePolicy')
+    def updatePolicy(self,
+                     policy_id,
+                     predicate, # TALES expr (def. 'python:1')
+                     mtime_func, # TALES expr (def. 'object/modified')
+                     max_age_secs, # integer, seconds (def. 0)
+                     no_cache, # boolean (def. 0)
+                     no_store, # boolean (def. 0)
+                     must_revalidate, # boolean (def. 0)
+                     vary, # string value
+                     etag_func, # TALES expr (def. '')
+                     REQUEST=None,
+                     s_max_age_secs=None, # integer, seconds (def. 0)
+                     proxy_revalidate=0, # boolean (def. 0)
+                     public=0, # boolean (def. 0)
+                     private=0, # boolean (def. 0)
+                     no_transform=0, # boolean (def. 0)
+                     enable_304s=0, # boolean (def. 0)
+                     last_modified=1, # boolean (def. 1)
+                     pre_check=0, # integer, default=None
+                     post_check=0): # integer, default=None
         """
             Update a caching policy.
         """
@@ -608,214 +598,204 @@ class CachingPolicyManager( SimpleItem, CacheManager ):
         else:
             post_check = int(post_check)
 
-        self._updatePolicy( policy_id
-                          , predicate
-                          , mtime_func
-                          , max_age_secs
-                          , no_cache
-                          , no_store
-                          , must_revalidate
-                          , vary
-                          , etag_func
-                          , s_max_age_secs
-                          , proxy_revalidate
-                          , public
-                          , private
-                          , no_transform
-                          , enable_304s
-                          , last_modified
-                          , pre_check
-                          , post_check
-                          )
-        if REQUEST is not None: 
-            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                                          + '/manage_cachingPolicies'
-                                          + '?manage_tabs_message='
-                                          + 'Policy+updated.'
-                                          )
+        self._updatePolicy(policy_id,
+                           predicate,
+                           mtime_func,
+                           max_age_secs,
+                           no_cache,
+                           no_store,
+                           must_revalidate,
+                           vary,
+                           etag_func,
+                           s_max_age_secs,
+                           proxy_revalidate,
+                           public,
+                           private,
+                           no_transform,
+                           enable_304s,
+                           last_modified,
+                           pre_check,
+                           post_check)
+        if REQUEST is not None:
+            REQUEST['RESPONSE'].redirect(self.absolute_url()
+                                         + '/manage_cachingPolicies'
+                                         + '?manage_tabs_message='
+                                         + 'Policy+updated.')
 
-    security.declareProtected( ManagePortal, 'movePolicyUp' )
-    def movePolicyUp( self, policy_id, REQUEST=None ):
+    security.declareProtected(ManagePortal, 'movePolicyUp')
+    def movePolicyUp(self, policy_id, REQUEST=None):
         """
             Move a caching policy up in the list.
         """
-        policy_ids = list( self._policy_ids )
-        ndx = policy_ids.index( policy_id )
+        policy_ids = list(self._policy_ids)
+        ndx = policy_ids.index(policy_id)
         if ndx == 0:
             msg = "Policy+already+first."
         else:
-            self._reorderPolicy( policy_id, ndx - 1 )
+            self._reorderPolicy(policy_id, ndx - 1)
             msg = "Policy+moved."
         if REQUEST is not None:
-            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                              + '/manage_cachingPolicies'
-                              + '?manage_tabs_message=%s' % msg
-                              )
+            REQUEST['RESPONSE'].redirect(self.absolute_url()
+                                         + '/manage_cachingPolicies'
+                                         + '?manage_tabs_message=%s' % msg)
 
-    security.declareProtected( ManagePortal, 'movePolicyDown' )
-    def movePolicyDown( self, policy_id, REQUEST=None ):
+    security.declareProtected(ManagePortal, 'movePolicyDown')
+    def movePolicyDown(self, policy_id, REQUEST=None):
         """
             Move a caching policy down in the list.
         """
-        policy_ids = list( self._policy_ids )
-        ndx = policy_ids.index( policy_id )
-        if ndx == len( policy_ids ) - 1:
+        policy_ids = list(self._policy_ids)
+        ndx = policy_ids.index(policy_id)
+        if ndx == len(policy_ids) - 1:
             msg = "Policy+already+last."
         else:
-            self._reorderPolicy( policy_id, ndx + 1 )
+            self._reorderPolicy(policy_id, ndx + 1)
             msg = "Policy+moved."
         if REQUEST is not None:
-            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                              + '/manage_cachingPolicies'
-                              + '?manage_tabs_message=%s' % msg
-                              )
+            REQUEST['RESPONSE'].redirect(self.absolute_url()
+                                         + '/manage_cachingPolicies'
+                                         + '?manage_tabs_message=%s' % msg)
 
-    security.declareProtected( ManagePortal, 'removePolicy' )
-    def removePolicy( self, policy_id, REQUEST=None ):
+    security.declareProtected(ManagePortal, 'removePolicy')
+    def removePolicy(self, policy_id, REQUEST=None):
         """
             Remove a caching policy.
         """
-        self._removePolicy( policy_id )
+        self._removePolicy(policy_id)
         if REQUEST is not None:
-            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                              + '/manage_cachingPolicies'
-                              + '?manage_tabs_message=Policy+removed.'
-                              )
+            REQUEST['RESPONSE'].redirect(self.absolute_url()
+                                      + '/manage_cachingPolicies'
+                                      + '?manage_tabs_message=Policy+removed.')
 
     #
     #   Policy manipulation methods.
     #
-    security.declarePrivate( '_addPolicy' )
-    def _addPolicy( self
-                  , policy_id
-                  , predicate
-                  , mtime_func
-                  , max_age_secs
-                  , no_cache
-                  , no_store
-                  , must_revalidate
-                  , vary
-                  , etag_func
-                  , s_max_age_secs=None
-                  , proxy_revalidate=0
-                  , public=0
-                  , private=0
-                  , no_transform=0
-                  , enable_304s=0
-                  , last_modified=1
-                  , pre_check=None
-                  , post_check=None
-                  ):
+    security.declarePrivate('_addPolicy')
+    def _addPolicy(self,
+                   policy_id,
+                   predicate,
+                   mtime_func,
+                   max_age_secs,
+                   no_cache,
+                   no_store,
+                   must_revalidate,
+                   vary,
+                   etag_func,
+                   s_max_age_secs=None,
+                   proxy_revalidate=0,
+                   public=0,
+                   private=0,
+                   no_transform=0,
+                   enable_304s=0,
+                   last_modified=1,
+                   pre_check=None,
+                   post_check=None):
         """
             Add a policy to our registry.
         """
-        policy_id = str( policy_id ).strip()
+        policy_id = str(policy_id).strip()
 
         if not policy_id:
-            raise ValueError, "Policy ID is required!"
+            raise ValueError("Policy ID is required!")
 
         if policy_id in self._policy_ids:
-            raise KeyError, "Policy %s already exists!" % policy_id
+            raise KeyError("Policy %s already exists!" % policy_id)
 
-        self._policies[ policy_id ] = CachingPolicy( policy_id
-                                                   , predicate
-                                                   , mtime_func
-                                                   , max_age_secs
-                                                   , no_cache
-                                                   , no_store
-                                                   , must_revalidate
-                                                   , vary
-                                                   , etag_func
-                                                   , s_max_age_secs
-                                                   , proxy_revalidate
-                                                   , public
-                                                   , private
-                                                   , no_transform
-                                                   , enable_304s
-                                                   , last_modified
-                                                   , pre_check
-                                                   , post_check
-                                                   )
-        idlist = list( self._policy_ids )
-        idlist.append( policy_id )
-        self._policy_ids = tuple( idlist )
+        self._policies[policy_id] = CachingPolicy(policy_id,
+                                                  predicate,
+                                                  mtime_func,
+                                                  max_age_secs,
+                                                  no_cache,
+                                                  no_store,
+                                                  must_revalidate,
+                                                  vary,
+                                                  etag_func,
+                                                  s_max_age_secs,
+                                                  proxy_revalidate,
+                                                  public,
+                                                  private,
+                                                  no_transform,
+                                                  enable_304s,
+                                                  last_modified,
+                                                  pre_check,
+                                                  post_check)
+        idlist = list(self._policy_ids)
+        idlist.append(policy_id)
+        self._policy_ids = tuple(idlist)
 
-    security.declarePrivate( '_updatePolicy' )
-    def _updatePolicy( self
-                     , policy_id
-                     , predicate
-                     , mtime_func
-                     , max_age_secs
-                     , no_cache
-                     , no_store
-                     , must_revalidate
-                     , vary
-                     , etag_func
-                     , s_max_age_secs=None
-                     , proxy_revalidate=0
-                     , public=0
-                     , private=0
-                     , no_transform=0
-                     , enable_304s=0
-                     , last_modified=1
-                     , pre_check=None
-                     , post_check=None
-                     ):
+    security.declarePrivate('_updatePolicy')
+    def _updatePolicy(self,
+                      policy_id,
+                      predicate,
+                      mtime_func,
+                      max_age_secs,
+                      no_cache,
+                      no_store,
+                      must_revalidate,
+                      vary,
+                      etag_func,
+                      s_max_age_secs=None,
+                      proxy_revalidate=0,
+                      public=0,
+                      private=0,
+                      no_transform=0,
+                      enable_304s=0,
+                      last_modified=1,
+                      pre_check=None,
+                      post_check=None):
         """
             Update a policy in our registry.
         """
         if policy_id not in self._policy_ids:
-            raise KeyError, "Policy %s does not exist!" % policy_id
+            raise KeyError("Policy %s does not exist!" % policy_id)
 
-        self._policies[ policy_id ] = CachingPolicy( policy_id
-                                                   , predicate
-                                                   , mtime_func
-                                                   , max_age_secs
-                                                   , no_cache
-                                                   , no_store
-                                                   , must_revalidate
-                                                   , vary
-                                                   , etag_func
-                                                   , s_max_age_secs
-                                                   , proxy_revalidate
-                                                   , public
-                                                   , private
-                                                   , no_transform
-                                                   , enable_304s
-                                                   , last_modified
-                                                   , pre_check
-                                                   , post_check
-                                                   )
+        self._policies[policy_id] = CachingPolicy(policy_id,
+                                                  predicate,
+                                                  mtime_func,
+                                                  max_age_secs,
+                                                  no_cache,
+                                                  no_store,
+                                                  must_revalidate,
+                                                  vary,
+                                                  etag_func,
+                                                  s_max_age_secs,
+                                                  proxy_revalidate,
+                                                  public,
+                                                  private,
+                                                  no_transform,
+                                                  enable_304s,
+                                                  last_modified,
+                                                  pre_check,
+                                                  post_check)
 
-    security.declarePrivate( '_reorderPolicy' )
-    def _reorderPolicy( self, policy_id, newIndex ):
+    security.declarePrivate('_reorderPolicy')
+    def _reorderPolicy(self, policy_id, newIndex):
         """
             Reorder a policy in our registry.
         """
         if policy_id not in self._policy_ids:
-            raise KeyError, "Policy %s does not exist!" % policy_id
+            raise KeyError("Policy %s does not exist!" % policy_id)
 
-        idlist = list( self._policy_ids )
-        ndx = idlist.index( policy_id )
-        pred = idlist[ ndx ]
-        idlist = idlist[ :ndx ] + idlist[ ndx+1: ]
-        idlist.insert( newIndex, pred )
-        self._policy_ids = tuple( idlist )
+        idlist = list(self._policy_ids)
+        ndx = idlist.index(policy_id)
+        pred = idlist[ndx]
+        idlist = idlist[:ndx] + idlist[ndx + 1:]
+        idlist.insert(newIndex, pred)
+        self._policy_ids = tuple(idlist)
 
-    security.declarePrivate( '_removePolicy' )
-    def _removePolicy( self, policy_id ):
+    security.declarePrivate('_removePolicy')
+    def _removePolicy(self, policy_id):
         """
             Remove a policy from our registry.
         """
         if policy_id not in self._policy_ids:
-            raise KeyError, "Policy %s does not exist!" % policy_id
+            raise KeyError("Policy %s does not exist!" % policy_id)
 
-        del self._policies[ policy_id ]
-        idlist = list( self._policy_ids )
-        ndx = idlist.index( policy_id )
-        idlist = idlist[ :ndx ] + idlist[ ndx+1: ]
-        self._policy_ids = tuple( idlist )
-
+        del self._policies[policy_id]
+        idlist = list(self._policy_ids)
+        ndx = idlist.index(policy_id)
+        idlist = idlist[:ndx] + idlist[ndx + 1:]
+        self._policy_ids = tuple(idlist)
 
     #
     #   'portal_caching' interface methods
@@ -899,16 +879,15 @@ def handleCachingPolicyManagerEvent(ob, event):
                 setattr(event.oldParent, ZCM_MANAGERS, tuple(ids))
 
 
-def manage_addCachingPolicyManager( self, REQUEST=None ):
+def manage_addCachingPolicyManager(self, REQUEST=None):
     """
         Add a CPM to self.
     """
     id = CachingPolicyManager.id
     mgr = CachingPolicyManager()
-    self._setObject( id, mgr )
+    self._setObject(id, mgr)
 
     if REQUEST is not None:
-        REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                      + '/manage_main'
-                      + '?manage_tabs_message=Caching+Policy+Manager+added.'
-                      )
+        REQUEST['RESPONSE'].redirect(self.absolute_url()
+                        + '/manage_main'
+                        + '?manage_tabs_message=Caching+Policy+Manager+added.')

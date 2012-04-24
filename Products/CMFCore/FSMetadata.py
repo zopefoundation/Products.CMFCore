@@ -10,13 +10,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Handles reading the properties for an object that comes from the filesystem.
+"""Handles reading the properties for an object that comes from the filesystem.
 """
 
 import logging
 from os.path import exists
 from ConfigParser import ConfigParser
-from warnings import warn
 
 import re
 
@@ -42,6 +41,7 @@ class CMFConfigParser(ConfigParser):
         Stop converting the key to lower case, very annoying for security etc
         """
         return optionstr.strip()
+
 
 class FSMetadata:
     # public API
@@ -115,8 +115,8 @@ class FSMetadata:
         eg: 1:Manager or 0:Manager,Anonymous
         """
         if data.find(':') < 1:
-            raise ValueError, "The security declaration of file " + \
-                  "%r is in the wrong format" % self._filename
+            raise ValueError("The security declaration of file " +
+                             "%r is in the wrong format" % self._filename)
 
         acquire, roles = data.split(':')
         roles = [r.strip() for r in roles.split(',') if r.strip()]
@@ -142,4 +142,3 @@ class FSMetadata:
         # we need to return None if we have none to be compatible
         # with existing API
         return None
-

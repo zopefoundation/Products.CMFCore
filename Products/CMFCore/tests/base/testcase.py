@@ -41,7 +41,7 @@ class LogInterceptor:
     def _catch_log_errors(self, ignored_level=logging.WARNING, subsystem=''):
 
         if subsystem in self.installed:
-            raise ValueError, 'Already installed filter!'
+            raise ValueError('Already installed filter!')
 
         root_logger = logging.getLogger(subsystem)
         self.installed += (subsystem,)
@@ -245,7 +245,8 @@ class WritableFSDVTest(FSDVTest):
 
     def setUp(self):
         # store the place where the skin copy will be created
-        self.tempname = mktemp(dir=getPackageLocation('Products.CMFCore.tests'))
+        self.tempname = mktemp(dir=getPackageLocation(
+                                                     'Products.CMFCore.tests'))
         # create the temporary folder
         mkdir(self.tempname)
         # copy the source fake skin to the new location

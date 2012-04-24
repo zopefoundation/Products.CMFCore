@@ -52,22 +52,21 @@ class CustomizedPythonScript(PythonScript):
     def getDiff(self):
         """ Return a diff of the current source with the original source.
         """
-        return unified_diff( self.original_source.splitlines()
-                           , self.read().splitlines()
-                           , 'original'
-                           , 'modified'
-                           , ''
-                           , ''
-                           , lineterm=""
-                           )
+        return unified_diff(self.original_source.splitlines(),
+                            self.read().splitlines(),
+                            'original',
+                            'modified',
+                            '',
+                            '',
+                            lineterm="")
 
     security.declareProtected(ViewManagementScreens, 'manage_showDiff')
     manage_showDiff = PageTemplateFile('www/cpsDiff.pt', globals())
 
-    manage_options = (PythonScript.manage_options[:1]
-                    + ({'label': 'Diff', 'action': 'manage_showDiff'},)
-                    + PythonScript.manage_options[1:]
-                     )
+    manage_options = (
+        PythonScript.manage_options[:1] +
+        ({'label': 'Diff', 'action': 'manage_showDiff'},) +
+        PythonScript.manage_options[1:])
 
 InitializeClass(CustomizedPythonScript)
 
@@ -82,10 +81,10 @@ class FSPythonScript(FSObject, Script):
     _proxy_roles = ()
     _owner = None  # Unowned
 
-    manage_options = ({'label':'Customize', 'action':'manage_main'},
-                      {'label':'Test', 'action':'ZScriptHTML_tryForm',
-                       'help': ('PythonScripts', 'PythonScript_test.stx')},
-                     )
+    manage_options = (
+        {'label': 'Customize', 'action': 'manage_main'},
+        {'label': 'Test', 'action': 'ZScriptHTML_tryForm',
+         'help': ('PythonScripts', 'PythonScript_test.stx')})
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -95,7 +94,7 @@ class FSPythonScript(FSObject, Script):
 
     security.declareProtected(View, 'index_html',)
     # Prevent the bindings from being edited TTW
-    security.declarePrivate('ZBindings_edit','ZBindingsHTML_editForm',
+    security.declarePrivate('ZBindings_edit', 'ZBindingsHTML_editForm',
                             'ZBindingsHTML_editAction')
 
     def _createZODBClone(self):
@@ -141,7 +140,7 @@ class FSPythonScript(FSObject, Script):
         for name in self._params.split(','):
             name = name.strip()
             if name and name[0] != '*':
-                param_names.append( name.split('=', 1)[0] )
+                param_names.append(name.split('=', 1)[0])
         return param_names
 
     security.declareProtected(ViewManagementScreens, 'read')
@@ -163,16 +162,19 @@ class FSPythonScript(FSObject, Script):
         return "%s\n%s" % (self._params, self._body)
 
     security.declareProtected(ViewManagementScreens, 'params')
-    def params(self): return self._params
+    def params(self):
+        return self._params
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
     manage_haveProxy = PythonScript.manage_haveProxy.im_func
 
     security.declareProtected(ViewManagementScreens, 'body')
-    def body(self): return self._body
+    def body(self):
+        return self._body
 
     security.declareProtected(ViewManagementScreens, 'get_size')
-    def get_size(self): return len(self.read())
+    def get_size(self):
+        return len(self.read())
 
     security.declareProtected(FTPAccess, 'manage_FTPget')
     def manage_FTPget(self):

@@ -27,11 +27,10 @@ from ZODB.POSException import ConflictError
 
 logger = logging.getLogger('CMFCore.Skinnable')
 
-
 _MARKER = object()  # Create a new marker object.
 
-
 SKINDATA = {} # mapping thread-id -> (skinobj, skinname, ignore, resolve)
+
 
 class SkinDataCleanup:
     """Cleanup at the end of the request."""
@@ -41,7 +40,7 @@ class SkinDataCleanup:
         tid = self.tid
         # Be extra careful in __del__
         if SKINDATA is not None:
-            if SKINDATA.has_key(tid):
+            if tid in SKINDATA:
                 del SKINDATA[tid]
 
 
@@ -66,7 +65,7 @@ class SkinnableObjectManager(ObjectManager):
         if name[0] not in ('_', '@', '+') and not name.startswith('aq_'):
             sd = SKINDATA.get(get_ident())
             if sd is not None:
-                ob, skinname, ignore, resolve = sd
+                ob, _skinname, ignore, resolve = sd
                 if not name in ignore:
                     if name in resolve:
                         return resolve[name]
@@ -131,7 +130,7 @@ class SkinnableObjectManager(ObjectManager):
         '''
         sd = SKINDATA.get(get_ident())
         if sd is not None:
-            ob, skinname, ignore, resolve = sd
+            _ob, skinname, _ignore, _resolve = sd
             if skinname is not None:
                 return skinname
         # nothing here, so assume the default skin
@@ -147,7 +146,7 @@ class SkinnableObjectManager(ObjectManager):
     def clearCurrentSkin(self):
         """Clear the current skin."""
         tid = get_ident()
-        if SKINDATA.has_key(tid):
+        if tid in SKINDATA:
             del SKINDATA[tid]
 
     security.declarePublic('setupCurrentSkin')
@@ -160,7 +159,7 @@ class SkinnableObjectManager(ObjectManager):
         '''
         if REQUEST is None:
             return
-        if SKINDATA.has_key(get_ident()):
+        if get_ident() in SKINDATA:
             # Already set up for this request.
             return
         skinname = self.getSkinNameFromRequest(REQUEST)
@@ -190,7 +189,7 @@ class SkinnableObjectManager(ObjectManager):
             if sd is not None:
                 del SKINDATA[tid]
             try:
-                base = getattr(self,  'aq_base', self)
+                base = getattr(self, 'aq_base', self)
                 if not hasattr(base, id):
                     # Cause _checkId to not check for duplication.
                     return superCheckId(self, id, allow_dup=1)

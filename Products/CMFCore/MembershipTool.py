@@ -73,25 +73,22 @@ class MembershipTool(UniqueObject, Folder):
 
     security = ClassSecurityInfo()
 
-    manage_options=( ({ 'label' : 'Configuration'
-                     , 'action' : 'manage_mapRoles'
-                     },) +
-                   ( { 'label' : 'Overview'
-                     , 'action' : 'manage_overview'
-                     },
-                   ) + Folder.manage_options)
+    manage_options = (
+        ({'label': 'Configuration', 'action': 'manage_mapRoles'},
+         {'label': 'Overview', 'action': 'manage_overview'}) +
+        Folder.manage_options)
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainMembershipTool', _dtmldir )
+    manage_overview = DTMLFile('explainMembershipTool', _dtmldir)
 
     #
     #   'portal_membership' interface methods
     #
     security.declareProtected(ManagePortal, 'manage_mapRoles')
-    manage_mapRoles = DTMLFile('membershipRolemapping', _dtmldir )
+    manage_mapRoles = DTMLFile('membershipRolemapping', _dtmldir)
 
     security.declareProtected(SetOwnPassword, 'setPassword')
     @postonly
@@ -163,7 +160,7 @@ class MembershipTool(UniqueObject, Folder):
         by the portal object
         """
         parent = self.aq_inner.aq_parent
-        roles = list( parent.userdefined_roles() )
+        roles = list(parent.userdefined_roles())
 
         # This is *not* a local role in the portal but used by it
         roles.append('Manager')
@@ -178,7 +175,8 @@ class MembershipTool(UniqueObject, Folder):
         set the mapping of roles between roles understood by
         the portal and roles coming from outside user sources
         """
-        if not hasattr(self, 'role_map'): self.role_map = PersistentMapping()
+        if not hasattr(self, 'role_map'):
+            self.role_map = PersistentMapping()
 
         if len(userfolder_role) < 1:
             del self.role_map[portal_role]
@@ -186,9 +184,9 @@ class MembershipTool(UniqueObject, Folder):
             self.role_map[portal_role] = userfolder_role
 
         return MessageDialog(
-               title  ='Mapping updated',
+               title='Mapping updated',
                message='The Role mappings have been updated',
-               action ='manage_mapRoles')
+               action='manage_mapRoles')
 
     security.declareProtected(ManagePortal, 'getMappedRole')
     def getMappedRole(self, portal_role):
@@ -239,9 +237,9 @@ class MembershipTool(UniqueObject, Folder):
             self.memberareaCreationFlag = 0
 
         return MessageDialog(
-               title  ='Member area creation flag changed',
+               title='Member area creation flag changed',
                message='Member area creation flag has been updated',
-               action ='manage_mapRoles')
+               action='manage_mapRoles')
 
     security.declarePublic('createMemberArea')
     def createMemberArea(self, member_id=''):
@@ -263,17 +261,17 @@ class MembershipTool(UniqueObject, Folder):
         else:
             member = self.getAuthenticatedMember()
             member_id = member.getId()
-        if hasattr( aq_base(members), member_id ):
+        if hasattr(aq_base(members), member_id):
             return None
         else:
             f_title = "%s's Home" % member_id
-            members.manage_addPortalFolder( id=member_id, title=f_title )
-            f=getattr(members, member_id)
+            members.manage_addPortalFolder(id=member_id, title=f_title)
+            f = getattr(members, member_id)
 
             f.manage_permission(View,
-                                ['Owner','Manager','Reviewer'], 0)
+                                ['Owner', 'Manager', 'Reviewer'], 0)
             f.manage_permission(AccessContentsInformation,
-                                ['Owner','Manager','Reviewer'], 0)
+                                ['Owner', 'Manager', 'Reviewer'], 0)
 
             # Grant Ownership and Owner role to Member
             f.changeOwnership(member)
@@ -292,7 +290,7 @@ class MembershipTool(UniqueObject, Folder):
         members = self.getMembersFolder()
         if not members:
             return 0
-        if hasattr( aq_base(members), member_id ):
+        if hasattr(aq_base(members), member_id):
             members.manage_delObjects(member_id)
             return 1
         else:
@@ -432,14 +430,14 @@ class MembershipTool(UniqueObject, Folder):
                       REQUEST=None):
         """ Add local roles on an item.
         """
-        if ( _checkPermission(ChangeLocalRoles, obj)
-             and member_role in self.getCandidateLocalRoles(obj) ):
+        if (_checkPermission(ChangeLocalRoles, obj)
+            and member_role in self.getCandidateLocalRoles(obj)):
             for member_id in member_ids:
-                roles = list(obj.get_local_roles_for_userid( userid=member_id ))
+                roles = list(obj.get_local_roles_for_userid(userid=member_id))
 
                 if member_role not in roles:
-                    roles.append( member_role )
-                    obj.manage_setLocalRoles( member_id, roles )
+                    roles.append(member_role)
+                    obj.manage_setLocalRoles(member_id, roles)
 
         if reindex and hasattr(aq_base(obj), 'reindexObjectSecurity'):
             obj.reindexObjectSecurity()
@@ -456,7 +454,7 @@ class MembershipTool(UniqueObject, Folder):
                     obj.manage_delLocalRoles(userids=member_ids)
                     break
 
-        if recursive and hasattr( aq_base(obj), 'contentValues' ):
+        if recursive and hasattr(aq_base(obj), 'contentValues'):
             for subobj in obj.contentValues():
                 self.deleteLocalRoles(subobj, member_ids, 0, 1)
 
@@ -512,8 +510,8 @@ class MembershipTool(UniqueObject, Folder):
 
         # Delete members' local roles.
         if delete_localroles:
-            self.deleteLocalRoles( getUtility(ISiteRoot), member_ids,
-                                   reindex=1, recursive=1 )
+            self.deleteLocalRoles(getUtility(ISiteRoot), member_ids,
+                                  reindex=1, recursive=1)
 
         return tuple(member_ids)
 

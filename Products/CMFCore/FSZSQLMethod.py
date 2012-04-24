@@ -39,10 +39,10 @@ class FSZSQLMethod(SQL, FSObject):
 
     meta_type = 'Filesystem Z SQL Method'
 
-    manage_options = ({'label':'Customize', 'action':'manage_customise'},
-                      {'label':'Test', 'action':'manage_testForm',
-                       'help':('ZSQLMethods', 'Z-SQL-Method_Test.stx')},
-                     )
+    manage_options = (
+        {'label': 'Customize', 'action': 'manage_customise'},
+        {'label': 'Test', 'action': 'manage_testForm',
+         'help': ('ZSQLMethods', 'Z-SQL-Method_Test.stx')})
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -90,34 +90,34 @@ class FSZSQLMethod(SQL, FSObject):
         # parse parameters
         parameters = {}
         start = data.find('<dtml-comment>')
-        end   = data.find('</dtml-comment>')
-        if start==-1 or end==-1 or start>end:
-            raise ValueError,'Could not find parameter block'
-        block = data[start+14:end]
+        end = data.find('</dtml-comment>')
+        if start == -1 or end == -1 or start > end:
+            raise ValueError('Could not find parameter block')
+        block = data[start + 14:end]
 
         for line in block.split('\n'):
-            pair = line.split(':',1)
-            if len(pair)!=2:
+            pair = line.split(':', 1)
+            if len(pair) != 2:
                 continue
-            parameters[pair[0].strip().lower()]=pair[1].strip()
+            parameters[pair[0].strip().lower()] = pair[1].strip()
 
         # check for required parameters
         try:
-            connection_id =   ( parameters.get('connection id', '') or
-                                parameters['connection_id'] )
-        except KeyError,e:
+            connection_id = (parameters.get('connection id', '') or
+                                parameters['connection_id'])
+        except KeyError, e:
             raise ValueError("The '%s' parameter is required "
                              "but was not supplied" % e)
 
         # Optional parameters
-        title =           parameters.get('title','')
-        arguments =       parameters.get('arguments','')
-        max_rows =        parameters.get('max_rows',1000)
-        max_cache =       parameters.get('max_cache',100)
-        cache_time =      parameters.get('cache_time',0)
-        class_name =      parameters.get('class_name','')
-        class_file =      parameters.get('class_file','')
-        connection_hook = parameters.get('connection_hook',None)
+        title = parameters.get('title', '')
+        arguments = parameters.get('arguments', '')
+        max_rows = parameters.get('max_rows', 1000)
+        max_cache = parameters.get('max_cache', 100)
+        cache_time = parameters.get('cache_time', 0)
+        class_name = parameters.get('class_name', '')
+        class_file = parameters.get('class_file', '')
+        connection_hook = parameters.get('connection_hook', None)
         direct = parameters.get('allow_simple_one_argument_traversal', None)
 
         self.manage_edit(title, connection_id, arguments, template=data)

@@ -73,23 +73,20 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
     security = ClassSecurityInfo()
 
-    manage_options=( ({'label': 'Overview',
-                       'action': 'manage_overview'},
-                      {'label': 'Contents',
-                       'action': 'manage_showContents'})
-                   + PropertyManager.manage_options
-                   + SimpleItem.manage_options
-                   )
+    manage_options = (
+        ({'label': 'Overview', 'action': 'manage_overview'},
+         {'label': 'Contents', 'action': 'manage_showContents'}) +
+        PropertyManager.manage_options +
+        SimpleItem.manage_options)
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainMemberDataTool', _dtmldir )
+    manage_overview = DTMLFile('explainMemberDataTool', _dtmldir)
 
     security.declareProtected(ViewManagementScreens, 'manage_showContents')
-    manage_showContents = DTMLFile('memberdataContents', _dtmldir )
-
+    manage_showContents = DTMLFile('memberdataContents', _dtmldir)
 
     def __init__(self):
         self._members = OOBTree()
@@ -114,8 +111,8 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
             if member not in user_list:
                 orphan_count = orphan_count + 1
 
-        return [{ 'member_count' : member_count,
-                  'orphan_count' : orphan_count }]
+        return [{'member_count': member_count,
+                 'orphan_count': orphan_count}]
 
     security.declarePrivate('searchMemberData')
     def searchMemberData(self, search_param, search_term, attributes=()):
@@ -153,8 +150,8 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
         return res
 
-    security.declarePrivate( 'searchMemberDataContents' )
-    def searchMemberDataContents( self, search_param, search_term ):
+    security.declarePrivate('searchMemberDataContents')
+    def searchMemberDataContents(self, search_param, search_term):
         """ Search members. This method will be deprecated soon. """
         res = []
 
@@ -165,18 +162,16 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
         for member_id in self._members.keys():
 
-            user_wrapper = mtool.getMemberById( member_id )
+            user_wrapper = mtool.getMemberById(member_id)
 
             if user_wrapper is not None:
                 memberProperty = user_wrapper.getProperty
-                searched = memberProperty( search_param, None )
+                searched = memberProperty(search_param, None)
 
                 if searched is not None and searched.find(search_term) != -1:
 
-                    res.append( { 'username': memberProperty( 'id' )
-                                , 'email' : memberProperty( 'email', '' )
-                                }
-                            )
+                    res.append({'username': memberProperty('id'),
+                                'email': memberProperty('email', '')})
         return res
 
     security.declarePrivate('pruneMemberDataContents')
@@ -210,7 +205,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         """ Delete member data of specified member.
         """
         members = self._members
-        if members.has_key(member_id):
+        if member_id in members:
             del members[member_id]
             return 1
         else:
@@ -281,12 +276,12 @@ class MemberAdapter(object):
         # Sets the properties given in the MemberDataTool.
         tool = self._tool
         for id in tool.propertyIds():
-            if mapping.has_key(id):
-                if not self._md.__class__.__dict__.has_key(id):
+            if id in mapping:
+                if not id in self._md.__class__.__dict__:
                     value = mapping[id]
                     if isinstance(value, str):
                         proptype = tool.getPropertyType(id) or 'string'
-                        if type_converters.has_key(proptype):
+                        if proptype in type_converters:
                             value = type_converters[proptype](value)
                     setattr(self._md, id, value)
         # Hopefully we can later make notifyModified() implicit.
@@ -310,7 +305,7 @@ class MemberAdapter(object):
             elif default is not _marker:
                 return default
             else:
-                raise ValueError, 'The property %s does not exist' % id
+                raise ValueError('The property %s does not exist' % id)
 
         # If the tool has an empty property and we have a user_value, use it
         if not tool_value and user_value is not _marker:

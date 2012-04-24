@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Foundation and Contributors.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """ Cookie Crumbler: Enable cookies for non-cookie user folders.
 """
@@ -61,10 +61,10 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     implements(ICookieCrumbler)
     id = 'cookie_authentication'
-    
-    manage_options=(PropertyManager.manage_options
-                   + SimpleItem.manage_options
-                   )
+
+    manage_options = (
+        PropertyManager.manage_options +
+        SimpleItem.manage_options)
 
     meta_type = 'Cookie Crumbler'
 
@@ -76,21 +76,20 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     # By default, anonymous users can view login/logout pages.
     _View_Permission = ('Anonymous',)
 
-
-    _properties = ({'id':'auth_cookie', 'type': 'string', 'mode':'w',
-                    'label':'Authentication cookie name'},
-                   {'id':'name_cookie', 'type': 'string', 'mode':'w',
-                    'label':'User name form variable'},
-                   {'id':'pw_cookie', 'type': 'string', 'mode':'w',
-                    'label':'User password form variable'},
-                   {'id':'persist_cookie', 'type': 'string', 'mode':'w',
-                    'label':'User name persistence form variable'},
-                   {'id':'local_cookie_path', 'type': 'boolean', 'mode':'w',
-                    'label':'Use cookie paths to limit scope'},
-                   {'id':'cache_header_value', 'type': 'string', 'mode':'w',
-                    'label':'Cache-Control header value'},
-                   {'id':'log_username', 'type':'boolean', 'mode': 'w',
-                    'label':'Log cookie auth username to access log'}
+    _properties = ({'id': 'auth_cookie', 'type': 'string', 'mode': 'w',
+                    'label': 'Authentication cookie name'},
+                   {'id': 'name_cookie', 'type': 'string', 'mode': 'w',
+                    'label': 'User name form variable'},
+                   {'id': 'pw_cookie', 'type': 'string', 'mode': 'w',
+                    'label': 'User password form variable'},
+                   {'id': 'persist_cookie', 'type': 'string', 'mode': 'w',
+                    'label': 'User name persistence form variable'},
+                   {'id': 'local_cookie_path', 'type': 'boolean', 'mode': 'w',
+                    'label': 'Use cookie paths to limit scope'},
+                   {'id': 'cache_header_value', 'type': 'string', 'mode': 'w',
+                    'label': 'Cache-Control header value'},
+                   {'id': 'log_username', 'type': 'boolean', 'mode': 'w',
+                    'label': 'Log cookie auth username to access log'}
                    )
 
     auth_cookie = '__ac'
@@ -105,21 +104,21 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     def delRequestVar(self, req, name):
         # No errors of any sort may propagate, and we don't care *what*
         # they are, even to log them.
-        try: 
+        try:
             del req.other[name]
-        except: 
+        except:
             pass
-        try: 
+        try:
             del req.form[name]
-        except: 
+        except:
             pass
-        try: 
+        try:
             del req.cookies[name]
-        except: 
+        except:
             pass
-        try: 
+        try:
             del req.environ[name]
-        except: 
+        except:
             pass
 
     security.declarePublic('getCookiePath')
@@ -150,7 +149,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     security.declarePrivate('defaultExpireAuthCookie')
     def defaultExpireAuthCookie(self, resp, cookie_name):
         resp.expireCookie(cookie_name, path=self.getCookiePath())
-    
+
     def _setAuthHeader(self, ac, request, response):
         """Set the auth headers for both the Zope and Medusa http request
         objects.
@@ -179,7 +178,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         """
         if (req.__class__ is not HTTPRequest
             or not req['REQUEST_METHOD'] in ('HEAD', 'GET', 'PUT', 'POST')
-            or req.environ.has_key('WEBDAV_SOURCE_PORT')):
+            or 'WEBDAV_SOURCE_PORT' in req.environ):
             raise CookieCrumblerDisabled
 
         # attempt may contain information about an earlier attempt to
@@ -193,7 +192,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 # created it.  The user must be using basic auth.
                 raise CookieCrumblerDisabled
 
-            if req.has_key(self.pw_cookie) and req.has_key(self.name_cookie):
+            if self.pw_cookie in req and self.name_cookie in req:
                 # Attempt to log in and set cookies.
                 attempt = ATTEMPT_LOGIN
                 name = req[self.name_cookie]
@@ -210,13 +209,13 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                     # Expire the user name
                     resp.expireCookie(self.name_cookie,
                                       path=self.getCookiePath())
-                method = self.getCookieMethod( 'setAuthCookie'
-                                             , self.defaultSetAuthCookie )
-                method( resp, self.auth_cookie, quote( ac ) )
+                method = self.getCookieMethod('setAuthCookie',
+                                              self.defaultSetAuthCookie)
+                method(resp, self.auth_cookie, quote(ac))
                 self.delRequestVar(req, self.name_cookie)
                 self.delRequestVar(req, self.pw_cookie)
 
-            elif req.has_key(self.auth_cookie):
+            elif self.auth_cookie in req:
                 # Attempt to resume a session if the cookie is valid.
                 # Copy __ac to the auth header.
                 ac = unquote(req[self.auth_cookie])
@@ -237,7 +236,6 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
         req._cookie_auth = attempt
         return attempt
-
 
     def __call__(self, container, req):
         '''The __before_publishing_traverse__ hook.'''

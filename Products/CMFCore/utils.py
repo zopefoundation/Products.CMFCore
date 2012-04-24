@@ -56,11 +56,11 @@ from Products.CMFCore.interfaces import ICachingPolicyManager
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 
-security = ModuleSecurityInfo( 'Products.CMFCore.utils' )
+security = ModuleSecurityInfo('Products.CMFCore.utils')
 
 _globals = globals()
-_dtmldir = os_path.join( package_home( globals() ), 'dtml' )
-_wwwdir = os_path.join( package_home( globals() ), 'www' )
+_dtmldir = os_path.join(package_home(globals()), 'dtml')
+_wwwdir = os_path.join(package_home(globals()), 'www')
 
 #
 #   Simple utility functions, callable from restricted code.
@@ -100,8 +100,8 @@ def getToolByName(obj, name, default=_marker):
         try:
             utility = getUtility(tool_interface)
             # Site managers, except for five.localsitemanager, return unwrapped
-            # utilities. If the result is something which is acquisition-unaware
-            # but unwrapped we wrap it on the context.
+            # utilities. If the result is something which is
+            # acquisition-unaware but unwrapped we wrap it on the context.
             if IAcquirer.providedBy(obj) and \
                     aq_parent(utility) is None and \
                     IAcquirer.providedBy(utility):
@@ -120,7 +120,7 @@ def getToolByName(obj, name, default=_marker):
         return default
     else:
         if tool is _marker:
-            raise AttributeError, name
+            raise AttributeError(name)
         return tool
 
 security.declarePublic('getUtilityByInterfaceName')
@@ -134,7 +134,7 @@ def getUtilityByInterfaceName(dotted_name, default=_marker):
         iface = resolve_dotted_name(dotted_name)
     except ImportError:
         if default is _marker:
-            raise ComponentLookupError, dotted_name
+            raise ComponentLookupError(dotted_name)
         return default
 
     try:
@@ -154,11 +154,11 @@ def cookString(text):
     o Lowercase the ID.
     """
     rgx = re.compile(r'(^_|[^a-zA-Z0-9-_~\,\.])')
-    cooked = re.sub(rgx, "",text).lower()
+    cooked = re.sub(rgx, "", text).lower()
     return cooked
 
 security.declarePublic('tuplize')
-def tuplize( valueName, value ):
+def tuplize(valueName, value):
 
     """ Make a tuple from 'value'.
 
@@ -167,10 +167,10 @@ def tuplize( valueName, value ):
     if isinstance(value, tuple):
         return value
     if isinstance(value, list):
-        return tuple( value )
+        return tuple(value)
     if isinstance(value, basestring):
-        return tuple( value.split() )
-    raise ValueError, "%s of unsupported type" % valueName
+        return tuple(value.split())
+    raise ValueError("%s of unsupported type" % valueName)
 
 #
 #   Security utilities, callable only from unrestricted code.
@@ -212,19 +212,20 @@ def _mergedLocalRoles(object):
     while 1:
         if hasattr(object, '__ac_local_roles__'):
             dict = object.__ac_local_roles__ or {}
-            if callable(dict): dict = dict()
+            if callable(dict):
+                dict = dict()
             for k, v in dict.items():
-                if merged.has_key(k):
+                if k in merged:
                     merged[k] = merged[k] + v
                 else:
                     merged[k] = v
         if hasattr(object, 'aq_parent'):
-            object=object.aq_parent
-            object=getattr(object, 'aq_inner', object)
+            object = object.aq_parent
+            object = getattr(object, 'aq_inner', object)
             continue
         if hasattr(object, 'im_self'):
-            object=object.im_self
-            object=getattr(object, 'aq_inner', object)
+            object = object.im_self
+            object = getattr(object, 'aq_inner', object)
             continue
         break
 
@@ -237,14 +238,15 @@ def _ac_inherited_permissions(ob, all=0):
     # an empty tuple as the second.
     d = {}
     perms = getattr(ob, '__ac_permissions__', ())
-    for p in perms: d[p[0]] = None
+    for p in perms:
+        d[p[0]] = None
     r = gather_permissions(ob.__class__, [], d)
     if all:
         if hasattr(ob, '_subobject_permissions'):
             for p in ob._subobject_permissions():
-                pname=p[0]
-                if not d.has_key(pname):
-                    d[pname]=1
+                pname = p[0]
+                if not pname in d:
+                    d[pname] = 1
                     r.append(p)
         r = list(perms) + r
     return r
@@ -303,18 +305,18 @@ class FakeExecutableObject:
 
 # Parse a string of etags from an If-None-Match header
 # Code follows ZPublisher.HTTPRequest.parse_cookie
-parse_etags_lock=allocate_lock()
-def parse_etags( text
-               , result=None
+parse_etags_lock = allocate_lock()
+def parse_etags(text,
+                result=None,
                 # quoted etags (assumed separated by whitespace + a comma)
-               , etagre_quote = re.compile('(\s*\"([^\"]*)\"\s*,{0,1})')
+                etagre_quote=re.compile('(\s*\"([^\"]*)\"\s*,{0,1})'),
                 # non-quoted etags (assumed separated by whitespace + a comma)
-               , etagre_noquote = re.compile('(\s*([^,]*)\s*,{0,1})')
-               , acquire=parse_etags_lock.acquire
-               , release=parse_etags_lock.release
-               ):
+                etagre_noquote=re.compile('(\s*([^,]*)\s*,{0,1})'),
+                acquire=parse_etags_lock.acquire,
+                release=parse_etags_lock.release):
 
-    if result is None: result=[]
+    if result is None:
+        result = []
     if not len(text):
         return result
 
@@ -323,13 +325,13 @@ def parse_etags( text
         m = etagre_quote.match(text)
         if m:
             # Match quoted etag (spec-observing client)
-            l     = len(m.group(1))
+            l = len(m.group(1))
             value = m.group(2)
         else:
             # Match non-quoted etag (lazy client)
             m = etagre_noquote.match(text)
             if m:
-                l     = len(m.group(1))
+                l = len(m.group(1))
                 value = m.group(2)
             else:
                 return result
@@ -338,7 +340,7 @@ def parse_etags( text
 
     if value:
         result.append(value)
-    return apply(parse_etags,(text[l:],result))
+    return apply(parse_etags, (text[l:], result))
 
 def _checkConditionalGET(obj, extra_context):
     """A conditional GET is done using one or both of the request
@@ -368,7 +370,7 @@ def _checkConditionalGET(obj, extra_context):
 
     # check whether we need to suppress subtemplates
     call_count = getattr(REQUEST, SUBTEMPLATE, 0)
-    setattr(REQUEST, SUBTEMPLATE, call_count+1)
+    setattr(REQUEST, SUBTEMPLATE, call_count + 1)
     if call_count != 0:
         return False
 
@@ -417,19 +419,19 @@ def _checkConditionalGET(obj, extra_context):
         return False
 
     if if_modified_since:
-        if ( not content_mod_time or 
-             mod_time_secs < 0 or 
-             mod_time_secs > if_modified_since ):
+        if (not content_mod_time or
+            mod_time_secs < 0 or
+            mod_time_secs > if_modified_since):
             return False
 
     if client_etags:
-        if ( not content_etag or 
-             (content_etag not in client_etags and '*' not in client_etags) ):
+        if (not content_etag or
+            (content_etag not in client_etags and '*' not in client_etags)):
             return False
     else:
-        # If we generate an ETag, don't validate the conditional GET unless 
+        # If we generate an ETag, don't validate the conditional GET unless
         # the client supplies an ETag
-        # This may be more conservative than the spec requires, but we are 
+        # This may be more conservative than the spec requires, but we are
         # already _way_ more conservative.
         if content_etag:
             return False
@@ -505,7 +507,7 @@ class ImmutableId(Base):
                              % self.getId())
 
 
-class UniqueObject (ImmutableId):
+class UniqueObject(ImmutableId):
 
     """ Base class for objects which cannot be "overridden" / shadowed.
     """
@@ -515,15 +517,14 @@ class UniqueObject (ImmutableId):
     __replaceable__ = property(_getUNIQUE,)
 
 
-class SimpleItemWithProperties (PropertyManager, SimpleItem):
+class SimpleItemWithProperties(PropertyManager, SimpleItem):
     """
     A common base class for objects with configurable
     properties in a fixed schema.
     """
     manage_options = (
-        PropertyManager.manage_options
-        + SimpleItem.manage_options)
-
+        PropertyManager.manage_options +
+        SimpleItem.manage_options)
 
     security = ClassSecurityInfo()
     security.declarePrivate('manage_addProperty')
@@ -538,7 +539,7 @@ class SimpleItemWithProperties (PropertyManager, SimpleItem):
         form = PropertyManager.manage_propertiesForm.__of__(self)
         return form(self, REQUEST, *args, **my_kw)
 
-InitializeClass( SimpleItemWithProperties )
+InitializeClass(SimpleItemWithProperties)
 
 
 #
@@ -566,15 +567,12 @@ class ToolInit:
         productObject = context._ProductContext__prod
         self.product_name = productObject.id
         context.registerClass(
-            meta_type = self.meta_type,
+            meta_type=self.meta_type,
             # This is a little sneaky: we add self to the
             # FactoryDispatcher under the name "toolinit".
             # manage_addTool() can then grab it.
-            constructors = (manage_addToolForm,
-                            manage_addTool,
-                            self,),
-            icon = self.icon
-            )
+            constructors=(manage_addToolForm, manage_addTool, self),
+            icon=self.icon)
 
         if self.icon:
             icon = os_path.split(self.icon)[1]
@@ -584,7 +582,7 @@ class ToolInit:
             tool.__factory_meta_type__ = self.meta_type
             tool.icon = 'misc_/%s/%s' % (self.product_name, icon)
 
-InitializeClass( ToolInit )
+InitializeClass(ToolInit)
 
 addInstanceForm = HTMLFile('dtml/addInstance', globals())
 
@@ -635,14 +633,8 @@ class ContentInit:
     security = ClassSecurityInfo()
     security.declareObjectPrivate()
 
-    def __init__( self
-                , meta_type
-                , content_types
-                , permission=None
-                , extra_constructors=()
-                , fti=()
-                , visibility='Global'
-                ):
+    def __init__(self, meta_type, content_types, permission=None,
+                 extra_constructors=(), fti=(), visibility='Global'):
         # BBB: fti argument is ignored
         self.meta_type = meta_type
         self.content_types = content_types
@@ -653,24 +645,21 @@ class ContentInit:
     def initialize(self, context):
         # Add only one meta type to the folder add list.
         context.registerClass(
-            meta_type = self.meta_type
+            meta_type=self.meta_type,
             # This is a little sneaky: we add self to the
             # FactoryDispatcher under the name "contentinit".
             # manage_addContentType() can then grab it.
-            , constructors = ( manage_addContentForm
-                               , manage_addContent
-                               , self ) + self.extra_constructors
-            , permission = self.permission
-            , visibility = self.visibility
-            )
+            constructors=(manage_addContentForm, manage_addContent,
+                          self) + self.extra_constructors,
+            permission=self.permission,
+            visibility=self.visibility)
 
         for ct in self.content_types:
             ct.__factory_meta_type__ = self.meta_type
 
-InitializeClass( ContentInit )
+InitializeClass(ContentInit)
 
 def manage_addContentForm(self, REQUEST):
-
     """ Show the add content type form.
     """
     # self is a FactoryDispatcher.
@@ -685,8 +674,7 @@ def manage_addContentForm(self, REQUEST):
                            factory_types_list=tl,
                            factory_need_id=1)
 
-def manage_addContent( self, id, type, REQUEST=None ):
-
+def manage_addContent(self, id, type, REQUEST=None):
     """ Add the content type specified by name.
     """
     # self is a FactoryDispatcher.
@@ -694,11 +682,11 @@ def manage_addContent( self, id, type, REQUEST=None ):
     obj = None
     for content_type in contentinit.content_types:
         if content_type.meta_type == type:
-            obj = content_type( id )
+            obj = content_type(id)
             break
     if obj is None:
         raise NotFound(type)
-    self._setObject( id, obj )
+    self._setObject(id, obj)
     if REQUEST is not None:
         return self.manage_main(self, REQUEST)
 
@@ -715,10 +703,10 @@ def registerIcon(klass, iconspec, _prefix=None):
     name = os_path.split(iconspec)[1]
     klass.icon = 'misc_/%s/%s' % (pid, name)
     icon = ImageFile(iconspec, _prefix)
-    icon.__roles__=None
+    icon.__roles__ = None
     if not hasattr(misc_images, pid):
         setattr(misc_images, pid, MiscImage(pid, {}))
-    getattr(misc_images, pid)[name]=icon
+    getattr(misc_images, pid)[name] = icon
 
 #
 #   Metadata Keyword splitter utilities
@@ -726,17 +714,15 @@ def registerIcon(klass, iconspec, _prefix=None):
 KEYSPLITRE = re.compile(r'[,;]')
 
 security.declarePublic('keywordsplitter')
-def keywordsplitter( headers
-                   , names=('Subject', 'Keywords',)
-                   , splitter=KEYSPLITRE.split
-                   ):
+def keywordsplitter(headers, names=('Subject', 'Keywords',),
+                    splitter=KEYSPLITRE.split):
     """ Split keywords out of headers, keyed on names.  Returns list.
     """
     out = []
     for head in names:
         keylist = splitter(headers.get(head, ''))
         keylist = map(lambda x: x.strip(), keylist)
-        out.extend( [key for key in keylist if key] )
+        out.extend([ key for key in keylist if key ])
     return out
 
 #
@@ -745,13 +731,11 @@ def keywordsplitter( headers
 CONTRIBSPLITRE = re.compile(r';')
 
 security.declarePublic('contributorsplitter')
-def contributorsplitter( headers
-                       , names=('Contributors',)
-                       , splitter=CONTRIBSPLITRE.split
-                       ):
+def contributorsplitter(headers, names=('Contributors',),
+                        splitter=CONTRIBSPLITRE.split):
     """ Split contributors out of headers, keyed on names.  Returns list.
     """
-    return keywordsplitter( headers, names, splitter )
+    return keywordsplitter(headers, names, splitter)
 
 #
 #   Directory-handling utilities
@@ -760,7 +744,7 @@ security.declarePublic('normalize')
 def normalize(p):
     # the first .replace is needed to help normpath when dealing with Windows
     # paths under *nix, the second to normalize to '/'
-    return os_path.normpath(p.replace('\\','/')).replace('\\','/')
+    return os_path.normpath(p.replace('\\', '/')).replace('\\', '/')
 
 import Products
 ProductsPath = [ abspath(ppath) for ppath in Products.__path__ ]
@@ -785,7 +769,7 @@ def getPackageLocation(module):
     tricks it into working with just a module name.
     """
     package = getContainingPackage(module)
-    return package_home({'__name__' : package})
+    return package_home({'__name__': package})
 
 security.declarePrivate('getPackageName')
 def getPackageName(globals_):
@@ -812,10 +796,10 @@ def _OldCacheHeaders(obj):
         # understand the screwy date string as a lucky side effect
         # of the way they parse it).
         try:
-            mod_since=DateTime(header)
-            mod_since=long(mod_since.timeTime())
+            mod_since = DateTime(header)
+            mod_since = long(mod_since.timeTime())
         except (TypeError, DateTimeError):
-            mod_since=None
+            mod_since = None
 
         if mod_since is not None:
             if last_mod > 0 and last_mod <= mod_since:
@@ -848,10 +832,10 @@ def _FSCacheHeaders(obj):
         # understand the screwy date string as a lucky side effect
         # of the way they parse it).
         try:
-            mod_since=DateTime(header)
-            mod_since=long(mod_since.timeTime())
+            mod_since = DateTime(header)
+            mod_since = long(mod_since.timeTime())
         except (TypeError, DateTimeError):
-            mod_since=None
+            mod_since = None
 
         if mod_since is not None:
             if last_mod > 0 and last_mod <= mod_since:

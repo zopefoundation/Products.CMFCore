@@ -120,7 +120,8 @@ class CatalogAware(Base):
             s = getattr(ob, '_p_changed', 0)
             catalog.reindexObject(ob, idxs=self._cmf_security_indexes,
                                   update_metadata=0, uid=brain_path)
-            if s is None: ob._p_deactivate()
+            if s is None:
+                ob._p_deactivate()
 
 InitializeClass(CatalogAware)
 
@@ -134,8 +135,7 @@ class WorkflowAware(Base):
 
     security = ClassSecurityInfo()
 
-    manage_options = ({'label': 'Workflows',
-                       'action': 'manage_workflowsTab'},)
+    manage_options = ({'label': 'Workflows', 'action': 'manage_workflowsTab'},)
 
     _manage_workflowsTab = DTMLFile('zmi_workflows', _dtmldir)
 

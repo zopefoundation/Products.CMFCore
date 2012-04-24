@@ -39,7 +39,8 @@ from Products.CMFCore.utils import _setCacheHeaders
 
 
 xml_detect_re = re.compile('^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
-charset_re = re.compile(r'charset.*?=.*?(?P<charset>[\w\-]*)', re.I|re.M|re.S)
+charset_re = re.compile(r'charset.*?=.*?(?P<charset>[\w\-]*)',
+                        re.I | re.M | re.S)
 _marker = object()
 
 
@@ -51,9 +52,9 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     meta_type = 'Filesystem Page Template'
     _owner = None  # Unowned
 
-    manage_options=({'label':'Customize', 'action':'manage_main'},
-                    {'label':'Test', 'action':'ZScriptHTML_tryForm'},
-                   )
+    manage_options = (
+        {'label': 'Customize', 'action': 'manage_main'},
+        {'label': 'Test', 'action': 'ZScriptHTML_tryForm'})
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -82,7 +83,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         """Read the data from the filesystem.
         """
         if reparse:
-            file = open(self._filepath, 'rU') # not 'rb', as this is a text file!
+            # not 'rb', as this is a text file!
+            file = open(self._filepath, 'rU')
             try:
                 data = file.read()
             finally:
@@ -117,7 +119,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
                             if charset is None:
                                 charset = charsetFromMetaEquiv(data)
-                                
+
                         elif self.content_type.startswith('text/xml'):
                             charset = encodingFromXMLPreamble(data)
 
@@ -142,7 +144,6 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                     data = unicode(data)
 
             self.write(data)
-
 
     security.declarePrivate('read')
     def read(self):
@@ -188,10 +189,10 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         """
         return 'file:%s' % self._filepath
 
-    security.declarePrivate( '_ZPT_exec' )
+    security.declarePrivate('_ZPT_exec')
     _ZPT_exec = ZopePageTemplate._exec.im_func
 
-    security.declarePrivate( '_exec' )
+    security.declarePrivate('_exec')
     def _exec(self, bound_names, args, kw):
         """Call a FSPageTemplate"""
         try:
@@ -201,18 +202,18 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         # Read file first to get a correct content_type default value.
         self._updateFromFS()
 
-        if not kw.has_key('args'):
+        if not 'args' in kw:
             kw['args'] = args
         bound_names['options'] = kw
 
         try:
             response = self.REQUEST.RESPONSE
-            if not response.headers.has_key('content-type'):
+            if not 'content-type' in response.headers:
                 response.setHeader('content-type', self.content_type)
         except AttributeError:
             pass
 
-        security=getSecurityManager()
+        security = getSecurityManager()
         bound_names['user'] = security.getUser()
 
         # Retrieve the value from the cache.
@@ -265,7 +266,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
     source_dot_xml = Src()
 
-setattr(FSPageTemplate, 'source.xml',  FSPageTemplate.source_dot_xml)
+setattr(FSPageTemplate, 'source.xml', FSPageTemplate.source_dot_xml)
 setattr(FSPageTemplate, 'source.html', FSPageTemplate.source_dot_xml)
 InitializeClass(FSPageTemplate)
 

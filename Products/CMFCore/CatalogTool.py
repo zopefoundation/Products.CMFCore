@@ -50,7 +50,7 @@ from Products.CMFCore.utils import UniqueObject
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 
     # This class makes the wrapper transparent, adapter lookup is
-    # carried out based on the interfaces of the wrapped object. 
+    # carried out based on the interfaces of the wrapped object.
 
     def __get__(self, inst, cls=None):
         if inst is None:
@@ -85,7 +85,7 @@ class IndexableObjectWrapper(object):
 
     def __getattr__(self, name):
         vars = self.__vars
-        if vars.has_key(name):
+        if name in vars:
             return vars[name]
         return getattr(self.__ob, name)
 
@@ -101,9 +101,9 @@ class IndexableObjectWrapper(object):
         localroles = _mergedLocalRoles(ob)
         for user, roles in localroles.items():
             for role in roles:
-                if allowed.has_key(role):
+                if role in allowed:
                     allowed['user:' + user] = 1
-        if allowed.has_key('Owner'):
+        if 'Owner' in allowed:
             del allowed['Owner']
         return list(allowed.keys())
 
@@ -130,11 +130,10 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( ZCatalog.manage_options +
-                      ActionProviderBase.manage_options +
-                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
-                     ))
+    manage_options = (
+        ZCatalog.manage_options +
+        ActionProviderBase.manage_options +
+        ({'label': 'Overview', 'action': 'manage_overview'},))
 
     def __init__(self):
         ZCatalog.__init__(self, self.getId())
@@ -143,7 +142,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainCatalogTool', _dtmldir )
+    manage_overview = DTMLFile('explainCatalogTool', _dtmldir)
 
     #
     #   'portal_catalog' interface methods
@@ -157,20 +156,20 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             proxy_roles = getattr(eo, '_proxy_roles', None)
             if proxy_roles:
                 effective_roles = proxy_roles
-        result = list( effective_roles )
-        result.append( 'Anonymous' )
-        result.append( 'user:%s' % user.getId() )
+        result = list(effective_roles)
+        result.append('Anonymous')
+        result.append('user:%s' % user.getId())
         return result
 
     def _convertQuery(self, kw):
         # Convert query to modern syntax
         for k in 'effective', 'expires':
-            kusage = k+'_usage'
-            if not kw.has_key(kusage):
+            kusage = k + '_usage'
+            if not kusage in kw:
                 continue
             usage = kw[kusage]
             if not usage.startswith('range:'):
-                raise ValueError("Incorrect usage %s" % `usage`)
+                raise ValueError("Incorrect usage %s" % repr(usage))
             kw[k] = {'query': kw[k], 'range': usage[6:]}
             del kw[kusage]
 
@@ -181,16 +180,16 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             limit the results to what the user is allowed to see.
         """
         user = getSecurityManager().getUser()
-        kw[ 'allowedRolesAndUsers' ] = self._listAllowedRolesAndUsers( user )
+        kw['allowedRolesAndUsers'] = self._listAllowedRolesAndUsers(user)
 
-        if not _checkPermission( AccessInactivePortalContent, self ):
+        if not _checkPermission(AccessInactivePortalContent, self):
             now = DateTime()
 
             self._convertQuery(kw)
 
             # Intersect query restrictions with those implicit to the tool
             for k in 'effective', 'expires':
-                if kw.has_key(k):
+                if k in kw:
                     range = kw[k]['range'] or ''
                     query = kw[k]['query']
                     if not isinstance(query, (tuple, list)):
@@ -248,9 +247,9 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         return ZCatalog.searchResults(self, REQUEST, **kw)
 
     def __url(self, ob):
-        return '/'.join( ob.getPhysicalPath() )
+        return '/'.join(ob.getPhysicalPath())
 
-    manage_catalogFind = DTMLFile( 'catalogFind', _dtmldir )
+    manage_catalogFind = DTMLFile('catalogFind', _dtmldir)
 
     def catalog_object(self, obj, uid=None, idxs=None, update_metadata=1,
                        pghandler=None):
@@ -259,7 +258,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         if IIndexableObject.providedBy(obj):
             w = obj
         else:
-            w = queryMultiAdapter( (obj, self), IIndexableObject )
+            w = queryMultiAdapter((obj, self), IIndexableObject)
             if w is None:
                 # BBB
                 w = IndexableObjectWrapper(obj, self)

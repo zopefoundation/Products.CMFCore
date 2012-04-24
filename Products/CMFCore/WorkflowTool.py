@@ -73,21 +73,20 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     security = ClassSecurityInfo()
 
-    manage_options = ( { 'label' : 'Workflows'
-                       , 'action' : 'manage_selectWorkflows'
-                       }
-                     , { 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ) + Folder.manage_options
+    manage_options = (
+        ({'label': 'Workflows', 'action': 'manage_selectWorkflows'},
+         {'label': 'Overview', 'action': 'manage_overview'}) +
+        Folder.manage_options)
 
     #
     #   ZMI methods
     #
-    security.declareProtected( ManagePortal, 'manage_overview' )
-    manage_overview = DTMLFile( 'explainWorkflowTool', _dtmldir )
+    security.declareProtected(ManagePortal, 'manage_overview')
+    manage_overview = DTMLFile('explainWorkflowTool', _dtmldir)
 
     _manage_selectWorkflows = DTMLFile('selectWorkflows', _dtmldir)
 
-    security.declareProtected( ManagePortal, 'manage_selectWorkflows')
+    security.declareProtected(ManagePortal, 'manage_selectWorkflows')
     def manage_selectWorkflows(self, REQUEST, manage_tabs_message=None):
 
         """ Show a management screen for changing type to workflow connections.
@@ -100,7 +99,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             title = t.Title()
             if title == id:
                 title = None
-            if cbt is not None and cbt.has_key(id):
+            if cbt is not None and id in cbt:
                 chain = ', '.join(cbt[id])
             else:
                 chain = '(Default)'
@@ -114,7 +113,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             management_view='Workflows',
             manage_tabs_message=manage_tabs_message)
 
-    security.declareProtected( ManagePortal, 'manage_changeWorkflows')
+    security.declareProtected(ManagePortal, 'manage_changeWorkflows')
     @postonly
     def manage_changeWorkflows(self, default_chain, props=None, REQUEST=None):
         """ Changes which workflows apply to objects of which type.
@@ -133,7 +132,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                 chain = props.get(field_name, '(Default)').strip()
                 if chain == '(Default)':
                     # Remove from cbt.
-                    if cbt.has_key(id):
+                    if id in cbt:
                         del cbt[id]
                 else:
                     chain = chain.replace(',', ' ')
@@ -141,8 +140,8 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                     for wf_id in chain.split(' '):
                         if wf_id:
                             if not self.getWorkflowById(wf_id):
-                                raise ValueError, (
-                                    '"%s" is not a workflow ID.' % wf_id)
+                                raise ValueError('"%s" is not a workflow ID.'
+                                                 % wf_id)
                             ids.append(wf_id)
                     cbt[id] = tuple(ids)
         # Set up the default chain.
@@ -151,13 +150,12 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         for wf_id in default_chain.split(' '):
             if wf_id:
                 if not self.getWorkflowById(wf_id):
-                    raise ValueError, (
-                        '"%s" is not a workflow ID.' % wf_id)
+                    raise ValueError('"%s" is not a workflow ID.' % wf_id)
                 ids.append(wf_id)
         self._default_chain = tuple(ids)
         if REQUEST is not None:
             return self.manage_selectWorkflows(REQUEST,
-                            manage_tabs_message='Changed.')
+                                               manage_tabs_message='Changed.')
 
     #
     #   'IActionProvider' interface methods
@@ -195,7 +193,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
         wf_ids = self.getWorkflowIds()
         for wf_id in wf_ids:
-            if not did.has_key(wf_id):
+            if not wf_id in did:
                 wf = self.getWorkflowById(wf_id)
                 if wf is not None:
                     a = wf.listGlobalActions(info)
@@ -386,7 +384,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
         if chain is None:
             for type_id in pt_names:
-                if cbt.has_key(type_id):
+                if type_id in cbt:
                     del cbt[type_id]
             return
 
@@ -450,8 +448,8 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         portal = aq_parent(aq_inner(self))
         count = self._recursiveUpdateRoleMappings(portal, wfs)
         if REQUEST is not None:
-            return self.manage_selectWorkflows(REQUEST, manage_tabs_message=
-                                               '%d object(s) updated.' % count)
+            return self.manage_selectWorkflows(REQUEST,
+                           manage_tabs_message='%d object(s) updated.' % count)
         else:
             return count
 
@@ -508,7 +506,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             return ttool.listTypeInfo()
         return ()
 
-    security.declarePrivate( '_invokeWithNotification' )
+    security.declarePrivate('_invokeWithNotification')
     def _invokeWithNotification(self, wfs, ob, action, func, args, kw):
 
         """ Private utility method:  call 'func', and deal with exceptions
@@ -542,7 +540,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             self._reindexWorkflowVariables(ob)
         return res
 
-    security.declarePrivate( '_recursiveUpdateRoleMappings' )
+    security.declarePrivate('_recursiveUpdateRoleMappings')
     def _recursiveUpdateRoleMappings(self, ob, wfs):
         """ Update roles-permission mappings recursively, and
             reindex special index.
@@ -578,8 +576,8 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                         v._p_deactivate()
         return count
 
-    security.declarePrivate( '_setDefaultCataloging' )
-    def _setDefaultCataloging( self, value ):
+    security.declarePrivate('_setDefaultCataloging')
+    def _setDefaultCataloging(self, value):
 
         """ Toggle whether '_reindexWorkflowVariables' actually touches
             the catalog (sometimes not desirable, e.g. when the workflow

@@ -108,8 +108,8 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             rop_info = self.rolesOfPermission(old_perm)
             roles = [x['name'] for x in rop_info if x['selected'] != '']
             try:
-                # if obj is based on OFS.ObjectManager an acquisition context is
-                # required for _subobject_permissions()
+                # if obj is based on OFS.ObjectManager an acquisition context
+                # is required for _subobject_permissions()
                 obj.__of__(parent).manage_permission(old_perm, roles=roles,
                                                      acquire=acquired)
             except ValueError:
@@ -131,8 +131,8 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             obj = folder._getOb(id)
             if RESPONSE is not None:
                 RESPONSE.redirect('%s/manage_main?manage_tabs_message=%s' % (
-                    obj.absolute_url(), html_quote("An object with this id already exists")
-                    ))
+                    obj.absolute_url(),
+                    html_quote("An object with this id already exists")))
         else:
             folder._verifyObjectPaste(obj, validate_src=0)
             folder._setObject(id, obj)
@@ -147,7 +147,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""
-        raise NotImplementedError, "This should be implemented in a subclass."
+        raise NotImplementedError("This should be implemented in a subclass.")
 
     def _readFile(self, reparse):
         """Read the data from the filesystem.
@@ -156,7 +156,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         data if necessary.  'reparse' is set when reading the second
         time and beyond.
         """
-        raise NotImplementedError, "This should be implemented in a subclass."
+        raise NotImplementedError("This should be implemented in a subclass.")
 
     # Refresh our contents from the filesystem if that is newer and we are
     # running in debug mode.
@@ -229,7 +229,7 @@ class BadFile(FSObject):
 <dtml-var manage_page_footer>
 """
 
-    manage_options = ({'label':'Error', 'action':'manage_showError'},)
+    manage_options = ({'label': 'Error', 'action': 'manage_showError'},)
 
     def __init__(self, id, filepath, exc_str='', fullname=None,
                  properties=None):

@@ -47,10 +47,10 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     _cache_namespace_keys = ()
     _reading = 0
 
-    manage_options=({'label':'Customize', 'action':'manage_main'},
-                    {'label':'View', 'action':''},
-                    {'label':'Proxy', 'action':'manage_proxyForm'},
-                   )
+    manage_options = (
+        {'label': 'Customize', 'action': 'manage_main'},
+        {'label': 'View', 'action': ''},
+        {'label': 'Proxy', 'action': 'manage_proxyForm'})
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -94,7 +94,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
 
     #### The following is mainly taken from OFS/DTMLMethod.py ###
 
-    index_html=None # Prevent accidental acquisition
+    index_html = None # Prevent accidental acquisition
 
     # Documents masquerade as functions:
     func_code = DTMLMethod.func_code
@@ -107,8 +107,8 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
 
         self._updateFromFS()
 
-        kw['document_id']   =self.getId()
-        kw['document_title']=self.title
+        kw['document_id'] = self.getId()
+        kw['document_title'] = self.title
 
         if client is not None:
             if _checkConditionalGET(self, kw):
@@ -121,15 +121,17 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
                 return data
 
         __traceback_info__ = self._filepath
-        security=getSecurityManager()
+        security = getSecurityManager()
         security.addContext(self)
         try:
             r = HTML.__call__(self, client, REQUEST, **kw)
 
             if client is None:
                 # Called as subtemplate, so don't need error propagation!
-                if RESPONSE is None: result = r
-                else: result = decapitate(r, RESPONSE)
+                if RESPONSE is None:
+                    result = r
+                else:
+                    result = decapitate(r, RESPONSE)
                 if not self._cache_namespace_keys:
                     self.ZCacheable_set(result)
                 return result
@@ -139,14 +141,15 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
                     self.ZCacheable_set(r)
                 return r
 
-        finally: security.removeContext(self)
+        finally:
+            security.removeContext(self)
 
-        have_key=RESPONSE.headers.has_key
-        if not (have_key('content-type') or have_key('Content-Type')):
-            if self.__dict__.has_key('content_type'):
-                c=self.content_type
+        headers = RESPONSE.headers
+        if not ('content-type' in headers or 'Content-Type' in headers):
+            if 'content_type' in self.__dict__:
+                c = self.content_type
             else:
-                c, e=guess_content_type(self.getId(), r)
+                c, _e = guess_content_type(self.getId(), r)
             RESPONSE.setHeader('Content-Type', c)
         if RESPONSE is not None:
             # caching policy manager hook

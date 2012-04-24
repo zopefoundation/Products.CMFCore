@@ -57,7 +57,7 @@ class ActionCategory(IFAwareObjectManager, OrderedFolder):
 
         for obj in self.objectValues():
             if IActionCategory.providedBy(obj):
-                actions.extend( obj.listActions() )
+                actions.extend(obj.listActions())
             elif IAction.providedBy(obj):
                 actions.append(obj)
 
@@ -83,12 +83,12 @@ class Action(PropertyManager, SimpleItem):
          'label': 'Title'},
         {'id': 'description', 'type': 'text', 'mode': 'w',
          'label': 'Description'},
-        {'id':'i18n_domain', 'type': 'string', 'mode':'w',
-         'label':'I18n Domain'},
+        {'id': 'i18n_domain', 'type': 'string', 'mode': 'w',
+         'label': 'I18n Domain'},
         {'id': 'url_expr', 'type': 'string', 'mode': 'w',
          'label': 'URL (Expression)'},
-        {'id':'link_target', 'type': 'string', 'mode':'w',
-         'label':'Link Target'},
+        {'id': 'link_target', 'type': 'string', 'mode': 'w',
+         'label': 'Link Target'},
         {'id': 'icon_expr', 'type': 'string', 'mode': 'w',
          'label': 'Icon (Expression)'},
         {'id': 'available_expr', 'type': 'string', 'mode': 'w',
@@ -100,20 +100,20 @@ class Action(PropertyManager, SimpleItem):
         )
 
     manage_options = (
-        PropertyManager.manage_options
-        + SimpleItem.manage_options)
+        PropertyManager.manage_options +
+        SimpleItem.manage_options)
 
     def __init__(self, id, **kw):
         self.id = id
-        self._setPropValue( 'title', kw.get('title', '') )
-        self._setPropValue( 'description', kw.get('description', '') )
-        self._setPropValue( 'i18n_domain', kw.get('i18n_domain', '') )
-        self._setPropValue( 'url_expr', kw.get('url_expr', '') )
-        self._setPropValue( 'link_target', kw.get('link_target', '') )
-        self._setPropValue( 'icon_expr', kw.get('icon_expr', '') )
-        self._setPropValue( 'available_expr', kw.get('available_expr', '') )
-        self._setPropValue( 'permissions', kw.get('permissions', () ) )
-        self._setPropValue( 'visible', kw.get('visible', True) )
+        self._setPropValue('title', kw.get('title', ''))
+        self._setPropValue('description', kw.get('description', ''))
+        self._setPropValue('i18n_domain', kw.get('i18n_domain', ''))
+        self._setPropValue('url_expr', kw.get('url_expr', ''))
+        self._setPropValue('link_target', kw.get('link_target', ''))
+        self._setPropValue('icon_expr', kw.get('icon_expr', ''))
+        self._setPropValue('available_expr', kw.get('available_expr', ''))
+        self._setPropValue('permissions', kw.get('permissions', ()))
+        self._setPropValue('visible', kw.get('visible', True))
 
     def _setPropValue(self, id, value):
         self._wrapperCheck(value)
@@ -139,7 +139,7 @@ class Action(PropertyManager, SimpleItem):
 
         parent = aq_parent(self)
         while parent is not None and parent.getId() != 'portal_actions':
-            category_path.append( parent.getId() )
+            category_path.append(parent.getId())
             parent = aq_parent(parent)
         lazy_map['category'] = '/'.join(category_path[::-1])
 
@@ -174,19 +174,18 @@ class ActionInfo(UserDict):
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, action, ec):
-
         if isinstance(action, dict):
             lazy_keys = []
             UserDict.__init__(self, action)
             if 'name' in self.data:
-                self.data.setdefault( 'id', self.data['name'].lower() )
-                self.data.setdefault( 'title', self.data['name'] )
+                self.data.setdefault('id', self.data['name'].lower())
+                self.data.setdefault('title', self.data['name'])
                 del self.data['name']
-            self.data.setdefault( 'url', '' )
-            self.data.setdefault( 'link_target', None )
-            self.data.setdefault( 'icon', '' )
-            self.data.setdefault( 'category', 'object' )
-            self.data.setdefault( 'visible', True )
+            self.data.setdefault('url', '')
+            self.data.setdefault('link_target', None)
+            self.data.setdefault('icon', '')
+            self.data.setdefault('category', 'object')
+            self.data.setdefault('visible', True)
             self.data['available'] = True
         else:
             # if action isn't a dict, it has to implement IAction
@@ -194,7 +193,7 @@ class ActionInfo(UserDict):
             UserDict.__init__(self, lazy_map)
 
         self.data.setdefault('allowed', True)
-        permissions = self.data.pop( 'permissions', () )
+        permissions = self.data.pop('permissions', ())
         if permissions:
             self.data['allowed'] = self._checkPermissions
             lazy_keys.append('allowed')
@@ -232,9 +231,9 @@ class ActionInfo(UserDict):
         """
         category = self['category']
         object = ec.contexts['object']
-        if object is not None and ( category.startswith('object') or
-                                    category.startswith('workflow') or
-                                    category.startswith('document') ):
+        if object is not None and (category.startswith('object') or
+                                   category.startswith('workflow') or
+                                   category.startswith('document')):
             context = object
         else:
             folder = ec.contexts['folder']
@@ -249,7 +248,7 @@ class ActionInfo(UserDict):
         return False
 
 
-class ActionInformation( SimpleItem ):
+class ActionInformation(SimpleItem):
 
     """ Represent a single selectable action.
 
@@ -265,48 +264,45 @@ class ActionInformation( SimpleItem ):
 
     security = ClassSecurityInfo()
 
-    def __init__( self
-                , id
-                , title=''
-                , description=''
-                , category='object'
-                , condition=''
-                , permissions=()
-                , priority=10
-                , visible=True
-                , action=''
-                , icon_expr=''
-                , link_target=''
-                ):
+    def __init__(self,
+                 id,
+                 title='',
+                 description='',
+                 category='object',
+                 condition='',
+                 permissions=(),
+                 priority=10,
+                 visible=True,
+                 action='',
+                 icon_expr='',
+                 link_target=''):
         """ Set up an instance.
         """
-        self.edit( id
-                 , title
-                 , description
-                 , category
-                 , condition
-                 , permissions
-                 , priority
-                 , visible
-                 , action
-                 , icon_expr
-                 , link_target
-                 )
+        self.edit(id,
+                  title,
+                  description,
+                  category,
+                  condition,
+                  permissions,
+                  priority,
+                  visible,
+                  action,
+                  icon_expr,
+                  link_target)
 
     security.declarePrivate('edit')
-    def edit( self
-            , id=_unchanged
-            , title=_unchanged
-            , description=_unchanged
-            , category=_unchanged
-            , condition=_unchanged
-            , permissions=_unchanged
-            , priority=_unchanged
-            , visible=_unchanged
-            , action=_unchanged
-            , icon_expr=_unchanged
-            , link_target=_unchanged
-            ):
+    def edit(self,
+             id=_unchanged,
+             title=_unchanged,
+             description=_unchanged,
+             category=_unchanged,
+             condition=_unchanged,
+             permissions=_unchanged,
+             priority=_unchanged,
+             visible=_unchanged,
+             action=_unchanged,
+             icon_expr=_unchanged,
+             link_target=_unchanged):
         """Edit the specified properties.
         """
 
@@ -341,132 +337,120 @@ class ActionInformation( SimpleItem ):
         if link_target is not _unchanged:
             self.link_target = link_target
 
-    security.declareProtected( View, 'Title' )
+    security.declareProtected(View, 'Title')
     def Title(self):
-
         """ Return the Action title.
         """
         return self.title or self.getId()
 
-    security.declareProtected( View, 'Description' )
-    def Description( self ):
-
+    security.declareProtected(View, 'Description')
+    def Description(self):
         """ Return a description of the action.
         """
         return self.description
 
-    security.declarePrivate( 'testCondition' )
-    def testCondition( self, ec ):
-
+    security.declarePrivate('testCondition')
+    def testCondition(self, ec):
         """ Evaluate condition using context, 'ec', and return 0 or 1.
         """
         if self.condition:
-            return bool( self.condition(ec) )
+            return bool(self.condition(ec))
         else:
             return True
 
-    security.declarePublic( 'getAction' )
-    def getAction( self, ec ):
-
+    security.declarePublic('getAction')
+    def getAction(self, ec):
         """ Compute the action using context, 'ec'; return a mapping of
             info about the action.
         """
         return ActionInfo(self, ec)
 
-    security.declarePrivate( '_getActionObject' )
-    def _getActionObject( self ):
-
+    security.declarePrivate('_getActionObject')
+    def _getActionObject(self):
         """ Find the action object, working around name changes.
         """
-        action = getattr( self, 'action', None )
+        action = getattr(self, 'action', None)
 
         if action is None:  # Forward compatibility, used to be '_action'
-            action = getattr( self, '_action', None )
+            action = getattr(self, '_action', None)
             if action is not None:
                 self.action = self._action
                 del self._action
 
         return action
 
-    security.declarePublic( 'getActionExpression' )
-    def getActionExpression( self ):
-
+    security.declarePublic('getActionExpression')
+    def getActionExpression(self):
         """ Return the text of the TALES expression for our URL.
         """
         action = self._getActionObject()
         expr = action and action.text or ''
         if expr and isinstance(expr, basestring):
-            if ( not expr.startswith('string:')
-                 and not expr.startswith('python:') ):
+            if (not expr.startswith('string:')
+                and not expr.startswith('python:')):
                 expr = 'string:${object_url}/%s' % expr
-                self.action = Expression( expr )
+                self.action = Expression(expr)
         return expr
 
-    security.declarePrivate( 'setActionExpression' )
+    security.declarePrivate('setActionExpression')
     def setActionExpression(self, action):
         if action and isinstance(action, basestring):
-            if ( not action.startswith('string:')
-                 and not action.startswith('python:') ):
+            if (not action.startswith('string:')
+                and not action.startswith('python:')):
                 action = 'string:${object_url}/%s' % action
-            action = Expression( action )
+            action = Expression(action)
         self.action = action
 
-    security.declarePrivate( '_getIconExpressionObject' )
-    def _getIconExpressionObject( self ):
-
+    security.declarePrivate('_getIconExpressionObject')
+    def _getIconExpressionObject(self):
         """ Find the icon expression object, working around name changes.
         """
-        return getattr( self, 'icon_expr', None )
+        return getattr(self, 'icon_expr', None)
 
-    security.declarePublic( 'getIconExpression' )
-    def getIconExpression( self ):
-
+    security.declarePublic('getIconExpression')
+    def getIconExpression(self):
         """ Return the text of the TALES expression for our icon URL.
         """
         icon_expr = self._getIconExpressionObject()
         expr = icon_expr and icon_expr.text or ''
         if expr and isinstance(expr, basestring):
-            if ( not expr.startswith('string:')
-                 and not expr.startswith('python:') ):
+            if (not expr.startswith('string:')
+                and not expr.startswith('python:')):
                 expr = 'string:${object_url}/%s' % expr
-                self.icon_expr = Expression( expr )
+                self.icon_expr = Expression(expr)
         return expr
 
-    security.declarePrivate( 'setIconExpression' )
+    security.declarePrivate('setIconExpression')
     def setIconExpression(self, icon_expr):
         if icon_expr and isinstance(icon_expr, basestring):
-            if ( not icon_expr.startswith('string:')
-                 and not icon_expr.startswith('python:') ):
+            if (not icon_expr.startswith('string:')
+                and not icon_expr.startswith('python:')):
                 icon_expr = 'string:${object_url}/%s' % icon_expr
-            icon_expr = Expression( icon_expr )
+            icon_expr = Expression(icon_expr)
         self.icon_expr = icon_expr
 
-    security.declarePublic( 'getCondition' )
+    security.declarePublic('getCondition')
     def getCondition(self):
-
         """ Return the text of the TALES expression for our condition.
         """
-        return getattr( self, 'condition', None ) and self.condition.text or ''
+        return getattr(self, 'condition', None) and self.condition.text or ''
 
-    security.declarePublic( 'getPermissions' )
-    def getPermissions( self ):
-
+    security.declarePublic('getPermissions')
+    def getPermissions(self):
         """ Return the permission, if any, required to execute the action.
 
         Return an empty tuple if no permission is required.
         """
         return self.permissions
 
-    security.declarePublic( 'getCategory' )
-    def getCategory( self ):
-
+    security.declarePublic('getCategory')
+    def getCategory(self):
         """ Return the category in which the action should be grouped.
         """
         return self.category or 'object'
 
-    security.declarePublic( 'getVisibility' )
-    def getVisibility( self ):
-
+    security.declarePublic('getVisibility')
+    def getVisibility(self):
         """ Return whether the action should be visible in the CMF UI.
         """
         return bool(self.visible)
@@ -481,23 +465,23 @@ class ActionInformation( SimpleItem ):
     def getMapping(self):
         """ Get a mapping of this object's data.
         """
-        return { 'id': self.id,
-                 'title': self.title or self.id,
-                 'description': self.description,
-                 'category': self.category or 'object',
-                 'condition': getattr(self, 'condition', None)
-                              and self.condition.text or '',
-                 'permissions': self.permissions,
-                 'visible': bool(self.visible),
-                 'action': self.getActionExpression(),
-                 'icon_expr' : self.getIconExpression(),
-                 'link_target' : self.getLinkTarget() }
+        return {'id': self.id,
+                'title': self.title or self.id,
+                'description': self.description,
+                'category': self.category or 'object',
+                'condition': getattr(self, 'condition', None)
+                             and self.condition.text or '',
+                'permissions': self.permissions,
+                'visible': bool(self.visible),
+                'action': self.getActionExpression(),
+                'icon_expr': self.getIconExpression(),
+                'link_target': self.getLinkTarget()}
 
     security.declarePrivate('clone')
-    def clone( self ):
+    def clone(self):
         """ Get a newly-created AI just like us.
         """
-        return self.__class__( priority=self.priority, **self.getMapping() )
+        return self.__class__(priority=self.priority, **self.getMapping())
 
     security.declarePrivate('getInfoData')
     def getInfoData(self):
@@ -532,7 +516,7 @@ class ActionInformation( SimpleItem ):
 
         return (lazy_map, lazy_keys)
 
-InitializeClass( ActionInformation )
+InitializeClass(ActionInformation)
 
 
 def getOAI(context, object=None):
@@ -541,7 +525,7 @@ def getOAI(context, object=None):
         cache = request.get('_oai_cache', None)
         if cache is None:
             request['_oai_cache'] = cache = {}
-        info = cache.get( id(object), None )
+        info = cache.get(id(object), None)
     else:
         info = None
     if info is None:
@@ -559,7 +543,7 @@ def getOAI(context, object=None):
                     folder = aq_parent(aq_inner(folder))
         info = oai(context, folder, object)
         if request:
-            cache[ id(object) ] = info
+            cache[id(object)] = info
     return info
 
 
@@ -570,7 +554,7 @@ class oai:
     # available actions.
     __allow_access_to_unprotected_subobjects__ = 1
 
-    def __init__( self, tool, folder, object=None ):
+    def __init__(self, tool, folder, object=None):
         self.portal = portal = aq_parent(aq_inner(tool))
         mtool = getUtility(IMembershipTool)
         self.isAnonymous = mtool.isAnonymousUser()
@@ -593,7 +577,7 @@ class oai:
     def __getitem__(self, name):
         # Mapping interface for easy string formatting.
         if name[:1] == '_':
-            raise KeyError, name
+            raise KeyError(name)
         if hasattr(self, name):
             return getattr(self, name)
-        raise KeyError, name
+        raise KeyError(name)

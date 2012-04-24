@@ -48,7 +48,7 @@ class OldDiscussable(Implicit):
 
     security = ClassSecurityInfo()
 
-    def __init__( self, content ):
+    def __init__(self, content):
         self.content = content
 
     security.declareProtected(ReplyToItem, 'createReply')
@@ -61,7 +61,7 @@ class OldDiscussable(Implicit):
         location.addDiscussionItem(id, title, title, 'structured-text',
                                    text, self.content)
 
-        RESPONSE.redirect( self.absolute_url() + '/view' )
+        RESPONSE.redirect(self.absolute_url() + '/view')
 
     def getReplyLocationAndID(self, REQUEST):
         # It is not yet clear to me what the correct location for this hook is
@@ -77,10 +77,10 @@ class OldDiscussable(Implicit):
 
         # Find an unused id in location
         id = int(DateTime().timeTime())
-        while hasattr(location, `id`):
+        while hasattr(location, repr(id)):
             id = id + 1
 
-        return location, `id`
+        return location, repr(id)
 
     security.declareProtected(View, 'getReplyResults')
     def getReplyResults(self):
@@ -92,8 +92,8 @@ class OldDiscussable(Implicit):
         """
         ctool = queryUtility(ICatalogTool)
         if ctool is not None:
-            return ctool.searchResults(in_reply_to=
-                                      urllib.unquote('/'+self.absolute_url(1)))
+            return ctool.searchResults(in_reply_to=urllib.unquote(
+                                                   '/' + self.absolute_url(1)))
 
     security.declareProtected(View, 'getReplies')
     def getReplies(self):
@@ -129,15 +129,15 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( { 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
-                     ) + SimpleItem.manage_options
+    manage_options = (
+        ({'label': 'Overview', 'action': 'manage_overview'},) +
+        SimpleItem.manage_options)
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainDiscussionTool', _dtmldir )
+    manage_overview = DTMLFile('explainDiscussionTool', _dtmldir)
 
     #
     #   'portal_discussion' interface methods
@@ -146,7 +146,7 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
     def getDiscussionFor(self, content):
         '''Gets the PortalDiscussion object that applies to content.
         '''
-        return OldDiscussable( content ).__of__( content )
+        return OldDiscussable(content).__of__(content)
 
     security.declarePublic('isDiscussionAllowedFor')
     def isDiscussionAllowedFor(self, content):
@@ -154,7 +154,7 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
             Returns a boolean indicating whether a discussion is
             allowed for the specified content.
         '''
-        if hasattr( content, 'allow_discussion' ):
+        if hasattr(content, 'allow_discussion'):
             return content.allow_discussion
         typeInfo = content.getTypeInfo()
         if typeInfo:

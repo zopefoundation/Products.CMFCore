@@ -44,7 +44,7 @@ class FSFile(FSObject):
     meta_type = 'Filesystem File'
     content_type = 'unknown/unknown'
 
-    manage_options = ({'label':'Customize', 'action':'manage_main'},)
+    manage_options = ({'label': 'Customize', 'action': 'manage_main'},)
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -68,17 +68,17 @@ class FSFile(FSObject):
             return self.content_type
 
         # Next, look at file headers
-        headers=getattr(file, 'headers', None)
-        if headers and headers.has_key('content-type'):
-            content_type=headers['content-type']
+        headers = getattr(file, 'headers', None)
+        if headers and 'content-type' in headers:
+            content_type = headers['content-type']
         else:
             # Last resort: Use the (imperfect) content type guessing
             # mechanism from OFS.Image, which ultimately uses the
             # Python mimetypes module.
             if not isinstance(body, basestring):
                 body = body.data
-            content_type, enc=guess_content_type(
-                getattr(file, 'filename',id), body, content_type)
+            content_type, enc = guess_content_type(
+                getattr(file, 'filename', id), body, content_type)
             if (enc is None
                 and (content_type.startswith('text/') or
                      content_type.startswith('application/'))
@@ -104,14 +104,14 @@ class FSFile(FSObject):
             if mtime != self._file_mod_time or mtime == 0.0:
                 self.ZCacheable_invalidate()
                 self._file_mod_time = mtime
-            self.content_type=self._get_content_type(file, data, self.id)
+            self.content_type = self._get_content_type(file, data, self.id)
         return data
 
     #### The following is mainly taken from OFS/File.py ###
 
     def __str__(self):
         self._updateFromFS()
-        return str( self._readFile( 0 ) )
+        return str(self._readFile(0))
 
     def modified(self):
         return self.getModTime()
