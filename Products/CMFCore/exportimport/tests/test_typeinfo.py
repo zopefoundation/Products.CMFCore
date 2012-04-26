@@ -51,8 +51,9 @@ _FTI_BODY = """\
  <alias from="(Default)" to="foo"/>
  <alias from="view" to="foo"/>
  <action title="Foo" action_id="foo_action" category="Bar"
-    condition_expr="python:1" icon_expr="string:${portal_url}/icon.png"
-    link_target="" url_expr="string:${object_url}/foo" visible="True"/>
+    condition_expr="python:1" description="Foo action description"
+    icon_expr="string:${portal_url}/icon.png" link_target=""
+    url_expr="string:${object_url}/foo" visible="True"/>
 </object>
 """
 
@@ -85,6 +86,7 @@ _TI_LIST = ({
                 },
     'actions': ({'id':     'view',
                  'title':  'View',
+                 'description':  'View the current item.',
                  'action': 'string:${object_url}/foo_view',
                  'icon_expr': 'string:${portal_url}/preview_icon.png',
                  'link_target': '_new',
@@ -98,6 +100,7 @@ _TI_LIST = ({
                  },
                 {'id':     'metadata',
                  'title':  'Metadata',
+                 'description': "Manage the item's metadata",
                  'action': 'string:${object_url}/metadata_edit_form',
                  'icon_expr': 'string:${portal_url}/metadata_icon.png',
                  'permissions': (ModifyPortalContent,),
@@ -128,6 +131,7 @@ _TI_LIST = ({
                  },
                 {'id':     'edit',
                  'title':  'Edit',
+                 'description':  'Edit the current item.',
                  'action': 'string:${object_url}/bar_edit_form',
                  'permissions': (ModifyPortalContent,),
                  },
@@ -202,19 +206,21 @@ _FOO_EXPORT = """\
  <property name="allow_discussion">False</property>
  <alias from="(Default)" to="foo_view"/>
  <alias from="view" to="foo_view"/>
- <action title="View" action_id="view" category="object" condition_expr=""
+ <action title="View" description="View the current item."
+    action_id="view" category="object" condition_expr=""
     url_expr="string:${object_url}/foo_view" 
     icon_expr="string:${portal_url}/preview_icon.png" link_target="_new" 
     visible="True">
   <permission value="View"/>
  </action>
- <action title="Edit" action_id="edit" category="object" condition_expr=""
-    url_expr="string:${object_url}/foo_edit_form" 
+ <action title="Edit" action_id="edit" category="object" condition_expr="" 
+    description="" url_expr="string:${object_url}/foo_edit_form" 
     icon_expr="string:${portal_url}/edit_icon.png" link_target="" 
     visible="True">
   <permission value="Modify portal content"/>
  </action>
- <action title="Metadata" action_id="metadata" category="object"
+ <action title="Metadata" description="Manage the item's metadata"
+    action_id="metadata" category="object"
     condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
     icon_expr="string:${portal_url}/metadata_icon.png" link_target="" 
     visible="True">
@@ -244,23 +250,27 @@ _BAR_EXPORT = """\
  <property name="allow_discussion">True</property>
  <alias from="(Default)" to="bar_view"/>
  <alias from="view" to="bar_view"/>
- <action title="View" action_id="view" category="object" condition_expr=""
+ <action title="View"  description="" action_id="view"
+    category="object" condition_expr=""
     url_expr="string:${object_url}/bar_view" 
     icon_expr="" link_target="" visible="True">
   <permission value="View"/>
  </action>
- <action title="Edit" action_id="edit" category="object" condition_expr=""
+ <action title="Edit" description="Edit the current item."
+    action_id="edit" category="object" condition_expr=""
     url_expr="string:${object_url}/bar_edit_form"
     icon_expr="" link_target="" visible="True">
   <permission value="Modify portal content"/>
  </action>
- <action title="Contents" action_id="contents" category="object"
-    condition_expr="" url_expr="string:${object_url}/folder_contents"
+ <action title="Contents"  description="" action_id="contents"
+    category="object" condition_expr=""
+    url_expr="string:${object_url}/folder_contents"
     icon_expr="" link_target="" visible="True">
   <permission value="Access contents information"/>
  </action>
- <action title="Metadata" action_id="metadata" category="object"
-    condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
+ <action title="Metadata"  description="" action_id="metadata"
+    category="object" condition_expr=""
+    url_expr="string:${object_url}/metadata_edit_form"
     icon_expr="" link_target="" visible="True">
   <permission value="Modify portal content"/>
  </action>
@@ -331,9 +341,10 @@ class TypeInformationXMLAdapterTests(
 
     def _populate(self, obj):
         obj.setMethodAliases({'(Default)': 'foo', 'view': 'foo'})
-        obj.addAction('foo_action', 'Foo', 'string:${object_url}/foo',
-                      'python:1', (), 'Bar', 
-                      icon_expr="string:${portal_url}/icon.png")
+        obj.addAction('foo_action', 'Foo',
+                      'string:${object_url}/foo', 'python:1', (), 'Bar', 
+                      icon_expr="string:${portal_url}/icon.png",
+                      description='Foo action description')
 
     def _verifyImport(self, obj):
         self.assertEqual(type(obj._aliases), dict)
@@ -346,7 +357,7 @@ class TypeInformationXMLAdapterTests(
         self.assertEqual(type(obj._actions[0].title), str)
         self.assertEqual(obj._actions[0].title, 'Foo')
         self.assertEqual(type(obj._actions[0].description), str)
-        self.assertEqual(obj._actions[0].description, '')
+        self.assertEqual(obj._actions[0].description, 'Foo action description')
         self.assertEqual(type(obj._actions[0].category), str)
         self.assertEqual(obj._actions[0].category, 'Bar')
         self.assertEqual(type(obj._actions[0].condition.text), str)

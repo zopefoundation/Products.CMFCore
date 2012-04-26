@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.7 (unreleased)
 ------------------
 
+- Add GenericSetup export/import support for type information action
+  descriptions.
+
 
 2.2.6 (2012-04-15)
 ------------------

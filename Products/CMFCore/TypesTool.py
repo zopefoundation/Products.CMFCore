@@ -171,6 +171,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
                 , visible=action.get('visible', True)
                 , icon_expr=action.get('icon_expr', '')
                 , link_target=action.get('link_target', '')
+                , description=action.get('description', '')
                 )
 
         self.setMethodAliases(kw.get('aliases', {}))

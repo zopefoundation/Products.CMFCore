@@ -180,6 +180,7 @@ class ActionProviderBase:
                  , visible=1
                  , icon_expr=''
                  , link_target=''
+                 , description=''
                  , REQUEST=None
                  ):
         """ Add an action to our list.
@@ -197,6 +198,7 @@ class ActionProviderBase:
 
         new_action = ActionInformation( id=str(id)
                                       , title=str(name)
+                                      , description=str(description)
                                       , category=str(category)
                                       , condition=condition
                                       , permissions=permission

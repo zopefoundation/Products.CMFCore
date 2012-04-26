@@ -113,6 +113,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             ai_info = ai.getMapping()
             child = self._doc.createElement('action')
             child.setAttribute('title', ai_info['title'])
+            child.setAttribute('description', ai_info['description'])
             child.setAttribute('action_id', ai_info['id'])
             child.setAttribute('category', ai_info['category'])
             child.setAttribute('condition_expr', ai_info['condition'])
@@ -136,6 +137,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
                 continue
             title = str(child.getAttribute('title'))
             id = str(child.getAttribute('action_id'))
+            description = str(child.getAttribute('description'))
             category = str(child.getAttribute('category'))
             condition = str(child.getAttribute('condition_expr'))
             action = str(child.getAttribute('url_expr'))
@@ -165,10 +167,12 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
                     self.context.addAction(id, title, action, condition,
                                            tuple(permissions), category, visible,
                                            icon_expr=icon_expr, 
-                                           link_target=link_target)
+                                           link_target=link_target,
+                                           description=description)
                 else:
-                    action_obj.edit(title=title, action=action,
-                                    icon_expr=icon_expr, condition=condition,
+                    action_obj.edit(title=title, description=description,
+                                    action=action, icon_expr=icon_expr, 
+                                    condition=condition, 
                                     permissions=tuple(permissions),
                                     visible=visible, link_target=link_target)
 
