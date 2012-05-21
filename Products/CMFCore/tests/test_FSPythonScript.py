@@ -229,8 +229,8 @@ return 'cps -- replaced'
 """
 
 _DIFF_TEXT = """\
---- original 
-+++ modified 
+--- original
++++ modified
 @@ -7,4 +7,4 @@
  ##parameters=
  ##title=
@@ -262,7 +262,8 @@ class CustomizedPythonScriptTests(unittest.TestCase):
         self.assertEqual(len(list(cps.getDiff())), 0)
 
         cps.write(_REPLACEMENT_TEXT)
-        self.assertEqual(list(cps.getDiff()), _DIFF_TEXT.splitlines())
+        self.assertEqual([l.rstrip() for l in cps.getDiff()],
+                         _DIFF_TEXT.splitlines())
 
 
 class WarnMe(SimpleItem):

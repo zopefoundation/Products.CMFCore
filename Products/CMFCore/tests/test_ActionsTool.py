@@ -16,6 +16,8 @@
 import unittest
 import Testing
 
+import warnings
+
 from AccessControl.SecurityManagement import newSecurityManager
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
@@ -31,14 +33,10 @@ from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.MembershipTool import MembershipTool
 from Products.CMFCore.tests.base.security import OmnipotentUser
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.URLTool import URLTool
 
 
-class ActionsToolTests(unittest.TestCase, WarningInterceptor):
-
-    def tearDown(self):
-        self._free_warning_output()
+class ActionsToolTests(unittest.TestCase):
 
     def _getTargetClass(self):
         from Products.CMFCore.ActionsTool import ActionsTool
@@ -87,16 +85,17 @@ class ActionsToolTests(unittest.TestCase, WarningInterceptor):
             del ActionProviderBase.__warningregistry__
         except AttributeError:
             pass
-        self._trap_warning_output()
         tool = self._makeOne()
         tool.addAction('an_id', 'name', '', '', '', 'object')
-        rval = tool.getActionObject('object/an_id')
-        self.assertEqual(rval, tool._actions[0])
-        warning = self._our_stderr_stream.getvalue()
-        self.assertTrue(
-            'DeprecationWarning: '
-            'Old-style actions are deprecated and will be removed in CMF '
-            '2.4. Use Action and Action Category objects instead.' in warning)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter('always')
+            tool.getActionObject('object/an_id')
+            self.assertEqual(len(w), 1)
+            self.assertTrue(issubclass(w[-1].category, DeprecationWarning))
+            self.assertTrue(
+                'Old-style actions are deprecated and will be removed in CMF '
+                '2.4. Use Action and Action Category objects instead.'
+                in str(w[-1].message))
 
     def test_getActionObject_skips_newstyle_actions(self):
         tool = self._makeOne()
