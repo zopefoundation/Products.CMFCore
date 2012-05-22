@@ -39,7 +39,7 @@ class FSZSQLMethodTests(FSDVTest):
         self.assertEqual(zsql.class_name_, 'MyRecord')
         self.assertEqual(zsql.class_file_, 'CMFCore.TestRecord')
         self.assertEqual(zsql.connection_hook, 'MyHook')
-        self.failIf(zsql.allow_simple_one_argument_traversal is None)
+        self.assertFalse(zsql.allow_simple_one_argument_traversal is None)
 
 
 class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
@@ -71,7 +71,7 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
         self.fsZSQL.manage_doCustomize( folder_path='custom' )
 
         self.assertEqual( len( self.custom.objectIds() ), 1 )
-        self.failUnless( 'testsql' in self.custom.objectIds() )   
+        self.assertTrue( 'testsql' in self.custom.objectIds() )   
 
     def test_customize_alternate_root( self ):
 
@@ -81,15 +81,15 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
 
         self.fsZSQL.manage_doCustomize( folder_path='other', root=self.root )
 
-        self.failIf( 'testsql' in self.custom.objectIds() )   
-        self.failUnless( 'testsql' in self.root.other.objectIds() )   
+        self.assertFalse( 'testsql' in self.custom.objectIds() )   
+        self.assertTrue( 'testsql' in self.root.other.objectIds() )   
 
     def test_customize_fspath_as_dot( self ):
 
         self.fsZSQL.manage_doCustomize( folder_path='.' )
 
-        self.failIf( 'testsql' in self.custom.objectIds() )   
-        self.failUnless( 'testsql' in self.skins.objectIds() )   
+        self.assertFalse( 'testsql' in self.custom.objectIds() )   
+        self.assertTrue( 'testsql' in self.skins.objectIds() )   
 
     def test_customize_manual_clone( self ):
 
@@ -99,8 +99,8 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
 
         self.fsZSQL.manage_doCustomize( folder_path='custom', obj=clone )
 
-        self.failUnless( 'testsql' in self.custom.objectIds() )   
-        self.failUnless( aq_base(self.custom._getOb('testsql')) is clone )   
+        self.assertTrue( 'testsql' in self.custom.objectIds() )   
+        self.assertTrue( aq_base(self.custom._getOb('testsql')) is clone )   
 
     def test_customize_properties(self):
         # Make sure all properties are coming across
@@ -116,7 +116,7 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
         self.assertEqual(zsql.class_name_, 'MyRecord')
         self.assertEqual(zsql.class_file_, 'CMFCore.TestRecord')
         self.assertEqual(zsql.connection_hook, 'MyHook')
-        self.failIf(zsql.allow_simple_one_argument_traversal is None)
+        self.assertFalse(zsql.allow_simple_one_argument_traversal is None)
 
 
 def test_suite():

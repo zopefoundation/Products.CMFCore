@@ -88,7 +88,7 @@ class ActionsToolTests(unittest.TestCase, WarningInterceptor):
         rval = tool.getActionObject('object/an_id')
         self.assertEqual(rval, tool._actions[0])
         warning = self._our_stderr_stream.getvalue()
-        self.failUnless(
+        self.assertTrue(
             'DeprecationWarning: '
             'Old-style actions are deprecated and will be removed in CMF '
             '2.4. Use Action and Action Category objects instead.' in warning)

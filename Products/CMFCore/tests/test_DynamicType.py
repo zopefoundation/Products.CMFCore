@@ -177,7 +177,7 @@ class DynamicTypeSecurityTests(SecurityRequestTest):
         except ValueError, e:
             message = e.args[0]
             detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)
-            self.failUnless(message.find(INVALID_ID) != -1, detail)
+            self.assertTrue(message.find(INVALID_ID) != -1, detail)
 
 
 def test_suite():

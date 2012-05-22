@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.7 (unreleased)
 ------------------
 
+- Deprecated aliases were replaced on tests.
+
 - Add GenericSetup export/import support for type information action
   descriptions.
 

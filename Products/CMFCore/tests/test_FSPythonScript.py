@@ -118,11 +118,11 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         fsPS.manage_doCustomize( folder_path='custom' )
 
         self.assertEqual( len( custom.objectIds() ), 1 )
-        self.failUnless( 'test6' in custom.objectIds() )  
+        self.assertTrue( 'test6' in custom.objectIds() )  
 
         test6 = custom._getOb('test6')
 
-        self.failUnless(isinstance(test6, CustomizedPythonScript))
+        self.assertTrue(isinstance(test6, CustomizedPythonScript))
         self.assertEqual(test6.original_source, fsPS.read())
 
     def test_customize_alternate_root( self ):
@@ -132,8 +132,8 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
 
         fsPS.manage_doCustomize( folder_path='other', root=root )
 
-        self.failIf( 'test6' in custom.objectIds() )  
-        self.failUnless( 'test6' in root.other.objectIds() )  
+        self.assertFalse( 'test6' in custom.objectIds() )  
+        self.assertTrue( 'test6' in root.other.objectIds() )  
 
     def test_customize_fspath_as_dot( self ):
 
@@ -141,8 +141,8 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
 
         fsPS.manage_doCustomize( folder_path='.' )
 
-        self.failIf( 'test6' in custom.objectIds() )  
-        self.failUnless( 'test6' in root.portal_skins.objectIds() )  
+        self.assertFalse( 'test6' in custom.objectIds() )  
+        self.assertTrue( 'test6' in root.portal_skins.objectIds() )  
 
     def test_customize_manual_clone( self ):
 
@@ -151,8 +151,8 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
 
         fsPS.manage_doCustomize( folder_path='custom', obj=clone )
 
-        self.failUnless( 'test6' in custom.objectIds() )  
-        self.failUnless( aq_base(custom._getOb('test6')) is clone )  
+        self.assertTrue( 'test6' in custom.objectIds() )  
+        self.assertTrue( aq_base(custom._getOb('test6')) is clone )  
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
@@ -177,13 +177,13 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         root, tool, custom, fsdir, fsPS = self._makeSkins()
 
         fsPS._proxy_roles = ('Manager', 'Anonymous')
-        self.failUnless(fsPS.manage_haveProxy('Anonymous'))
-        self.failUnless(fsPS.manage_haveProxy('Manager'))
+        self.assertTrue(fsPS.manage_haveProxy('Anonymous'))
+        self.assertTrue(fsPS.manage_haveProxy('Manager'))
 
         fsPS.manage_doCustomize(folder_path='custom')
         custom_ps = custom.test6
-        self.failUnless(custom_ps.manage_haveProxy('Anonymous'))
-        self.failUnless(custom_ps.manage_haveProxy('Manager'))
+        self.assertTrue(custom_ps.manage_haveProxy('Anonymous'))
+        self.assertTrue(custom_ps.manage_haveProxy('Manager'))
 
     def test_customization_permissions(self):
         # Test to ensure that permission settings survive customizing
@@ -198,9 +198,9 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         rop = fsPS.rolesOfPermission(perm)
         for rop_info in rop:
             if rop_info['name'] == 'Anonymous':
-                self.failIf(rop_info['selected'] == '')
+                self.assertFalse(rop_info['selected'] == '')
             else:
-                self.failUnless(rop_info['selected'] == '')
+                self.assertTrue(rop_info['selected'] == '')
 
         # Now customize and verify again
         fsPS.manage_doCustomize(folder_path='custom')
@@ -208,9 +208,9 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         rop = custom_ps.rolesOfPermission(perm)
         for rop_info in rop:
             if rop_info['name'] == 'Anonymous':
-                self.failIf(rop_info['selected'] == '')
+                self.assertFalse(rop_info['selected'] == '')
             else:
-                self.failUnless(rop_info['selected'] == '')
+                self.assertTrue(rop_info['selected'] == '')
 
 _ORIGINAL_TEXT = """\
 ## Script (Python) "cps"

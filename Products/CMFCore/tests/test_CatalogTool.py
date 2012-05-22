@@ -110,9 +110,9 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
         obj = self._makeContent()
         w = self._makeOne({}, obj)
-        self.failUnless(IContentish.providedBy(w))
-        self.failUnless(IIndexableObjectWrapper.providedBy(w))
-        self.failUnless(IIndexableObject.providedBy(w))
+        self.assertTrue(IContentish.providedBy(w))
+        self.assertTrue(IIndexableObjectWrapper.providedBy(w))
+        self.assertTrue(IIndexableObject.providedBy(w))
 
     def test_adapts(self):
         from zope.component import adaptedBy
@@ -485,17 +485,17 @@ class CatalogToolTests(SecurityTest):
         # First case, no proxy roles set at all
         arus = catalog._listAllowedRolesAndUsers(user)
         self.assertEquals(len(arus), 3)
-        self.failUnless('Anonymous' in arus)
-        self.failUnless('Blob' in arus)
-        self.failUnless('user:%s' % user.getId() in arus)
+        self.assertTrue('Anonymous' in arus)
+        self.assertTrue('Blob' in arus)
+        self.assertTrue('user:%s' % user.getId() in arus)
 
         # Second case, a proxy role is set
         self.setupProxyRoles('Waggle')
         arus = catalog._listAllowedRolesAndUsers(user)
         self.assertEquals(len(arus), 3)
-        self.failUnless('Anonymous' in arus)
-        self.failUnless('Waggle' in arus)
-        self.failUnless('user:%s' % user.getId() in arus)
+        self.assertTrue('Anonymous' in arus)
+        self.assertTrue('Waggle' in arus)
+        self.assertTrue('user:%s' % user.getId() in arus)
 
         # Third case, proxy roles are an empty tuple. This happens if
         # proxy roles are unset using the ZMI. The behavior should
@@ -503,9 +503,9 @@ class CatalogToolTests(SecurityTest):
         self.setupProxyRoles()
         arus = catalog._listAllowedRolesAndUsers(user)
         self.assertEquals(len(arus), 3)
-        self.failUnless('Anonymous' in arus)
-        self.failUnless('Blob' in arus)
-        self.failUnless('user:%s' % user.getId() in arus)
+        self.assertTrue('Anonymous' in arus)
+        self.assertTrue('Blob' in arus)
+        self.assertTrue('user:%s' % user.getId() in arus)
 
     def test_wrapping1(self):
         # DummyContent implements IIndexableObject

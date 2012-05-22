@@ -433,7 +433,7 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self._epoch = DateTime()
 
     def assertEqualDelta( self, lhs, rhs, delta ):
-        self.failUnless( abs( lhs - rhs ) <= delta )
+        self.assertTrue( abs( lhs - rhs ) <= delta )
 
     def test_interfaces(self):
         from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
@@ -925,8 +925,8 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_subtemplate_cpm_2( self ):
         # test that calling content from a template doesnt call the cpm
@@ -964,8 +964,8 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_subtemplate_cpm_3( self ):
         # test a bigger mix of zpt templates
@@ -1006,8 +1006,8 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_mixed_subtemplate_cpm( self ):
         # test a mix of zpt and dtml templates
@@ -1045,8 +1045,8 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_fireForSubtemplates(self):
         # This is a FSPageTemplate that will be used as the View for 
@@ -1107,8 +1107,8 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_fireForSubtemplates2(self):
         # This is a FSPageTemplate that will be used as the View for 
@@ -1187,7 +1187,7 @@ class NestedTemplateTests( RequestTest, FSObjMaker ):
         header_info = self.RESPONSE.headers.items()
         [headers.__setitem__(x[0].lower(), x[1]) for x in header_info]
 
-        self.failUnless(headers.get('x-cache-headers-set-by'))
+        self.assertTrue(headers.get('x-cache-headers-set-by'))
         self.assertEquals(headers.get('vary'), 'doc1')
         self.assertEquals( headers.get('cache-control')
                          , 'max-age=100, s-maxage=100'
@@ -1229,8 +1229,8 @@ class OFSCacheTests(RequestTest):
 
         cpm = self.portal.caching_policy_manager
         doc1 = self.portal.doc1
-        self.failUnless(cpm._isCacheManager)
-        self.failUnless(isinstance(cpm.ZCacheManager_getCache(), CPMCache))
+        self.assertTrue(cpm._isCacheManager)
+        self.assertTrue(isinstance(cpm.ZCacheManager_getCache(), CPMCache))
         self.assertEquals( doc1.ZCacheable_getManagerIds()
                          , ({'id':cpm.getId(), 'title':''},)
                          )
@@ -1242,8 +1242,8 @@ class OFSCacheTests(RequestTest):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_unsuitable_association(self):
         # Render an item that is associated with the CPM, but that does not
@@ -1256,8 +1256,8 @@ class OFSCacheTests(RequestTest):
 
         # no headers should be added by the CPM if all is well
         headers = [x.lower() for x in self.RESPONSE.headers.keys()]
-        self.failIf('x-cache-headers-set-by' in headers)
-        self.failIf('vary' in headers)
+        self.assertFalse('x-cache-headers-set-by' in headers)
+        self.assertFalse('vary' in headers)
 
     def test_suitable_association(self):
         # Render a content item that will trigger the CPM
@@ -1274,7 +1274,7 @@ class OFSCacheTests(RequestTest):
         header_info = self.RESPONSE.headers.items()
         [headers.__setitem__(x[0].lower(), x[1]) for x in header_info]
 
-        self.failUnless(headers.get('x-cache-headers-set-by'))
+        self.assertTrue(headers.get('x-cache-headers-set-by'))
         self.assertEquals(headers.get('vary'), 'doc1')
         self.assertEquals( headers.get('cache-control')
                          , 'max-age=100'
@@ -1296,7 +1296,7 @@ class OFSCacheTests(RequestTest):
         header_info = self.RESPONSE.headers.items()
         [headers.__setitem__(x[0].lower(), x[1]) for x in header_info]
 
-        self.failUnless(headers.get('x-cache-headers-set-by'))
+        self.assertTrue(headers.get('x-cache-headers-set-by'))
         self.assertEquals(headers.get('vary'), 'doc1')
         self.assertEquals( headers.get('cache-control')
                          , 'max-age=100'

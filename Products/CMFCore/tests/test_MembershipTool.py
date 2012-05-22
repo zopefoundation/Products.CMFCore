@@ -75,18 +75,18 @@ class MembershipToolSecurityTests(SecurityTest):
 
         # permission
         mtool.createMemberArea('user_foo')
-        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        self.assertFalse( hasattr(members.aq_self, 'user_foo') )
         newSecurityManager(None, acl_users.user_bar)
         mtool.createMemberArea('user_foo')
-        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        self.assertFalse( hasattr(members.aq_self, 'user_foo') )
         newSecurityManager(None, acl_users.user_foo)
         mtool.setMemberareaCreationFlag()
         mtool.createMemberArea('user_foo')
-        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        self.assertFalse( hasattr(members.aq_self, 'user_foo') )
         newSecurityManager(None, acl_users.all_powerful_Oz)
         mtool.setMemberareaCreationFlag()
         mtool.createMemberArea('user_foo')
-        self.failUnless( hasattr(members.aq_self, 'user_foo') )
+        self.assertTrue( hasattr(members.aq_self, 'user_foo') )
 
         # default content
         f = members.user_foo
@@ -108,18 +108,18 @@ class MembershipToolSecurityTests(SecurityTest):
 
         # permission
         mtool.createMemberArea('user_foo')
-        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        self.assertFalse( hasattr(members.aq_self, 'user_foo') )
         newSecurityManager(None, acl_users.user_bar)
         mtool.createMemberArea('user_foo')
-        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        self.assertFalse( hasattr(members.aq_self, 'user_foo') )
         newSecurityManager(None, acl_users.user_foo)
         mtool.setMemberareaCreationFlag()
         mtool.createMemberArea('user_foo')
-        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        self.assertFalse( hasattr(members.aq_self, 'user_foo') )
         newSecurityManager(None, acl_users.all_powerful_Oz)
         mtool.setMemberareaCreationFlag()
         mtool.createMemberArea('user_foo')
-        self.failUnless( hasattr(members.aq_self, 'user_foo') )
+        self.assertTrue( hasattr(members.aq_self, 'user_foo') )
 
         # default content
         f = members.user_foo
@@ -150,9 +150,9 @@ class MembershipToolSecurityTests(SecurityTest):
 
         newSecurityManager(None, acl_users.all_powerful_Oz)
         mtool.createMemberArea( NONLOCAL_USER_ID )
-        self.failUnless( hasattr(members.aq_self, NONLOCAL_USER_ID ) )
+        self.assertTrue( hasattr(members.aq_self, NONLOCAL_USER_ID ) )
         mtool.createMemberArea( LOCAL_USER_ID )
-        self.failUnless( hasattr(members.aq_self, LOCAL_USER_ID ) )
+        self.assertTrue( hasattr(members.aq_self, LOCAL_USER_ID ) )
 
     def test_deleteMembers(self):
         site = self._makeSite()
@@ -167,15 +167,15 @@ class MembershipToolSecurityTests(SecurityTest):
         self.assertEqual( acl_users.getUserById('user_foo'),
                           acl_users.user_foo )
         mtool.createMemberArea('user_foo')
-        self.failUnless( hasattr(members.aq_self, 'user_foo') )
+        self.assertTrue( hasattr(members.aq_self, 'user_foo') )
         mdtool.registerMemberData('Dummy', 'user_foo')
-        self.failUnless( mdtool._members.has_key('user_foo') )
+        self.assertTrue( mdtool._members.has_key('user_foo') )
 
         rval = mtool.deleteMembers( ('user_foo', 'user_baz') )
         self.assertEqual( rval, ('user_foo',) )
-        self.failIf( acl_users.getUserById('user_foo', None) )
-        self.failIf( mdtool._members.has_key('user_foo') )
-        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        self.assertFalse( acl_users.getUserById('user_foo', None) )
+        self.assertFalse( mdtool._members.has_key('user_foo') )
+        self.assertFalse( hasattr(members.aq_self, 'user_foo') )
 
         cleanUp()
 
@@ -195,9 +195,9 @@ class MembershipToolSecurityTests(SecurityTest):
         self.assertEqual( acl_users.getUserById('user_foo'),
                           acl_users.user_foo )
         mtool.createMemberArea('user_foo')
-        self.failUnless( hasattr(members.aq_self, 'user_foo') )
+        self.assertTrue( hasattr(members.aq_self, 'user_foo') )
         mdtool.registerMemberData('Dummy', 'user_foo')
-        self.failUnless( mdtool._members.has_key('user_foo') )
+        self.assertTrue( mdtool._members.has_key('user_foo') )
 
         # Fake an incompatible user folder by deleting the class method
         deletion_method = DummyUserFolder.userFolderDelUsers
@@ -206,9 +206,9 @@ class MembershipToolSecurityTests(SecurityTest):
                          , mtool.deleteMembers
                          , ('user_foo',)
                          )
-        self.failUnless( acl_users.getUserById('user_foo', None) )
-        self.failUnless( mdtool._members.has_key('user_foo') )
-        self.failUnless( hasattr(members.aq_self, 'user_foo') )
+        self.assertTrue( acl_users.getUserById('user_foo', None) )
+        self.assertTrue( mdtool._members.has_key('user_foo') )
+        self.assertTrue( hasattr(members.aq_self, 'user_foo') )
 
         # Cleanup
         DummyUserFolder.userFolderDelUsers = deletion_method

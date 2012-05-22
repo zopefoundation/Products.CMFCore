@@ -200,7 +200,7 @@ class WorkflowToolTests(unittest.TestCase):
 
         tool = self._makeOne()
 
-        self.failIf( tool.getWorkflowIds() )
+        self.assertFalse( tool.getWorkflowIds() )
         self.assertEqual( tool.getWorkflowById( 'default_workflow' ), None )
         self.assertEqual( tool.getWorkflowById( 'a' ), None )
 
@@ -215,8 +215,8 @@ class WorkflowToolTests(unittest.TestCase):
 
         wfids = tool.getWorkflowIds()
         self.assertEqual( len( wfids ), 2 )
-        self.failUnless( 'a' in wfids )
-        self.failUnless( 'b' in wfids )
+        self.assertTrue( 'a' in wfids )
+        self.assertTrue( 'b' in wfids )
         self.assertEqual( tool.getWorkflowById( 'default' ), None )
         wf = tool.getWorkflowById( 'a' )
         self.assertEqual( wf.getId(), 'a' )
@@ -267,13 +267,13 @@ class WorkflowToolTests(unittest.TestCase):
         self.assertEquals( len( tool.listChainOverrides() ), 1 )
         chain = tool.getChainFor( dummy )
         self.assertEquals( len( chain ), 2 )
-        self.failUnless( 'a' in chain )
-        self.failUnless( 'b' in chain )
+        self.assertTrue( 'a' in chain )
+        self.assertTrue( 'b' in chain )
 
         vars = tool.getCatalogVariablesFor( dummy )
         self.assertEquals( len( vars ), 1 )
-        self.failUnless( 'dummy' in vars.keys() )
-        self.failUnless( 'a: dummy' in vars.values() )
+        self.assertTrue( 'dummy' in vars.keys() )
+        self.assertTrue( 'a: dummy' in vars.values() )
 
     def test_setChainForPortalTypes(self):
 
@@ -308,8 +308,8 @@ class WorkflowToolTests(unittest.TestCase):
 
         vars = tool.getCatalogVariablesFor( dummy )
         self.assertEquals( len( vars ), 1 )
-        self.failUnless( 'dummy' in vars.keys() )
-        self.failUnless( 'a: dummy' in vars.values() )
+        self.assertTrue( 'dummy' in vars.keys() )
+        self.assertTrue( 'a: dummy' in vars.values() )
 
     def test_getInfoFor( self ):
 
@@ -320,8 +320,8 @@ class WorkflowToolTests(unittest.TestCase):
         info = tool.getInfoFor( dummy, 'info' )
 
         self.assertEqual( info, 1 )
-        self.failIf( tool.a.gaveInfo( 'info' ) )
-        self.failUnless( tool.b.gaveInfo( 'info' ) )
+        self.assertFalse( tool.a.gaveInfo( 'info' ) )
+        self.assertTrue( tool.b.gaveInfo( 'info' ) )
 
     def test_doActionFor( self ):
 
@@ -331,8 +331,8 @@ class WorkflowToolTests(unittest.TestCase):
 
         tool.doActionFor( dummy, 'action' )
 
-        self.failUnless( tool.a.didAction( 'action' ) )
-        self.failIf( tool.b.didAction( 'action' ) )
+        self.assertTrue( tool.a.didAction( 'action' ) )
+        self.assertFalse( tool.b.didAction( 'action' ) )
 
     def test_notifyCreated( self ):
 
@@ -432,14 +432,14 @@ class WorkflowToolTests(unittest.TestCase):
         dummy_status0 = object()
         tool.setStatusOf('a', ob, dummy_status0)
 
-        self.failUnless( 'a' in ob.workflow_history )
+        self.assertTrue( 'a' in ob.workflow_history )
         self.assertEqual( len(ob.workflow_history['a']), 1 )
         self.assertEqual( ob.workflow_history['a'][0], dummy_status0 )
 
         dummy_status1 = object()
         tool.setStatusOf('a', ob, dummy_status1)
 
-        self.failUnless( 'a' in ob.workflow_history )
+        self.assertTrue( 'a' in ob.workflow_history )
         self.assertEqual( len(ob.workflow_history['a']), 2 )
         self.assertEqual( ob.workflow_history['a'][0], dummy_status0 )
         self.assertEqual( ob.workflow_history['a'][1], dummy_status1 )

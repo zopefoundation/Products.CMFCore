@@ -85,7 +85,7 @@ class ActionProviderBaseTests(SecurityRequestTest, WarningInterceptor):
     def test_addAction( self ):
 
         apb = self._makeProvider()
-        self.failIf( apb._actions )
+        self.assertFalse( apb._actions )
         old_actions = apb._actions
         apb.addAction( id='foo'
                      , name='foo_action'
@@ -94,8 +94,8 @@ class ActionProviderBaseTests(SecurityRequestTest, WarningInterceptor):
                      , permission=''
                      , category=''
                      )
-        self.failUnless( apb._actions )
-        self.failIf( apb._actions is old_actions )
+        self.assertTrue( apb._actions )
+        self.assertFalse( apb._actions is old_actions )
 
     def test_addActionBlankPermission(self):
         # make sure a blank permission gets stored as an empty tuple
@@ -199,7 +199,7 @@ class ActionProviderBaseTests(SecurityRequestTest, WarningInterceptor):
                                 , value
                                 , '%s, %s != %s, %s'
                                   % ( attr, attr_value, key, value )  )
-        self.failIf( apb._actions is old_actions )
+        self.assertFalse( apb._actions is old_actions )
 
     def test_deleteActions( self ):
 
@@ -207,7 +207,7 @@ class ActionProviderBaseTests(SecurityRequestTest, WarningInterceptor):
         apb._actions = tuple( map( DummyAction, [ '0', '1', '2' ] ) )
         apb.deleteActions( selections=(0,2) )
         self.assertEqual( len( apb._actions ), 1 )
-        self.failUnless( DummyAction('1') in apb._actions )
+        self.assertTrue( DummyAction('1') in apb._actions )
 
     def test_DietersNastySharingBug( self ):
 
@@ -233,7 +233,7 @@ class ActionProviderBaseTests(SecurityRequestTest, WarningInterceptor):
 
         one_ids = map( idify, one.listActions() )
         another_ids = map( idify, another.listActions() )
-        self.failIf( one_ids == another_ids )
+        self.assertFalse( one_ids == another_ids )
         self.assertEqual( old_ids, another_ids )
 
     def test_listActionInfos(self):
@@ -281,7 +281,7 @@ class ActionProviderBaseTests(SecurityRequestTest, WarningInterceptor):
         except ValueError, e:
             message = e.args[0]
             detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)
-            self.failUnless(message.find(INVALID_ID) != -1, detail)
+            self.assertTrue(message.find(INVALID_ID) != -1, detail)
 
 
 def test_suite():

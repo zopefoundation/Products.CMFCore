@@ -145,14 +145,14 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         cat = self.site.portal_catalog
         foo.reindexObject()
         self.assertEquals(cat.log, ["reindex /site/foo []"])
-        self.assert_(foo.notified)
+        self.assertTrue(foo.notified)
 
     def test_reindexObject_idxs(self):
         foo = self.site.foo
         cat = self.site.portal_catalog
         foo.reindexObject(idxs=['bar'])
         self.assertEquals(cat.log, ["reindex /site/foo ['bar']"])
-        self.failIf(foo.notified)
+        self.assertFalse(foo.notified)
 
     def test_reindexObjectSecurity(self):
         foo = self.site.foo
@@ -170,9 +170,9 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
             "reindex /site/foo/bar %s"%str(CMF_SECURITY_INDEXES),
             "reindex /site/foo/hop %s"%str(CMF_SECURITY_INDEXES),
             ])
-        self.failIf(foo.notified)
-        self.failIf(bar.notified)
-        self.failIf(hop.notified)
+        self.assertFalse(foo.notified)
+        self.assertFalse(bar.notified)
+        self.assertFalse(hop.notified)
 
     def test_reindexObjectSecurity_missing_raise(self):
         # Exception raised for missing object (Zope 2.8 brains)
@@ -186,7 +186,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         finally:
             self._ignore_log_errors()
         self.assertRaises(NotFound, foo.reindexObjectSecurity)
-        self.failIf( self.logged ) # no logging due to raise
+        self.assertFalse( self.logged ) # no logging due to raise
 
     def test_reindexObjectSecurity_missing_noraise(self):
         # Raising disabled
@@ -199,8 +199,8 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo.reindexObjectSecurity()
         self.assertEquals(cat.log,
                           ["reindex /site/foo %s"%str(CMF_SECURITY_INDEXES)])
-        self.failIf(foo.notified)
-        self.failIf(missing.notified)
+        self.assertFalse(foo.notified)
+        self.assertFalse(missing.notified)
         self.assertEqual( len(self.logged), 1 ) # logging because no raise
 
     def test_catalog_tool(self):

@@ -129,19 +129,19 @@ class CoreUtilsSecurityTests(SecurityTest):
         eo = site.foo_dummy
         eo._owner = (['acl_users'], 'all_powerful_Oz')
         getSecurityManager().addContext(eo)
-        self.failUnless( _checkPermission('View', o) )
-        self.failUnless( _checkPermission('WebDAV access', o) )
-        self.failIf( _checkPermission('Manage users', o) )
+        self.assertTrue( _checkPermission('View', o) )
+        self.assertTrue( _checkPermission('WebDAV access', o) )
+        self.assertFalse( _checkPermission('Manage users', o) )
 
         eo._proxy_roles = ('Authenticated',)
-        self.failIf( _checkPermission('View', o) )
-        self.failUnless( _checkPermission('WebDAV access', o) )
-        self.failIf( _checkPermission('Manage users', o) )
+        self.assertFalse( _checkPermission('View', o) )
+        self.assertTrue( _checkPermission('WebDAV access', o) )
+        self.assertFalse( _checkPermission('Manage users', o) )
 
         eo._proxy_roles = ('Manager',)
-        self.failIf( _checkPermission('View', o) )
-        self.failIf( _checkPermission('WebDAV access', o) )
-        self.failUnless( _checkPermission('Manage users', o) )
+        self.assertFalse( _checkPermission('View', o) )
+        self.assertFalse( _checkPermission('WebDAV access', o) )
+        self.assertTrue( _checkPermission('Manage users', o) )
 
     def test_mergedLocalRolesManipulation(self):
         # The _mergedLocalRoles function used to return references to

@@ -124,7 +124,7 @@ class FSImageTests(RequestTest, FSDVTest):
 
         data = image.index_html( self.REQUEST, self.RESPONSE )
 
-        self.failUnless( data, '' )
+        self.assertTrue( data, '' )
         self.assertEqual( self.RESPONSE.getStatus(), 200 )
 
     def test_index_html_with_304_from_cpm( self ):
@@ -156,9 +156,9 @@ class FSImageTests(RequestTest, FSDVTest):
         image = image.__of__(self.root)
         image.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
-        self.failUnless(len(headers) >= original_len + 3)
-        self.failUnless('foo' in headers.keys())
-        self.failUnless('bar' in headers.keys())
+        self.assertTrue(len(headers) >= original_len + 3)
+        self.assertTrue('foo' in headers.keys())
+        self.assertTrue('bar' in headers.keys())
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_index_html_200_with_cpm( self ):
@@ -210,9 +210,9 @@ class FSImageTests(RequestTest, FSDVTest):
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
         headers = self.RESPONSE.headers
-        self.failUnless(len(headers) >= original_len + 3)
-        self.failUnless('foo' in headers.keys())
-        self.failUnless('bar' in headers.keys())
+        self.assertTrue(len(headers) >= original_len + 3)
+        self.assertTrue('foo' in headers.keys())
+        self.assertTrue('bar' in headers.keys())
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_tag_with_acquired_clashing_attrs(self):
@@ -229,7 +229,7 @@ class FSImageTests(RequestTest, FSDVTest):
         image = image.__of__( self.root )
 
         tag = image.tag()
-        self.failUnless('alt=""' in tag)
+        self.assertTrue('alt=""' in tag)
 
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246
@@ -243,25 +243,25 @@ class FSImageTests(RequestTest, FSDVTest):
         # equals the filesystem modification time.
         del invalidated[:]
         image._readFile(True)
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         del invalidated[:]
         image._parsed = False
         image._updateFromFS()
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         # Second pass: Forcing a different internal file modification
         # time onto the image instance. Now the image will be invalidated.
         del invalidated[:]
         image._file_mod_time = 0
         image._readFile(True)
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
         del invalidated[:]
         image._file_mod_time = 0
         image._parsed = False
         image._updateFromFS()
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
 
 def test_suite():

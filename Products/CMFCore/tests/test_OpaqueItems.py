@@ -188,9 +188,9 @@ class ManageBeforeAfterTests(SecurityTest):
         sub = self.sub
         dummy = addDummyContent(folder, 'dummy', Marker)
 
-        self.failIf(dummy.isNotifiedByAfterAdd())
-        self.failIf(dummy.isNotifiedByAfterClone())
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByAfterAdd())
+        self.assertFalse(dummy.isNotifiedByAfterClone())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
         old, dummy._p_jar = sub._p_jar, self.root._p_jar
@@ -200,18 +200,18 @@ class ManageBeforeAfterTests(SecurityTest):
         finally:
             dummy._p_jar = old
 
-        self.failIf(dummy.isNotifiedByAfterAdd())
-        self.failIf(dummy.isNotifiedByAfterClone())
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByAfterAdd())
+        self.assertFalse(dummy.isNotifiedByAfterClone())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
     def test_callableItemWithHooksOnly(self):
         folder = self.folder
         sub = self.sub
         dummy = addDummyContent(folder, 'dummy', Hooks)
 
-        self.failIf(dummy.isNotifiedByAfterAdd())
-        self.failIf(dummy.isNotifiedByAfterClone())
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByAfterAdd())
+        self.assertFalse(dummy.isNotifiedByAfterClone())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
         old, dummy._p_jar = sub._p_jar, self.root._p_jar
@@ -221,9 +221,9 @@ class ManageBeforeAfterTests(SecurityTest):
         finally:
             dummy._p_jar = old
 
-        self.failIf(dummy.isNotifiedByAfterAdd())
-        self.failIf(dummy.isNotifiedByAfterClone())
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByAfterAdd())
+        self.assertFalse(dummy.isNotifiedByAfterClone())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
     def test_callableItemWithMarkerAndHooks(self):
         folder = self.folder
@@ -231,8 +231,8 @@ class ManageBeforeAfterTests(SecurityTest):
         dummy = addDummyContent(folder, 'dummy', MarkerAndHooks)
 
         self.assertEqual(dummy.isNotifiedByAfterAdd(), 1)
-        self.failIf(dummy.isNotifiedByAfterClone())
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByAfterClone())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
         old, dummy._p_jar = sub._p_jar, self.root._p_jar
@@ -244,7 +244,7 @@ class ManageBeforeAfterTests(SecurityTest):
 
         self.assertEqual(dummy.isNotifiedByAfterAdd(), 2)
         self.assertEqual(dummy.isNotifiedByAfterClone(), 1)
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
     def test_talkbackItem(self):
         folder = self.folder
@@ -253,8 +253,8 @@ class ManageBeforeAfterTests(SecurityTest):
         dummy = addDummyContent(folder, 'dummy', 'talkback')
 
         self.assertEqual(dummy.isNotifiedByAfterAdd(), 1)
-        self.failIf(dummy.isNotifiedByAfterClone())
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByAfterClone())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
         # WAAAA! must get _p_jar set
         old, dummy._p_jar = sub._p_jar, self.root._p_jar
@@ -266,7 +266,7 @@ class ManageBeforeAfterTests(SecurityTest):
 
         self.assertEqual(dummy.isNotifiedByAfterAdd(), 2)
         self.assertEqual(dummy.isNotifiedByAfterClone(), 1)
-        self.failIf(dummy.isNotifiedByBeforeDelete())
+        self.assertFalse(dummy.isNotifiedByBeforeDelete())
 
 
 def test_suite():

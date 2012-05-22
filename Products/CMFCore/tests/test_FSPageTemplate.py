@@ -100,7 +100,7 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         script = self._makeOne('testPT3', 'testPT3.pt')
         script = script.__of__(self.root)
         data = script.read()
-        self.failUnless(u'123üöäß' in data)
+        self.assertTrue(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFrom2FSMetadata(self):
@@ -109,14 +109,14 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         script = self._makeOne('testPT4', 'testPT4.pt')
         script = script.__of__(self.root)
         data = script.read()
-        self.failUnless(u'123üöäß' in data)
+        self.assertTrue(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFromContentTypeMetadata(self):
         script = self._makeOne('testPT5', 'testPT5.pt')
         script = script.__of__(self.root)
         data = script.read()
-        self.failUnless(u'123üöäß' in data)
+        self.assertTrue(u'123üöäß' in data)
         self.assertEqual(script.content_type, 'text/html; charset=utf-16')
 
     def test_BadCall( self ):
@@ -138,9 +138,9 @@ class FSPageTemplateTests( RequestTest, FSPTMaker ):
         script = self._makeOne('testPT', 'testPT.pt')
         script = script.__of__(self.root)
         script()
-        self.failUnless( len( self.RESPONSE.headers ) >= original_len + 2 )
-        self.failUnless( 'foo' in self.RESPONSE.headers.keys() )
-        self.failUnless( 'bar' in self.RESPONSE.headers.keys() )
+        self.assertTrue( len( self.RESPONSE.headers ) >= original_len + 2 )
+        self.assertTrue( 'foo' in self.RESPONSE.headers.keys() )
+        self.assertTrue( 'bar' in self.RESPONSE.headers.keys() )
 
     def test_pt_properties( self ):
 
@@ -187,7 +187,7 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
         self.fsPT.manage_doCustomize( folder_path='custom' )
 
         self.assertEqual( len( self.custom.objectIds() ), 1 )
-        self.failUnless( 'testPT' in self.custom.objectIds() )
+        self.assertTrue( 'testPT' in self.custom.objectIds() )
 
     def test_customize_alternate_root( self ):
 
@@ -196,15 +196,15 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
 
         self.fsPT.manage_doCustomize( folder_path='other', root=self.root )
 
-        self.failIf( 'testPT' in self.custom.objectIds() )  
-        self.failUnless( 'testPT' in self.root.other.objectIds() )  
+        self.assertFalse( 'testPT' in self.custom.objectIds() )  
+        self.assertTrue( 'testPT' in self.root.other.objectIds() )  
 
     def test_customize_fspath_as_dot( self ):
 
         self.fsPT.manage_doCustomize( folder_path='.' )
 
-        self.failIf( 'testPT' in self.custom.objectIds() )  
-        self.failUnless( 'testPT' in self.skins.objectIds() )  
+        self.assertFalse( 'testPT' in self.custom.objectIds() )  
+        self.assertTrue( 'testPT' in self.skins.objectIds() )  
 
     def test_customize_manual_clone( self ):
 
@@ -212,8 +212,8 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
 
         self.fsPT.manage_doCustomize( folder_path='custom', obj=clone )
 
-        self.failUnless( 'testPT' in self.custom.objectIds() )  
-        self.failUnless( aq_base(self.custom._getOb('testPT')) is clone )  
+        self.assertTrue( 'testPT' in self.custom.objectIds() )  
+        self.assertTrue( aq_base(self.custom._getOb('testPT')) is clone )  
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
@@ -237,7 +237,7 @@ class FSPageTemplateCustomizationTests( SecurityTest, FSPTMaker ):
         self.fsPT.manage_doCustomize( folder_path='custom' )
 
         customized = self.custom.testPT
-        self.failIf( customized.expand )
+        self.assertFalse( customized.expand )
 
 
 def test_suite():

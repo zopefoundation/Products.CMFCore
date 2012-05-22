@@ -131,9 +131,9 @@ class FSSTXMethodTests(RequestTest,
         script = self._makeOne('testSTX', 'testSTX.stx')
         script = script.__of__(self.root)
         script(self.REQUEST, self.RESPONSE)
-        self.failUnless( len( self.RESPONSE.headers ) >= original_len + 2 )
-        self.failUnless( 'foo' in self.RESPONSE.headers.keys() )
-        self.failUnless( 'bar' in self.RESPONSE.headers.keys() )
+        self.assertTrue( len( self.RESPONSE.headers ) >= original_len + 2 )
+        self.assertTrue( 'foo' in self.RESPONSE.headers.keys() )
+        self.assertTrue( 'bar' in self.RESPONSE.headers.keys() )
 
     def test_ownership( self ):
         script = self._makeOne( 'testSTX', 'testSTX.stx' )
@@ -215,16 +215,16 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
         self.fsSTX.manage_doCustomize(folder_path='other', root=self.root)
 
-        self.failIf('testSTX' in self.custom.objectIds())
-        self.failUnless('testSTX' in self.root.other.objectIds())
+        self.assertFalse('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.root.other.objectIds())
 
     def test_customize_fspath_as_dot( self ):
         self._setWhichTemplate('DTML')
 
         self.fsSTX.manage_doCustomize(folder_path='.')
 
-        self.failIf('testSTX' in self.custom.objectIds())
-        self.failUnless('testSTX' in self.skins.objectIds())
+        self.assertFalse('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.skins.objectIds())
 
     def test_customize_manual_clone( self ):
         from OFS.Folder import Folder
@@ -235,8 +235,8 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
         self.fsSTX.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.failUnless('testSTX' in self.custom.objectIds())
-        self.failUnless(aq_base(self.custom._getOb('testSTX')) is clone)
+        self.assertTrue('testSTX' in self.custom.objectIds())
+        self.assertTrue(aq_base(self.custom._getOb('testSTX')) is clone)
 
     def test_customize_with_DTML( self ):
         from OFS.DTMLDocument import DTMLDocument
@@ -247,10 +247,10 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         self.fsSTX.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.failUnless('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.custom.objectIds())
         target = self.custom._getOb('testSTX')
 
-        self.failUnless(isinstance(target, DTMLDocument))
+        self.assertTrue(isinstance(target, DTMLDocument))
 
         propinfo = target.propdict()['stx']
         self.assertEqual(propinfo['type'], 'text')
@@ -268,10 +268,10 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         self.fsSTX.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.failUnless('testSTX' in self.custom.objectIds())
+        self.assertTrue('testSTX' in self.custom.objectIds())
         target = self.custom._getOb('testSTX')
 
-        self.failUnless(isinstance(target, ZopePageTemplate))
+        self.assertTrue(isinstance(target, ZopePageTemplate))
 
         propinfo = target.propdict()['stx']
         self.assertEqual(propinfo['type'], 'text')

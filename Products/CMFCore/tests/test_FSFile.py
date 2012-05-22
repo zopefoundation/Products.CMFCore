@@ -136,7 +136,7 @@ class FSFileTests(RequestTest, FSDVTest):
 
         data = file.index_html( self.REQUEST, self.RESPONSE )
 
-        self.failUnless( data, '' )
+        self.assertTrue( data, '' )
         self.assertEqual( self.RESPONSE.getStatus(), 200 )
 
     def test_index_html_with_304_from_cpm( self ):
@@ -193,9 +193,9 @@ class FSFileTests(RequestTest, FSDVTest):
         file = file.__of__(self.root)
         file.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
-        self.failUnless(len(headers) >= original_len + 3)
-        self.failUnless('foo' in headers.keys())
-        self.failUnless('bar' in headers.keys())
+        self.assertTrue(len(headers) >= original_len + 3)
+        self.assertTrue('foo' in headers.keys())
+        self.assertTrue('bar' in headers.keys())
         self.assertEqual(headers['test_path'], '/test_file')
 
     def test_forced_content_type( self ):
@@ -228,7 +228,7 @@ class FSFileTests(RequestTest, FSDVTest):
         file = file.__of__(self.root)
         file.index_html(self.REQUEST, self.RESPONSE)
         mime = self.RESPONSE.getHeader('content-type')
-        self.failUnless(mime.endswith('; charset=utf-8'))
+        self.assertTrue(mime.endswith('; charset=utf-8'))
 
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246
@@ -242,25 +242,25 @@ class FSFileTests(RequestTest, FSDVTest):
         # equals the filesystem modification time.
         del invalidated[:]
         file._readFile(True)
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         del invalidated[:]
         file._parsed = False
         file._updateFromFS()
-        self.failIf(invalidated)
+        self.assertFalse(invalidated)
 
         # Second pass: Forcing a different internal file modification
         # time onto the instance. Now the file will be invalidated.
         del invalidated[:]
         file._file_mod_time = 0
         file._readFile(True)
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
         del invalidated[:]
         file._file_mod_time = 0
         file._parsed = False
         file._updateFromFS()
-        self.failUnless(invalidated)
+        self.assertTrue(invalidated)
 
 
 def test_suite():

@@ -68,7 +68,7 @@ class FSPOTests(SecurityTest, FSDVTest):
                                                , 'test_props.props')
 
         target = fspo._createZODBClone()
-        self.failUnless( isinstance( target, Folder ) )
+        self.assertTrue( isinstance( target, Folder ) )
         for prop_id in fspo.propertyIds():
             self.assertEqual( target.getProperty( prop_id )
                             , fspo.getProperty( prop_id ) )
@@ -80,7 +80,7 @@ class FSPOTests(SecurityTest, FSDVTest):
         fspo.manage_doCustomize( folder_path='custom' )
 
         self.assertEqual( len( custom.objectIds() ), 1 )
-        self.failUnless( 'test_props' in custom.objectIds() )  
+        self.assertTrue( 'test_props' in custom.objectIds() )  
 
     def test_manage_doCustomize_alternate_root( self ):
         from OFS.Folder import Folder
@@ -91,16 +91,16 @@ class FSPOTests(SecurityTest, FSDVTest):
 
         fspo.manage_doCustomize( folder_path='other', root=self.root )
 
-        self.failIf( 'test_props' in custom.objectIds() )  
-        self.failUnless( 'test_props' in self.root.other.objectIds() )  
+        self.assertFalse( 'test_props' in custom.objectIds() )  
+        self.assertTrue( 'test_props' in self.root.other.objectIds() )  
 
     def test_manage_doCustomize_fspath_as_dot( self ):
         custom, fsdir, fspo = self._makeContext( 'test_props'
                                                , 'test_props.props')
         fspo.manage_doCustomize( folder_path='.' )
 
-        self.failIf( 'test_props' in custom.objectIds() )  
-        self.failUnless( 'test_props' in self.root.portal_skins.objectIds() )  
+        self.assertFalse( 'test_props' in custom.objectIds() )  
+        self.assertTrue( 'test_props' in self.root.portal_skins.objectIds() )  
 
     def test_manage_doCustomize_manual_clone( self ):
         from OFS.Folder import Folder
@@ -110,8 +110,8 @@ class FSPOTests(SecurityTest, FSDVTest):
         clone = Folder('test_props')
         fspo.manage_doCustomize( folder_path='custom', obj=clone )
 
-        self.failUnless( 'test_props' in custom.objectIds() )  
-        self.failUnless( aq_base(custom._getOb('test_props')) is clone )  
+        self.assertTrue( 'test_props' in custom.objectIds() )  
+        self.assertTrue( aq_base(custom._getOb('test_props')) is clone )  
 
 
 def test_suite():

@@ -37,7 +37,7 @@ class CMFBTreeFolderTests(ConformsToFolder, unittest.TestCase):
 ##        from Products.BTreeFolder2.CMFBTreeFolder \
 ##            import CMFBTreeFolder as BBB
 ##
-##        self.failUnless( BBB is self._getTargetClass() )
+##        self.assertTrue( BBB is self._getTargetClass() )
 
 
 def test_suite():

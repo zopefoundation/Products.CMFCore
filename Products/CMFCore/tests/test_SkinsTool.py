@@ -57,12 +57,12 @@ class SkinsToolTests(unittest.TestCase):
 
         # Make sure the skin selection exists
         paths = tool.getSkinPath('fooskin')
-        self.failIf(paths is None)
+        self.assertFalse(paths is None)
 
         # Test for the contents
-        self.failIf(paths.find('foo') == -1)
-        self.failIf(paths.find('bar') == -1)
-        self.failUnless(paths.find('.svn') == -1)
+        self.assertFalse(paths.find('foo') == -1)
+        self.assertFalse(paths.find('bar') == -1)
+        self.assertTrue(paths.find('.svn') == -1)
 
 
 class SkinnableTests(unittest.TestCase):
@@ -99,11 +99,11 @@ class SkinnableTests(unittest.TestCase):
         som.tool.manage_properties(default_skin='skinA')
 
         # Expect the default skin name to be returned
-        self.failUnless(som.getCurrentSkinName() == 'skinA')
+        self.assertTrue(som.getCurrentSkinName() == 'skinA')
 
         # after a changeSkin the new skin name should be returned
         som.changeSkin('skinB', som.REQUEST)
-        self.failUnless(som.getCurrentSkinName() == 'skinB')
+        self.assertTrue(som.getCurrentSkinName() == 'skinB')
 
 
 def test_suite():

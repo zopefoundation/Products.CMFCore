@@ -104,11 +104,11 @@ class TypesToolFunctionalTests(SecurityTest):
             # The html_quote below is necessary 'cos of the one in
             # main.dtml. Could be removed once that is gone.
             act = tool.unrestrictedTraverse(html_quote(factype['action']))
-            self.failIf(type(aq_base(act)) is NullResource)
+            self.assertFalse(type(aq_base(act)) is NullResource)
 
         # Check the ones we're expecting are there
-        self.failUnless(meta_types.has_key('Scriptable Type Information'))
-        self.failUnless(meta_types.has_key('Factory-based Type Information'))
+        self.assertTrue(meta_types.has_key('Scriptable Type Information'))
+        self.assertTrue(meta_types.has_key('Factory-based Type Information'))
 
     def test_constructContent_simple_FTI(self):
         from AccessControl.SecurityManagement import newSecurityManager
@@ -298,14 +298,14 @@ class TypeInfoTests(WarningInterceptor):
     def test_allowType( self ):
         self.tool = self._makeTypesTool()
         ti = self._makeAndSetInstance( 'Foo' )
-        self.failIf( ti.allowType( 'Foo' ) )
-        self.failIf( ti.allowType( 'Bar' ) )
+        self.assertFalse( ti.allowType( 'Foo' ) )
+        self.assertFalse( ti.allowType( 'Bar' ) )
 
         ti = self._makeAndSetInstance( 'Foo2', allowed_content_types=( 'Bar', ) )
-        self.failUnless( ti.allowType( 'Bar' ) )
+        self.assertTrue( ti.allowType( 'Bar' ) )
 
         ti = self._makeAndSetInstance( 'Foo3', filter_content_types=0 )
-        self.failUnless( ti.allowType( 'Foo3' ) )
+        self.assertTrue( ti.allowType( 'Foo3' ) )
 
     def test_GlobalHide( self ):
         self.tool = self._makeTypesTool()
@@ -316,11 +316,11 @@ class TypeInfoTests(WarningInterceptor):
         tih = self._makeAndSetInstance( 'Hidden', global_allow=0)
         tnh = self._makeAndSetInstance( 'Not Hidden')
         # make sure we're normally hidden but everything else is visible
-        self.failIf     ( tnf.allowType( 'Hidden' ) )
-        self.failUnless ( tnf.allowType( 'Not Hidden') )
+        self.assertFalse     ( tnf.allowType( 'Hidden' ) )
+        self.assertTrue ( tnf.allowType( 'Not Hidden') )
         # make sure we're available where we should be
-        self.failUnless ( taf.allowType( 'Hidden' ) )
-        self.failUnless ( taf.allowType( 'Not Hidden') )
+        self.assertTrue ( taf.allowType( 'Hidden' ) )
+        self.assertTrue ( taf.allowType( 'Not Hidden') )
         # make sure we're available in a non-content-type-filtered type
         # where we have been explicitly allowed
         taf2 = self._makeAndSetInstance( 'Allowing Folder2'
@@ -329,43 +329,43 @@ class TypeInfoTests(WarningInterceptor):
                                                                )
                                        , filter_content_types=0
                                        )
-        self.failUnless ( taf2.allowType( 'Hidden' ) )
-        self.failUnless ( taf2.allowType( 'Not Hidden') )
+        self.assertTrue ( taf2.allowType( 'Hidden' ) )
+        self.assertTrue ( taf2.allowType( 'Not Hidden') )
 
     def test_allowDiscussion( self ):
         ti = self._makeOne( 'Foo' )
-        self.failIf( ti.allowDiscussion() )
+        self.assertFalse( ti.allowDiscussion() )
 
         ti = self._makeOne( 'Foo', allow_discussion=1 )
-        self.failUnless( ti.allowDiscussion() )
+        self.assertTrue( ti.allowDiscussion() )
 
     def test_listActions( self ):
         from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
         ti = self._makeOne( 'Foo' )
-        self.failIf( ti.listActions() )
+        self.assertFalse( ti.listActions() )
 
         ti = self._makeOne( **FTIDATA_ACTIONS[0] )
         actions = ti.listActions()
-        self.failUnless( actions )
+        self.assertTrue( actions )
 
         ids = [ x.getId() for x in actions ]
-        self.failUnless( 'view' in ids )
-        self.failUnless( 'edit' in ids )
-        self.failUnless( 'objectproperties' in ids )
-        self.failUnless( 'slot' in ids )
+        self.assertTrue( 'view' in ids )
+        self.assertTrue( 'edit' in ids )
+        self.assertTrue( 'objectproperties' in ids )
+        self.assertTrue( 'slot' in ids )
 
         names = [ x.Title() for x in actions ]
-        self.failUnless( 'View' in names )
-        self.failUnless( 'Edit' in names )
-        self.failUnless( 'Object Properties' in names )
-        self.failIf( 'slot' in names )
-        self.failUnless( 'Slot' in names )
+        self.assertTrue( 'View' in names )
+        self.assertTrue( 'Edit' in names )
+        self.assertTrue( 'Object Properties' in names )
+        self.assertFalse( 'slot' in names )
+        self.assertTrue( 'Slot' in names )
 
         visible = [ x.getId() for x in actions if x.getVisibility() ]
-        self.failUnless( 'view' in visible )
-        self.failUnless( 'edit' in visible )
-        self.failUnless( 'objectproperties' in visible )
-        self.failIf( 'slot' in visible )
+        self.assertTrue( 'view' in visible )
+        self.assertTrue( 'edit' in visible )
+        self.assertTrue( 'objectproperties' in visible )
+        self.assertFalse( 'slot' in visible )
 
     def test_MethodAliases_methods(self):
         from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
@@ -438,7 +438,7 @@ class TypeInfoTests(WarningInterceptor):
         wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
         wanted_actions_text2 = 'string:${object_url}/metadata_edit_form'
 
-        self.failUnless( isinstance( ti._actions[0], ActionInformation ) )
+        self.assertTrue( isinstance( ti._actions[0], ActionInformation ) )
         self.assertEqual( len( ti._actions ), 3 )
         self.assertEqual(ti._aliases, wanted_aliases)
         self.assertEqual(ti._actions[0].action.text, wanted_actions_text0)
@@ -461,7 +461,7 @@ class TypeInfoTests(WarningInterceptor):
         wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
         wanted_actions_text2 = 'string:${object_url}/folder_localrole_form'
 
-        self.failUnless( isinstance( ti._actions[0], ActionInformation ) )
+        self.assertTrue( isinstance( ti._actions[0], ActionInformation ) )
         self.assertEqual( len( ti._actions ), 3 )
         self.assertEqual(ti._aliases, wanted_aliases)
         self.assertEqual(ti._actions[0].action.text, wanted_actions_text0)
@@ -482,20 +482,20 @@ class TypeInfoTests(WarningInterceptor):
                    'link_target': '_new'}
         ti = self._makeOne(**ti_data)
         info_data = ti.getInfoData()
-        self.failUnless(hasattr(ti, 'icon_expr_object'))
-        self.failUnless(info_data[0].get('icon'))
-        self.failUnless('icon' in info_data[1])
-        self.failUnless(hasattr(ti, 'add_view_expr_object'))
-        self.failUnless(info_data[0].get('url'))
-        self.failUnless('url' in info_data[1])
+        self.assertTrue(hasattr(ti, 'icon_expr_object'))
+        self.assertTrue(info_data[0].get('icon'))
+        self.assertTrue('icon' in info_data[1])
+        self.assertTrue(hasattr(ti, 'add_view_expr_object'))
+        self.assertTrue(info_data[0].get('url'))
+        self.assertTrue('url' in info_data[1])
         ti.manage_changeProperties(icon_expr='', add_view_expr='')
         info_data = ti.getInfoData()
-        self.failIf(hasattr(ti, 'icon_expr_object'))
-        self.failIf(info_data[0].get('icon'))
-        self.failIf('icon' in info_data[1])
-        self.failIf(hasattr(ti, 'add_view_expr_object'))
-        self.failIf(info_data[0].get('url'))
-        self.failIf('url' in info_data[1])
+        self.assertFalse(hasattr(ti, 'icon_expr_object'))
+        self.assertFalse(info_data[0].get('icon'))
+        self.assertFalse('icon' in info_data[1])
+        self.assertFalse(hasattr(ti, 'add_view_expr_object'))
+        self.assertFalse(info_data[0].get('url'))
+        self.assertFalse('url' in info_data[1])
 
 
 class FTIDataTests( TypeInfoTests, unittest.TestCase ):
@@ -546,31 +546,31 @@ class FTIConstructionTestCase:
         return self._getTargetClass()(*args, **kw)
 
     def test_isConstructionAllowed_wo_Container(self):
-        self.failIf(self.ti.isConstructionAllowed(None))
+        self.assertFalse(self.ti.isConstructionAllowed(None))
 
     def test_isConstructionAllowed_wo_ProductFactory(self):
         ti = self._makeOne('foo')
-        self.failIf(ti.isConstructionAllowed(self.f))
+        self.assertFalse(ti.isConstructionAllowed(self.f))
 
     def test_isConstructionAllowed_wo_Security(self):
         from AccessControl.SecurityManagement import noSecurityManager
         noSecurityManager()
-        self.failIf(self.ti.isConstructionAllowed(self.f))
+        self.assertFalse(self.ti.isConstructionAllowed(self.f))
 
     def test_isConstructionAllowed_for_Omnipotent(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from Products.CMFCore.tests.base.security import OmnipotentUser
         newSecurityManager(None, OmnipotentUser().__of__(self.f))
-        self.failUnless(self.ti.isConstructionAllowed(self.f))
+        self.assertTrue(self.ti.isConstructionAllowed(self.f))
 
     def test_isConstructionAllowed_w_Role(self):
-        self.failUnless(self.ti.isConstructionAllowed(self.f))
+        self.assertTrue(self.ti.isConstructionAllowed(self.f))
 
     def test_isConstructionAllowed_wo_Role(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from Products.CMFCore.tests.base.security import UserWithRoles
         newSecurityManager(None, UserWithRoles('FooViewer').__of__(self.f))
-        self.failIf(self.ti.isConstructionAllowed(self.f))
+        self.assertFalse(self.ti.isConstructionAllowed(self.f))
 
     def test_constructInstance_wo_Roles(self):
         from AccessControl.SecurityManagement import newSecurityManager
@@ -666,11 +666,11 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
         self.assertEquals(len(events), 3)
 
         evt = events[0]
-        self.failUnless(IObjectCreatedEvent.providedBy(evt))
+        self.assertTrue(IObjectCreatedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
 
         evt = events[1]
-        self.failUnless(IObjectAddedEvent.providedBy(evt))
+        self.assertTrue(IObjectAddedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
         self.assertEquals(evt.oldParent, None)
         self.assertEquals(evt.oldName, None)
@@ -678,7 +678,7 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
         self.assertEquals(evt.newName, 'foo')
 
         evt = events[2]
-        self.failUnless(IContainerModifiedEvent.providedBy(evt))
+        self.assertTrue(IContainerModifiedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f)
 
 
@@ -738,11 +738,11 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         self.assertEquals(len(events), 4)
 
         evt = events[0]
-        self.failUnless(IObjectCreatedEvent.providedBy(evt))
+        self.assertTrue(IObjectCreatedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
 
         evt = events[1]
-        self.failUnless(IObjectWillBeAddedEvent.providedBy(evt))
+        self.assertTrue(IObjectWillBeAddedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
         self.assertEquals(evt.oldParent, None)
         self.assertEquals(evt.oldName, None)
@@ -750,7 +750,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         self.assertEquals(evt.newName, 'foo')
 
         evt = events[2]
-        self.failUnless(IObjectAddedEvent.providedBy(evt))
+        self.assertTrue(IObjectAddedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f.foo)
         self.assertEquals(evt.oldParent, None)
         self.assertEquals(evt.oldName, None)
@@ -758,7 +758,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         self.assertEquals(evt.newName, 'foo')
 
         evt = events[3]
-        self.failUnless(IContainerModifiedEvent.providedBy(evt))
+        self.assertTrue(IContainerModifiedEvent.providedBy(evt))
         self.assertEquals(evt.object, self.f)
 
 class DummyWorkflowTool:

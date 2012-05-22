@@ -113,7 +113,7 @@ class ActionTests(unittest.TestCase):
         a = self._makeOne('extensible').__of__(container)
         form_html = a.manage_propertiesForm(request)
 
-        self.failUnless('value=" Add "' in form_html)
+        self.assertTrue('value=" Add "' in form_html)
 
     def test_clearExprObjects(self):
         """When a *_expr property is set, a *_expr_object attribute is
@@ -128,14 +128,14 @@ class ActionTests(unittest.TestCase):
                           permissions=('View',),
                           visible=False,
                           link_target='_top')
-        self.failUnless(hasattr(a, 'icon_expr_object'))
-        self.failUnless(hasattr(a, 'url_expr_object'))
-        self.failIf(hasattr(a, 'available_expr_object'))
+        self.assertTrue(hasattr(a, 'icon_expr_object'))
+        self.assertTrue(hasattr(a, 'url_expr_object'))
+        self.assertFalse(hasattr(a, 'available_expr_object'))
         a.manage_changeProperties(
             icon_expr='', url_expr='', available_expr='')
-        self.failIf(hasattr(a, 'icon_expr_object'))
-        self.failIf(hasattr(a, 'url_expr_object'))
-        self.failIf(hasattr(a, 'available_expr_object'))
+        self.assertFalse(hasattr(a, 'icon_expr_object'))
+        self.assertFalse(hasattr(a, 'url_expr_object'))
+        self.assertFalse(hasattr(a, 'available_expr_object'))
 
 
 class DummyRequest:
@@ -332,7 +332,7 @@ class ActionInfoSecurityTests(SecurityTest):
 
         self.assertEqual( ai._lazy_keys, ['allowed'] )
         self.assertEqual( ai2._lazy_keys, ['allowed'] )
-        self.failIf( ai2._lazy_keys is ai._lazy_keys )
+        self.assertFalse( ai2._lazy_keys is ai._lazy_keys )
         self.assertEqual( ai['allowed'], True )
         self.assertEqual( ai2['allowed'], True )
 
@@ -391,7 +391,7 @@ class ActionInformationTests(TransactionalTest):
         from Products.CMFCore.Expression import Expression
         ai = self._makeOne(id='view', category='folder')
         ai.setActionExpression('string:blah')
-        self.failUnless(isinstance(ai.action,Expression))
+        self.assertTrue(isinstance(ai.action,Expression))
         self.assertEqual(ai.getActionExpression(), 'string:blah')
 
     def test_construction_with_Expressions(self):
@@ -423,7 +423,7 @@ class ActionInformationTests(TransactionalTest):
                             visible=True )
         ec = createExprContext(folder, portal, object)
 
-        self.failIf(ai.testCondition(ec))
+        self.assertFalse(ai.testCondition(ec))
 
     def test_Condition_PathExpression(self):
         portal = self.portal
@@ -440,7 +440,7 @@ class ActionInformationTests(TransactionalTest):
                             visible=True )
         ec = createExprContext(folder, portal, object)
 
-        self.failUnless(ai.testCondition(ec))
+        self.assertTrue(ai.testCondition(ec))
 
     def test_getInfoData_empty(self):
         WANTED = ( {'available': True, 'category': 'object',

@@ -141,11 +141,11 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         req.cookies['__ac_password'] = 'pass-w'
         req.traverse('/')
 
-        self.failUnless(req.has_key('AUTHENTICATED_USER'))
+        self.assertTrue(req.has_key('AUTHENTICATED_USER'))
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'abraham')
         resp = req.response
-        self.failUnless(resp.cookies.has_key('__ac'))
+        self.assertTrue(resp.cookies.has_key('__ac'))
         self.assertEqual(resp.cookies['__ac']['value'],
                          credentials)
         self.assertEqual(resp.cookies['__ac']['path'], '/')
@@ -155,7 +155,7 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         root, cc, req, credentials = self._makeSite()
         req.cookies['__ac'] = credentials
         req.traverse('/')
-        self.failUnless(req.has_key('AUTHENTICATED_USER'))
+        self.assertTrue(req.has_key('AUTHENTICATED_USER'))
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'abraham')
 
@@ -164,18 +164,18 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         root, cc, req, credentials = self._makeSite()
         req.cookies['__ac_name'] = 'abraham'
         req.cookies['__ac_password'] = 'pass-w'
-        self.failUnless(req.has_key('__ac_password'))
+        self.assertTrue(req.has_key('__ac_password'))
         req.traverse('/')
-        self.failIf( req.has_key('__ac_password'))
-        self.failIf( req.has_key('__ac'))
+        self.assertFalse( req.has_key('__ac_password'))
+        self.assertFalse( req.has_key('__ac'))
 
     def testCredentialsNotRevealed(self):
         # verify the credentials are shredded before the app gets the request
         root, cc, req, credentials = self._makeSite()
         req.cookies['__ac'] = credentials
-        self.failUnless(req.has_key('__ac'))
+        self.assertTrue(req.has_key('__ac'))
         req.traverse('/')
-        self.failIf( req.has_key('__ac'))
+        self.assertFalse( req.has_key('__ac'))
 
     def testAutoLoginRedirection(self):
         # Redirect unauthorized anonymous users to the login page
@@ -216,9 +216,9 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
             # Test passed
             if hasattr(s, 'args'):
                 s = s.args[0]
-            self.failUnless(s.find('came_from=') >= 0)
-            self.failUnless(s.find('retry=1') >= 0)
-            self.failUnless(s.find('disable_cookie_login__=1') >= 0)
+            self.assertTrue(s.find('came_from=') >= 0)
+            self.assertTrue(s.find('retry=1') >= 0)
+            self.assertTrue(s.find('disable_cookie_login__=1') >= 0)
         else:
             self.fail('Did not redirect')
 
@@ -238,7 +238,7 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
             if hasattr(s, 'args'):
                 s = s.args[0]
             to_find = urllib.quote('/protected?' + req['QUERY_STRING'])
-            self.failUnless(s.find(to_find) >= 0, s)
+            self.assertTrue(s.find(to_find) >= 0, s)
         else:
             self.fail('Did not redirect')
 
@@ -289,7 +289,7 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'abraham')
         # Here is the real test: the password should have been shredded.
-        self.failIf( req.has_key('__ac_password'))
+        self.assertFalse( req.has_key('__ac_password'))
 
     def testDisableLoginDoesNotPreventPasswordShredding2(self):
         root, cc, req, credentials = self._makeSite()
@@ -298,7 +298,7 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         req.traverse('/')
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'abraham')
-        self.failIf( req.has_key('__ac'))
+        self.assertFalse( req.has_key('__ac'))
 
     def testMidApplicationAutoLoginRedirection(self):
         # Redirect anonymous users to login page if Unauthorized
@@ -347,7 +347,7 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
         req.cookies['__ac'] = credentials
         req.traverse('/')
 
-        self.failUnless(req.has_key('AUTHENTICATED_USER'))
+        self.assertTrue(req.has_key('AUTHENTICATED_USER'))
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(),
                          'isaac')
 
@@ -376,14 +376,14 @@ class CookieCrumblerTests(unittest.TestCase, PlacelessSetup):
 
         marker = []
         bt_before = getattr(container, '__before_traverse__', marker)
-        self.failUnless(bt_before is marker)
+        self.assertTrue(bt_before is marker)
 
         container._setObject(self._CC_ID, cc)
 
         bt_added = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_added.items()), 1)
         k, v = bt_added.items()[0]
-        self.failUnless(k[1].startswith(self._getTargetClass().meta_type))
+        self.assertTrue(k[1].startswith(self._getTargetClass().meta_type))
         self.assertEqual(v.name, self._CC_ID)
 
         container._delObject(self._CC_ID)

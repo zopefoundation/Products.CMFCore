@@ -114,12 +114,12 @@ class PortalFolderFactoryTests(SecurityTest):
 
     def test_invokeFactory(self):
         f = self.f
-        self.failIf( 'foo' in f.objectIds() )
+        self.assertFalse( 'foo' in f.objectIds() )
 
         f.manage_addProduct = {'FooProduct': DummyFactoryDispatcher(f)}
         f.invokeFactory( type_name='Dummy Content', id='foo' )
 
-        self.failUnless( 'foo' in f.objectIds() )
+        self.assertTrue( 'foo' in f.objectIds() )
         foo = f.foo
         self.assertEqual( foo.getId(), 'foo' )
         self.assertEqual( foo.getPortalTypeName(), 'Dummy Content' )
@@ -134,7 +134,7 @@ class PortalFolderFactoryTests(SecurityTest):
 
         ftype.allowed_content_types = (self._PORTAL_TYPE,)
         f.invokeFactory(self._PORTAL_TYPE, id='sub')
-        self.failUnless('sub' in f.objectIds())
+        self.assertTrue('sub' in f.objectIds())
         self.assertRaises(ValueError, f.invokeFactory, 'Dummy Content', 'foo')
 
 
@@ -200,23 +200,23 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         test = self._makeOne('test')
         foo = DummyContent('foo')
         foo.reset()
-        self.failIf( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertFalse( foo.after_add_called )
+        self.assertFalse( foo.before_delete_called )
 
         test._setObject('foo', foo)
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertTrue( foo.after_add_called )
+        self.assertFalse( foo.before_delete_called )
 
         foo.reset()
         test._delObject('foo')
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
+        self.assertFalse( foo.after_add_called )
+        self.assertTrue( foo.before_delete_called )
 
         foo.reset()
         test._setObject('foo', foo)
         test._delOb('foo')    # doesn't propagate
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertTrue( foo.after_add_called )
+        self.assertFalse( foo.before_delete_called )
 
     def test_manageDelObjects(self):
         test = self._makeOne('test')
@@ -225,8 +225,8 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         test._setObject('foo', foo)
         foo.reset()
         test.manage_delObjects( ids=['foo'] )
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
+        self.assertFalse( foo.after_add_called )
+        self.assertTrue( foo.before_delete_called )
 
     def test_catalogUnindexAndIndex(self):
         #
@@ -240,14 +240,14 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
 
         test._setObject( 'foo', DummyContent( 'foo' , catalog=1 ) )
         foo = test.foo
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertTrue( foo.after_add_called )
+        self.assertFalse( foo.before_delete_called )
         self.assertEqual( len(ctool), 1 )
 
         foo.reset()
         test._delObject('foo')
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
+        self.assertFalse( foo.after_add_called )
+        self.assertTrue( foo.before_delete_called )
         self.assertEqual( len(ctool), 0 )
 
     def test_portalfolder_cataloging(self):
@@ -281,14 +281,14 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         sub._setObject( 'foo', DummyContent( 'foo', catalog=1 ) )
         foo = sub.foo
 
-        self.failUnless( foo.after_add_called )
-        self.failIf( foo.before_delete_called )
+        self.assertTrue( foo.after_add_called )
+        self.assertFalse( foo.before_delete_called )
         self.assertEqual( len(ctool), 1 )
 
         foo.reset()
         test._delObject('sub')
-        self.failIf( foo.after_add_called )
-        self.failUnless( foo.before_delete_called )
+        self.assertFalse( foo.after_add_called )
+        self.assertTrue( foo.before_delete_called )
         self.assertEqual( len(ctool), 0 )
 
     def test_manageAddFolder(self):
@@ -462,7 +462,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.user_foo)
 
-        self.assert_(sub.checkIdAvailable('.foo'))
+        self.assertTrue(sub.checkIdAvailable('.foo'))
 
     def test__checkId_Five(self):
         test = self._makeOne('test')
@@ -475,7 +475,7 @@ class PortalFolderTests(ConformsToFolder, SecurityTest):
         #
         test = self._makeOne('test')
         test._setObject('foo', DummyContent('foo'))
-        self.failIf(test.checkIdAvailable('foo'))
+        self.assertFalse(test.checkIdAvailable('foo'))
 
 
 class PortalFolderMoveTests(SecurityTest):
@@ -506,21 +506,21 @@ class PortalFolderMoveTests(SecurityTest):
         folder._setObject( 'sub', PortalFolder( 'sub', '' ) )
         folder.sub._setObject( 'foo', DummyContent( 'foo', catalog=1 ) )
         self.assertEqual( len(ctool), 1 )
-        self.failUnless( has_id(ctool, 'foo') )
-        self.failUnless( has_path(ctool,
+        self.assertTrue( has_id(ctool, 'foo') )
+        self.assertTrue( has_path(ctool,
                                   '/bar/site/folder/sub/foo') )
 
         transaction.savepoint(optimistic=True)
         folder.manage_renameObject(id='sub', new_id='new_sub')
         self.assertEqual( len(ctool), 1 )
-        self.failUnless( has_id(ctool, 'foo') )
-        self.failUnless( has_path(ctool,
+        self.assertTrue( has_id(ctool, 'foo') )
+        self.assertTrue( has_path(ctool,
                                   '/bar/site/folder/new_sub/foo') )
 
         folder._setObject( 'bar', DummyContent( 'bar', catalog=1 ) )
         self.assertEqual( len(ctool), 2 )
-        self.failUnless( has_id(ctool, 'bar') )
-        self.failUnless( has_path(ctool, '/bar/site/folder/bar') )
+        self.assertTrue( has_id(ctool, 'bar') )
+        self.assertTrue( has_path(ctool, '/bar/site/folder/bar') )
 
         folder._setObject( 'sub2', PortalFolder( 'sub2', '' ) )
         sub2 = folder.sub2
@@ -533,10 +533,10 @@ class PortalFolderMoveTests(SecurityTest):
         cookie = folder.manage_cutObjects(ids=['bar'])
         sub2.manage_pasteObjects(cookie)
 
-        self.failUnless( has_id( ctool, 'foo' ) )
-        self.failUnless( has_id( ctool, 'bar' ) )
+        self.assertTrue( has_id( ctool, 'foo' ) )
+        self.assertTrue( has_id( ctool, 'bar' ) )
         self.assertEqual( len(ctool), 2 )
-        self.failUnless( has_path(ctool,
+        self.assertTrue( has_path(ctool,
                                   '/bar/site/folder/sub2/bar') )
 
     def test_contentPaste(self):
@@ -553,15 +553,15 @@ class PortalFolderMoveTests(SecurityTest):
         self.assertEqual( len(ctool), 0 )
 
         sub1._setObject( 'dummy', DummyContent( 'dummy', catalog=1 ) )
-        self.failUnless( 'dummy' in sub1.objectIds() )
-        self.failUnless( 'dummy' in sub1.contentIds() )
-        self.failIf( 'dummy' in sub2.objectIds() )
-        self.failIf( 'dummy' in sub2.contentIds() )
-        self.failIf( 'dummy' in sub3.objectIds() )
-        self.failIf( 'dummy' in sub3.contentIds() )
-        self.failUnless( has_path(ctool, '/bar/site/sub1/dummy') )
-        self.failIf( has_path(ctool, '/bar/site/sub2/dummy') )
-        self.failIf( has_path(ctool, '/bar/site/sub3/dummy') )
+        self.assertTrue( 'dummy' in sub1.objectIds() )
+        self.assertTrue( 'dummy' in sub1.contentIds() )
+        self.assertFalse( 'dummy' in sub2.objectIds() )
+        self.assertFalse( 'dummy' in sub2.contentIds() )
+        self.assertFalse( 'dummy' in sub3.objectIds() )
+        self.assertFalse( 'dummy' in sub3.contentIds() )
+        self.assertTrue( has_path(ctool, '/bar/site/sub1/dummy') )
+        self.assertFalse( has_path(ctool, '/bar/site/sub2/dummy') )
+        self.assertFalse( has_path(ctool, '/bar/site/sub3/dummy') )
 
         cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
         # Waaa! force sub2 to allow paste of Dummy object.
@@ -569,15 +569,15 @@ class PortalFolderMoveTests(SecurityTest):
         sub2.all_meta_types.extend( sub2.all_meta_types )
         sub2.all_meta_types.extend( extra_meta_types() )
         sub2.manage_pasteObjects( cookie )
-        self.failUnless( 'dummy' in sub1.objectIds() )
-        self.failUnless( 'dummy' in sub1.contentIds() )
-        self.failUnless( 'dummy' in sub2.objectIds() )
-        self.failUnless( 'dummy' in sub2.contentIds() )
-        self.failIf( 'dummy' in sub3.objectIds() )
-        self.failIf( 'dummy' in sub3.contentIds() )
-        self.failUnless( has_path(ctool, '/bar/site/sub1/dummy') )
-        self.failUnless( has_path(ctool, '/bar/site/sub2/dummy') )
-        self.failIf( has_path(ctool, '/bar/site/sub3/dummy') )
+        self.assertTrue( 'dummy' in sub1.objectIds() )
+        self.assertTrue( 'dummy' in sub1.contentIds() )
+        self.assertTrue( 'dummy' in sub2.objectIds() )
+        self.assertTrue( 'dummy' in sub2.contentIds() )
+        self.assertFalse( 'dummy' in sub3.objectIds() )
+        self.assertFalse( 'dummy' in sub3.contentIds() )
+        self.assertTrue( has_path(ctool, '/bar/site/sub1/dummy') )
+        self.assertTrue( has_path(ctool, '/bar/site/sub2/dummy') )
+        self.assertFalse( has_path(ctool, '/bar/site/sub3/dummy') )
 
         transaction.savepoint(optimistic=True)
         cookie = sub1.manage_cutObjects( ids = ('dummy',) )
@@ -586,15 +586,15 @@ class PortalFolderMoveTests(SecurityTest):
         sub3.all_meta_types.extend(sub3.all_meta_types)
         sub3.all_meta_types.extend( extra_meta_types() )
         sub3.manage_pasteObjects(cookie)
-        self.failIf( 'dummy' in sub1.objectIds() )
-        self.failIf( 'dummy' in sub1.contentIds() )
-        self.failUnless( 'dummy' in sub2.objectIds() )
-        self.failUnless( 'dummy' in sub2.contentIds() )
-        self.failUnless( 'dummy' in sub3.objectIds() )
-        self.failUnless( 'dummy' in sub3.contentIds() )
-        self.failIf( has_path(ctool, '/bar/site/sub1/dummy') )
-        self.failUnless( has_path(ctool, '/bar/site/sub2/dummy') )
-        self.failUnless( has_path(ctool, '/bar/site/sub3/dummy') )
+        self.assertFalse( 'dummy' in sub1.objectIds() )
+        self.assertFalse( 'dummy' in sub1.contentIds() )
+        self.assertTrue( 'dummy' in sub2.objectIds() )
+        self.assertTrue( 'dummy' in sub2.contentIds() )
+        self.assertTrue( 'dummy' in sub3.objectIds() )
+        self.assertTrue( 'dummy' in sub3.contentIds() )
+        self.assertFalse( has_path(ctool, '/bar/site/sub1/dummy') )
+        self.assertTrue( has_path(ctool, '/bar/site/sub2/dummy') )
+        self.assertTrue( has_path(ctool, '/bar/site/sub3/dummy') )
 
 
 class ContentFilterTests(unittest.TestCase):
@@ -682,13 +682,13 @@ class ContentFilterTests(unittest.TestCase):
 
         cfilter = ContentFilter( Creator='moe' )
         dummy = self.dummy
-        self.failIf( cfilter(dummy) )
+        self.assertFalse( cfilter(dummy) )
         dummy.creators = ('curly',)
-        self.failIf( cfilter(dummy) )
+        self.assertFalse( cfilter(dummy) )
         dummy.creators = ('moe',)
-        self.failUnless( cfilter(dummy) )
+        self.assertTrue( cfilter(dummy) )
         dummy.creators = ('moe', 'curly')
-        self.failUnless( cfilter(dummy) )
+        self.assertTrue( cfilter(dummy) )
         desc = str( cfilter )
         lines = desc.split('; ')
         self.assertEqual(len( lines ),1)
@@ -760,13 +760,13 @@ class ContentFilterTests(unittest.TestCase):
         cfilter = ContentFilter( created=creation_date
                                , created_usage='range:min' )
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
         self.assertEquals(len(lines), 1)
@@ -784,13 +784,13 @@ class ContentFilterTests(unittest.TestCase):
                                , created_usage='range:max' )
 
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
         self.assertEquals(len(lines), 1)
@@ -807,13 +807,13 @@ class ContentFilterTests(unittest.TestCase):
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
                                , modified_usage='range:min' )
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.modified_date = DateTime( '2000/12/31' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/12/31' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
         self.assertEquals(len(lines), 1)
@@ -830,13 +830,13 @@ class ContentFilterTests(unittest.TestCase):
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
                                , modified_usage='range:max' )
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.modified_date = DateTime( '2000/12/31' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.modified_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         desc = str( cfilter )
         lines = desc.split('; ')
         self.assertEquals(len(lines), 1)
@@ -856,29 +856,29 @@ class ContentFilterTests(unittest.TestCase):
                                )
 
         dummy = self.dummy
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
 
         dummy.title = 'ohsofoolish'
         del dummy.created_date
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2000/12/31' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
         dummy.created_date = DateTime( '2001/12/31' )
-        self.failIf(cfilter(dummy))
+        self.assertFalse(cfilter(dummy))
         dummy.created_date = DateTime( '2001/01/01' )
-        self.failUnless(cfilter(dummy))
+        self.assertTrue(cfilter(dummy))
 
         desc = str( cfilter )
         lines = desc.split('; ')
         self.assertEquals(len(lines), 2)
-        self.failUnless('Created before: 2001/01/01 00:00:00 %s' % tz in lines)
-        self.failUnless('Title: foo' in lines)
+        self.assertTrue('Created before: 2001/01/01 00:00:00 %s' % tz in lines)
+        self.assertTrue('Title: foo' in lines)
 
 
 #------------------------------------------------------------------------------
@@ -998,14 +998,14 @@ class PortalFolderCopySupportTests(SecurityRequestTest):
 
         self._initPolicyAndUser()
 
-        self.failUnless( 'file' in folder1.objectIds() )
-        self.failIf( 'file' in folder2.objectIds() )
+        self.assertTrue( 'file' in folder1.objectIds() )
+        self.assertFalse( 'file' in folder2.objectIds() )
 
         cookie = folder1.manage_copyObjects( ids=( 'file', ) )
         folder2.manage_pasteObjects( cookie )
 
-        self.failUnless( 'file' in folder1.objectIds() )
-        self.failUnless( 'file' in folder2.objectIds() )
+        self.assertTrue( 'file' in folder1.objectIds() )
+        self.assertTrue( 'file' in folder2.objectIds() )
 
     def test_copy_cant_read_source( self ):
 
@@ -1042,16 +1042,16 @@ class PortalFolderCopySupportTests(SecurityRequestTest):
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
-        self.failUnless( 'file' in folder1.objectIds() )
-        self.failIf( 'file' in folder2.objectIds() )
+        self.assertTrue( 'file' in folder1.objectIds() )
+        self.assertFalse( 'file' in folder2.objectIds() )
 
         self._initPolicyAndUser()
 
         cookie = folder1.manage_cutObjects( ids=( 'file', ) )
         folder2.manage_pasteObjects( cookie )
 
-        self.failIf( 'file' in folder1.objectIds() )
-        self.failUnless( 'file' in folder2.objectIds() )
+        self.assertFalse( 'file' in folder1.objectIds() )
+        self.assertTrue( 'file' in folder2.objectIds() )
 
     def test_move_cant_read_source( self ):
         folder1, folder2 = self._initFolders()
@@ -1235,7 +1235,7 @@ class PortalFolderCopySupportTests(SecurityRequestTest):
         # an exception, because the folder's type allows it.
         copy_cookie = self.app.manage_copyObjects( ids=[ 'folder2' ] )
         folder1.manage_pasteObjects( copy_cookie )
-        self.failUnless( 'folder2' in folder1.objectIds() )
+        self.assertTrue( 'folder2' in folder1.objectIds() )
 
     def test_paste_with_restricted_container_content_type(self):
 

@@ -86,10 +86,10 @@ class MemberDataToolTests(unittest.TestCase):
     def test_deleteMemberData(self):
         tool = self._makeOne()
         tool.registerMemberData('Dummy', 'user_foo')
-        self.failUnless( tool._members.has_key('user_foo') )
-        self.failUnless( tool.deleteMemberData('user_foo') )
-        self.failIf( tool._members.has_key('user_foo') )
-        self.failIf( tool.deleteMemberData('user_foo') )
+        self.assertTrue( tool._members.has_key('user_foo') )
+        self.assertTrue( tool.deleteMemberData('user_foo') )
+        self.assertFalse( tool._members.has_key('user_foo') )
+        self.assertFalse( tool.deleteMemberData('user_foo') )
 
     def test_pruneMemberData(self):
         # This needs a tad more setup

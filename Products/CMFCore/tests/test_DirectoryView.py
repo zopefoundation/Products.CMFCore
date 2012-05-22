@@ -49,7 +49,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         self.assertEqual(key.split(':')[0], 'Products.CMFCore')
 
         subkey = _generateKey('Products.CMFCore', 'tests\foo')
-        self.failUnless(subkey.startswith(key))
+        self.assertTrue(subkey.startswith(key))
 
     def test__findProductForPath(self):
         from Products.CMFCore.DirectoryView import _findProductForPath
@@ -65,7 +65,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
     def test_getDirectoryInfo(self):
         skin = self.ob.fake_skin
         skin.manage_properties('Products.CMFCore.tests:fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # 1 - 7, in effect, test the pre CMF 1.5 backwards compatibility code in
@@ -75,7 +75,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
     def test_getDirectoryInfo1(self):
         skin = self.ob.fake_skin
         skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # windows SOFTWARE_HOME
@@ -83,14 +83,14 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         skin = self.ob.fake_skin
         skin.manage_properties(
                   r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # *nix INSTANCE_HOME
     def test_getDirectoryInfo3(self):
         skin = self.ob.fake_skin
         skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # *nix SOFTWARE_HOME
@@ -98,7 +98,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         skin = self.ob.fake_skin
         skin.manage_properties(
            '/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # windows PRODUCTS_PATH
@@ -106,7 +106,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         skin = self.ob.fake_skin
         skin.manage_properties( mktemp() +
                                r'\Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # linux PRODUCTS_PATH
@@ -114,7 +114,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         skin = self.ob.fake_skin
         skin.manage_properties( mktemp() +
                                 '/Products/CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # second 'Products' in path
@@ -122,7 +122,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         skin = self.ob.fake_skin
         skin.manage_properties(
            r'C:\CoolProducts\Zope\Products\CMFCore\tests\fake_skins\fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # Test pre CMF 2.1 backwards compatibility code in DirectoryView's __of__
@@ -130,7 +130,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
     def test_getDirectoryInfo8(self):
         skin = self.ob.fake_skin
         skin.manage_properties('CMFCore/tests/fake_skins/fake_skin')
-        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+        self.assertTrue( hasattr(self.ob.fake_skin, 'test1'),
                          self.ob.fake_skin.getDirPath() )
 
     # Test we do nothing if given a really wacky path
@@ -144,8 +144,8 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         from Products.CMFCore import DirectoryView
         warnings = [t[0] for t in DirectoryView.__warningregistry__]
         text = 'DirectoryView fake_skin refers to a non-existing path %r' % file
-        self.assert_(text in warnings)
-        self.failUnless(text in self._our_stderr_stream.getvalue())
+        self.assertTrue(text in warnings)
+        self.assertTrue(text in self._our_stderr_stream.getvalue())
 
     def test_UnhandleableMinimalPath( self ):
         from Products.CMFCore.utils import minimalpath, normalize
@@ -159,7 +159,7 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
     def test_registerDirectoryKeys(self):
         from Products.CMFCore.DirectoryView import _dirreg
         dirs = _dirreg._directories
-        self.failUnless( dirs.has_key('Products.CMFCore.tests:fake_skins/fake_skin'),
+        self.assertTrue( dirs.has_key('Products.CMFCore.tests:fake_skins/fake_skin'),
                          dirs.keys() )
         self.assertEqual( self.ob.fake_skin.getDirPath(),
                           'Products.CMFCore.tests:fake_skins/fake_skin' )
@@ -181,7 +181,7 @@ class DirectoryViewTests( FSDVTest ):
         # appears as a DirectoryViewSurrogate due
         # to Acquisition hackery.
         from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
-        self.failUnless(isinstance(self.ob.fake_skin,DirectoryViewSurrogate))
+        self.assertTrue(isinstance(self.ob.fake_skin,DirectoryViewSurrogate))
 
     def test_DirectoryViewMethod( self ):
         # Check if DirectoryView method works
@@ -238,7 +238,7 @@ class DirectoryViewIgnoreTests(FSDVTest):
         visible = self.ob.fake_skin.objectIds()
 
         for name in must_ignore:
-            self.failIf(name in visible)
+            self.assertFalse(name in visible)
 
 
 class DirectoryViewFolderTests(FSDVTest):
@@ -273,7 +273,7 @@ class DirectoryViewFolderTests(FSDVTest):
         # DirectoryViewSurrogate
         from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
         testfolder = self.ob.fake_skin.test_directory
-        self.failUnless(isinstance(testfolder, DirectoryViewSurrogate))
+        self.assertTrue(isinstance(testfolder, DirectoryViewSurrogate))
 
     def test_DirectoryViewFolderCustom(self):
         # Now we register a different class under the fake meta_type
@@ -286,7 +286,7 @@ class DirectoryViewFolderTests(FSDVTest):
         self.ob._delObject('fake_skin')
         self._registerDirectory(self)
         testfolder = self.ob.fake_skin.test_directory
-        self.failUnless(isinstance(testfolder, DummyDirectoryViewSurrogate))
+        self.assertTrue(isinstance(testfolder, DummyDirectoryViewSurrogate))
 
 
 class DebugModeTests(WritableFSDVTest):
@@ -330,21 +330,21 @@ class DebugModeTests(WritableFSDVTest):
     def test_NewFolder( self ):
         # See if a new folder shows up
         from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
-        self.failUnless(isinstance(self.ob.fake_skin.test3,
+        self.assertTrue(isinstance(self.ob.fake_skin.test3,
                                    DirectoryViewSurrogate))
         self.ob.fake_skin.test3.objectIds()
 
     def test_DeleteMethod( self ):
         # Make sure a deleted method goes away
         remove(self.test2path)
-        self.failIf(hasattr(self.ob.fake_skin,'test2'))
+        self.assertFalse(hasattr(self.ob.fake_skin,'test2'))
 
     def test_DeleteAddEditMethod( self ):
         # Check that if we delete a method, then add it back,
         # then edit it, the DirectoryView notices.
         # This exercises yet another Win32 mtime weirdity.
         remove(self.test2path)
-        self.failIf(hasattr(self.ob.fake_skin,'test2'))
+        self.assertFalse(hasattr(self.ob.fake_skin,'test2'))
 
         # add method back to the fake skin folder
         self._writeFile(self.test2path, "return 'test2.2'",
@@ -363,7 +363,7 @@ class DebugModeTests(WritableFSDVTest):
     def test_DeleteFolder( self ):
         # Make sure a deleted folder goes away
         rmdir(self.test3path)
-        self.failIf(hasattr(self.ob.fake_skin,'test3'))
+        self.assertFalse(hasattr(self.ob.fake_skin,'test3'))
 
 
 def test_suite():
