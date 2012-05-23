@@ -19,20 +19,18 @@ import Testing
 from OFS.Folder import Folder
 from zope.component import getSiteManager
 
-from Products.GenericSetup.testing import BodyAdapterTestCase
-from Products.GenericSetup.tests.common import BaseRegistryTests
-from Products.GenericSetup.tests.common import DummyExportContext
-from Products.GenericSetup.tests.common import DummyImportContext
-
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.permissions import View
 from Products.CMFCore.testing import ExportImportZCMLLayer
-from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.TypesTool import FactoryTypeInformation
 from Products.CMFCore.TypesTool import ScriptableTypeInformation
 from Products.CMFCore.TypesTool import TypesTool
+from Products.GenericSetup.testing import BodyAdapterTestCase
+from Products.GenericSetup.tests.common import BaseRegistryTests
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 
 _FTI_BODY = """\
 <?xml version="1.0"?>
@@ -321,8 +319,7 @@ _UPDATE_FOO_IMPORT = """\
 """
 
 
-class TypeInformationXMLAdapterTests(
-    BodyAdapterTestCase, unittest.TestCase, WarningInterceptor):
+class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -361,14 +358,9 @@ class TypeInformationXMLAdapterTests(
     def setUp(self):
         self._obj = FactoryTypeInformation('foo_fti')
         self._BODY = _FTI_BODY
-        self._trap_warning_output()
-
-    def tearDown(self):
-        self._free_warning_output()
 
 
-class TypesToolXMLAdapterTests(
-    BodyAdapterTestCase, unittest.TestCase, WarningInterceptor):
+class TypesToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -384,20 +376,9 @@ class TypesToolXMLAdapterTests(
     def setUp(self):
         self._obj = TypesTool()
         self._BODY = _TYPESTOOL_BODY
-        self._trap_warning_output()
-
-    def tearDown(self):
-        self._free_warning_output()
 
 
-class _TypeInfoSetup(BaseRegistryTests, WarningInterceptor):
-
-    def setUp(self):
-        BaseRegistryTests.setUp(self)
-        self._trap_warning_output()
-
-    def tearDown(self):
-        self._free_warning_output()
+class _TypeInfoSetup(BaseRegistryTests):
 
     def _initSite(self, foo=0):
         site = Folder(id='site').__of__(self.app)

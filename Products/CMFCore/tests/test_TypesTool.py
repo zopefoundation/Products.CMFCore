@@ -15,13 +15,14 @@
 
 import unittest
 
+import warnings
+
 from AccessControl.Permission import Permission
 from zope.component import getSiteManager
 
 from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.testing import FunctionalZCMLLayer
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import WarningInterceptor
 
 
 class TypesToolTests(unittest.TestCase):
@@ -257,14 +258,8 @@ class TypesToolFunctionalTests(SecurityTest):
         self.assertEqual(folder.page2.portal_type, 'Baz')
 
 
-class TypeInfoTests(WarningInterceptor):
+class TypeInfoTests(object):
     # Subclass must define _getTargetClass
-
-    def setUp(self):
-        self._trap_warning_output()
-
-    def tearDown(self):
-        self._free_warning_output()
 
     def _makeOne(self, id='test', **kw):
         return self._getTargetClass()(id, **kw)
@@ -285,15 +280,20 @@ class TypeInfoTests(WarningInterceptor):
         verifyObject(ITypeInformation, self._makeOne())
 
     def test_construction(self):
-        ti = self._makeOne('Foo', description='Description', meta_type='Foo',
-                           icon='foo.gif')
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            ti = self._makeOne('Foo', description='Description',
+                               meta_type='Foo', icon='foo.gif')
         self.assertEqual(ti.getId(), 'Foo')
         self.assertEqual(ti.Title(), 'Foo')
         self.assertEqual(ti.Description(), 'Description')
         self.assertEqual(ti.Metatype(), 'Foo')
         self.assertEqual(ti.getIconExprObject().text,
                          'string:${portal_url}/foo.gif')
-        self.assertEqual(ti.getIcon(), 'foo.gif')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            self.assertEqual(ti.getIcon(), 'foo.gif')
         self.assertEqual(ti.immediate_view, '')
 
         ti = self._makeOne('Foo', immediate_view='foo_view')

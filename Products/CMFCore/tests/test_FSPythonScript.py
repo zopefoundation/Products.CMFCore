@@ -18,6 +18,7 @@ from Testing import ZopeTestCase
 ZopeTestCase.installProduct('PythonScripts', 1)
 
 import os
+import warnings
 from os.path import join
 from sys import exc_info
 from thread import start_new_thread
@@ -34,7 +35,6 @@ from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSPythonScript import FSPythonScript
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import WarningInterceptor
 
 
 class FSPSMaker(FSDVTest):
@@ -273,19 +273,16 @@ class WarnMe(SimpleItem):
         self._stacklevel = stacklevel
 
     def __call__(self):
-        import warnings
         warnings.warn('foo', stacklevel=self._stacklevel)
 
 
-class FSPythonScriptWarningsTests(SecurityTest, FSPSMaker, WarningInterceptor):
+class FSPythonScriptWarningsTests(SecurityTest, FSPSMaker):
 
     def setUp(self):
         SecurityTest.setUp(self)
         FSPSMaker.setUp(self)
-        self._trap_warning_output()
 
     def tearDown(self):
-        self._free_warning_output()
         FSPSMaker.tearDown(self)
         SecurityTest.tearDown(self)
 
@@ -297,7 +294,10 @@ class FSPythonScriptWarningsTests(SecurityTest, FSPSMaker, WarningInterceptor):
         #   in warn_explicit
         #     if module[-3:].lower() == ".py":
         # TypeError: unsubscriptable object
-        self.app.warn1()
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            self.app.warn_me()
+            self.app.warn1()
 
 
 def test_suite():

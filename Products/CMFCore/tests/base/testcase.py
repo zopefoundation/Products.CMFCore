@@ -66,29 +66,6 @@ class LogInterceptor:
         self.installed = tuple([s for s in self.installed if s != subsystem])
 
 
-class WarningInterceptor:
-
-    _old_stderr = None
-    _our_stderr_stream = None
-
-    def _trap_warning_output(self):
-
-        if self._old_stderr is not None:
-            return
-
-        from StringIO import StringIO
-
-        self._old_stderr = sys.stderr
-        self._our_stderr_stream = sys.stderr = StringIO()
-
-    def _free_warning_output(self):
-
-        if self._old_stderr is None:
-            return
-
-        sys.stderr = self._old_stderr
-
-
 class TransactionalTest(unittest.TestCase):
 
     layer = ZopeLite

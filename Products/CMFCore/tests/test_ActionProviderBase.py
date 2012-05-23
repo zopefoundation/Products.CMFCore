@@ -16,6 +16,8 @@
 import unittest
 import Testing
 
+import warnings
+
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
@@ -25,7 +27,6 @@ from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import WarningInterceptor
 
 #
 #   We have to import these here to make the "ugly sharing" test case go.
@@ -60,10 +61,9 @@ class DummyAction:
                 or 0)
 
 
-class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
+class ActionProviderBaseTests(SecurityTest):
 
     def setUp(self):
-        self._trap_warning_output()
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.app)
         sm = getSiteManager()
@@ -73,7 +73,6 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
     def tearDown(self):
         cleanUp()
         SecurityTest.tearDown(self)
-        self._free_warning_output()
 
     def _makeProvider(self, dummy=0):
 
@@ -213,21 +212,23 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
         def idify(x):
             return id(x)
 
-        old_ids = one_ids = map(idify, one.listActions())
-        another_ids = map(idify, another.listActions())
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            old_ids = one_ids = map(idify, one.listActions())
+            another_ids = map(idify, another.listActions())
 
-        self.assertEqual(one_ids, another_ids)
+            self.assertEqual(one_ids, another_ids)
 
-        one.changeActions({'id_0': 'different_id',
-                           'name_0': 'A Different Title',
-                           'action_0': 'arise_shine',
-                           'condition_0': 'always',
-                           'permissions_0': 'granted',
-                           'category_0': 'quality',
-                           'visible_0': 1})
+            one.changeActions({'id_0': 'different_id',
+                               'name_0': 'A Different Title',
+                               'action_0': 'arise_shine',
+                               'condition_0': 'always',
+                               'permissions_0': 'granted',
+                               'category_0': 'quality',
+                               'visible_0': 1})
 
-        one_ids = map(idify, one.listActions())
-        another_ids = map(idify, another.listActions())
+            one_ids = map(idify, one.listActions())
+            another_ids = map(idify, another.listActions())
         self.assertFalse(one_ids == another_ids)
         self.assertEqual(old_ids, another_ids)
 
@@ -238,20 +239,24 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
                    'icon': ''}]
 
         apb = self.site._setObject('portal_apb', self._makeProvider(1))
-        rval = apb.listActionInfos()
-        self.assertEqual(rval, [])
-        rval = apb.listActionInfos(check_visibility=0)
-        self.assertEqual(rval, wanted)
-        rval = apb.listActionInfos('foo/another_id', check_visibility=0)
-        self.assertEqual(rval, [])
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            rval = apb.listActionInfos()
+            self.assertEqual(rval, [])
+            rval = apb.listActionInfos(check_visibility=0)
+            self.assertEqual(rval, wanted)
+            rval = apb.listActionInfos('foo/another_id', check_visibility=0)
+            self.assertEqual(rval, [])
 
     def test_getActionObject(self):
         apb = self.site._setObject('portal_apb', self._makeProvider(1))
-        rval = apb.getActionObject('object/an_id')
-        self.assertEqual(rval, apb._actions[0])
-        rval = apb.getActionObject('object/not_existing_id')
-        self.assertEqual(rval, None)
-        self.assertRaises(ValueError, apb.getActionObject, 'wrong_format')
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            rval = apb.getActionObject('object/an_id')
+            self.assertEqual(rval, apb._actions[0])
+            rval = apb.getActionObject('object/not_existing_id')
+            self.assertEqual(rval, None)
+            self.assertRaises(ValueError, apb.getActionObject, 'wrong_format')
 
     def test_getActionInfo(self):
         wanted = {'id': 'an_id', 'title': 'A Title', 'description': '',
@@ -260,22 +265,25 @@ class ActionProviderBaseTests(SecurityTest, WarningInterceptor):
                   'icon': ''}
 
         apb = self.site._setObject('portal_apb', self._makeProvider(1))
-        rval = apb.getActionInfo(('object/an_id',))
-        self.assertEqual(rval, wanted)
-        rval = apb.getActionInfo('object/an_id')
-        self.assertEqual(rval, wanted)
-        self.assertRaises(ValueError, apb.getActionInfo, 'object/an_id',
-                          check_visibility=1)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            rval = apb.getActionInfo(('object/an_id',))
+            self.assertEqual(rval, wanted)
+            rval = apb.getActionInfo('object/an_id')
+            self.assertEqual(rval, wanted)
+            self.assertRaises(ValueError, apb.getActionInfo, 'object/an_id',
+                              check_visibility=1)
 
-        # The following is nasty, but I want to make sure the ValueError
-        # carries some useful information
-        INVALID_ID = 'invalid_id'
-        try:
-            rval = apb.getActionInfo('object/%s' % INVALID_ID)
-        except ValueError, e:
-            message = e.args[0]
-            detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)
-            self.assertTrue(message.find(INVALID_ID) != -1, detail)
+            # The following is nasty, but I want to make sure the ValueError
+            # carries some useful information
+            INVALID_ID = 'invalid_id'
+            try:
+                rval = apb.getActionInfo('object/%s' % INVALID_ID)
+            except ValueError, e:
+                message = e.args[0]
+                detail = '"%s" does not offer action "%s"' % (message,
+                                                              INVALID_ID)
+                self.assertTrue(message.find(INVALID_ID) != -1, detail)
 
 
 def test_suite():

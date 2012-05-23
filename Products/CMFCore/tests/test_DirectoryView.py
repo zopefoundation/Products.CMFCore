@@ -17,6 +17,7 @@ import unittest
 import Testing
 
 import sys
+import warnings
 from os import mkdir
 from os import remove
 from os.path import join
@@ -27,11 +28,10 @@ from App.config import getConfiguration
 from Products.CMFCore.tests import _globals
 from Products.CMFCore.tests.base.dummy import DummyFolder
 from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import WarningInterceptor
 from Products.CMFCore.tests.base.testcase import WritableFSDVTest
 
 
-class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
+class DirectoryViewPathTests(unittest.TestCase):
     """
     These test that, no matter what is stored in their dirpath,
     FSDV's will do their best to find an appropriate skin
@@ -45,9 +45,6 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
         registerDirectory('fake_skins', _globals)
         self.ob = DummyFolder()
         addDirectoryViews(self.ob, 'fake_skins', _globals)
-
-    def tearDown(self):
-        self._free_warning_output()
 
     def test__generateKey(self):
         from Products.CMFCore.DirectoryView import _generateKey
@@ -77,18 +74,17 @@ class DirectoryViewPathTests(unittest.TestCase, WarningInterceptor):
 
     # Test we do nothing if given a really wacky path
     def test_UnhandleableExpandPath(self):
-        from Products.CMFCore import DirectoryView
-
-        self._trap_warning_output()
         file = mktemp()
-        self.ob.fake_skin.manage_properties(file)
-        self.assertEqual(self.ob.fake_skin.objectIds(), [])
-        # Check that a warning was raised.
-        warnings = [t[0] for t in DirectoryView.__warningregistry__]
-        text = ('DirectoryView fake_skin refers to a non-existing path %r'
-                % file)
-        self.assertTrue(text in warnings)
-        self.assertTrue(text in self._our_stderr_stream.getvalue())
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter('always')
+            self.ob.fake_skin.manage_properties(file)
+            self.assertEqual(self.ob.fake_skin.objectIds(), [])
+            # Check that a warning was raised.
+            self.assertEqual(len(w), 1)
+            self.assertTrue(issubclass(w[-1].category, UserWarning))
+            text = ('DirectoryView fake_skin refers to a non-existing path %r'
+                    % file)
+            self.assertTrue(text in str(w[-1].message))
 
     # this test tests that registerDirectory creates keys in the right format.
     def test_registerDirectoryKeys(self):
