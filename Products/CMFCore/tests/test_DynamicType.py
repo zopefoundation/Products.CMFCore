@@ -19,11 +19,11 @@ import Testing
 from StringIO import StringIO
 
 from Acquisition import Implicit
-from Products.Five.browser import BrowserView
 from zope.component import getSiteManager
 from zope.component import provideAdapter
 from zope.interface import alsoProvides
 from zope.interface.verify import verifyClass
+from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserView
 try:
