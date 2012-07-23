@@ -5,7 +5,7 @@
 
 <h1>Here is the title</h1>
 
-<x tal:replace="structure here/output_page_2" />
+<x tal:replace="structure context/output_page_2" />
 
 </html>
 
