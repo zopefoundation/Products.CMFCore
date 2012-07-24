@@ -32,6 +32,7 @@ from Products.CMFCore.interfaces import IAction
 from Products.CMFCore.interfaces import IActionCategory
 from Products.CMFCore.interfaces import IActionInfo
 from Products.CMFCore.interfaces import IMembershipTool
+from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 
@@ -547,25 +548,27 @@ def getOAI(context, object=None):
     return info
 
 
-class oai:
+class oai(object):
 
-    #Provided for backwards compatability
+    #Provided for backward compatibility
     # Provides information that may be needed when constructing the list of
     # available actions.
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, tool, folder, object=None):
-        self.portal = portal = aq_parent(aq_inner(tool))
         mtool = getUtility(IMembershipTool)
         self.isAnonymous = mtool.isAnonymousUser()
         self.user_id = mtool.getAuthenticatedMember().getId()
-        self.portal_url = portal.absolute_url()
+
+        utool = getUtility(IURLTool)
+        self.portal = utool.getPortalObject()
+        self.portal_url = utool()
         if folder is not None:
             self.folder_url = folder.absolute_url()
             self.folder = folder
         else:
             self.folder_url = self.portal_url
-            self.folder = portal
+            self.folder = self.portal
 
         # The name "content" is deprecated and will go away in CMF 2.0!
         self.object = self.content = object
