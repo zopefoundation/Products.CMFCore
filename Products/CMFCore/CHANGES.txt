@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.2.7 (unreleased)
 ------------------
 
+- Added dependency on zope.app.publication.
+
 - Removed testing dependency on zope.app.testing.
 
 - Deprecated aliases were replaced on tests.
