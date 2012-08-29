@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0 (unreleased)
 ------------------
 
+- permissions: Fixed some issues in permissions.zcml. 
+
 
 2.3.0-beta2 (2012-03-31)
 ------------------------

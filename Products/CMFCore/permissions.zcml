@@ -67,7 +67,12 @@
       />
 
     <permission
-      id="cmf.MailForgottonPassword"
+      id="cmf.ChangeLocalRoles"
+      title="Change local roles"
+      />
+
+    <permission
+      id="cmf.MailForgottenPassword"
       title="Mail forgotten password"
       />
 
@@ -79,11 +84,6 @@
     <permission
       id="cmf.ReviewPortalContent"
       title="Review portal content"
-      />
-
-    <permission
-      id="cmf.AccessFuturePortalContent"
-      title="Access future portal content"
       />
 
   </configure>
