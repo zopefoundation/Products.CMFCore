@@ -16,6 +16,7 @@
 import unittest
 import Testing
 
+from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
@@ -69,18 +70,13 @@ class SkinsToolTests(unittest.TestCase):
 class SkinnableTests(unittest.TestCase):
 
     def _makeOne(self):
-        from Products.CMFCore.SkinsTool import SkinsTool
         from Products.CMFCore.Skinnable import SkinnableObjectManager
 
         class TestSkinnableObjectManager(SkinnableObjectManager):
-            tool = SkinsTool()
+
             # This is needed otherwise REQUEST is the string
             # '<Special Object Used to Force Acquisition>'
             REQUEST = None
-
-            def getSkinsFolderName(self):
-                '''tool'''
-                return 'tool'
 
         return TestSkinnableObjectManager()
 
@@ -90,15 +86,19 @@ class SkinnableTests(unittest.TestCase):
         cleanUp()
 
     def test_getCurrentSkinName(self):
+        from Products.CMFCore.interfaces import ISkinsTool
+        from Products.CMFCore.SkinsTool import SkinsTool
+
         som = self._makeOne()
 
         pathA = ('foo, bar')
         pathB = ('bar, foo')
 
-        som.tool.addSkinSelection('skinA', pathA)
-        som.tool.addSkinSelection('skinB', pathB)
-
-        som.tool.manage_properties(default_skin='skinA')
+        stool = SkinsTool()
+        stool.addSkinSelection('skinA', pathA)
+        stool.addSkinSelection('skinB', pathB)
+        stool.manage_properties(default_skin='skinA')
+        getSiteManager().registerUtility(stool, ISkinsTool)
 
         # Expect the default skin name to be returned
         self.assertTrue(som.getCurrentSkinName() == 'skinA')

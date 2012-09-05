@@ -31,8 +31,6 @@ from Products.CMFCore.permissions import SetOwnProperties
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.Skinnable import SkinnableObjectManager
 
-PORTAL_SKINS_TOOL_ID = 'portal_skins'
-
 
 class PortalObjectBase(PortalFolder, SkinnableObjectManager):
 
@@ -58,9 +56,6 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         components = PersistentComponents('++etc++site')
         components.__parent__ = self
         self.setSiteManager(components)
-
-    def getSkinsFolderName(self):
-        return PORTAL_SKINS_TOOL_ID
 
     def __before_publishing_traverse__(self, arg1, arg2=None):
         """ Pre-traversal hook.

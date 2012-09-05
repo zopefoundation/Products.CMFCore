@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0 (unreleased)
 ------------------
 
+- Skinnable: The skins tool is now looked up as utility.
+  'getSkinsFolderName' is no longer supported, that method was removed.
+
 - permissions: Fixed some issues in permissions.zcml. 
 
 
