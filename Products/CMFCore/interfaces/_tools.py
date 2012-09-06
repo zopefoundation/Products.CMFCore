@@ -322,7 +322,7 @@ class ICachingPolicyManager(Interface):
             """ The ID of the tool.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(ICachingPolicyManager)'.
+              'queryUtility(ICachingPolicyManager)'.
 
             o Must be set to 'caching_policy_manager'.
             """,
@@ -475,7 +475,7 @@ class IOldstyleDiscussionTool(Interface):
             """ The tool's ID.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IDiscussionTool)'.
+              'queryUtility(IDiscussionTool)'.
 
             o Must be set to 'portal_discussion'.
             """)
@@ -531,7 +531,7 @@ class IMemberDataTool(Interface):
             """ The tool's ID.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IMemberDataTool)'.
+              'queryUtility(IMemberDataTool)'.
 
             o Must be set to 'portal_memberdata'
             """,
@@ -917,7 +917,7 @@ class IMetadataTool(Interface):
             """ The tool's ID.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IMetadataTool)'.
+              'queryUtility(IMetadataTool)'.
 
             o Must be set to 'portal_metadata'.
             """)
@@ -1083,7 +1083,7 @@ class IRegistrationTool(Interface):
             """ The ID of the tool.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IRegistrationTool)'.
+              'queryUtility(IRegistrationTool)'.
 
             o Must be set to "portal_registration"
             """,
@@ -1240,7 +1240,7 @@ class ISkinsTool(ISkinsContainer):
             """ The ID of the tool.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(ISkinsTool)'.
+              'queryUtility(ISkinsTool)'.
 
             o Must be set to 'portal_skins'.
             """,
@@ -1264,7 +1264,7 @@ class ISyndicationTool(Interface):
             """ The ID of the tool.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(ISyndicationTool)'.
+              'queryUtility(ISyndicationTool)'.
 
             o Must be set to "portal_syndication"
             """,
@@ -1612,7 +1612,7 @@ class IUndoTool(Interface):
             """ The ID of the tool.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IUndoTool)'.
+              'queryUtility(IUndoTool)'.
 
             o Must be set to "portal_undo"
             """,
@@ -1737,7 +1737,7 @@ class IWorkflowTool(Interface):
             """ The ID of the tool.
 
             o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IWorkflowTool)'.
+              'queryUtility(IWorkflowTool)'.
 
             o Must be set to "portal_workflow"
             """,
