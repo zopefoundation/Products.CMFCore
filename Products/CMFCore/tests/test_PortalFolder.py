@@ -486,9 +486,9 @@ class PortalFolderSecurityTests(SecurityTest):
         ttool._setObject('Dummy Content 15', FTI(**FTIDATA_CMF[0]))
         getSiteManager().registerUtility(ttool, ITypesTool)
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
-        test._checkId('view.html')
+        test._checkId('view')
         newSecurityManager(None, acl_users.user_foo)
-        self.assertRaises(BadRequest, test._checkId, 'view.html')
+        self.assertRaises(BadRequest, test._checkId, 'view')
 
     def test__checkId_starting_with_dot(self):
         #
@@ -510,7 +510,7 @@ class PortalFolderSecurityTests(SecurityTest):
 
     def test__checkId_Five(self):
         test = self._makeOne('test')
-        self.assertRaises(BadRequest, test._checkId, '@@view.html')
+        self.assertRaises(BadRequest, test._checkId, '@@view')
         self.assertRaises(BadRequest, test._checkId, '++resource++icon.png')
 
     def test_checkIdAvailableCatchesBadRequest(self):

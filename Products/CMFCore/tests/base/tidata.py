@@ -102,26 +102,25 @@ FTIDATA_CMF = (
       , 'icon_expr' : 'string:${portal_url}/dummy_icon.gif'
       , 'product' : 'FooProduct'
       , 'factory' : 'addFoo'
-      , 'immediate_view' : 'metadata.html'
+      , 'immediate_view' : 'properties'
       , 'aliases' : {
            '(Default)':'dummy_view',
            'view':'dummy_view',
-           'view.html':'dummy_view',
-           'edit.html':'dummy_edit_form',
-           'metadata.html':'metadata_edit_form',
+           'edit':'dummy_edit_form',
+           'properties':'metadata_edit_form',
            'gethtml':'source_html'}
       , 'actions' : (
             { 'id':'view',
               'title': 'View',
-              'action':'string:${object_url}/view.html',
+              'action':'string:${object_url}',
               'permissions':(View,) }
           , { 'id':'edit',
               'title': 'Edit',
-              'action':'string:${object_url}/edit.html',
+              'action':'string:${object_url}/edit',
               'permissions':(ModifyPortalContent,) }
           , { 'id':'metadata',
               'title': 'Metadata',
-              'action':'string:${object_url}/metadata.html',
+              'action':'string:${object_url}/properties',
               'permissions':(ModifyPortalContent,) }
           )
       }

@@ -380,7 +380,6 @@ class TypeInfoTests(object):
         ti = self._makeOne(**FTIDATA_CMF[0])
         self.assertEqual(ti.getMethodAliases(), FTIDATA_CMF[0]['aliases'])
         self.assertEqual(ti.queryMethodID('view'), 'dummy_view')
-        self.assertEqual(ti.queryMethodID('view.html'), 'dummy_view')
 
         ti.setMethodAliases(ti.getMethodAliases())
         self.assertEqual(ti.getMethodAliases(), FTIDATA_CMF[0]['aliases'])
