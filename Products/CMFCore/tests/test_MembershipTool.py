@@ -27,6 +27,8 @@ from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.MemberDataTool import MemberDataTool
+from Products.CMFCore.permissions import AccessContentsInformation
+from Products.CMFCore.permissions import View
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
@@ -36,19 +38,26 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 
 class MembershipToolTests(unittest.TestCase):
 
-    def test_interfaces(self):
-        from Products.CMFCore.interfaces import IMembershipTool
+    def _getTargetClass(self):
         from Products.CMFCore.MembershipTool import MembershipTool
 
-        verifyClass(IMembershipTool, MembershipTool)
+        return MembershipTool
+
+    def test_interfaces(self):
+        from Products.CMFCore.interfaces import IMembershipTool
+
+        verifyClass(IMembershipTool, self._getTargetClass())
 
 
 class MembershipToolSecurityTests(SecurityTest):
 
-    def _makeOne(self, *args, **kw):
+    def _getTargetClass(self):
         from Products.CMFCore.MembershipTool import MembershipTool
 
-        return MembershipTool(*args, **kw)
+        return MembershipTool
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
 
     def _makeSite(self, parent=None):
         if parent is None:
@@ -69,94 +78,6 @@ class MembershipToolSecurityTests(SecurityTest):
         rval = mtool.getCandidateLocalRoles(mtool)
         self.assertEqual(rval, ('Manager', 'Member', 'Owner', 'Reviewer'))
 
-    def test_createMemberArea(self):
-        site = self._makeSite()
-        mtool = site.portal_membership
-        members = site._setObject('Members', PortalFolder('Members'))
-        acl_users = site._setObject('acl_users', DummyUserFolder())
-        getSiteManager().registerUtility(DummyTool(), IWorkflowTool)
-
-        # permission
-        mtool.createMemberArea('user_foo')
-        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
-        newSecurityManager(None, acl_users.user_bar)
-        mtool.createMemberArea('user_foo')
-        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
-        newSecurityManager(None, acl_users.user_foo)
-        mtool.setMemberareaCreationFlag()
-        mtool.createMemberArea('user_foo')
-        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
-        newSecurityManager(None, acl_users.all_powerful_Oz)
-        mtool.setMemberareaCreationFlag()
-        mtool.createMemberArea('user_foo')
-        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
-
-        # default content
-        f = members.user_foo
-        ownership = acl_users.user_foo
-        localroles = (('user_foo', ('Owner',)),)
-        self.assertEqual(f.getOwner(), ownership)
-        self.assertEqual(f.get_local_roles(), localroles,
-                         'CMF Collector issue #162 (LocalRoles broken): %s'
-                         % str(f.get_local_roles()))
-
-    def test_createMemberAreaCMFBTreeFolder(self):
-        # Test member area creation if the toplevel "Members" folder is
-        # a CMFBTreeFolder (http://www.zope.org/Collectors/CMF/441
-        site = self._makeSite()
-        mtool = site.portal_membership
-        members = site._setObject('Members', CMFBTreeFolder('Members'))
-        acl_users = site._setObject('acl_users', DummyUserFolder())
-        getSiteManager().registerUtility(DummyTool(), IWorkflowTool)
-
-        # permission
-        mtool.createMemberArea('user_foo')
-        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
-        newSecurityManager(None, acl_users.user_bar)
-        mtool.createMemberArea('user_foo')
-        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
-        newSecurityManager(None, acl_users.user_foo)
-        mtool.setMemberareaCreationFlag()
-        mtool.createMemberArea('user_foo')
-        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
-        newSecurityManager(None, acl_users.all_powerful_Oz)
-        mtool.setMemberareaCreationFlag()
-        mtool.createMemberArea('user_foo')
-        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
-
-        # default content
-        f = members.user_foo
-        ownership = acl_users.user_foo
-        localroles = (('user_foo', ('Owner',)),)
-        self.assertEqual(f.getOwner(), ownership)
-        self.assertEqual(f.get_local_roles(), localroles,
-                         'CMF Collector issue #162 (LocalRoles broken): %s'
-                         % str(f.get_local_roles()))
-
-    def test_createMemberArea_chained(self):
-        LOCAL_USER_ID = 'user_foo'
-        NONLOCAL_USER_ID = 'user_bar'
-
-        self.app._setObject('folder', Folder('folder'))
-        site = self._makeSite(self.app.folder)
-        mtool = site.portal_membership
-        members = site._setObject('Members', PortalFolder('Members'))
-        getSiteManager().registerUtility(DummyTool(), IWorkflowTool)
-
-        local_uf = DummyUserFolder()
-        delattr(local_uf, NONLOCAL_USER_ID)
-        acl_users = site._setObject('acl_users', local_uf)
-
-        nonlocal_uf = DummyUserFolder()
-        delattr(nonlocal_uf, LOCAL_USER_ID)
-        self.app.folder._setObject('acl_users', nonlocal_uf)
-
-        newSecurityManager(None, acl_users.all_powerful_Oz)
-        mtool.createMemberArea(NONLOCAL_USER_ID)
-        self.assertTrue(hasattr(members.aq_self, NONLOCAL_USER_ID))
-        mtool.createMemberArea(LOCAL_USER_ID)
-        self.assertTrue(hasattr(members.aq_self, LOCAL_USER_ID))
-
     def test_isMemberAccessAllowed(self):
         site = self._makeSite()
         mtool = site.portal_membership
@@ -171,64 +92,6 @@ class MembershipToolSecurityTests(SecurityTest):
 
         newSecurityManager(None, acl_users.all_powerful_Oz)
         self.assertTrue(mtool.isMemberAccessAllowed('user_foo'))
-
-    def test_deleteMembers(self):
-        site = self._makeSite()
-        sm = getSiteManager()
-        sm.registerUtility(site, ISiteRoot)
-        mtool = site.portal_membership
-        members = site._setObject('Members', PortalFolder('Members'))
-        acl_users = site._setObject('acl_users', DummyUserFolder())
-        mdtool = MemberDataTool()
-        sm.registerUtility(mdtool, IMemberDataTool)
-        newSecurityManager(None, acl_users.all_powerful_Oz)
-
-        self.assertEqual(acl_users.getUserById('user_foo'), acl_users.user_foo)
-        mtool.createMemberArea('user_foo')
-        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
-        mdtool.registerMemberData('Dummy', 'user_foo')
-        self.assertTrue('user_foo' in mdtool._members)
-
-        rval = mtool.deleteMembers(('user_foo', 'user_baz'))
-        self.assertEqual(rval, ('user_foo',))
-        self.assertFalse(acl_users.getUserById('user_foo', None))
-        self.assertFalse('user_foo' in mdtool._members)
-        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
-
-        cleanUp()
-
-    def test_deleteMembersUnsupported(self):
-        # Quite a few user folders do not support the deletion API
-        # http://www.zope.org/Collectors/CMF/481
-        # Make sure we get the right exception
-        site = self._makeSite()
-        sm = getSiteManager()
-        sm.registerUtility(site, ISiteRoot)
-        mtool = site.portal_membership
-        members = site._setObject('Members', PortalFolder('Members'))
-        acl_users = site._setObject('acl_users', DummyUserFolder())
-        mdtool = MemberDataTool()
-        sm.registerUtility(mdtool, IMemberDataTool)
-        newSecurityManager(None, acl_users.all_powerful_Oz)
-
-        self.assertEqual(acl_users.getUserById('user_foo'), acl_users.user_foo)
-        mtool.createMemberArea('user_foo')
-        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
-        mdtool.registerMemberData('Dummy', 'user_foo')
-        self.assertTrue('user_foo' in mdtool._members)
-
-        # Fake an incompatible user folder by deleting the class method
-        deletion_method = DummyUserFolder.userFolderDelUsers
-        del DummyUserFolder.userFolderDelUsers
-        self.assertRaises(NotImplementedError, mtool.deleteMembers,
-                          ('user_foo',))
-        self.assertTrue(acl_users.getUserById('user_foo', None))
-        self.assertTrue('user_foo' in mdtool._members)
-        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
-
-        # Cleanup
-        DummyUserFolder.userFolderDelUsers = deletion_method
-        cleanUp()
 
     def test_getMemberById_nonesuch(self):
         INVALID_USER_ID = 'nonesuch'
@@ -282,8 +145,191 @@ class MembershipToolSecurityTests(SecurityTest):
         self.assertEqual(nonlocal_member.getId(), NONLOCAL_USER_ID)
 
 
+class MembershipToolMemberAreaTests(SecurityTest):
+
+    def _getTargetClass(self):
+        from Products.CMFCore.MembershipTool import MembershipTool
+
+        return MembershipTool
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
+
+    def _makeSite(self, parent=None):
+        if parent is None:
+            parent = self.app
+        site = DummySite('site').__of__(parent)
+        site.__ac_roles__ = ('Reviewer',)
+        site._setObject('portal_membership', self._makeOne())
+        return site
+
+    def setUp(self):
+        SecurityTest.setUp(self)
+        sm = getSiteManager()
+        sm.registerUtility(DummyTool(), IWorkflowTool)
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
+
+    def test_createMemberArea(self):
+        site = self._makeSite()
+        mtool = site.portal_membership
+        members = site._setObject('Members', PortalFolder('Members'))
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+
+        # permission
+        mtool.createMemberArea('user_foo')
+        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
+        newSecurityManager(None, acl_users.user_bar)
+        mtool.createMemberArea('user_foo')
+        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
+        newSecurityManager(None, acl_users.user_foo)
+        mtool.setMemberareaCreationFlag()
+        mtool.createMemberArea('user_foo')
+        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        mtool.setMemberareaCreationFlag()
+        mtool.createMemberArea('user_foo')
+        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
+
+        # default content
+        f = members.user_foo
+        ownership = acl_users.user_foo
+        localroles = (('user_foo', ('Owner',)),)
+        self.assertEqual(f.Title(), "user_foo's Home")
+        self.assertEqual(f.getPortalTypeName(), 'Folder')
+        self.assertEqual(f.getOwner(), ownership)
+        self.assertEqual(f.get_local_roles(), localroles,
+                         'CMF Collector issue #162 (LocalRoles broken): %s'
+                         % str(f.get_local_roles()))
+        for p in (View, AccessContentsInformation):
+            roles = [ r['name'] for r in f.rolesOfPermission(p)
+                      if r['selected'] ]
+            self.assertEqual(roles, ['Manager', 'Owner', 'Reviewer'])
+            self.assertEqual(bool(f.acquiredRolesAreUsedBy(p)), False)
+
+    def test_createMemberAreaCMFBTreeFolder(self):
+        # Test member area creation if the toplevel "Members" folder is
+        # a CMFBTreeFolder (http://www.zope.org/Collectors/CMF/441
+        site = self._makeSite()
+        mtool = site.portal_membership
+        members = site._setObject('Members', CMFBTreeFolder('Members'))
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+
+        # permission
+        mtool.createMemberArea('user_foo')
+        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
+        newSecurityManager(None, acl_users.user_bar)
+        mtool.createMemberArea('user_foo')
+        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
+        newSecurityManager(None, acl_users.user_foo)
+        mtool.setMemberareaCreationFlag()
+        mtool.createMemberArea('user_foo')
+        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        mtool.setMemberareaCreationFlag()
+        mtool.createMemberArea('user_foo')
+        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
+
+        # default content
+        f = members.user_foo
+        ownership = acl_users.user_foo
+        localroles = (('user_foo', ('Owner',)),)
+        self.assertEqual(f.Title(), "user_foo's Home")
+        self.assertEqual(f.getPortalTypeName(), 'Folder')
+        self.assertEqual(f.getOwner(), ownership)
+        self.assertEqual(f.get_local_roles(), localroles,
+                         'CMF Collector issue #162 (LocalRoles broken): %s'
+                         % str(f.get_local_roles()))
+        for p in (View, AccessContentsInformation):
+            roles = [ r['name'] for r in f.rolesOfPermission(p)
+                      if r['selected'] ]
+            self.assertEqual(roles, ['Manager', 'Owner', 'Reviewer'])
+            self.assertEqual(bool(f.acquiredRolesAreUsedBy(p)), False)
+
+    def test_createMemberArea_chained(self):
+        LOCAL_USER_ID = 'user_foo'
+        NONLOCAL_USER_ID = 'user_bar'
+
+        self.app._setObject('folder', Folder('folder'))
+        site = self._makeSite(self.app.folder)
+        mtool = site.portal_membership
+        members = site._setObject('Members', PortalFolder('Members'))
+
+        local_uf = DummyUserFolder()
+        delattr(local_uf, NONLOCAL_USER_ID)
+        acl_users = site._setObject('acl_users', local_uf)
+
+        nonlocal_uf = DummyUserFolder()
+        delattr(nonlocal_uf, LOCAL_USER_ID)
+        self.app.folder._setObject('acl_users', nonlocal_uf)
+
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        mtool.createMemberArea(NONLOCAL_USER_ID)
+        self.assertTrue(hasattr(members.aq_self, NONLOCAL_USER_ID))
+        mtool.createMemberArea(LOCAL_USER_ID)
+        self.assertTrue(hasattr(members.aq_self, LOCAL_USER_ID))
+
+    def test_deleteMembers(self):
+        site = self._makeSite()
+        sm = getSiteManager()
+        sm.registerUtility(site, ISiteRoot)
+        mtool = site.portal_membership
+        members = site._setObject('Members', PortalFolder('Members'))
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+        mdtool = MemberDataTool()
+        sm.registerUtility(mdtool, IMemberDataTool)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+
+        self.assertEqual(acl_users.getUserById('user_foo'), acl_users.user_foo)
+        mtool.createMemberArea('user_foo')
+        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
+        mdtool.registerMemberData('Dummy', 'user_foo')
+        self.assertTrue('user_foo' in mdtool._members)
+
+        rval = mtool.deleteMembers(('user_foo', 'user_baz'))
+        self.assertEqual(rval, ('user_foo',))
+        self.assertFalse(acl_users.getUserById('user_foo', None))
+        self.assertFalse('user_foo' in mdtool._members)
+        self.assertFalse(hasattr(members.aq_self, 'user_foo'))
+
+    def test_deleteMembersUnsupported(self):
+        # Quite a few user folders do not support the deletion API
+        # http://www.zope.org/Collectors/CMF/481
+        # Make sure we get the right exception
+        site = self._makeSite()
+        sm = getSiteManager()
+        sm.registerUtility(site, ISiteRoot)
+        mtool = site.portal_membership
+        members = site._setObject('Members', PortalFolder('Members'))
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+        mdtool = MemberDataTool()
+        sm.registerUtility(mdtool, IMemberDataTool)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+
+        self.assertEqual(acl_users.getUserById('user_foo'), acl_users.user_foo)
+        mtool.createMemberArea('user_foo')
+        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
+        mdtool.registerMemberData('Dummy', 'user_foo')
+        self.assertTrue('user_foo' in mdtool._members)
+
+        # Fake an incompatible user folder by deleting the class method
+        deletion_method = DummyUserFolder.userFolderDelUsers
+        del DummyUserFolder.userFolderDelUsers
+        self.assertRaises(NotImplementedError, mtool.deleteMembers,
+                          ('user_foo',))
+        self.assertTrue(acl_users.getUserById('user_foo', None))
+        self.assertTrue('user_foo' in mdtool._members)
+        self.assertTrue(hasattr(members.aq_self, 'user_foo'))
+
+        # Cleanup
+        DummyUserFolder.userFolderDelUsers = deletion_method
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(MembershipToolTests),
         unittest.makeSuite(MembershipToolSecurityTests),
+        unittest.makeSuite(MembershipToolMemberAreaTests),
         ))
