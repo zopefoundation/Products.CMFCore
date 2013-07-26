@@ -31,8 +31,10 @@ from Persistence import PersistentMapping
 from ZODB.POSException import ConflictError
 from zope.component import getUtility
 from zope.component import queryUtility
+from zope.component.interfaces import IFactory
 from zope.globalrequest import getRequest
-from zope.interface import implements
+from zope.interface import implementedBy
+from zope.interface import implementer
 from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
@@ -42,6 +44,7 @@ from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import IRegistrationTool
 from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import ChangeLocalRoles
 from Products.CMFCore.permissions import ListPortalMembers
@@ -49,14 +52,17 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import ManageUsers
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.permissions import View
+from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import _dtmldir
+from Products.CMFCore.utils import Message as _
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 logger = logging.getLogger('CMFCore.MembershipTool')
 
 
+@implementer(IMembershipTool)
 class MembershipTool(UniqueObject, Folder):
 
     """ This tool accesses member data through an acl_users object.
@@ -65,11 +71,10 @@ class MembershipTool(UniqueObject, Folder):
     different way.
     """
 
-    implements(IMembershipTool)
-
     id = 'portal_membership'
     meta_type = 'CMF Membership Tool'
     memberareaCreationFlag = 1
+    _MEMBERAREA_FACTORY_NAME = 'cmf.memberarea.bbb1'
 
     security = ClassSecurityInfo()
 
@@ -263,20 +268,22 @@ class MembershipTool(UniqueObject, Folder):
             member_id = member.getId()
         if hasattr(aq_base(members), member_id):
             return None
-        else:
-            f_title = "%s's Home" % member_id
-            members.manage_addPortalFolder(id=member_id, title=f_title)
-            f = getattr(members, member_id)
 
-            f.manage_permission(View,
-                                ['Owner', 'Manager', 'Reviewer'], 0)
-            f.manage_permission(AccessContentsInformation,
-                                ['Owner', 'Manager', 'Reviewer'], 0)
+        factory_name = self._MEMBERAREA_FACTORY_NAME
+        portal_type_name = 'Folder'
+        ttool = queryUtility(ITypesTool)
+        if ttool is not None:
+            portal_type = ttool.getTypeInfo('Member Area')
+            if portal_type is not None:
+                factory_name = portal_type.factory
+                portal_type_name = portal_type.getId()
 
-            # Grant Ownership and Owner role to Member
-            f.changeOwnership(member)
-            f.__ac_local_roles__ = None
-            f.manage_setLocalRoles(member_id, ['Owner'])
+        factory = getUtility(IFactory, factory_name)
+        obj = factory(id=member_id)
+        obj._setPortalTypeName(portal_type_name)
+        members._setObject(member_id, obj)
+        f = members._getOb(member_id)
+        f.changeOwnership(member)
         return f
 
     security.declarePublic('createMemberarea')
@@ -533,3 +540,30 @@ class MembershipTool(UniqueObject, Folder):
 
 InitializeClass(MembershipTool)
 registerToolInterface('portal_membership', IMembershipTool)
+
+
+@implementer(IFactory)
+class _BBBMemberAreaFactory(object):
+
+    """Creates a member area.
+    """
+
+    title = _(u'Member Area')
+    description = _(u'Classic CMFCore home folder for portal members.')
+
+    def __call__(self, id, title=None, *args, **kw):
+        if title is None:
+            title = "{0}'s Home".format(id)
+        item = PortalFolder(id, title, *args, **kw)
+        item.manage_setLocalRoles(id, ['Owner'])
+
+        item.manage_permission(View,
+                               ['Owner', 'Manager', 'Reviewer'], 0)
+        item.manage_permission(AccessContentsInformation,
+                               ['Owner', 'Manager', 'Reviewer'], 0)
+        return item
+
+    def getInterfaces(self):
+        return implementedBy(PortalFolder)
+
+BBBMemberAreaFactory = _BBBMemberAreaFactory()

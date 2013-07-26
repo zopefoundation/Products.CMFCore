@@ -19,6 +19,7 @@ import Testing
 from AccessControl.SecurityManagement import newSecurityManager
 from OFS.Folder import Folder
 from zope.component import getSiteManager
+from zope.component.interfaces import IFactory
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
@@ -164,9 +165,13 @@ class MembershipToolMemberAreaTests(SecurityTest):
         return site
 
     def setUp(self):
+        from Products.CMFCore.MembershipTool import BBBMemberAreaFactory
+
         SecurityTest.setUp(self)
         sm = getSiteManager()
         sm.registerUtility(DummyTool(), IWorkflowTool)
+        sm.registerUtility(BBBMemberAreaFactory, IFactory,
+                           'cmf.memberarea.bbb1')
 
     def tearDown(self):
         cleanUp()
@@ -211,7 +216,7 @@ class MembershipToolMemberAreaTests(SecurityTest):
 
     def test_createMemberAreaCMFBTreeFolder(self):
         # Test member area creation if the toplevel "Members" folder is
-        # a CMFBTreeFolder (http://www.zope.org/Collectors/CMF/441
+        # a CMFBTreeFolder (https://bugs.launchpad.net/zope-cmf/+bug/161668)
         site = self._makeSite()
         mtool = site.portal_membership
         members = site._setObject('Members', CMFBTreeFolder('Members'))

@@ -18,6 +18,11 @@
       name="cmf.folder"
       />
 
+  <utility
+      component=".MembershipTool.BBBMemberAreaFactory"
+      name="cmf.memberarea.bbb1"
+      />
+
   <five:registerClass
       class=".CMFBTreeFolder.CMFBTreeFolder"
       meta_type="CMF BTree Folder"
