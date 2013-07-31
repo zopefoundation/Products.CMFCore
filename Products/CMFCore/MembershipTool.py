@@ -543,27 +543,40 @@ registerToolInterface('portal_membership', IMembershipTool)
 
 
 @implementer(IFactory)
-class _BBBMemberAreaFactory(object):
+class MemberAreaFactoryBase(object):
 
     """Creates a member area.
     """
 
     title = _(u'Member Area')
-    description = _(u'Classic CMFCore home folder for portal members.')
+    description = _(u'A home folder for portal members.')
 
     def __call__(self, id, title=None, *args, **kw):
         if title is None:
             title = "{0}'s Home".format(id)
         item = PortalFolder(id, title, *args, **kw)
         item.manage_setLocalRoles(id, ['Owner'])
+        return item
+
+    def getInterfaces(self):
+        return implementedBy(PortalFolder)
+
+
+class _BBBMemberAreaFactory(MemberAreaFactoryBase):
+
+    """Creates a member area.
+    """
+
+    description = _(u'Classic CMFCore home folder for portal members.')
+
+    def __call__(self, id, title=None, *args, **kw):
+        item = super(_BBBMemberAreaFactory,
+                     self).__call__(id, title=title, *args, **kw)
 
         item.manage_permission(View,
                                ['Owner', 'Manager', 'Reviewer'], 0)
         item.manage_permission(AccessContentsInformation,
                                ['Owner', 'Manager', 'Reviewer'], 0)
         return item
-
-    def getInterfaces(self):
-        return implementedBy(PortalFolder)
 
 BBBMemberAreaFactory = _BBBMemberAreaFactory()
