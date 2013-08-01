@@ -19,8 +19,8 @@
       />
 
   <utility
-      component=".MembershipTool.BBBMemberAreaFactory"
-      name="cmf.memberarea.bbb1"
+      component=".MembershipTool.BBBHomeFolderFactory"
+      name="cmf.folder.home.bbb1"
       />
 
   <five:registerClass

@@ -74,7 +74,7 @@ class MembershipTool(UniqueObject, Folder):
     id = 'portal_membership'
     meta_type = 'CMF Membership Tool'
     memberareaCreationFlag = 1
-    _MEMBERAREA_FACTORY_NAME = 'cmf.memberarea.bbb1'
+    _HOME_FOLDER_FACTORY_NAME = 'cmf.folder.home.bbb1'
 
     security = ClassSecurityInfo()
 
@@ -269,11 +269,11 @@ class MembershipTool(UniqueObject, Folder):
         if hasattr(aq_base(members), member_id):
             return None
 
-        factory_name = self._MEMBERAREA_FACTORY_NAME
+        factory_name = self._HOME_FOLDER_FACTORY_NAME
         portal_type_name = 'Folder'
         ttool = queryUtility(ITypesTool)
         if ttool is not None:
-            portal_type = ttool.getTypeInfo('Member Area')
+            portal_type = ttool.getTypeInfo('Home Folder')
             if portal_type is not None:
                 factory_name = portal_type.factory
                 portal_type_name = portal_type.getId()
@@ -543,12 +543,12 @@ registerToolInterface('portal_membership', IMembershipTool)
 
 
 @implementer(IFactory)
-class MemberAreaFactoryBase(object):
+class HomeFolderFactoryBase(object):
 
-    """Creates a member area.
+    """Creates a home folder.
     """
 
-    title = _(u'Member Area')
+    title = _(u'Home Folder')
     description = _(u'A home folder for portal members.')
 
     def __call__(self, id, title=None, *args, **kw):
@@ -562,15 +562,15 @@ class MemberAreaFactoryBase(object):
         return implementedBy(PortalFolder)
 
 
-class _BBBMemberAreaFactory(MemberAreaFactoryBase):
+class _BBBHomeFolderFactory(HomeFolderFactoryBase):
 
-    """Creates a member area.
+    """Creates a home folder.
     """
 
     description = _(u'Classic CMFCore home folder for portal members.')
 
     def __call__(self, id, title=None, *args, **kw):
-        item = super(_BBBMemberAreaFactory,
+        item = super(_BBBHomeFolderFactory,
                      self).__call__(id, title=title, *args, **kw)
 
         item.manage_permission(View,
@@ -579,4 +579,4 @@ class _BBBMemberAreaFactory(MemberAreaFactoryBase):
                                ['Owner', 'Manager', 'Reviewer'], 0)
         return item
 
-BBBMemberAreaFactory = _BBBMemberAreaFactory()
+BBBHomeFolderFactory = _BBBHomeFolderFactory()

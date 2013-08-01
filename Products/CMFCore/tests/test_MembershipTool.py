@@ -165,13 +165,13 @@ class MembershipToolMemberAreaTests(SecurityTest):
         return site
 
     def setUp(self):
-        from Products.CMFCore.MembershipTool import BBBMemberAreaFactory
+        from Products.CMFCore.MembershipTool import BBBHomeFolderFactory
 
         SecurityTest.setUp(self)
         sm = getSiteManager()
         sm.registerUtility(DummyTool(), IWorkflowTool)
-        sm.registerUtility(BBBMemberAreaFactory, IFactory,
-                           'cmf.memberarea.bbb1')
+        sm.registerUtility(BBBHomeFolderFactory, IFactory,
+                           'cmf.folder.home.bbb1')
 
     def tearDown(self):
         cleanUp()
