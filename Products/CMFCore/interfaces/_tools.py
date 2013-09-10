@@ -34,6 +34,8 @@ class IActionsTool(Interface):
       providers".
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     id = Attribute('id',
             """ The ID of the tool.
 
@@ -106,6 +108,8 @@ class IActionProvider(Interface):
     """ Objects that can be queried for actions.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def listActions(info=None, object=None):
         """ List known actions.
 
@@ -169,6 +173,8 @@ class IActionCategory(Interface):
     """ Group of IAction objects and child categories.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def listActions():
         """ Return a sequence of IAction objects defined by this category.
 
@@ -182,6 +188,8 @@ class IAction(Interface):
 
     """ Specification for an action.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def getInfoData():
         """ Return a lazy mapping of the data needed to create an
@@ -223,11 +231,15 @@ class IActionInfo(Interface):
         the action. If the list is empty, the user is allowed.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
 
 #
 #   Caching policy tool interfaces
 #
 class ICachingPolicy(Interface):
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def getPolicyId():
         """
@@ -318,6 +330,8 @@ class ICachingPolicyManager(Interface):
     """ Compute HTTP cache headers for skin methods.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     id = Attribute('id',
             """ The ID of the tool.
 
@@ -349,6 +363,8 @@ class ICatalogTool(Interface):
 
     """Wrap the "stock" ZCatalog with custom behavior for the CMF.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id', 'Must be set to "portal_catalog"')
 
@@ -401,6 +417,8 @@ class IIndexableObjectWrapper(Interface):
     """ Wrapper for catalogued objects, for indexing "virtual" attributes.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def allowedRolesAndUsers():
         """ Return a sequence roles and users with View permission.
 
@@ -414,6 +432,8 @@ class IIndexableObject(Interface):
         the portal catalog
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
 #
 #   PUT factory handler interfaces
 #
@@ -424,6 +444,8 @@ class IContentTypeRegistryPredicate(Interface):
     The registry will call the predictate's 'edit' method, passing the fields
     of the record.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def __call__(name, typ, body):
         """ Return true if the rule matches, else false. """
@@ -448,6 +470,8 @@ class IContentTypeRegistry(Interface):
     """ Apply policy mapping PUT arguments to a CMF portal type.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def findTypeName(name, typ, body):
         """ Return the the portal type (an ID) for a PUT request.
 
@@ -470,6 +494,8 @@ class IOldstyleDiscussionTool(Interface):
 
     """ Links content to discussions.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The tool's ID.
@@ -505,6 +531,8 @@ class IDiscussionTool(IOldstyleDiscussionTool):
     """ Links content to discussions.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def overrideDiscussionFor(content, allowDiscussion):
         """ Override discussability for the given object or clear the setting.
 
@@ -526,6 +554,8 @@ class IMemberDataTool(Interface):
 
     """ Decorate user objects with site-local data.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The tool's ID.
@@ -615,6 +645,8 @@ class IMemberData(Interface):
     """ MemberData interface.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def setProperties(properties=None, **kw):
         """ Allow the authenticated member to update his/her member data.
 
@@ -633,6 +665,8 @@ class IMember(IUser, IMemberData):
     """ Member interface.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
 
 #
 #   Membership tool interfaces
@@ -642,6 +676,8 @@ class IMembershipTool(Interface):
     """ Manage policy of how and where to store and retrieve members and
         their member folders.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The tool's ID.
@@ -913,6 +949,8 @@ class IMetadataTool(Interface):
     """ CMF metadata policies interface.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     id = Attribute('id',
             """ The tool's ID.
 
@@ -999,7 +1037,7 @@ class IMetadataTool(Interface):
         """ Return a list of (id, schema) tuples enumerating our schema.
         """
 
-    def addSchema( schema_id ):
+    def addSchema(schema_id):
         """ Create a new schema with the given ID.
 
         o Return the newly-created schema object.
@@ -1007,7 +1045,7 @@ class IMetadataTool(Interface):
         o Raise KeyError if such a schema already exists.
         """
 
-    def removeSchema( schema_id ):
+    def removeSchema(schema_id):
         """ Remove an existing schema with the given ID.
 
         o Raise KeyError if no such schema exists.
@@ -1040,6 +1078,8 @@ class IPropertiesTool(Interface):
 
     """ Manage properties of the site as a whole.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The tool's ID.
@@ -1078,6 +1118,8 @@ class IRegistrationTool(Interface):
 
     o Is not aware of membership storage details.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The ID of the tool.
@@ -1183,11 +1225,16 @@ class IDirectoryView(Interface):
     """ Directory views mount filesystem directories.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
 
 class ISkinsContainer(Interface):
 
     """ An object that provides skins.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
+
     def getSkinPath(name):
         """ Convert a skin name to a skin path.
 
@@ -1236,6 +1283,8 @@ class ISkinsTool(ISkinsContainer):
     O XXX:  This shouldn't derive from ISkinsContainer?
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     id = Attribute('id',
             """ The ID of the tool.
 
@@ -1259,6 +1308,8 @@ class ISyndicationTool(Interface):
 
     """ An object that provides content syndication facilities
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The ID of the tool.
@@ -1390,6 +1441,8 @@ class ISyndicationTool(Interface):
 class ISyndicationInfo(Interface):
     """ Provides syndication about a particular object"""
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     enabled = Attribute(
         """
         :`bool`
@@ -1450,6 +1503,8 @@ class ITypeInformation(Interface):
 
     """ Type definition interface.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def Metatype():
         """ Return the Zope 'meta_type' for this content object.
@@ -1540,6 +1595,8 @@ class ITypesTool(Interface):
     """ Register content types for the site.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     id = Attribute('id',
             """ The ID of the tool.
 
@@ -1608,6 +1665,8 @@ class IUndoTool(Interface):
     """ Provide access to Zope undo functions.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     id = Attribute('id',
             """ The ID of the tool.
 
@@ -1650,6 +1709,8 @@ class IURLTool(Interface):
     object of a CMFSite, and for computing paths to objects relative to
     that root.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The ID of the tool.
@@ -1732,6 +1793,8 @@ class IWorkflowTool(Interface):
 
     """This tool accesses and changes the workflow state of content.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
             """ The ID of the tool.
@@ -1886,6 +1949,8 @@ class IConfigurableWorkflowTool(IWorkflowTool):
     """ Manage workflow tool settings.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def setDefaultChain(default_chain):
         """ Set the default chain for this tool.
 
@@ -1926,6 +1991,8 @@ class IWorkflowDefinition(Interface):
 
     """Plugin interface for workflow definitions managed by IWorkflowTool.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def getId():
         """ Return the id of the workflow definition.
@@ -2104,6 +2171,8 @@ class IWorkflowDefinition(Interface):
 
 class IWorkflowStatus(Interface):
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def get():
         """Return the current workflow status or None
         """
@@ -2117,6 +2186,8 @@ class IWorkflowHistory(Interface):
     """A sequence of workflow status dictionaries
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
 
 class ILinebreakNormalizer(Interface):
 
@@ -2125,6 +2196,8 @@ class ILinebreakNormalizer(Interface):
     Implementations of this utility may adjust line breaks to conform to
     any desired type, such as LF or CRLF.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def normalizeIncoming(ob, text):
         """ Normalize line breaks in text pushed into the system

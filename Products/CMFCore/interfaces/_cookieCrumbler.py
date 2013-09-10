@@ -9,6 +9,8 @@ class ICookieCrumbler(Interface):
     """Reads cookies during traversal and simulates the HTTP auth headers.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     auth_cookie = Attribute("""The key of the authorisation cookie""")
     name_cookie = Attribute("""They key of the authorised user cookie""")
     pw_cookie = Attribute("""The key of the password cookie""")

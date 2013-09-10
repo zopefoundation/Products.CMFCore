@@ -29,6 +29,8 @@ class IContentish(Interface):
     o CMFCore.PortalContent implements this interface.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def SearchableText():
         """ Return a string containing textual information about the content.
 
@@ -46,6 +48,8 @@ class IDiscussable(Interface):
 
     """ Interface for things which can have responses.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def createReply(title, text, Creator=None):
         """ Create a reply in the proper place.
@@ -88,6 +92,8 @@ class IOldstyleDiscussable(Interface):
 
     """ Oldstyle discussable interface.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def createReply(title, text, REQUEST, RESPONSE):
         """ Create a reply in the proper place.
@@ -153,6 +159,8 @@ class IDiscussionResponse(Interface):
     """ Interface for objects which are replies to IDiscussable objects.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def inReplyTo(REQUEST=None):
         """ Return the IDiscussable object to which this item is a reply.
 
@@ -191,6 +199,8 @@ class IMinimalDublinCore(Interface):
     """ Minimal set of Dublin Core metadata elements.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def Title():
         """ Return a single string, the DCMI Title element (resource name).
 
@@ -219,6 +229,8 @@ class IDublinCore(IMinimalDublinCore):
 
     """ Dublin Core metadata elements supported by CMF and their semantics.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def listCreators():
         """ Return a sequence of DCMI Creator elements (resource authors).
@@ -366,6 +378,8 @@ class ICatalogableDublinCore(Interface):
     """ Provide Zope-internal date attributes for cataloging purposes.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def created():
         """ Return the DateTime form of CreationDate.
 
@@ -396,6 +410,8 @@ class IMutableMinimalDublinCore(IMinimalDublinCore):
     """ Update interface for minimal set of mutable metadata.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def setTitle(title):
         """ Set DCMI Title element - resource name.
 
@@ -413,6 +429,8 @@ class IMutableDublinCore(IMutableMinimalDublinCore, IDublinCore):
 
     """ Update interface for mutable metadata.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def setCreators(creators):
         """ Set DCMI Creator elements - resource authors.
@@ -471,6 +489,8 @@ class IDynamicType(Interface):
     """ General interface for dynamic items.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def getPortalTypeName():
         """ Return the name of the type information for this object.
 
@@ -515,6 +535,8 @@ class ICatalogAware(Interface):
     """ Interface for notifying the catalog tool.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def indexObject():
         """ Index the object in the portal catalog.
         """
@@ -549,6 +571,8 @@ class IWorkflowAware(Interface):
     """ Interface for notifying the workflow tool.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     def notifyWorkflowCreated():
         """ Notify the workflow that the object was just created.
         """
@@ -559,6 +583,8 @@ class IOpaqueItemManager(Interface):
     """Interface for managing opaque items.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
 
 #
 #   Folderish interfaces
@@ -567,6 +593,8 @@ class IFolderish(Interface):
 
     """ General interface for "folderish" content items.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def contentItems(filter=None):
         """ Return a sequence of (object ID, object) tuples for
@@ -617,6 +645,8 @@ class ISiteRoot(IFolderish):
     """ Marker interface for the object which serves as the root of a site.
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
 
 #
 #   IOpaqueItems interfaces
@@ -633,6 +663,8 @@ class ICallableOpaqueItem(Interface):
       hooks get called if available. Unavailable hooks do not throw
       exceptions.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def __init__(obj, id):
         """Return the opaque item and assign it to 'obj' as attr with 'id'.
@@ -651,6 +683,8 @@ class ICallableOpaqueItemEvents(Interface):
 
     """CMF specific events upon copying, renaming and deletion.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def manage_afterClone(item):
         """After clone event hook.
@@ -672,6 +706,8 @@ class ISyndicatable(Interface):
 
     """ Filter content for syndication.
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     def synContentValues():
         """ Return a list of IDublinCore objects to be syndicated.

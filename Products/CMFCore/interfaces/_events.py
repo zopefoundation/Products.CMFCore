@@ -22,24 +22,35 @@ class IWorkflowActionEvent(IObjectEvent):
     """Base interface for events around workflow action invocation
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     workflow = Attribute("The workflow definition object")
     action = Attribute("The name of the action being invoked")
+
 
 class IActionWillBeInvokedEvent(IWorkflowActionEvent):
 
     """Event fired immediately before a workflow action is invoked
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
+
 class IActionRaisedExceptionEvent(IWorkflowActionEvent):
 
     """Event fired when a workflow action raised an exception
     """
 
+    __module__ = 'Products.CMFCore.interfaces'
+
     exc = Attribute("The exception info for the exception raised")
+
 
 class IActionSucceededEvent(IWorkflowActionEvent):
 
     """Event fired when a workflow action succeeded
     """
+
+    __module__ = 'Products.CMFCore.interfaces'
 
     result = Attribute("The result of the workflow action")

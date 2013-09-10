@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0 (unreleased)
 ------------------
 
+- interfaces: Fixed dotted names by setting __module__ explicitly.
+
 - Skinnable: The skins tool is now looked up as utility.
   'getSkinsFolderName' is no longer supported, that method was removed.
 
