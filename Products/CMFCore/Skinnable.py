@@ -101,7 +101,10 @@ class SkinnableObjectManager(ObjectManager):
             return None
         stool = queryUtility(ISkinsTool)
         if stool is not None:
-            return REQUEST.get(stool.getRequestVarname(), None)
+            name = REQUEST.get(stool.getRequestVarname(), None)
+            if name = '':
+                return None
+            return Name
 
     security.declarePublic('changeSkin')
     def changeSkin(self, skinname, REQUEST=None):
