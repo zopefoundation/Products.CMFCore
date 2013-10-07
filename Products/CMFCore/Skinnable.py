@@ -107,7 +107,10 @@ class SkinnableObjectManager(ObjectManager):
         if sfn is not None:
             sf = getattr(self, sfn, None)
             if sf is not None:
-                return REQUEST.get(sf.getRequestVarname(), None)
+                name = REQUEST.get(sf.getRequestVarname(), None)
+                if name == '':
+                    return None
+                return name
 
     security.declarePublic('changeSkin')
     def changeSkin(self, skinname, REQUEST=_MARKER):
