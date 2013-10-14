@@ -10,6 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+from Products.CMFCore.tests.base.testcase import RequestTest
 """ Unit tests for SkinsTool module. """
 
 import unittest
@@ -17,6 +18,7 @@ import Testing
 
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
+
 
 
 class SkinsContainerTests(unittest.TestCase):
@@ -65,8 +67,10 @@ class SkinsToolTests(unittest.TestCase):
         self.assertTrue(paths.find('.svn') == -1)
 
 
-class SkinnableTests(unittest.TestCase):
+class SkinnableTests(RequestTest):
 
+
+    
     def _makeOne(self):
         from Products.CMFCore.SkinsTool import SkinsTool
         from Products.CMFCore.Skinnable import SkinnableObjectManager
@@ -105,6 +109,27 @@ class SkinnableTests(unittest.TestCase):
         som.changeSkin('skinB', som.REQUEST)
         self.assertTrue(som.getCurrentSkinName() == 'skinB')
 
+
+    def test_getSkinNameFromRequest(self):
+        
+        som = self._makeOne()        
+
+        #by default, no special sinname is set
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), None)
+        
+        #provide a value        
+        self.REQUEST['portal_skin'] = 'skinA'
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), 'skinA')
+        
+        # test for non-existend http header variable
+        # see https://dev.plone.org/ticket/10071
+        som.tool.request_varname = 'HTTP_SKIN_NAME'
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), None)
+
+        # test for http header variable
+        self.REQUEST['HTTP_SKIN_NAME'] = 'skinB'
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), 'skinB')
+        
 
 def test_suite():
     return unittest.TestSuite((
