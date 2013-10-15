@@ -1,12 +1,13 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.8 (unreleased)
+2.2.8 (2014-10-15)
 ------------------
 
 - support unset portal_skins request variables in HTTP headers
   (see https://dev.plone.org/ticket/10071)
   [fRiSi]
+
 
 2.2.7 (2012-08-30)
 ------------------
