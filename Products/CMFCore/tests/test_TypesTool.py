@@ -574,6 +574,10 @@ class FTIConstructionTestCase:
         newSecurityManager(None, UserWithRoles('FooViewer').__of__(self.f))
         self.assertFalse(self.ti.isConstructionAllowed(self.f))
 
+    def test_isConstructionAllowed_w_all_meta_types_not_callable(self):
+        self.f.all_meta_types = ({'name': 'Dummy', 'permission': 'addFoo'},)
+        self.assertTrue(self.ti.isConstructionAllowed(self.f))
+
     def test_constructInstance_wo_Roles(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.unauthorized import Unauthorized

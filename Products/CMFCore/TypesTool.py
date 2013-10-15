@@ -515,7 +515,10 @@ class FactoryTypeInformation(TypeInformation):
             # newstyle factory
             m = queryUtility(IFactory, self.factory, None)
             if m is not None:
-                for d in container.all_meta_types():
+                meta_types = container.all_meta_types
+                if callable(meta_types):
+                    meta_types = meta_types()
+                for d in meta_types:
                     if d['name'] == self.content_meta_type:
                         sm = getSecurityManager()
                         ti_check = sm.checkPermission(d['permission'],
