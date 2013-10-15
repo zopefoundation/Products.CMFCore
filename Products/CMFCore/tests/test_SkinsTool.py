@@ -20,6 +20,7 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
+from Products.CMFCore.tests.base.testcase import RequestTest
 
 class SkinsContainerTests(unittest.TestCase):
 
@@ -67,7 +68,7 @@ class SkinsToolTests(unittest.TestCase):
         self.assertTrue(paths.find('.svn') == -1)
 
 
-class SkinnableTests(unittest.TestCase):
+class SkinnableTests(RequestTest):
 
     def _makeOne(self):
         from Products.CMFCore.Skinnable import SkinnableObjectManager
@@ -106,6 +107,31 @@ class SkinnableTests(unittest.TestCase):
         # after a changeSkin the new skin name should be returned
         som.changeSkin('skinB', som.REQUEST)
         self.assertTrue(som.getCurrentSkinName() == 'skinB')
+
+    def test_getSkinNameFromRequest(self):
+        from Products.CMFCore.interfaces import ISkinsTool
+        from Products.CMFCore.SkinsTool import SkinsTool        
+        som = self._makeOne()
+
+        stool = SkinsTool()
+        getSiteManager().registerUtility(stool, ISkinsTool)
+        
+        #by default, no special sinname is set
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), None)
+        
+        
+        #provide a value
+        self.REQUEST['portal_skin'] = 'skinA'
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), 'skinA')
+        
+        # test for non-existend http header variable
+        # see https://dev.plone.org/ticket/10071
+        stool.request_varname = 'HTTP_SKIN_NAME'
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), None)
+        
+        # test for http header variable
+        self.REQUEST['HTTP_SKIN_NAME'] = 'skinB'
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), 'skinB')
 
 
 def test_suite():
