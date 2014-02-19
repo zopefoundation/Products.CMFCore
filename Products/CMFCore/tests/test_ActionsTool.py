@@ -74,25 +74,6 @@ class ActionsToolTests(unittest.TestCase, WarningInterceptor):
         tool.deleteActionProvider('foo')
         self.assertEqual(tool.listActionProviders(), ('portal_actions',))
 
-    def test_getActionObject_oldskool_action_deprecated(self):
-        # We have to clear APB's __warningregistry__, or else we may not see
-        # the warning we expect (i.e., if somebody else triggered it first).
-        from Products.CMFCore import ActionProviderBase
-        try:
-            del ActionProviderBase.__warningregistry__
-        except AttributeError:
-            pass
-        self._trap_warning_output()
-        tool = self._makeOne()
-        tool.addAction('an_id', 'name', '', '', '', 'object')
-        rval = tool.getActionObject('object/an_id')
-        self.assertEqual(rval, tool._actions[0])
-        warning = self._our_stderr_stream.getvalue()
-        self.assertTrue(
-            'DeprecationWarning: '
-            'Old-style actions are deprecated and will be removed in CMF '
-            '2.4. Use Action and Action Category objects instead.' in warning)
-
     def test_getActionObject_skips_newstyle_actions(self):
         tool = self._makeOne()
         tool._setObject('object', ActionCategory('object'))
