@@ -239,8 +239,8 @@ return 'cps -- replaced'
 """
 
 _DIFF_TEXT = """\
---- original 
-+++ modified 
+--- original
++++ modified
 @@ -7,4 +7,4 @@
  ##parameters=
  ##title=
