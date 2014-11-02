@@ -38,7 +38,7 @@ class DynamicType:
 
     implements(IDynamicType)
 
-    portal_type = None
+    portal_type = ''
 
     security = ClassSecurityInfo()
 

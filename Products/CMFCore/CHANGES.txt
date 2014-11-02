@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.3.0 (unreleased)
 ------------------
 
+- Changed `DynamicType.portal_type` null value to an empty string.
+
 - interfaces: Fixed dotted names by setting __module__ explicitly.
 
 - Skinnable: The skins tool is now looked up as utility.
