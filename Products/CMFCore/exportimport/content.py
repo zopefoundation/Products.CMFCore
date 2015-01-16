@@ -18,9 +18,11 @@ from ConfigParser import ConfigParser
 from StringIO import StringIO
 
 from zope.interface import implements
+from zope.publisher.interfaces.http import MethodNotAllowed
 
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter
+from Products.GenericSetup.content import DAVAwareFileAdapter
 from Products.GenericSetup.content import _globtest
 from Products.CMFCore.utils import getToolByName
 
@@ -43,6 +45,16 @@ def encode_if_needed(text, encoding):
         result = text
     return result
 
+
+class FolderishDAVAwareFileAdapter(DAVAwareFileAdapter):
+    """ A version of the DAVAwareFileAdapter that uses .properties to store
+    the DAV result, rather than its own id. For use in serialising folderish
+    objects. """
+    
+    def _getFileName(self):
+        """ Return the name under which our file data is stored.
+        """
+        return '.properties'
 
 #
 #   Filesystem export/import adapters
@@ -118,11 +130,14 @@ class StructureFolderWalkingAdapter(object):
         stream = StringIO()
         parser.write(stream)
 
-        export_context.writeDataFile('.properties',
-                                    text=stream.getvalue(),
-                                    content_type='text/plain',
-                                    subdir=subdir,
-                                    )
+        try:
+            FolderishDAVAwareFileAdapter(self.context).export(export_context, subdir, root)
+        except (AttributeError, MethodNotAllowed):
+            export_context.writeDataFile('.properties',
+                                        text=stream.getvalue(),
+                                        content_type='text/plain',
+                                        subdir=subdir,
+                                        )
 
         for id, object in self.context.objectItems():
 
@@ -192,8 +207,9 @@ class StructureFolderWalkingAdapter(object):
     def _makeInstance(self, id, portal_type, subdir, import_context):
 
         context = self.context
+        subdir = '%s/%s' % (subdir, id)
         properties = import_context.readDataFile('.properties',
-                                                 '%s/%s' % (subdir, id))
+                                                 subdir)
         tool = getToolByName(context, 'portal_types')
 
         try:
@@ -204,6 +220,14 @@ class StructureFolderWalkingAdapter(object):
         content = context._getOb(id)
 
         if properties is not None:
+            if '[DEFAULT]' not in properties:
+                try:
+                    FolderishDAVAwareFileAdapter(content).import_(import_context, subdir)
+                    return content
+                except (AttributeError, MethodNotAllowed):
+                    # Fall through to old implemenatation below
+                    pass
+            
             lines = properties.splitlines()
 
             stream = StringIO('\n'.join(lines))
