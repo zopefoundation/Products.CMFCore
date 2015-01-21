@@ -14,12 +14,15 @@
 
 from csv import reader
 from csv import writer
+import itertools
+import operator
 from ConfigParser import ConfigParser
 from StringIO import StringIO
 
 from zope.interface import implements
-from zope.publisher.interfaces.http import MethodNotAllowed
+from zExceptions import MethodNotAllowed
 
+from DateTime import DateTime
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter
 from Products.GenericSetup.content import DAVAwareFileAdapter
@@ -102,17 +105,37 @@ class StructureFolderWalkingAdapter(object):
         exportable = [x + (IFilesystemExporter(x, None),) for x in exportable]
         exportable = [x for x in exportable if x[1] is not None]
 
-        stream = StringIO()
-        csv_writer = writer(stream)
-
+        objects_stream = StringIO()
+        objects_csv_writer = writer(objects_stream)
+        wf_stream = StringIO()
+        wf_csv_writer = writer(wf_stream)
+        
+        wft = self.context.portal_workflow
+        
         for object_id, object, ignored in exportable:
-            csv_writer.writerow((object_id, object.getPortalTypeName()))
-
+            objects_csv_writer.writerow((object_id, object.getPortalTypeName()))
+            
+            workflows = wft.getWorkflowsFor(object)
+            for workflow in workflows:
+                workflow_id = workflow.id
+                state_variable = workflow.state_var
+                state_record = wft.getStatusOf(workflow_id, object)
+                if state_record is None:
+                    continue
+                state = state_record.get(state_variable)
+                wf_csv_writer.writerow((object_id, workflow_id, state))
+        
         if not root:
             subdir = '%s/%s' % (subdir, self.context.getId())
 
         export_context.writeDataFile('.objects',
-                                     text=stream.getvalue(),
+                                     text=objects_stream.getvalue(),
+                                     content_type='text/comma-separated-values',
+                                     subdir=subdir,
+                                    )
+
+        export_context.writeDataFile('.workflow_states',
+                                     text=wf_stream.getvalue(),
                                      content_type='text/comma-separated-values',
                                      subdir=subdir,
                                     )
@@ -154,14 +177,16 @@ class StructureFolderWalkingAdapter(object):
             subdir = '%s/%s' % (subdir, context.getId())
 
         objects = import_context.readDataFile('.objects', subdir)
+        workflow_states = import_context.readDataFile('.workflow_states', subdir)
         if objects is None:
             return
-
+        
         dialect = 'excel'
-        stream = StringIO(objects)
+        object_stream = StringIO(objects)
+        wf_stream = StringIO(workflow_states)
 
-        rowiter = reader(stream, dialect)
-        ours = filter(None, tuple(rowiter))
+        object_rowiter = reader(object_stream, dialect)
+        ours = filter(None, tuple(object_rowiter))
         our_ids = set([item[0] for item in ours])
 
         prior = set(context.contentIds())
@@ -203,7 +228,39 @@ class StructureFolderWalkingAdapter(object):
             wrapped = context._getOb(object_id)
 
             IFilesystemImporter(wrapped).import_(import_context, subdir)
-
+        
+        if workflow_states is not None:
+            existing = context.objectIds()
+            wft = context.portal_workflow
+            wf_rowiter = reader(wf_stream, dialect)
+            wf_by_objectid = itertools.groupby(wf_rowiter, operator.itemgetter(0))
+        
+            for object_id, states in wf_by_objectid:
+                if object_id not in existing:
+                    logger = import_context.getLogger('SFWA')
+                    logger.warning("Couldn't set workflow for object %s/%s as it doesn't exist" %
+                                   (context.id, object_id))
+                    continue
+            
+                object = context[object_id]
+                for object_id, workflow_id, state_id in states:
+                    workflow = wft.getWorkflowById(workflow_id)
+                    state_variable = workflow.state_var
+                    wf_state = {
+                        'action': None,
+                        'actor': None,
+                        'comments': "Setting state to %s" % state_id,
+                        state_variable: state_id,
+                        'time': DateTime(),
+                        }
+                
+                    wft.setStatusOf(workflow_id, object, wf_state)
+                    workflow.updateRoleMappingsFor(object)
+            
+                object.reindexObject()
+            
+        
+    
     def _makeInstance(self, id, portal_type, subdir, import_context):
 
         context = self.context
