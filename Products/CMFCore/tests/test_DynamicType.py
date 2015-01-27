@@ -51,7 +51,12 @@ def defineDefaultViewName(name, for_=None):
     provideAdapter(name, (for_, IBrowserRequest), IDefaultViewName, '')
 
 
-class DummyContent(DynamicType, Implicit):
+class DummyUninitializedContent(DynamicType, Implicit):
+    """ Basic dynamic content class.
+    """
+
+
+class DummyContent(DummyUninitializedContent):
     """ Basic dynamic content class.
     """
 
@@ -68,6 +73,12 @@ class DynamicTypeTests(unittest.TestCase):
         from Products.CMFCore.interfaces import IDynamicType
 
         verifyClass(IDynamicType, DynamicType)
+
+    def test_getPortalTypeName(self):
+        foo = DummyUninitializedContent()
+        self.assertEqual(foo.getPortalTypeName(), None)
+        foo.portal_type = 'TYPENAME'
+        self.assertEqual(foo.getPortalTypeName(), 'TYPENAME')
 
 
 class DynamicTypeDefaultTraversalTests(unittest.TestCase):
