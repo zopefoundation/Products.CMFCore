@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.0 (unreleased)
 ------------------
 
+- IndexableObjectWrapper: Made sure portal_type doesn't return None.
+  Products.ZCatalog 3 indexes can no longer handle None values.
+
 - interfaces: Fixed dotted names by setting __module__ explicitly.
 
 - Skinnable: The skins tool is now looked up as utility.

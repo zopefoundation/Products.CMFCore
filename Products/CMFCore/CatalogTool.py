@@ -117,6 +117,15 @@ class IndexableObjectWrapper(object):
             return cmf_uid()
         return cmf_uid
 
+    @property
+    def portal_type(self):
+        """ Return portal_type or an empty string if portal_type is None.
+ 
+        Products.ZCatalog 3 indexes can no longer handle None values.
+        """
+        ob = self.__ob
+        return ob.portal_type or ''
+
 
 class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 

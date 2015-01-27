@@ -117,6 +117,13 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         adapts = adaptedBy(w)
         self.assertEqual(adapts, (IContentish, ICatalogTool))
 
+    def test_portal_type(self):
+        obj = self._makeContent()
+        w = self._makeOne({}, obj)
+        self.assertEqual(w.portal_type, 'Dummy Content')
+        obj.portal_type = None
+        self.assertEqual(w.portal_type, '')
+
 
 class CatalogToolTests(SecurityTest):
 
