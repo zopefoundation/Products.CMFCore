@@ -24,6 +24,9 @@ from zope.testing.cleanup import cleanUp
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
+from Products.CMFCore.testing import DummyWorkflow
+from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool, _WorkflowSetup
+
 
 class SiteStructureExporterTests(unittest.TestCase):
 
@@ -38,6 +41,10 @@ class SiteStructureExporterTests(unittest.TestCase):
     def _makeSetupTool(self):
         from Products.GenericSetup.tool import SetupTool
         return SetupTool('portal_setup')
+
+    def _makeWorkflowTool(self):
+        obj = DummyWorkflowTool()
+        return obj
 
     def _setUpAdapters(self):
         from zope.component import provideAdapter
@@ -263,6 +270,41 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
         self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
+
+    def test_export_site_includes_workflow(self):
+        self._setUpAdapters()
+        ITEM_IDS = ('foo', 'bar', 'baz')
+
+        site = _makeFolder('site', site_folder=True)
+        
+        site._setObject('portal_workflow', self._makeWorkflowTool())
+        wftool = site.portal_workflow
+        wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
+        wftool.foo_workflow.state_var = "state"
+        wftool.setDefaultChain('foo_workflow')
+        wftool.setChainForPortalTypes((TEST_INI_AWARE,), 'foo_workflow', verify=False)
+        
+        site.title = 'AAA'
+        site.description = 'DESCRIPTION'
+        for id in ITEM_IDS:
+            site._setObject(id, _makeINIAware(id))
+            wftool.setStatusOf("foo_workflow", site[id], {"state":"published"})
+
+        context = DummyExportContext(site)
+        exporter = self._getExporter()
+        exporter(context)
+
+        self.assertEqual(len(context._wrote), 3 + len(ITEM_IDS))
+        filename, text, content_type = context._wrote[0]
+        self.assertEqual(filename, 'structure/.workflow_states')
+        self.assertEqual(content_type, 'text/comma-separated-values')
+
+        objects = [x for x in reader(StringIO(text))]
+        self.assertEqual(len(objects), 3)
+        for index in range(len(ITEM_IDS)):
+            self.assertEqual(objects[index][0], ITEM_IDS[index])
+            self.assertEqual(objects[index][1], "foo_workflow")
+            self.assertEqual(objects[index][2], "published")
 
     def test_export_site_with_exportable_simple_items_unicode_default_charset(self):
         self._setUpAdapters()
@@ -538,6 +580,38 @@ class SiteStructureExporterTests(unittest.TestCase):
         for found_id, expected_id in zip(after, ITEM_IDS):
             self.assertEqual(found_id, expected_id)
 
+    def test_export_site_includes_workflow(self):
+        self._setUpAdapters()
+        ITEM_IDS = ('foo', 'bar', 'baz')
+
+        site = _makeFolder('site', site_folder=True)
+        
+        site._setObject('portal_workflow', self._makeWorkflowTool())
+        wftool = site.portal_workflow
+        wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
+        wftool.foo_workflow.state_var = "state"
+        wftool.setDefaultChain('foo_workflow')
+        wftool.setChainForPortalTypes((TEST_INI_AWARE,), 'foo_workflow', verify=False)
+        
+        context = DummyImportContext(site)
+        context._files['structure/.objects'] = '\n'.join(
+                            ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
+        context._files['structure/.workflow_states'] = '\n'.join(
+                            ['%s,foo_workflow,draft' % (x) for x in ITEM_IDS])
+        for index in range(len(ITEM_IDS)):
+            id = ITEM_IDS[index]
+            context._files[
+                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                            'xyzzy',
+                                                           )
+        importer = self._getImporter()
+        importer(context)
+
+        for item_id in ITEM_IDS:
+            self.assertEqual(wftool.getStatusOf("foo_workflow", site[item_id])['state'], "draft")
+
+
+
     def test_import_site_with_subitems_and_blanklines_dotobjects(self):
         self._setUpAdapters()
         ITEM_IDS = ('foo', 'bar', 'baz')
@@ -811,6 +885,9 @@ def _makeINIAware(id):
 
         def put_ini(self, text):
             self._was_put = text
+
+        def reindexObject(self):
+            return NotImplemented
 
     aware = _TestINIAware()
     aware._setId(id)

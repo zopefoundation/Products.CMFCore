@@ -110,36 +110,43 @@ class StructureFolderWalkingAdapter(object):
         wf_stream = StringIO()
         wf_csv_writer = writer(wf_stream)
         
-        wft = self.context.portal_workflow
-        
-        for object_id, object, ignored in exportable:
-            objects_csv_writer.writerow((object_id, object.getPortalTypeName()))
-            
-            workflows = wft.getWorkflowsFor(object)
-            for workflow in workflows:
-                workflow_id = workflow.id
-                state_variable = workflow.state_var
-                state_record = wft.getStatusOf(workflow_id, object)
-                if state_record is None:
-                    continue
-                state = state_record.get(state_variable)
-                wf_csv_writer.writerow((object_id, workflow_id, state))
         
         if not root:
             subdir = '%s/%s' % (subdir, self.context.getId())
 
+        try:
+            wft = self.context.portal_workflow
+        except AttributeError:
+            # No workflow tool to export definitions from
+            for object_id, object, ignored in exportable:
+                objects_csv_writer.writerow((object_id, object.getPortalTypeName()))
+        else:
+            for object_id, object, ignored in exportable:
+                objects_csv_writer.writerow((object_id, object.getPortalTypeName()))
+            
+                workflows = wft.getWorkflowsFor(object)
+                for workflow in workflows:
+                    workflow_id = workflow.getId()
+                    state_variable = workflow.state_var
+                    state_record = wft.getStatusOf(workflow_id, object)
+                    if state_record is None:
+                        continue
+                    state = state_record.get(state_variable)
+                    wf_csv_writer.writerow((object_id, workflow_id, state))
+        
+            export_context.writeDataFile('.workflow_states',
+                                         text=wf_stream.getvalue(),
+                                         content_type='text/comma-separated-values',
+                                         subdir=subdir,
+                                        )
+        
         export_context.writeDataFile('.objects',
                                      text=objects_stream.getvalue(),
                                      content_type='text/comma-separated-values',
                                      subdir=subdir,
                                     )
 
-        export_context.writeDataFile('.workflow_states',
-                                     text=wf_stream.getvalue(),
-                                     content_type='text/comma-separated-values',
-                                     subdir=subdir,
-                                    )
-
+        
         parser = ConfigParser()
 
         title = self.context.Title()

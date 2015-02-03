@@ -100,6 +100,7 @@ class DummyWorkflowTool(Folder):
         Folder.__init__(self, id)
         self._default_chain = ()
         self._chains_by_type = {}
+        self._states = {}
 
     def getWorkflowIds(self):
         return self.objectIds()
@@ -129,6 +130,30 @@ class DummyWorkflowTool(Folder):
 
         for pt_name in pt_names:
             self._chains_by_type[pt_name] = chain
+
+    def getWorkflowsFor(self, ob):
+        res = []
+        if ob.portal_type in self._chains_by_type:
+            chain = self._chains_by_type[ob.portal_type]
+        else:
+            chain = self._default_chain
+        for wf_id in chain:
+            wf = self.getWorkflowById(wf_id)
+            if wf is not None:
+                res.append(wf)
+        return res
+    
+    def setStatusOf(self, workflow_id, ob, state):
+        if workflow_id not in self._states:
+            self._states[workflow_id] = {}
+        object_states = self._states[workflow_id]
+        object_states[ob] = state
+
+    def getStatusOf(self, workflow_id, ob):
+        return self._states[workflow_id][ob]
+    
+    def updateRoleMappingsFor(self, ob):
+        return NotImplemented
 
 
 class WorkflowToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
