@@ -13,7 +13,6 @@
 """Filesystem exporter / importer adapter unit tests. """
 
 import unittest
-import Testing
 
 from csv import reader
 from ConfigParser import ConfigParser
@@ -25,7 +24,7 @@ from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
 from Products.CMFCore.testing import DummyWorkflow
-from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool, _WorkflowSetup
+from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool
 
 
 class SiteStructureExporterTests(unittest.TestCase):
@@ -458,6 +457,28 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
         self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
 
+    def test_export_site_with_dav_aware_folder(self):
+        self._setUpAdapters()
+
+        site = _makeFolder('site', site_folder=True)
+        site.title = 'AAA'
+        site.description = 'DESCRIPTION'
+
+        folder = _makeDAVAwareFolder('foo')
+        folder.title = 'foo'
+        folder.description = 'xyzzy'
+        folder.body = "A content item"
+        site._setObject('foo', folder)
+
+        context = DummyExportContext(site)
+        exporter = self._getExporter()
+        exporter(context)
+        
+        filename, text, content_type = context._wrote[-1]
+        self.assertEqual(filename, 'structure/foo/.properties')
+        self.assertEqual(content_type, 'text/plain')
+        self.assertEqual(text, KNOWN_DAV % (folder.title, folder.description, folder.body))
+
     def test_export_site_with_csvaware(self):
         self._setUpAdapters()
 
@@ -556,6 +577,62 @@ class SiteStructureExporterTests(unittest.TestCase):
         content = site.contentValues()
         self.assertEqual(len(content), len(FOLDER_IDS))
 
+    def test_import_site_with_dav_aware_folder(self):
+        from Products.GenericSetup.tests.test_content \
+            import _PROPERTIES_TEMPLATE
+        self._setUpAdapters()
+        FOLDER_IDS = ('foo', 'bar', 'baz')
+
+        site = _makeFolder('site', site_folder=True)
+
+        context = DummyImportContext(site)
+
+        for id in FOLDER_IDS:
+            context._files['structure/%s/.objects' % id] = ''
+            context._files['structure/%s/.properties' % id] = (
+                KNOWN_DAV % ("Title", "Description", "Body") )
+
+        _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
+                                        for id in FOLDER_IDS])
+
+        context._files['structure/.objects'] = _ROOT_OBJECTS
+        context._files['structure/.properties'] = (
+                _PROPERTIES_TEMPLATE % 'Test Site')
+
+        importer = self._getImporter()
+        importer(context)
+        content = site.contentValues()
+        self.assertEqual(len(content), len(FOLDER_IDS))
+        self.assertEqual(content[0]._was_put_as_read, KNOWN_DAV % ("Title", "Description", "Body"))
+
+    def test_import_site_with_dav_aware_folder_with_generic_file_data(self):
+        from Products.GenericSetup.tests.test_content \
+            import _PROPERTIES_TEMPLATE
+        self._setUpAdapters()
+        FOLDER_IDS = ('foo', 'bar', 'baz')
+
+        site = _makeFolder('site', site_folder=True)
+
+        context = DummyImportContext(site)
+
+        for id in FOLDER_IDS:
+            context._files['structure/%s/.objects' % id] = ''
+            context._files['structure/%s/.properties' % id] = (
+                _PROPERTIES_TEMPLATE % ("Sub Folder Title", ) )
+
+        _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
+                                        for id in FOLDER_IDS])
+
+        context._files['structure/.objects'] = _ROOT_OBJECTS
+        context._files['structure/.properties'] = (
+                _PROPERTIES_TEMPLATE % 'Test Site')
+
+        importer = self._getImporter()
+        importer(context)
+        content = site.contentValues()
+        self.assertEqual(len(content), len(FOLDER_IDS))
+        self.assertEqual(content[0].title, "Sub Folder Title")
+                
     def test_import_site_with_subitems(self):
         self._setUpAdapters()
         ITEM_IDS = ('foo', 'bar', 'baz')
@@ -580,7 +657,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         for found_id, expected_id in zip(after, ITEM_IDS):
             self.assertEqual(found_id, expected_id)
 
-    def test_export_site_includes_workflow(self):
+    def test_import_site_includes_workflow(self):
         self._setUpAdapters()
         ITEM_IDS = ('foo', 'bar', 'baz')
 
@@ -933,6 +1010,34 @@ def _makeDAVAware(id):
 
     return aware
 
+TEST_DAV_FOLDER = 'Test DAV Folder'
+def _makeDAVAwareFolder(id):
+    from Products.CMFCore.PortalFolder import PortalFolder
+    from zope.interface import implements
+    from Products.CMFCore.interfaces import IDynamicType
+    from Products.GenericSetup.interfaces import IDAVAware
+
+    class _TestDAVAwareFolder(PortalFolder):
+        implements(IDynamicType, IDAVAware)
+        _was_put = None
+        body = 'DAV body'
+        portal_type = TEST_DAV_FOLDER
+
+        def getPortalTypeName(self):
+            return self.portal_type
+
+        def manage_FTPget(self):
+            return KNOWN_DAV % (self.title, self.description, self.body)
+
+        def PUT(self, REQUEST, RESPONSE):
+            self._was_put = REQUEST.get('BODY', '')
+            stream = REQUEST.get('BODYFILE', None)
+            self._was_put_as_read = stream.read()
+
+    folder = _TestDAVAwareFolder(id)
+    folder.portal_type = TEST_DAV_FOLDER
+    return folder
+
 
 TEST_CONTENT = 'Test Content'
 
@@ -968,6 +1073,8 @@ def _makeFolder(id, site_folder=False):
             portal_type = self._getId()
             if portal_type == TEST_FOLDER:
                 content = PortalFolder(id)
+            elif portal_type == TEST_DAV_FOLDER:
+                content = _makeDAVAwareFolder(id)
             elif portal_type == TEST_CONTENT:
                 content = _makeItem()
                 content._setId(id)
@@ -989,7 +1096,8 @@ def _makeFolder(id, site_folder=False):
         tool._setObject(TEST_INI_AWARE, _TypeInfo(TEST_INI_AWARE))
         tool._setObject(TEST_CONTENT, _TypeInfo(TEST_CONTENT))
         tool._setObject(TEST_FOLDER, _TypeInfo(TEST_FOLDER))
-
+        tool._setObject(TEST_DAV_FOLDER, _TypeInfo(TEST_DAV_FOLDER))
+    
     return folder
 
 
