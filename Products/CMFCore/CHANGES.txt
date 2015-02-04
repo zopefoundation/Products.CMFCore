@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.3.0 (unreleased)
 ------------------
 
+- Fall back to DAV aware marshaller when importing or exporting folderish
+  content, so types now retain their metadata when being round-tripped.
+  [MatthewWilkes]
+
 - IndexableObjectWrapper: Made sure portal_type doesn't return None.
   Products.ZCatalog 3 indexes can no longer handle None values.
 
