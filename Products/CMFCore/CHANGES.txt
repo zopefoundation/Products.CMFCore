@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.9 (unreleased)
+2.2.9 (2015-02-20)
 ------------------
 
 - Fall back to DAV aware marshaller when importing or exporting folderish
