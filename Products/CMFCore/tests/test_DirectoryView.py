@@ -296,6 +296,10 @@ class DebugModeTests(WritableFSDVTest):
     def test_DeleteFolder(self):
         # Make sure a deleted folder goes away
         self.assertTrue(hasattr(self.ob.fake_skin, 'test_directory'))
+        # It has a file, which we need to delete first.
+        self.assertTrue(hasattr(self.ob.fake_skin.test_directory, 'README.txt'))
+        self._deleteFile(join('test_directory', 'README.txt'),
+                         self.use_dir_mtime)
         self._deleteDirectory('test_directory', self.use_dir_mtime)
         self.assertFalse(hasattr(self.ob.fake_skin, 'test_directory'))
 
