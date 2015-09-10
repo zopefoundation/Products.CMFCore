@@ -4,7 +4,8 @@ Products.CMFCore Changelog
 2.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Make sure RegistrationTool.addMember is not published
+  [vangheem]
 
 
 2.3.0 (2015-02-20)
