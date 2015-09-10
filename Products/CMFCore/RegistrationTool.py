@@ -126,7 +126,6 @@ class RegistrationTool(UniqueObject, SimpleItem):
         return ''.join( [ choice(chars) for i in range(6) ] )
 
     security.declareProtected(AddPortalMember, 'addMember')
-    @postonly
     def addMember(self, id, password, roles=('Member',), domains='',
                   properties=None, REQUEST=None):
         # XXX Do not make this a normal method comment. Doing so makes
