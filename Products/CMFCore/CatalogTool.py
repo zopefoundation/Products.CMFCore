@@ -292,7 +292,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         obj = filterTemporaryItems(object)
         indexer = getQueue()
         if obj is not None and indexer is not None:
-            indexer.reindex(obj, idxs)
+            indexer.reindex(obj, idxs, update_metadata=update_metadata)
 
     security.declarePrivate('_indexObject')
     def _indexObject(self, object):
