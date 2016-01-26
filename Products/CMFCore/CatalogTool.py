@@ -296,7 +296,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # of the object for the "reindex all" case.  unfortunately, some other
         # packages like `CMFEditions` check that date to see if the object was
         # modified during the request, which fails when it's only set on commit
-        if idxs in (None, []) and hasattr(aq_base(self), 'notifyModified'):
+        if idxs in (None, []) and hasattr(aq_base(object), 'notifyModified'):
             self.notifyModified()
         obj = filterTemporaryItems(object)
         indexer = getQueue()
