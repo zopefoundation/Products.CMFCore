@@ -41,4 +41,9 @@
       provides=".interfaces.IIndexableObject"
       factory=".CatalogTool.IndexableObjectWrapper" />
 
+  <utility
+    provides="Products.CMFCore.interfaces.IPortalCatalogQueueProcessor"
+    name="portal-catalog"
+    factory="Products.CMFCore.indexing.PortalCatalogProcessor" />
+
 </configure>
