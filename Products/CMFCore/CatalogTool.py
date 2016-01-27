@@ -18,8 +18,6 @@ from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-from collective.indexing.queue import getQueue
-from collective.indexing.subscribers import filterTemporaryItems
 from DateTime.DateTime import DateTime
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
@@ -31,6 +29,8 @@ from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 
+from Products.CMFCore.indexing import filterTemporaryItems
+from Products.CMFCore.indexing import getQueue
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IIndexableObjectWrapper
