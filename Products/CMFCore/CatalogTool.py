@@ -18,6 +18,8 @@ from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
+from collective.indexing.queue import getQueue
+from collective.indexing.subscribers import filterTemporaryItems
 from DateTime.DateTime import DateTime
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
@@ -267,20 +269,47 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     security.declarePrivate('indexObject')
     def indexObject(self, object):
+        obj = filterTemporaryItems(object)
+        indexer = getQueue()
+        if obj is not None and indexer is not None:
+            indexer.index(obj)
+
+    security.declarePrivate('unindexObject')
+    def unindexObject(self, object):
+        obj = filterTemporaryItems(object, checkId=False)
+        indexer = getQueue()
+        if obj is not None and indexer is not None:
+            indexer.unindex(obj)
+
+    security.declarePrivate('reindexObject')
+    def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
+        # `CMFCatalogAware.reindexObject` also updates the modification date
+        # of the object for the "reindex all" case.  unfortunately, some other
+        # packages like `CMFEditions` check that date to see if the object was
+        # modified during the request, which fails when it's only set on commit
+        if idxs in (None, []) and hasattr(aq_base(self), 'notifyModified'):
+            self.notifyModified()
+        obj = filterTemporaryItems(object)
+        indexer = getQueue()
+        if obj is not None and indexer is not None:
+            indexer.reindex(obj, idxs)
+
+    security.declarePrivate('_indexObject')
+    def _indexObject(self, object):
         """Add to catalog.
         """
         url = self.__url(object)
         self.catalog_object(object, url)
 
-    security.declarePrivate('unindexObject')
-    def unindexObject(self, object):
+    security.declarePrivate('_unindexObject')
+    def _unindexObject(self, object):
         """Remove from catalog.
         """
         url = self.__url(object)
         self.uncatalog_object(url)
 
-    security.declarePrivate('reindexObject')
-    def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
+    security.declarePrivate('_reindexObject')
+    def _reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
         """Update catalog after object data has changed.
 
         The optional idxs argument is a list of specific indexes
