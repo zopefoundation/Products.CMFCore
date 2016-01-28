@@ -33,6 +33,7 @@ from zope.interface.declarations import ObjectSpecificationDescriptor
 
 from Products.CMFCore.indexing import filterTemporaryItems
 from Products.CMFCore.indexing import getQueue
+from Products.CMFCore.indexing import processQueue
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IContentish
@@ -190,6 +191,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             Calls ZCatalog.searchResults with extra arguments that
             limit the results to what the user is allowed to see.
         """
+        processQueue()
         user = getSecurityManager().getUser()
         kw['allowedRolesAndUsers'] = self._listAllowedRolesAndUsers(user)
 
@@ -255,6 +257,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         If you're in doubt if you should use this method or
         'searchResults' use the latter.
         """
+        processQueue()
         return ZCatalog.searchResults(self, REQUEST, **kw)
 
     def __url(self, ob):
