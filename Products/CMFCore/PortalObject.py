@@ -18,12 +18,7 @@ from Products.Five.component.interfaces import IObjectManagerSite
 from zope.component.interfaces import ComponentLookupError
 from zope.event import notify
 from zope.interface import implements
-try:
-    from zope.traversing.interfaces import BeforeTraverseEvent
-except ImportError:
-    # BBB: for Zope < 2.13
-    from zope.app.publication.zopepublication import BeforeTraverseEvent
-
+from zope.traversing.interfaces import BeforeTraverseEvent
 from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
