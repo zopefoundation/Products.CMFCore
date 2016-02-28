@@ -26,6 +26,9 @@ Products.CMFCore Changelog
 - Remove zope.app.publication dependency.
   [gforcada]
 
+- Remove eggtestinfo dependency.
+  [gforcada]
+
 2.2.10 (2015-09-11)
 -------------------
 
