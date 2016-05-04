@@ -23,7 +23,7 @@ Products.CMFCore Changelog
 - Skinnable: The skins tool is now looked up as utility.
   'getSkinsFolderName' is no longer supported, that method was removed.
 
-- permissions: Fixed some issues in permissions.zcml. 
+- permissions: Fixed some issues in permissions.zcml.
 
 - support unset portal_skins request variables in HTTP headers
   (see https://dev.plone.org/ticket/10071) [fRiSi]
@@ -103,7 +103,7 @@ Products.CMFCore Changelog
 
 - Fix content exportimport when Title or Description are unicode (merge from
   2.2 branch).
-  
+
 - tests base: Tightened security for anonymous test user.
 
 - Load permissions.zcml from Products.Five in the test to fix tests
@@ -171,7 +171,7 @@ Products.CMFCore Changelog
   DateTime values for midnight (00:00:00) without their time and
   time zone values. So DateTimes formerly rendered as
   ``2010/01/01`` in the UTC timezone now render as
-  ``2010/01/01 00:00:00 UTC``. Several unit tests that relied on 
+  ``2010/01/01 00:00:00 UTC``. Several unit tests that relied on
   the old-style representation had to be fixed.
 
 - Get most tests working under Zope 2.13.0a2.
@@ -206,7 +206,7 @@ Products.CMFCore Changelog
 ------------------
 
 - Changed GenericSetup import handlers to fail silently if they
-  are called in a context that does not contain the items they 
+  are called in a context that does not contain the items they
   import.
 
 
@@ -234,7 +234,7 @@ Products.CMFCore Changelog
 - Got rid of redundant icon related type info properties.
   (https://bugs.launchpad.net/zope-cmf/+bug/397795)
 
-- PortalFolder: Ensure that pasting an object into a folder takes 
+- PortalFolder: Ensure that pasting an object into a folder takes
   workflow instance creation conditions into account.
   (https://bugs.launchpad.net/zope-cmf/+bug/308947)
 
@@ -251,25 +251,25 @@ Products.CMFCore Changelog
 
 - moved the Zope dependency to version 2.12.0b3dev
 
-- PortalFolder: Modified allowedContentTypes method to check 
+- PortalFolder: Modified allowedContentTypes method to check
   isConstructionAllowed only for allowed types, not for all content types.
 
 - Fixed typo in the acquisition wrapping of the found utility in
   getToolByName.
 
-- Actions: Add a link_target attribute to store a value for the 
+- Actions: Add a link_target attribute to store a value for the
   final rendered link tag's "target" attribute
   (https://bugs.launchpad.net/zope-cmf/+bug/376951)
 
-- MemberData tool: Make it easier to override the default 
-  MemberData implementation by trying to look up a named 
+- MemberData tool: Make it easier to override the default
+  MemberData implementation by trying to look up a named
   factory utility named "MemberData" before falling back on the
   default MemberData class.
   (https://bugs.launchpad.net/zope-cmf/+bug/377208)
 
-- FSPageTemplate: Change the charset/encoding detection to consider 
+- FSPageTemplate: Change the charset/encoding detection to consider
   charset specifications in the content type, and replace the
-  hardcoded Latin-15 fallback with the mechanism used by the 
+  hardcoded Latin-15 fallback with the mechanism used by the
   Products.PageTemplate code, which can be influenced by setting
   the environment variable "ZPT_PREFERRED_ENCODING"
   (https://bugs.launchpad.net/zope-cmf/+bug/322263)
@@ -278,21 +278,21 @@ Products.CMFCore Changelog
   a new "Components Folder" tab in the ZMI.
 
 - ActionsTool: The "Action Providers" tab in the ZMI did not render
-  actions from the WorkflowTool correctly since those are not 
+  actions from the WorkflowTool correctly since those are not
   'new-style' actions.
   (https://bugs.launchpad.net/zope-cmf/+bug/322300)
 
-- FSPageTemplate: Prevent reading the underlying file without doing 
+- FSPageTemplate: Prevent reading the underlying file without doing
   anything with the data in some cases.
 
-- FSObject: Ensure that ZCache invalidations only happens if the 
+- FSObject: Ensure that ZCache invalidations only happens if the
   filesystem modification time differs from the internally stored
   previous modification time.
   (https://bugs.launchpad.net/zope-cmf/+bug/325246)
 
-- TypeInformation: DCWorkflow instances define a method and a guard 
-  for vetoing object creation, but it was never used. Now  
-  TypeInformation objects will consult these guard conditions during 
+- TypeInformation: DCWorkflow instances define a method and a guard
+  for vetoing object creation, but it was never used. Now
+  TypeInformation objects will consult these guard conditions during
   object creation.
   (https://bugs.launchpad.net/zope-cmf/+bug/308947)
 
@@ -336,23 +336,23 @@ Products.CMFCore Changelog
 
 - FiveActionsTool: Removed the tool and all functionality for bridging
   between Zope 3-style menu items and CMF actions. The CMF has been going
-  a different route for a long time and the code is unused and 
+  a different route for a long time and the code is unused and
   unmaintained.
 
-- Actions: Added deprecation warnings to the ZMI actions tab and 
-  most listActions methods where old-style actions are found 
-  asking developers to move to new-style actions instead. These 
+- Actions: Added deprecation warnings to the ZMI actions tab and
+  most listActions methods where old-style actions are found
+  asking developers to move to new-style actions instead. These
   warnings allow us to remove old-style actions code by version 2.4.
 
-- Discussion tool: Removed the listActions method that would return 
+- Discussion tool: Removed the listActions method that would return
   a hardcoded Reply action. This action has been handled by the
-  Actions tool itself for a while now, and the Discussions tool was 
+  Actions tool itself for a while now, and the Discussions tool was
   not set as an action provider anymore.
 
-- actions tool export/import: The actions tool export/import mechanism 
+- actions tool export/import: The actions tool export/import mechanism
   is no longer attempting to handle actions stored on tools other than
   itself. Other tools are themselves responsible for their actions.
-  The importer has been fixed to add all action providers to the actions 
+  The importer has been fixed to add all action providers to the actions
   tool, not just a select list of providers we know about.
   (https://bugs.launchpad.net/zope-cmf/+bug/177675)
 
@@ -365,9 +365,9 @@ Products.CMFCore Changelog
   determine what the current user is allowed to see.
   (https://bugs.launchpad.net/zope-cmf/+bug/161729)
 
-- Properties export/import: Get the string encoding for property 
-  imports from the import context and fall back to UTF-8, which 
-  mirrors the behavior for exports. This fixes property export/import 
+- Properties export/import: Get the string encoding for property
+  imports from the import context and fall back to UTF-8, which
+  mirrors the behavior for exports. This fixes property export/import
   round tripping.
   (https://bugs.launchpad.net/zope-cmf/+bug/248853)
 
@@ -376,11 +376,11 @@ Products.CMFCore Changelog
 - Skinstool import: Fix imports that manipulate existing skins.
   (https://bugs.launchpad.net/zope-cmf/+bug/161732)
 
-- ActionInformation: extend the ActionInformation and ActionInfo classes 
+- ActionInformation: extend the ActionInformation and ActionInfo classes
   to support a icon URL just like the newer Action class already does
 
 - WorkflowTool: Passing the "magic" chain name "(Default)" to the
-  setChainForPortalTypes method did not set the chain to the default 
+  setChainForPortalTypes method did not set the chain to the default
   chain value as expected.
   (https://bugs.launchpad.net/zope-cmf/+bug/161702)
 
@@ -436,7 +436,7 @@ Products.CMFCore Changelog
 2.1.2 (2008-09-13)
 ------------------
 
-- fiveactionstool: fix typo in a method name that isn't even used in the CMF 
+- fiveactionstool: fix typo in a method name that isn't even used in the CMF
   or Plone.
   (https://bugs.launchpad.net/zope-cmf/+bug/257259)
 
@@ -508,7 +508,7 @@ Products.CMFCore Changelog
 - Add POST-only protections to security critical methods.
   http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0240)
 
-- exportimport.skins: Added the ability to remove whole skin selections using a 
+- exportimport.skins: Added the ability to remove whole skin selections using a
   GS profile.
   (http://www.zope.org/Collectors/CMF/479)
 
@@ -574,8 +574,8 @@ Products.CMFCore Changelog
   would take all user folders up to the Zope root into account whereas
   member area creation would not.
 
-- MembershipTool: when using an object without a __nonzero__ but with a 
-  __len__ (ala CMFBTreeFolder) as a member folder, the createMemberArea 
+- MembershipTool: when using an object without a __nonzero__ but with a
+  __len__ (ala CMFBTreeFolder) as a member folder, the createMemberArea
   method would believe there was no members folder if the folder was
   empty, and so would fail (change "not membersfolder" to
   "membersfolder is not None") .
@@ -670,4 +670,3 @@ Earlier releases
 For a complete list of changes before version 2.1.0-alpha, see the HISTORY.txt
 file on the CMF-2.1 branch:
 http://svn.zope.org/CMF/branches/2.1/HISTORY.txt?view=auto
-
