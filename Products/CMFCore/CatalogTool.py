@@ -49,6 +49,16 @@ from Products.CMFCore.utils import _mergedLocalRoles
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
+import os
+
+
+CATALOG_OPTIMIZATION_DISABLED = os.environ.get(
+    'CATALOG_OPTIMIZATION_DISABLED',
+    'false'
+)
+CATALOG_OPTIMIZATION_DISABLED = CATALOG_OPTIMIZATION_DISABLED.lower() in \
+    ('true', 't', 'yes', 'y', '1')
+
 
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 
@@ -281,17 +291,23 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     security.declarePrivate('indexObject')
     def indexObject(self, object):
-        obj = filterTemporaryItems(object)
-        indexer = getQueue()
-        if obj is not None and indexer is not None:
-            indexer.index(obj)
+        if not CATALOG_OPTIMIZATION_DISABLED:
+            obj = filterTemporaryItems(object)
+            indexer = getQueue()
+            if obj is not None and indexer is not None:
+                indexer.index(obj)
+        else:
+            self._indexObject(object)
 
     security.declarePrivate('unindexObject')
     def unindexObject(self, object):
-        obj = filterTemporaryItems(object, checkId=False)
-        indexer = getQueue()
-        if obj is not None and indexer is not None:
-            indexer.unindex(obj)
+        if not CATALOG_OPTIMIZATION_DISABLED:
+            obj = filterTemporaryItems(object, checkId=False)
+            indexer = getQueue()
+            if obj is not None and indexer is not None:
+                indexer.unindex(obj)
+        else:
+            self._unindexObject(object)
 
     security.declarePrivate('reindexObject')
     def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
@@ -299,12 +315,21 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # of the object for the "reindex all" case.  unfortunately, some other
         # packages like `CMFEditions` check that date to see if the object was
         # modified during the request, which fails when it's only set on commit
-        if idxs in (None, []) and hasattr(aq_base(object), 'notifyModified'):
-            self.notifyModified()
-        obj = filterTemporaryItems(object)
-        indexer = getQueue()
-        if obj is not None and indexer is not None:
-            indexer.reindex(obj, idxs, update_metadata=update_metadata)
+        if not CATALOG_OPTIMIZATION_DISABLED:
+            if idxs in (None, []) and \
+                    hasattr(aq_base(object), 'notifyModified'):
+                self.notifyModified()
+            obj = filterTemporaryItems(object)
+            indexer = getQueue()
+            if obj is not None and indexer is not None:
+                indexer.reindex(obj, idxs, update_metadata=update_metadata)
+        else:
+            self._reindexObject(
+                object,
+                idxs=idxs,
+                update_metadata=update_metadata,
+                uid=uid
+            )
 
     security.declarePrivate('_indexObject')
     def _indexObject(self, object):
