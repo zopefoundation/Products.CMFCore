@@ -261,7 +261,7 @@ class MemberData(SimpleItem):
         bcontext = aq_base(parent)
         bcontainer = aq_base(aq_parent(aq_inner(self)))
         if bcontext is bcontainer or not hasattr(bcontext, 'getUserName'):
-            raise 'MemberDataError', "Can't find user data"
+            raise ValueError("Can't find user data")
         # Return the user object, which is our context.
         return parent
 
