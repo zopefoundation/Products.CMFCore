@@ -4,7 +4,12 @@ Products.CMFCore Changelog
 2.2.11 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fixed TypeError for too old style exception in
+  ``MemberData.getUser`` method.  When the exception was raised, on
+  Python 2.6 or higher you would get: "TypeError: exceptions must be
+  old-style classes or derived from BaseException, not str."
+  Instead, we now raise a proper ValueError.
+  [maurits]
 
 
 2.2.10 (2015-09-11)

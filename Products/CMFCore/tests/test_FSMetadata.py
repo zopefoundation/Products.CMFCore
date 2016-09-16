@@ -24,7 +24,7 @@ class FSMetadata(FSSecurityBase):
         # Test proxy roles on the object
         for role in roles:
             if not obj.manage_haveProxy(role):
-                raise 'Object does not have the "%s" role' % role
+                raise ValueError('Object does not have the "%s" role' % role)
 
     def test_basicPermissions(self):
         # Test basic FS permissions
