@@ -187,9 +187,9 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
         self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
 def test_suite():
-    import Globals # for data
+    from App.config import getConfiguration  # for data
     tests = [unittest.makeSuite(FSSecurityTests)]
-    if Globals.DevelopmentMode:
+    if getConfiguration().debug_mode:
         tests.append(unittest.makeSuite(DebugModeTests))
 
     return unittest.TestSuite(tests)

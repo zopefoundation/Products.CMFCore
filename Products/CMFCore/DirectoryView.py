@@ -160,8 +160,8 @@ class DirectoryInformation:
         return types
 
     def _changed(self):
-        import Globals  # for data
-        if not Globals.DevelopmentMode:
+        from App.config import getConfiguration  # for data
+        if not getConfiguration().debug_mode:
             return 0
         mtime=0
         filelist=[]

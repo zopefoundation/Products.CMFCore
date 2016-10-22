@@ -18,7 +18,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-import Globals # for data
+from App.config import getConfiguration  # for data
 from Products.ZSQLMethods.SQL import SQL
 
 from Products.CMFCore.DirectoryView import registerFileExtension
@@ -132,7 +132,7 @@ class FSZSQLMethod(SQL, FSObject):
         # do we need to do anything on reparse?
 
 
-    if Globals.DevelopmentMode:
+    if getConfiguration().debug_mode:
         # Provide an opportunity to update the properties.
         def __of__(self, parent):
             try:

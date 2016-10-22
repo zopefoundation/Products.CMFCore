@@ -367,13 +367,13 @@ class DebugModeTests(WritableFSDVTest):
 
 
 def test_suite():
-    import Globals # for data
+    from App.config import getConfiguration  # for data
     tests = [unittest.makeSuite(DirectoryViewPathTests),
              unittest.makeSuite(DirectoryViewTests),
              unittest.makeSuite(DirectoryViewIgnoreTests),
              unittest.makeSuite(DirectoryViewFolderTests),
             ]
-    if Globals.DevelopmentMode:
+    if getConfiguration().debug_mode:
         tests.append(unittest.makeSuite(DebugModeTests))
     return unittest.TestSuite(tests)
 

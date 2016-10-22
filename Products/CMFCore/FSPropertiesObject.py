@@ -16,7 +16,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-import Globals  # for data
+from App.config import getConfiguration  # for data
 from OFS.Folder import Folder
 from OFS.PropertyManager import PropertyManager
 from ZPublisher.Converters import get_converter
@@ -130,7 +130,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
                                   % (lino,self._filepath,line) )
         self._properties = tuple(map)
 
-    if Globals.DevelopmentMode:
+    if getConfiguration().debug_mode:
         # Provide an opportunity to update the properties.
         def __of__(self, parent):
             self = ImplicitAcquisitionWrapper(self, parent)

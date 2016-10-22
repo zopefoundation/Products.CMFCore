@@ -169,9 +169,9 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
     # Refresh our contents from the filesystem if that is newer and we are
     # running in debug mode.
     def _updateFromFS(self):
-        import Globals # for data
+        from App.config import getConfiguration  # for data
         parsed = self._parsed
-        if not parsed or Globals.DevelopmentMode:
+        if not parsed or getConfiguration().debug_mode:
             try:
                 mtime = os.stat(self._filepath)[8]
             except:
