@@ -116,7 +116,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
                             if charset is None:
                                 charset = charsetFromMetaEquiv(data)
-                                
+
                         elif self.content_type.startswith('text/xml'):
                             charset = encodingFromXMLPreamble(data)
 
@@ -259,8 +259,6 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     document_src = ZopePageTemplate.document_src.im_func
 
     pt_getContext = ZopePageTemplate.pt_getContext.im_func
-
-    ZScriptHTML_tryParams = ZopePageTemplate.ZScriptHTML_tryParams.im_func
 
     source_dot_xml = Src()
 

@@ -198,9 +198,6 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     security.declareProtected(ViewManagementScreens, 'document_src')
     document_src = DTMLMethod.document_src.im_func
 
-    security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
-    manage_haveProxy = DTMLMethod.manage_haveProxy.im_func
-
 InitializeClass(FSDTMLMethod)
 
 registerFileExtension('dtml', FSDTMLMethod)
