@@ -7,6 +7,8 @@ Products.CMFCore Changelog
 - Make sure RegistrationTool.addMember is not published
   [vangheem]
 
+- Don't fail on catalog inconsistency when doing `reindexObjectSecurity`
+  [tomgross]
 
 2.3.0 (2015-02-20)
 ------------------
