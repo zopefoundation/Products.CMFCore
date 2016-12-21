@@ -52,7 +52,7 @@ setup(name='Products.%s' % NAME,
           'Products.BTreeFolder2',
           'Products.GenericSetup',
           'Products.MailHost',
-          'Products.PythonScripts',
+          'Products.PythonScripts <= 3.999',
           'Products.ZSQLMethods',
           ],
       tests_require=[
