@@ -108,7 +108,11 @@ class CatalogAware(Base):
             if brain_path == path and skip_self:
                 continue
             # Get the object
-            ob = brain._unrestrictedGetObject()
+            try:
+                ob = brain._unrestrictedGetObject()
+            except (AttributeError, KeyError):
+                # don't fail on catalog inconsistency
+                continue
             if ob is None:
                 # BBB: Ignore old references to deleted objects.
                 # Can happen only when using
