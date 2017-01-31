@@ -45,6 +45,6 @@ class AddViewTraverser(object):
                 add_view = queryMultiAdapter((self.context, self.request, ti))
             if add_view is not None:
                 add_view.__name__ = ti.factory
-                return add_view.__of__(self.context)
+                return add_view
 
         raise TraversalError(self.context, name)
