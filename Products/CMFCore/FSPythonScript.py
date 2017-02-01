@@ -190,30 +190,30 @@ class FSPythonScript(FSObject, Script):
         if compile:
             ps._makeFunction()
             self._v_ft = ps._v_ft
-            self.func_code = ps.func_code
-            self.func_defaults = ps.func_defaults
+            self.__code__ = ps.__code__
+            self.__defaults__ = ps.__defaults__
         self._body = ps._body
         self._params = ps._params
         self.title = ps.title
         self._setupBindings(ps.getBindingAssignments().getAssignedNames())
         self._source = ps.read()  # Find out what the script sees.
 
-    def func_defaults(self):
-        # This ensures func_code and func_defaults are
+    def __defaults__(self):
+        # This ensures __code__ and __defaults__ are
         # set when the code hasn't been compiled yet,
         # just in time for mapply().  Truly odd, but so is mapply(). :P
         self._updateFromFS()
-        return self.__dict__.get('func_defaults', None)
-    func_defaults = ComputedAttribute(func_defaults, 1)
+        return self.__dict__.get('__defaults__', None)
+    __defaults__ = ComputedAttribute(__defaults__, 1)
 
-    def func_code(self):
-        # See func_defaults.
+    def __code__(self):
+        # See __defaults__.
         self._updateFromFS()
-        return self.__dict__.get('func_code', None)
-    func_code = ComputedAttribute(func_code, 1)
+        return self.__dict__.get('__code__', None)
+    __code__ = ComputedAttribute(__code__, 1)
 
     def title(self):
-        # See func_defaults.
+        # See __defaults__.
         self._updateFromFS()
         return self.__dict__.get('title', None)
     title = ComputedAttribute(title, 1)
