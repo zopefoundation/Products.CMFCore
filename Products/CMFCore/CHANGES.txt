@@ -6,7 +6,8 @@ Products.CMFCore Changelog
 
 Breaking changes:
 
-- *add item here*
+- Remove backwards compatibility for Zope 2.12
+  [davisagli]
 
 New features:
 
@@ -39,7 +40,6 @@ Bug fixes:
   Set it to ``true``, i.e. ``export CATALOG_OPTIMIZATION_DISABLED=true`` before running tests.
   Part of PLIP 1343: https://github.com/plone/Products.CMFPlone/issues/1343
   [gforcada]
-
 
 2.2.10 (2015-09-11)
 -------------------

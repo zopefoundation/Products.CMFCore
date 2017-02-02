@@ -46,7 +46,7 @@ setup(name='Products.%s' % NAME,
                      ],
       install_requires=[
           'setuptools',
-          'Zope2 > 2.12.8',
+          'Zope2 > 2.13.0',
           'five.localsitemanager',
           'Products.GenericSetup',
           'Products.ZSQLMethods',
