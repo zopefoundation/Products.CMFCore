@@ -272,7 +272,7 @@ def filterTemporaryItems(obj, checkId=True):
             if obj.isTemporary():
                 return None
         except TypeError:
-            return None # `isTemporary` on the `FactoryTool` expects 2 args
+            return None  # `isTemporary` on the `FactoryTool` expects 2 args
     return obj
 
 
@@ -299,14 +299,10 @@ class QueueTM(local):
 
     def register(self):
         if not self.registered:
-            try:
-                transaction = getTransaction()
-                transaction.join(self)
-                transaction.addBeforeCommitHook(self.before_commit)
-                self.registered = True
-            except Exception:
-                logger.exception('Exception during register (registered=%s)',
-                    self.registered)
+            transaction = getTransaction()
+            transaction.join(self)
+            transaction.addBeforeCommitHook(self.before_commit)
+            self.registered = True
 
     def savepoint(self):
         return QueueSavepoint(self.queue)
