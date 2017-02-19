@@ -28,6 +28,8 @@ processing = set()
 
 @implementer(IPortalCatalogQueueProcessor)
 class PortalCatalogProcessor(object):
+    """An index queue processor for the standard portal catalog via
+       the `CatalogMultiplex` and `CMFCatalogAware` mixin classes """
 
     def index(self, obj, attributes=None):
         catalog = getToolByName(obj, 'portal_catalog', None)
@@ -35,11 +37,17 @@ class PortalCatalogProcessor(object):
 
     def reindex(self, obj, attributes=None, update_metadata=1):
         catalog = getToolByName(obj, 'portal_catalog', None)
-        catalog._reindexObject(obj, idxs=attributes, update_metadata=update_metadata)
+        if catalog is not None:
+            catalog._reindexObject(
+                obj,
+                idxs=attributes,
+                update_metadata=update_metadata
+            )
 
     def unindex(self, obj):
         catalog = getToolByName(obj, 'portal_catalog', None)
-        catalog._unindexObject(obj)
+        if catalog is not None:
+            catalog._unindexObject(obj)
 
     def begin(self):
         pass
@@ -57,10 +65,9 @@ class PortalCatalogProcessor(object):
         if catalog is None:
             return
         attr = getattr(catalog, '_{0}'.format(name), None)
-        if attr is not None:
-            method = attr.im_func
-            return method
-        return
+        if attr is None:
+            return
+        return attr.im_func
 
 
 def getQueue():
@@ -75,7 +82,7 @@ def processQueue():
     """ process the queue (for this thread) immediately """
     queue = getQueue()
     processed = 0
-    if queue.length() and not queue in processing:
+    if queue.length() and queue not in processing:
         debug('auto-flushing %d items: %r', queue.length(), queue.getState())
         try:
             processing.add(queue)
@@ -101,10 +108,13 @@ def wrap(obj):
     class PathWrapper(obj.__class__):
 
         def __init__(self):
-            self.__dict__.update(dict(
-                context = obj,
-                path = obj.getPhysicalPath(),
-                REQUEST = getattr(obj, 'REQUEST', None)))
+            self.__dict__.update(
+                dict(
+                    context=obj,
+                    path=obj.getPhysicalPath(),
+                    REQUEST=getattr(obj, 'REQUEST', None)
+                )
+            )
 
         def __getattr__(self, name):
             return getattr(aq_inner(self.context), name)
@@ -150,10 +160,10 @@ class IndexQueue(local):
         self.tmhook = hook
 
     def getState(self):
-        return list(self.queue)     # better return a copy... :)
+        return self.queue[:]
 
     def setState(self, state):
-        self.queue = state
+        self.queue[:] = state
 
     def length(self):
         """ return number of currently queued items;  please note that
@@ -164,18 +174,18 @@ class IndexQueue(local):
     def optimize(self):
         res = {}
         for iop, obj, iattr, imetadata in self.getState():
-            oid = hash(obj)
+            hash_id = hash(obj)
             func = getattr(obj, 'getPhysicalPath', None)
             if callable(func):
-                oid = oid, func()
+                hash_id = hash_id, func()
             op, dummy, attr, metadata = res.get(
-                oid,
+                hash_id,
                 (0, obj, iattr, imetadata)
             )
             # If we are going to delete an item that was added in this
             # transaction, ignore it
             if op == INDEX and iop == UNINDEX:
-                del res[oid]
+                del res[hash_id]
             else:
                 # Operators are -1, 0 or 1 which makes it safe to add them
                 op += iop
@@ -193,7 +203,7 @@ class IndexQueue(local):
                 if imetadata == 1 or metadata == 1:
                     metadata = 1
 
-                res[oid] = (op, obj, attr, metadata)
+                res[hash_id] = (op, obj, attr, metadata)
 
         debug('finished reducing; %d item(s) in queue...', len(res))
         # Sort so unindex operations come first
@@ -203,7 +213,6 @@ class IndexQueue(local):
         self.optimize()
         if not self.queue:
             return 0
-        self.queue = sorted(self.queue)
         sm = getSiteManager()
         utilities = list(sm.getUtilitiesFor(IIndexQueueProcessor))
         processed = 0

@@ -38,7 +38,9 @@ class MockIndexer(object):
 class MockQueue(MockIndexer):
 
     processed = None
-    hook = lambda self: 42
+
+    def hook(self):
+        pass
 
     def index(self, obj, attributes=None):
         super(MockQueue, self).index(obj, attributes)
