@@ -35,16 +35,16 @@ from zope.lifecycleevent import ObjectModifiedEvent, Attributes
 
 def objectAdded(ev):
     obj = filterTemporaryItems(ev.object)
-    indexer = getQueue()
-    if obj is not None and indexer is not None:
+    if obj is not None:
+        indexer = getQueue()
         indexer.index(obj)
 
 
 def objectModified(ev):
     obj = filterTemporaryItems(ev.object)
-    indexer = getQueue()
-    if obj is None or indexer is None:
+    if obj is None:
         return
+    indexer = getQueue()
     if getattr(ev, 'descriptions', None):   # not used by archetypes/plone atm
         # build the list of to be updated attributes
         attrs = []
@@ -65,8 +65,8 @@ def objectCopied(ev):
 
 def objectRemoved(ev):
     obj = filterTemporaryItems(ev.object, checkId=False)
-    indexer = getQueue()
-    if obj is not None and indexer is not None:
+    if obj is not None:
+        indexer = getQueue()
         indexer.unindex(obj)
 
 
@@ -79,7 +79,8 @@ def objectMoved(ev):
         dispatchToSublocations(ev.object, ev)
     obj = filterTemporaryItems(ev.object)
     indexer = getQueue()
-    if obj is not None and indexer is not None:
+    if obj is not None:
+        indexer = getQueue()
         indexer.index(obj)
 
 
@@ -92,6 +93,6 @@ def dispatchObjectMovedEvent(ob, ev):
 
 def objectTransitioned(ev):
     obj = filterTemporaryItems(ev.object)
-    indexer = getQueue()
-    if obj is not None and indexer is not None:
+    if obj is not None:
+        indexer = getQueue()
         indexer.reindex(obj)

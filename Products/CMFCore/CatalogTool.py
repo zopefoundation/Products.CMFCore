@@ -293,8 +293,8 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     def indexObject(self, object):
         if not CATALOG_OPTIMIZATION_DISABLED:
             obj = filterTemporaryItems(object)
-            indexer = getQueue()
-            if obj is not None and indexer is not None:
+            if obj is not None:
+                indexer = getQueue()
                 indexer.index(obj)
         else:
             self._indexObject(object)
@@ -303,8 +303,8 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     def unindexObject(self, object):
         if not CATALOG_OPTIMIZATION_DISABLED:
             obj = filterTemporaryItems(object, checkId=False)
-            indexer = getQueue()
-            if obj is not None and indexer is not None:
+            if obj is not None:
+                indexer = getQueue()
                 indexer.unindex(obj)
         else:
             self._unindexObject(object)
@@ -320,8 +320,8 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                     hasattr(aq_base(object), 'notifyModified'):
                 self.notifyModified()
             obj = filterTemporaryItems(object)
-            indexer = getQueue()
-            if obj is not None and indexer is not None:
+            if obj is not None:
+                indexer = getQueue()
                 indexer.reindex(obj, idxs, update_metadata=update_metadata)
         else:
             self._reindexObject(
