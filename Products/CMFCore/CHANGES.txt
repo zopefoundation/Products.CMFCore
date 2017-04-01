@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.11 (unreleased)
+2.2.11 (2017-04-01)
 -------------------
 
 - Fixed TypeError for too old style exception in
