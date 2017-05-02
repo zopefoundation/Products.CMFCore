@@ -262,8 +262,6 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
     pt_getContext = ZopePageTemplate.pt_getContext.im_func
 
-    ZScriptHTML_tryParams = ZopePageTemplate.ZScriptHTML_tryParams.im_func
-
     source_dot_xml = Src()
 
 setattr(FSPageTemplate, 'source.xml', FSPageTemplate.source_dot_xml)
