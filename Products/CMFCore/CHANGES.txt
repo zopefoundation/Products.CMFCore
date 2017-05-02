@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.3.1 (unreleased)
 ------------------
 
+- Removed docstrings from some methods to avoid publishing them.  From
+  Products.PloneHotfix20160419.  [maurits]
+
 - Make sure RegistrationTool.addMember is not published
   [vangheem]
 

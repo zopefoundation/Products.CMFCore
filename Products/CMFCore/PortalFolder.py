@@ -89,8 +89,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
     security.declareProtected(View, 'Type')
     def Type(self):
-        """ Dublin Core Type element - resource type.
-        """
+        # Dublin Core Type element - resource type.
         ti = self.getTypeInfo()
         return ti is not None and ti.Title() or 'Unknown'
 
