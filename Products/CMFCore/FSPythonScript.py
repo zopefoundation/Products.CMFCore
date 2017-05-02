@@ -82,9 +82,7 @@ class FSPythonScript(FSObject, Script):
     _owner = None  # Unowned
 
     manage_options = (
-        {'label': 'Customize', 'action': 'manage_main'},
-        {'label': 'Test', 'action': 'ZScriptHTML_tryForm',
-         'help': ('PythonScripts', 'PythonScript_test.stx')})
+        {'label': 'Customize', 'action': 'manage_main'},)
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -130,9 +128,6 @@ class FSPythonScript(FSObject, Script):
 
     security.declareProtected(ViewManagementScreens, 'getModTime')
     # getModTime defined in FSObject
-
-    security.declareProtected(ViewManagementScreens, 'ZScriptHTML_tryForm')
-    # ZScriptHTML_tryForm defined in Shared.DC.Scripts.Script.Script
 
     def ZScriptHTML_tryParams(self):
         """Parameters to test the script with."""
