@@ -101,7 +101,10 @@ class TypesToolFunctionalTests(SecurityTest):
         # all typeinfo's returned by allMetaTypes can be traversed to.
         from Acquisition import aq_base
         from Products.CMFCore.interfaces import ITypeInformation
-        from webdav.NullResource import NullResource
+        try:
+            from webdav.NullResource import NullResource
+        except ImportError:
+            NullResource = object()
         site = self._makeSite().__of__(self.app)
         tool = self._makeOne().__of__(site)
         meta_types = {}
