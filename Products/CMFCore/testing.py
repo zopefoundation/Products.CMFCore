@@ -30,16 +30,25 @@ from Products.GenericSetup.utils import BodyAdapterBase
 
 class ConformsToFolder:
 
-    def test_folder_interfaces(self):
-        from webdav.interfaces import IWriteLock
-        from Products.CMFCore.interfaces import IDynamicType
-        from Products.CMFCore.interfaces import IFolderish
-        from Products.CMFCore.interfaces import IMutableMinimalDublinCore
+    def test_conforms_to_IWritelock(self):
+        try:
+            from webdav.interfaces import IWriteLock
+        except ImportError:
+            self.skipTest("'webdav' not importable.")
+        else:
+            verifyClass(IWriteLock, self._getTargetClass())
 
+    def test_conforms_to_IDynamicType(self):
+        from Products.CMFCore.interfaces import IDynamicType
         verifyClass(IDynamicType, self._getTargetClass())
+
+    def test_conforms_to_IFolderish(self):
+        from Products.CMFCore.interfaces import IFolderish
         verifyClass(IFolderish, self._getTargetClass())
+
+    def test_conforms_to_IMutableDublinCore(self):
+        from Products.CMFCore.interfaces import IMutableMinimalDublinCore
         verifyClass(IMutableMinimalDublinCore, self._getTargetClass())
-        verifyClass(IWriteLock, self._getTargetClass())
 
     def test_folder_extra_interfaces(self):
         # in the long run this interface will become deprecated

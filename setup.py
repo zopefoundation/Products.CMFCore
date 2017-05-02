@@ -60,10 +60,10 @@ setup(name='Products.%s' % NAME,
           'zope.testing >= 3.7.0',
           'Products.StandardCacheManagers',
           ],
-      extras_require=dict(
-        test=[
-          'Products.StandardCacheManagers',
-          ]),
+      extras_require={
+          'test': ['Products.StandardCacheManagers'],
+          'webdav': ['ZServer'],
+          },
       test_loader='zope.testing.testrunner.eggsupport:SkipLayers',
       test_suite='Products.%s' % NAME,
       entry_points="""
