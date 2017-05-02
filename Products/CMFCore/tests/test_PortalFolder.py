@@ -1122,8 +1122,7 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         cookie = folder1.manage_cutObjects(ids=('file',))
         self._assertCopyErrorUnauth(folder2.manage_pasteObjects, cookie,
-                                    ce_regex='Insufficient Privileges'
-                                            + '.*%s' % ADD_IMAGES_AND_FILES)
+                                    ce_regex='Insufficient privileges')
 
     def test_move_cant_delete_source(self):
         from AccessControl.Permissions import delete_objects as DeleteObjects

@@ -53,8 +53,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     _owner = None  # Unowned
 
     manage_options = (
-        {'label': 'Customize', 'action': 'manage_main'},
-        {'label': 'Test', 'action': 'ZScriptHTML_tryForm'})
+        {'label': 'Customize', 'action': 'manage_main'},)
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
