@@ -4,16 +4,6 @@ Products.CMFCore Changelog
 2.3.1 (unreleased)
 ------------------
 
-- Make imports of 'webdav' conditional.
-
-  Zope4 moves WebDAV support out to the newly-optional ``ZServer`` dependency.
-  This PR aims to make CMFCore work there whether or not ``ZServer`` is
-  installed.
-
-  It adds a ``webdav`` extra to allow downstream projects to signal explicitly
-  that they need that support.
-  [tseaver]
-
 - Make sure RegistrationTool.addMember is not published
   [vangheem]
 

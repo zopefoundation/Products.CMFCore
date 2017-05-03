@@ -18,6 +18,7 @@ import unittest
 import warnings
 
 from AccessControl.Permission import Permission
+from OFS import bbb
 from zope.component import getSiteManager
 
 from Products.CMFCore.interfaces import IWorkflowTool
@@ -101,9 +102,9 @@ class TypesToolFunctionalTests(SecurityTest):
         # all typeinfo's returned by allMetaTypes can be traversed to.
         from Acquisition import aq_base
         from Products.CMFCore.interfaces import ITypeInformation
-        try:
+        if bbb.HAS_ZSERVER:
             from webdav.NullResource import NullResource
-        except ImportError:
+        else:
             NullResource = object()
         site = self._makeSite().__of__(self.app)
         tool = self._makeOne().__of__(site)

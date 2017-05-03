@@ -32,11 +32,10 @@ class ConformsToFolder:
 
     def test_conforms_to_IWritelock(self):
         try:
-            from webdav.interfaces import IWriteLock
+            from OFS.interfaces import IWriteLock
         except ImportError:
-            self.skipTest("'webdav' not importable.")
-        else:
-            verifyClass(IWriteLock, self._getTargetClass())
+            from webdav.interfaces import IWriteLock
+        verifyClass(IWriteLock, self._getTargetClass())
 
     def test_conforms_to_IDynamicType(self):
         from Products.CMFCore.interfaces import IDynamicType

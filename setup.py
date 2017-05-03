@@ -63,7 +63,6 @@ setup(name='Products.%s' % NAME,
           ],
       extras_require={
           'test': ['Products.StandardCacheManagers'],
-          'webdav': ['ZServer'],
           },
       test_loader='zope.testing.testrunner.eggsupport:SkipLayers',
       test_suite='Products.%s' % NAME,
