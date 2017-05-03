@@ -98,7 +98,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     index_html = None # Prevent accidental acquisition
 
     # Documents masquerade as functions:
-    __code__ = DTMLMethod.__code__
+    func_code = DTMLMethod.func_code
 
     default_content_type = 'text/html'
 
