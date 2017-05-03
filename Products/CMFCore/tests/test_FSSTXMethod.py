@@ -84,7 +84,6 @@ class _TemplateSwitcher:
     def tearDown(self):
         TransactionalTest.tearDown(self)
         FSSTXMaker.tearDown(self)
-        self._setWhichTemplate(self._old_STX_TEMPLATE)
 
     def _setWhichTemplate(self, which):
         import Products.CMFCore.FSSTXMethod
