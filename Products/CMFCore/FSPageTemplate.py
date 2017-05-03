@@ -19,6 +19,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
+from OFS import bbb
 from Products.PageTemplates.PageTemplate import PageTemplate
 from Products.PageTemplates.utils import charsetFromMetaEquiv
 from Products.PageTemplates.utils import encodingFromXMLPreamble
@@ -246,8 +247,9 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return result
 
     # Copy over more methods
-    security.declareProtected(FTPAccess, 'manage_FTPget')
-    manage_FTPget = ZopePageTemplate.manage_FTPget.im_func
+    if bbb.HAS_ZSERVER:
+        security.declareProtected(FTPAccess, 'manage_FTPget')
+        manage_FTPget = ZopePageTemplate.manage_FTPget.im_func
 
     security.declareProtected(View, 'get_size')
     get_size = ZopePageTemplate.get_size.im_func

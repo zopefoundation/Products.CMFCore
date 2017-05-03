@@ -19,6 +19,7 @@ from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from App.special_dtml import HTML
 from DocumentTemplate.security import RestrictedDTML
+from OFS import bbb
 from OFS.DTMLMethod import DTMLMethod, decapitate, guess_content_type
 from OFS.role import RoleManager
 
@@ -183,8 +184,9 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     def validate(self, inst, parent, name, value, md=None):
         return getSecurityManager().validate(inst, parent, name, value)
 
-    security.declareProtected(FTPAccess, 'manage_FTPget')
-    manage_FTPget = DTMLMethod.manage_FTPget.im_func
+    if bbb.HAS_ZSERVER:
+        security.declareProtected(FTPAccess, 'manage_FTPget')
+        manage_FTPget = DTMLMethod.manage_FTPget.im_func
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
     PrincipiaSearchSource = DTMLMethod.PrincipiaSearchSource.im_func
