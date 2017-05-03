@@ -13,6 +13,7 @@
 """ Unit test mixin classes and layers.
 """
 
+from OFS import bbb
 from OFS.SimpleItem import SimpleItem
 from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import adapts
@@ -68,10 +69,11 @@ class ConformsToContent:
 
         verifyClass(ICatalogableDublinCore, self._getTargetClass())
         verifyClass(IContentish, self._getTargetClass())
-        verifyClass(IDAVAware, self._getTargetClass())
         verifyClass(IDublinCore, self._getTargetClass())
         verifyClass(IDynamicType, self._getTargetClass())
         verifyClass(IMutableDublinCore, self._getTargetClass())
+        if bbb.HAS_ZSERVER:
+            verifyClass(IDAVAware, self._getTargetClass())
 
     def test_content_extra_interfaces(self):
         # in the long run these interfaces will become deprecated
