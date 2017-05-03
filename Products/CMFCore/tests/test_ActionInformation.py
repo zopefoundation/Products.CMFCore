@@ -96,6 +96,32 @@ class ActionTests(unittest.TestCase):
                   ['url', 'icon'])
         self.assertEqual(a.getInfoData(), WANTED)
 
+    def test_manage_propertiesForm_allows_adding(self):
+        from OFS.SimpleItem import SimpleItem
+
+        def _header(*args, **kw):
+            return 'HEADER'
+
+        def _footer(*args, **kw):
+            return 'HEADER'
+
+        container = SimpleItem()
+
+        container.REQUEST = request = DummyRequest()
+        request.set('manage_page_header', _header)
+        request.set('manage_page_footer', _footer)
+        request.set('BASEPATH1', '/one/two')
+        setattr(request, 'URL1', '/one/two')
+        request._steps = ['one', 'two']
+
+        prd = {'ac_permissions': ('a', 'b')}
+        container._getProductRegistryData = prd.get
+
+        a = self._makeOne('extensible').__of__(container)
+        form_html = a.manage_propertiesForm(request)
+
+        self.assertTrue('value=" Add "' in form_html)
+
     def test_clearExprObjects(self):
         """When a *_expr property is set, a *_expr_object attribute is
         also set which should also be cleared when the *_expr is
