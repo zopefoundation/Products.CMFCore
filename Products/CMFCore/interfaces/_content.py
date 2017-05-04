@@ -523,7 +523,7 @@ class IDynamicType(Interface):
           appropriate icon for the items found in the folder.
 
         o If the content item does not define an attribute named "icon"
-          return a "default" icon path (e.g., '/misc_/dtmldoc.gif', which is
+          return a "default" icon path (e.g., ``/misc_/dtmldoc.gif``, which is
           the icon used for DTML Documents).
 
         o Permission:  Public
