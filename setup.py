@@ -20,7 +20,7 @@ README = ( _package_doc('README.txt')
          )
 
 setup(name='Products.%s' % NAME,
-      version='3.0.0.dev0',
+      version='2.4.0.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
