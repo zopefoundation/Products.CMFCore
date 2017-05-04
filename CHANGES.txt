@@ -7,6 +7,8 @@ Products.CMFCore Changelog
 - use zope.interface.implementer decorator instead of 
   zope.interface.implements
 
+- use security declaration decorator notation where possible
+
 
 2.4.0b1 (2017-05-04)
 --------------------
