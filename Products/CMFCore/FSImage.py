@@ -87,9 +87,9 @@ class FSImage(FSObject):
 
     #### The following is mainly taken from OFS/Image.py ###
 
-    __str__ = Image.__str__.im_func
+    __str__ = Image.__str__.__func__
 
-    _image_tag = Image.tag.im_func
+    _image_tag = Image.tag.__func__
     security.declareProtected(View, 'tag')
     def tag(self, *args, **kw):
         # Hook into an opportunity to reload metadata.

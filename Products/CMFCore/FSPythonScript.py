@@ -124,7 +124,7 @@ class FSPythonScript(FSObject, Script):
         self._updateFromFS()
         return Script.__call__(self, *args, **kw)
 
-    _exec = PythonScript._exec.im_func
+    _exec = PythonScript._exec.__func__
 
     security.declareProtected(ViewManagementScreens, 'getModTime')
     # getModTime defined in FSObject
@@ -161,7 +161,7 @@ class FSPythonScript(FSObject, Script):
         return self._params
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
-    manage_haveProxy = PythonScript.manage_haveProxy.im_func
+    manage_haveProxy = PythonScript.manage_haveProxy.__func__
 
     security.declareProtected(ViewManagementScreens, 'body')
     def body(self):

@@ -186,16 +186,16 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
 
     if bbb.HAS_ZSERVER:
         security.declareProtected(FTPAccess, 'manage_FTPget')
-        manage_FTPget = DTMLMethod.manage_FTPget.im_func
+        manage_FTPget = DTMLMethod.manage_FTPget.__func__
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = DTMLMethod.PrincipiaSearchSource.im_func
+    PrincipiaSearchSource = DTMLMethod.PrincipiaSearchSource.__func__
 
     security.declareProtected(ViewManagementScreens, 'document_src')
-    document_src = DTMLMethod.document_src.im_func
+    document_src = DTMLMethod.document_src.__func__
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
-    manage_haveProxy = DTMLMethod.manage_haveProxy.im_func
+    manage_haveProxy = DTMLMethod.manage_haveProxy.__func__
 
 InitializeClass(FSDTMLMethod)
 
