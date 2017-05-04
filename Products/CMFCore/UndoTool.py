@@ -56,7 +56,7 @@ class UndoTool(UniqueObject, SimpleItem):
     #
     #   'IUndoTool' interface methods
     #
-    security.declareProtected(ListUndoableChanges, 'listUndoableTransactionsFor')
+    @security.protected(ListUndoableChanges)
     def listUndoableTransactionsFor(self, object,
                                     first_transaction=None,
                                     last_transaction=None,

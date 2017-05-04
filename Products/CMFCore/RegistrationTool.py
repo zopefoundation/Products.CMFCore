@@ -68,7 +68,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
     security.declareProtected(ManagePortal, 'manage_configuration')
     manage_configuration = DTMLFile('configureRegistrationTool', _dtmldir)
 
-    security.declareProtected(ManagePortal, 'manage_editIDPattern')
+    @security.protected(ManagePortal)
     def manage_editIDPattern(self, pattern, REQUEST=None):
         """Edit the allowable member ID pattern TTW"""
         pattern.strip()
@@ -85,12 +85,12 @@ class RegistrationTool(UniqueObject, SimpleItem):
             msg = 'Member ID Pattern changed'
             return self.manage_configuration(manage_tabs_message=msg)
 
-    security.declareProtected(ManagePortal, 'getIDPattern')
+    @security.protected(ManagePortal)
     def getIDPattern(self):
         """ Return the currently-used member ID pattern """
         return self.member_id_pattern
 
-    security.declareProtected(ManagePortal, 'getDefaultIDPattern')
+    @security.protected(ManagePortal)
     def getDefaultIDPattern(self):
         """ Return the currently-used member ID pattern """
         return self.default_member_id_pattern
@@ -128,7 +128,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
         chars = 'ABCDEFGHJKLMNPRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'
         return ''.join( [ choice(chars) for i in range(6) ] )
 
-    security.declareProtected(AddPortalMember, 'addMember')
+    @security.protected(AddPortalMember)
     def addMember(self, id, password, roles=('Member',), domains='',
                   properties=None, REQUEST=None):
         # XXX Do not make this a normal method comment. Doing so makes
@@ -166,7 +166,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
         self.afterAdd(member, id, password, properties)
         return member
 
-    security.declareProtected(AddPortalMember, 'isMemberIdAllowed')
+    @security.protected(AddPortalMember)
     def isMemberIdAllowed(self, id):
         '''Returns 1 if the ID is not in use and is not reserved.
         '''
@@ -185,7 +185,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
         after a member has been added successfully.'''
         pass
 
-    security.declareProtected(MailForgottenPassword, 'mailPassword')
+    @security.protected(MailForgottenPassword)
     def mailPassword(self, forgotten_userid, REQUEST):
         '''Email a forgotten password to a member.  Raises an exception
         if user ID is not found.

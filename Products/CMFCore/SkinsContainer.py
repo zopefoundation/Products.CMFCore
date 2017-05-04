@@ -29,25 +29,25 @@ class SkinsContainer:
 
     security = ClassSecurityInfo()
 
-    security.declareProtected(AccessContentsInformation, 'getSkinPath')
+    @security.protected(AccessContentsInformation)
     def getSkinPath(self, name):
         """ Convert a skin name to a skin path.
         """
         raise NotImplementedError
 
-    security.declareProtected(AccessContentsInformation, 'getDefaultSkin')
+    @security.protected(AccessContentsInformation)
     def getDefaultSkin(self):
         """ Get the default skin name.
         """
         raise NotImplementedError
 
-    security.declareProtected(AccessContentsInformation, 'getRequestVarname')
+    @security.protected(AccessContentsInformation)
     def getRequestVarname(self):
         """ Get the variable name to look for in the REQUEST.
         """
         raise NotImplementedError
 
-    security.declarePrivate('getSkinByPath')
+    @security.private
     def getSkinByPath(self, path, raise_exc=0):
         """ Get a skin at the given path.
         """
@@ -85,7 +85,7 @@ class SkinsContainer:
                     skinob = partob.__of__(skinob)
         return skinob
 
-    security.declarePrivate('getSkinByName')
+    @security.private
     def getSkinByName(self, name):
         """ Get the named skin.
         """

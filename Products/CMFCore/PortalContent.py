@@ -75,7 +75,7 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     #
     #   Contentish interface methods
     #
-    security.declareProtected(View, 'SearchableText')
+    @security.protected(View)
     def SearchableText(self):
         """ Returns a concatination of all searchable text.
 

@@ -76,7 +76,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             pass
         self._readFile(0)
 
-    security.declareProtected(ViewManagementScreens, 'manage_doCustomize')
+    @security.protected(ViewManagementScreens)
     def manage_doCustomize(self, folder_path, RESPONSE=None, \
                            root=None, obj=None):
         """Makes a ZODB Based clone with the same data.
@@ -174,12 +174,12 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
                     self._file_mod_time = mtime
                 self._parsed = 1
 
-    security.declareProtected(View, 'get_size')
+    @security.protected(View)
     def get_size(self):
         """Get the size of the underlying file."""
         return os.path.getsize(self._filepath)
 
-    security.declareProtected(View, 'getModTime')
+    @security.protected(View)
     def getModTime(self):
         """Return the last_modified date of the file we represent.
 
@@ -188,13 +188,13 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         self._updateFromFS()
         return DateTime(self._file_mod_time)
 
-    security.declareProtected(View, 'bobobase_modification_time')
+    @security.protected(View)
     def bobobase_modification_time(self):
         """Get the modification time the file did have last time it was read.
         """
         return DateTime(self._file_mod_time)
 
-    security.declareProtected(ViewManagementScreens, 'getObjectFSPath')
+    @security.protected(ViewManagementScreens)
     def getObjectFSPath(self):
         """Return the path of the file we represent"""
         self._updateFromFS()
@@ -242,13 +242,13 @@ class BadFile(FSObject):
 
     showError = HTML(BAD_FILE_VIEW)
 
-    security.declareProtected(ManagePortal, 'manage_showError')
+    @security.protected(ManagePortal)
     def manage_showError(self, REQUEST):
         """
         """
         return self.showError(self, REQUEST)
 
-    security.declarePrivate('_readFile')
+    @security.private
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
@@ -262,14 +262,14 @@ class BadFile(FSObject):
             data = self.file_contents = None #give up
         return data
 
-    security.declarePublic('getFileContents')
+    @security.public
     def getFileContents(self):
         """
             Return the contents of the file, if we could read it.
         """
         return self.file_contents
 
-    security.declarePublic('getExceptionText')
+    @security.public
     def getExceptionText(self):
         """
             Return the exception thrown while reading or parsing

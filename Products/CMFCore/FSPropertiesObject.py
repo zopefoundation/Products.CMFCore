@@ -51,7 +51,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
     security.declarePrivate('manage_propertyTypeForm')
     security.declarePrivate('manage_changePropertyTypes')
 
-    security.declareProtected(ViewManagementScreens, 'manage_doCustomize')
+    @security.protected(ViewManagementScreens)
     def manage_doCustomize(self, folder_path, RESPONSE=None, \
                            root=None, obj=None):
         """Makes a ZODB Based clone with the same data.

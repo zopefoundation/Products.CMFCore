@@ -87,7 +87,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
                 self._reading = 0
 
     # Hook up chances to reload in debug mode
-    security.declarePrivate('read_raw')
+    @security.private
     def read_raw(self):
         if not self._reading:
             self._updateFromFS()

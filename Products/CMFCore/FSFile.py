@@ -116,7 +116,7 @@ class FSFile(FSObject):
     def modified(self):
         return self.getModTime()
 
-    security.declareProtected(View, 'index_html')
+    @security.protected(View)
     def index_html(self, REQUEST, RESPONSE):
         """
         The default view of the contents of a File or Image.
@@ -157,7 +157,7 @@ class FSFile(FSObject):
         # return False to disable this simple caching behaviour
         return _FSCacheHeaders(self)
 
-    security.declareProtected(View, 'getContentType')
+    @security.protected(View)
     def getContentType(self):
         """Get the content type of a file or image.
 

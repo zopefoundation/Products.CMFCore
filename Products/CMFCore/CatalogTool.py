@@ -240,7 +240,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     __call__ = searchResults
 
-    security.declarePrivate('unrestrictedSearchResults')
+    @security.private
     def unrestrictedSearchResults(self, REQUEST=None, **kw):
         """Calls ZCatalog.searchResults directly without restrictions.
 
@@ -274,21 +274,21 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         ZCatalog.catalog_object(self, w, uid, idxs, update_metadata,
                                 pghandler)
 
-    security.declarePrivate('indexObject')
+    @security.private
     def indexObject(self, object):
         """Add to catalog.
         """
         url = self.__url(object)
         self.catalog_object(object, url)
 
-    security.declarePrivate('unindexObject')
+    @security.private
     def unindexObject(self, object):
         """Remove from catalog.
         """
         url = self.__url(object)
         self.uncatalog_object(url)
 
-    security.declarePrivate('reindexObject')
+    @security.private
     def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
         """Update catalog after object data has changed.
 

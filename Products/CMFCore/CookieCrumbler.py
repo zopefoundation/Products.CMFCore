@@ -100,7 +100,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     cache_header_value = 'private'
     log_username = True
 
-    security.declarePrivate('delRequestVar')
+    @security.private
     def delRequestVar(self, req, name):
         # No errors of any sort may propagate, and we don't care *what*
         # they are, even to log them.
@@ -121,7 +121,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         except:
             pass
 
-    security.declarePublic('getCookiePath')
+    @security.public
     def getCookiePath(self):
         if not self.local_cookie_path:
             return '/'
@@ -132,11 +132,11 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             return '/'
 
     # Allow overridable cookie set/expiration methods.
-    security.declarePrivate('getCookieMethod')
+    @security.private
     def getCookieMethod(self, name, default=None):
         return getattr(self, name, default)
 
-    security.declarePrivate('defaultSetAuthCookie')
+    @security.private
     def defaultSetAuthCookie(self, resp, cookie_name, cookie_value):
         kw = {}
         req = getRequest()
@@ -146,7 +146,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         resp.setCookie(cookie_name, cookie_value,
                        path=self.getCookiePath(), **kw)
 
-    security.declarePrivate('defaultExpireAuthCookie')
+    @security.private
     def defaultExpireAuthCookie(self, resp, cookie_name):
         resp.expireCookie(cookie_name, path=self.getCookiePath())
 
@@ -167,7 +167,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             else:
                 medusa_headers['authorization'] = request._auth
 
-    security.declarePrivate('modifyRequest')
+    @security.private
     def modifyRequest(self, req, resp):
         """Copies cookie-supplied credentials to the basic auth fields.
 
@@ -258,7 +258,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             # Provide a logout page.
             req._logout_path = phys_path + ('logout',)
 
-    security.declarePublic('credentialsChanged')
+    @security.public
     def credentialsChanged(self, user, name, pw, request=None):
         """
         Updates cookie credentials if user details are changed.
@@ -271,7 +271,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                                        self.defaultSetAuthCookie)
         method(reponse, self.auth_cookie, quote(ac))
 
-    security.declarePublic('logout')
+    @security.public
     def logout(self, response=None):
         """
         Logs out the user
@@ -288,7 +288,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         if target is not None:
             response.redirect(target)
 
-    security.declarePublic('propertyLabel')
+    @security.public
     def propertyLabel(self, id):
         """Return a label for the given property id
         """

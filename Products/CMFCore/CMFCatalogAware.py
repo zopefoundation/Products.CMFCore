@@ -62,7 +62,7 @@ class CatalogAware(Base):
     #
     #   'ICatalogAware' interface methods
     #
-    security.declareProtected(ModifyPortalContent, 'indexObject')
+    @security.protected(ModifyPortalContent)
     def indexObject(self):
         """ Index the object in the portal catalog.
         """
@@ -70,7 +70,7 @@ class CatalogAware(Base):
         if catalog is not None:
             catalog.indexObject(self)
 
-    security.declareProtected(ModifyPortalContent, 'unindexObject')
+    @security.protected(ModifyPortalContent)
     def unindexObject(self):
         """ Unindex the object from the portal catalog.
         """
@@ -78,7 +78,7 @@ class CatalogAware(Base):
         if catalog is not None:
             catalog.unindexObject(self)
 
-    security.declareProtected(ModifyPortalContent, 'reindexObject')
+    @security.protected(ModifyPortalContent)
     def reindexObject(self, idxs=[]):
         """ Reindex the object in the portal catalog.
         """
@@ -92,7 +92,7 @@ class CatalogAware(Base):
 
     _cmf_security_indexes = ('allowedRolesAndUsers',)
 
-    security.declareProtected(ModifyPortalContent, 'reindexObjectSecurity')
+    @security.protected(ModifyPortalContent)
     def reindexObjectSecurity(self, skip_self=False):
         """ Reindex security-related indexes on the object.
         """
@@ -146,7 +146,7 @@ class WorkflowAware(Base):
     #
     #   ZMI methods
     #
-    security.declareProtected(ManagePortal, 'manage_workflowsTab')
+    @security.protected(ManagePortal)
     def manage_workflowsTab(self, REQUEST, manage_tabs_message=None):
         """ Tab displaying the current workflows for the content object.
         """
@@ -186,7 +186,7 @@ class WorkflowAware(Base):
     #
     #   'IWorkflowAware' interface methods
     #
-    security.declarePrivate('notifyWorkflowCreated')
+    @security.private
     def notifyWorkflowCreated(self):
         """ Notify the workflow that the object was just created.
         """
@@ -209,7 +209,7 @@ class OpaqueItemManager(Base):
     # Opaque subitems
     # ---------------
 
-    security.declareProtected(AccessContentsInformation, 'opaqueItems')
+    @security.protected(AccessContentsInformation)
     def opaqueItems(self):
         """
             Return opaque items (subelements that are contained
@@ -237,7 +237,7 @@ class OpaqueItemManager(Base):
 
         return tuple(items)
 
-    security.declareProtected(AccessContentsInformation, 'opaqueIds')
+    @security.protected(AccessContentsInformation)
     def opaqueIds(self):
         """
             Return opaque ids (subelements that are contained
@@ -245,7 +245,7 @@ class OpaqueItemManager(Base):
         """
         return [t[0] for t in self.opaqueItems()]
 
-    security.declareProtected(AccessContentsInformation, 'opaqueValues')
+    @security.protected(AccessContentsInformation)
     def opaqueValues(self):
         """
             Return opaque values (subelements that are contained

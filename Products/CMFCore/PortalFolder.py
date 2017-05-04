@@ -75,32 +75,32 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
     #
     #   'IMutableMinimalDublinCore' interface methods
     #
-    security.declareProtected(View, 'Title')
+    @security.protected(View)
     def Title(self):
         """ Dublin Core Title element - resource name.
         """
         return self.title
 
-    security.declareProtected(View, 'Description')
+    @security.protected(View)
     def Description(self):
         """ Dublin Core Description element - resource summary.
         """
         return self.description
 
-    security.declareProtected(View, 'Type')
+    @security.protected(View)
     def Type(self):
         """ Dublin Core Type element - resource type.
         """
         ti = self.getTypeInfo()
         return ti is not None and ti.Title() or 'Unknown'
 
-    security.declareProtected(ManageProperties, 'setTitle')
+    @security.protected(ManageProperties)
     def setTitle(self, title):
         """ Set Dublin Core Title element - resource name.
         """
         self.title = title
 
-    security.declareProtected(ManageProperties, 'setDescription')
+    @security.protected(ManageProperties)
     def setDescription(self, description):
         """ Set Dublin Core Description element - resource summary.
         """
@@ -109,7 +109,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
     #
     #   other methods
     #
-    security.declareProtected(ManageProperties, 'edit')
+    @security.protected(ManageProperties)
     def edit(self, title='', description=''):
         """
         Edit the folder title (and possibly other attributes later)
@@ -120,7 +120,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         if getattr(self, 'reindexObject', None) is not None:
             self.reindexObject()
 
-    security.declarePublic('allowedContentTypes')
+    @security.public
     def allowedContentTypes( self ):
         """
             List type info objects for types which can be added in
@@ -175,7 +175,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
     #
     #   'IFolderish' interface methods
     #
-    security.declarePublic('contentItems')
+    @security.public
     def contentItems(self, filter=None):
         # List contentish and folderish sub-objects and their IDs.
         # (method is without docstring to disable publishing)
@@ -183,21 +183,21 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         ids = self.objectIds()
         return self._filteredItems(ids, filter)
 
-    security.declarePublic('contentIds')
+    @security.public
     def contentIds(self, filter=None):
         # List IDs of contentish and folderish sub-objects.
         # (method is without docstring to disable publishing)
         #
         return [ item[0] for item in self.contentItems(filter) ]
 
-    security.declarePublic('contentValues')
+    @security.public
     def contentValues(self, filter=None):
         # List contentish and folderish sub-objects.
         # (method is without docstring to disable publishing)
         #
         return [ item[1] for item in self.contentItems(filter) ]
 
-    security.declareProtected(ListFolderContents, 'listFolderContents')
+    @security.protected(ListFolderContents)
     def listFolderContents(self, contentFilter=None):
         """ List viewable contentish and folderish sub-objects.
         """
@@ -229,7 +229,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
     #
     #   other methods
     #
-    security.declarePublic('encodeFolderFilter')
+    @security.public
     def encodeFolderFilter(self, REQUEST):
         """
             Parse cookie string for using variables in dtml.
@@ -242,7 +242,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         encoded = ''.join( encoded.split('\n') )
         return encoded
 
-    security.declarePublic('decodeFolderFilter')
+    @security.public
     def decodeFolderFilter(self, encoded):
         """
             Parse cookie string for using variables in dtml.
@@ -281,7 +281,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         self._delObject( name )
         return obj
 
-    security.declareProtected(AddPortalContent, 'invokeFactory')
+    @security.protected(AddPortalContent)
     def invokeFactory(self, type_name, id, RESPONSE=None, *args, **kw):
         """ Invokes the portal_types tool.
         """
@@ -294,7 +294,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
         return ttool.constructContent(type_name, self, id, RESPONSE, *args, **kw)
 
-    security.declareProtected(AddPortalContent, 'checkIdAvailable')
+    @security.protected(AddPortalContent)
     def checkIdAvailable(self, id):
         try:
             self._checkId(id)
@@ -421,7 +421,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
     security.setPermissionDefault(AddPortalContent, ('Owner','Manager'))
 
-    security.declareProtected(AddPortalFolders, 'manage_addFolder')
+    @security.protected(AddPortalFolders)
     def manage_addFolder( self
                         , id
                         , title=''
@@ -465,7 +465,7 @@ class PortalFolder(OrderSupport, PortalFolderBase):
     manage_options = ( OrderSupport.manage_options +
                        PortalFolderBase.manage_options[1:] )
 
-    security.declareProtected(AddPortalFolders, 'manage_addPortalFolder')
+    @security.protected(AddPortalFolders)
     def manage_addPortalFolder(self, id, title='', REQUEST=None):
         """Add a new PortalFolder object with id *id*.
         """

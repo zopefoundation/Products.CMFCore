@@ -163,11 +163,11 @@ class FSSTXMethod(FSObject):
 
         return self._render(REQUEST, RESPONSE, **kw)
 
-    security.declarePrivate('modified')
+    @security.private
     def modified(self):
         return self.getModTime()
 
-    security.declarePrivate('_render')
+    @security.private
     def _render(self, REQUEST={}, RESPONSE=None, **kw):
         """ Find the appropriate rendering template and use it to render us.
         """
@@ -189,19 +189,19 @@ class FSSTXMethod(FSObject):
         kwargs = {'cooked': self.cook()}
         return template(*posargs, **kwargs)
 
-    security.declareProtected(FTPAccess, 'manage_FTPget')
+    @security.protected(FTPAccess)
     def manage_FTPget(self):
         """ Fetch our source for delivery via FTP.
         """
         return self.raw
 
-    security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
+    @security.protected(ViewManagementScreens)
     def PrincipiaSearchSource(self):
         """ Fetch our source for indexing in a catalog.
         """
         return self.raw
 
-    security.declareProtected(ViewManagementScreens, 'document_src')
+    @security.protected(ViewManagementScreens)
     def document_src( self ):
         """ Fetch our source for rendering in the ZMI.
         """

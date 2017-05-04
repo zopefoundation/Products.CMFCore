@@ -178,7 +178,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     security.declareProtected(ManagePortal, 'manage_aliases')
     manage_aliases = PageTemplateFile('typeinfoAliases.zpt', _wwwdir)
 
-    security.declareProtected(ManagePortal, 'manage_setMethodAliases')
+    @security.protected(ManagePortal)
     def manage_setMethodAliases(self, REQUEST):
         """ Config method aliases.
         """
@@ -199,7 +199,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     #
     #   Accessors
     #
-    security.declareProtected(View, 'Title')
+    @security.protected(View)
     def Title(self):
         """
             Return the "human readable" type name (note that it
@@ -212,7 +212,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         else:
             return self.title or self.getId()
 
-    security.declareProtected(View, 'Description')
+    @security.protected(View)
     def Description(self):
         """
             Textual description of the class of objects (intended
@@ -223,7 +223,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         else:
             return self.description
 
-    security.declareProtected(View, 'Metatype')
+    @security.protected(View)
     def Metatype(self):
         """
             Returns the Zope 'meta_type' for this content object.
@@ -232,7 +232,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         """
         return self.content_meta_type
 
-    security.declareProtected(View, 'getIcon')
+    @security.protected(View)
     def getIcon(self):
         """ Returns the icon for this content object.
         """
@@ -244,13 +244,13 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             return self.icon_expr[len('string:${portal_url}/'):]
         return self.icon_expr
 
-    security.declarePrivate('getIconExprObject')
+    @security.private
     def getIconExprObject(self):
         """ Get the expression object representing the icon for this type.
         """
         return getattr(self, 'icon_expr_object', None)
 
-    security.declarePublic('allowType')
+    @security.public
     def allowType(self, contentType):
         """
             Can objects of 'contentType' be added to containers whose
@@ -270,31 +270,31 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
         return 0
 
-    security.declarePublic('getId')
+    @security.public
     def getId(self):
         return self.id
 
-    security.declarePublic('allowDiscussion')
+    @security.public
     def allowDiscussion(self):
         """
             Can this type of object support discussion?
         """
         return self.allow_discussion
 
-    security.declarePublic('globalAllow')
+    @security.public
     def globalAllow(self):
         """
         Should this type be implicitly addable anywhere?
         """
         return self.global_allow
 
-    security.declarePublic('listActions')
+    @security.public
     def listActions(self, info=None, object=None):
         """ Return a sequence of the action info objects for this type.
         """
         return self._actions or ()
 
-    security.declarePublic('constructInstance')
+    @security.public
     def constructInstance(self, container, id, *args, **kw):
         """Build an instance of the type.
 
@@ -306,7 +306,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
         return self._constructInstance(container, id, *args, **kw)
 
-    security.declareProtected(ManagePortal, 'getMethodAliases')
+    @security.protected(ManagePortal)
     def getMethodAliases(self):
         """ Get method aliases dict.
         """
@@ -318,7 +318,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
                 self._p_changed = True
         return aliases.copy()
 
-    security.declareProtected(ManagePortal, 'setMethodAliases')
+    @security.protected(ManagePortal)
     def setMethodAliases(self, aliases):
         """ Set method aliases dict.
         """
@@ -333,7 +333,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
         else:
             return False
 
-    security.declarePublic('queryMethodID')
+    @security.public
     def queryMethodID(self, alias, default=None, context=None):
         """ Query method ID by alias.
         """
@@ -344,7 +344,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             method_id = method_id[0]
         return method_id
 
-    security.declarePrivate('_checkWorkflowAllowed')
+    @security.private
     def _checkWorkflowAllowed(self, container):
         """ Check if a workflow veto object creation
         """
@@ -369,7 +369,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     #
     #   'IAction' interface methods
     #
-    security.declarePrivate('getInfoData')
+    @security.private
     def getInfoData(self):
         """ Get the data needed to create an ActionInfo.
         """
@@ -492,7 +492,7 @@ class FactoryTypeInformation(TypeInformation):
 
         return default
 
-    security.declarePublic('isConstructionAllowed')
+    @security.public
     def isConstructionAllowed(self, container):
         """
         a. Does the factory method exist?
@@ -530,7 +530,7 @@ class FactoryTypeInformation(TypeInformation):
         else:
             return self._checkWorkflowAllowed(container)
 
-    security.declarePrivate('_constructInstance')
+    @security.private
     def _constructInstance(self, container, id, *args, **kw):
         """Build a bare instance of the appropriate type.
 
@@ -597,7 +597,7 @@ class ScriptableTypeInformation(TypeInformation):
     #
     #   Agent methods
     #
-    security.declarePublic('isConstructionAllowed')
+    @security.public
     def isConstructionAllowed(self, container):
         """
         Does the current user have the permission required in
@@ -608,7 +608,7 @@ class ScriptableTypeInformation(TypeInformation):
             return 0
         return self._checkWorkflowAllowed(container)
 
-    security.declarePrivate('_constructInstance')
+    @security.private
     def _constructInstance(self, container, id, *args, **kw):
         """Build a bare instance of the appropriate type.
 
@@ -687,7 +687,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
     #
     #   other methods
     #
-    security.declareProtected(ManagePortal, 'manage_addTypeInformation')
+    @security.protected(ManagePortal)
     def manage_addTypeInformation(self, add_meta_type, id=None,
                                   typeinfo_name=None, RESPONSE=None):
         """Create a TypeInformation in self.
@@ -709,7 +709,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         if RESPONSE is not None:
             RESPONSE.redirect('%s/manage_main' % self.absolute_url())
 
-    security.declareProtected(ManagePortal, 'manage_setTIMethodAliases')
+    @security.protected(ManagePortal)
     def manage_setTIMethodAliases(self, REQUEST):
         """ Config method aliases.
         """
@@ -728,7 +728,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             ti.setMethodAliases(_dict)
         REQUEST.RESPONSE.redirect('%s/manage_aliases' % self.absolute_url())
 
-    security.declareProtected(AccessContentsInformation, 'getTypeInfo')
+    @security.protected(AccessContentsInformation)
     def getTypeInfo(self, contentType):
         """
             Return an instance which implements the
@@ -750,7 +750,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         else:
             return None
 
-    security.declareProtected(AccessContentsInformation, 'listTypeInfo')
+    @security.protected(AccessContentsInformation)
     def listTypeInfo(self, container=None):
         """
             Return a sequence of instances which implement the
@@ -770,7 +770,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             rval = [t for t in rval if t.isConstructionAllowed(container)]
         return rval
 
-    security.declareProtected(AccessContentsInformation, 'listContentTypes')
+    @security.protected(AccessContentsInformation)
     def listContentTypes(self, container=None, by_metatype=0):
         """ List type info IDs.
 
@@ -796,7 +796,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         result.sort()
         return result
 
-    security.declarePublic('constructContent')
+    @security.public
     def constructContent(self, type_name, container, id, RESPONSE=None, *args,
                          **kw):
         """
@@ -816,7 +816,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
 
         return ob.getId()
 
-    security.declarePrivate('listActions')
+    @security.private
     def listActions(self, info=None, object=None):
         """ List all the actions defined by a provider.
         """
@@ -840,7 +840,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
 
         return actions
 
-    security.declareProtected(ManagePortal, 'listMethodAliasKeys')
+    @security.protected(ManagePortal)
     def listMethodAliasKeys(self):
         """ List all defined method alias names.
         """

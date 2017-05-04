@@ -95,7 +95,7 @@ class MembershipTool(UniqueObject, Folder):
     security.declareProtected(ManagePortal, 'manage_mapRoles')
     manage_mapRoles = DTMLFile('membershipRolemapping', _dtmldir)
 
-    security.declareProtected(SetOwnPassword, 'setPassword')
+    @security.protected(SetOwnPassword)
     @postonly
     def setPassword(self, password, domains=None, REQUEST=None):
         '''Allows the authenticated member to set his/her own password.
@@ -111,7 +111,7 @@ class MembershipTool(UniqueObject, Folder):
         else:
             raise BadRequest('Not logged in.')
 
-    security.declarePublic('getAuthenticatedMember')
+    @security.public
     def getAuthenticatedMember(self):
         '''
         Returns the currently authenticated member object
@@ -122,7 +122,7 @@ class MembershipTool(UniqueObject, Folder):
             u = nobody
         return self.wrapUser(u)
 
-    security.declarePrivate('wrapUser')
+    @security.private
     def wrapUser(self, u, wrap_anon=0):
         """ Set up the correct acquisition wrappers for a user object.
 
@@ -157,7 +157,7 @@ class MembershipTool(UniqueObject, Folder):
                 logger.exception("Error during wrapUser")
         return u
 
-    security.declareProtected(ManagePortal, 'getPortalRoles')
+    @security.protected(ManagePortal)
     def getPortalRoles(self):
         """
         Return all local roles defined by the portal itself,
@@ -173,7 +173,7 @@ class MembershipTool(UniqueObject, Folder):
 
         return roles
 
-    security.declareProtected(ManagePortal, 'setRoleMapping')
+    @security.protected(ManagePortal)
     @postonly
     def setRoleMapping(self, portal_role, userfolder_role, REQUEST=None):
         """
@@ -193,7 +193,7 @@ class MembershipTool(UniqueObject, Folder):
                message='The Role mappings have been updated',
                action='manage_mapRoles')
 
-    security.declareProtected(ManagePortal, 'getMappedRole')
+    @security.protected(ManagePortal)
     def getMappedRole(self, portal_role):
         """
         returns a role name if the portal role is mapped to
@@ -204,7 +204,7 @@ class MembershipTool(UniqueObject, Folder):
         else:
             return ''
 
-    security.declarePublic('getMembersFolder')
+    @security.public
     def getMembersFolder(self):
         """ Get the members folder object.
         """
@@ -215,7 +215,7 @@ class MembershipTool(UniqueObject, Folder):
         request_container = RequestContainer(REQUEST=getRequest())
         return members_folder.__of__(request_container)
 
-    security.declareProtected(ManagePortal, 'getMemberareaCreationFlag')
+    @security.protected(ManagePortal)
     def getMemberareaCreationFlag(self):
         """
         Returns the flag indicating whether the membership tool
@@ -225,7 +225,7 @@ class MembershipTool(UniqueObject, Folder):
         """
         return self.memberareaCreationFlag
 
-    security.declareProtected(ManagePortal, 'setMemberareaCreationFlag')
+    @security.protected(ManagePortal)
     def setMemberareaCreationFlag(self):
         """
         sets the flag indicating whether the membership tool
@@ -246,7 +246,7 @@ class MembershipTool(UniqueObject, Folder):
                message='Member area creation flag has been updated',
                action='manage_mapRoles')
 
-    security.declarePublic('createMemberArea')
+    @security.public
     def createMemberArea(self, member_id=''):
         """ Create a member area for 'member_id' or authenticated user.
         """
@@ -289,7 +289,7 @@ class MembershipTool(UniqueObject, Folder):
     security.declarePublic('createMemberarea')
     createMemberarea = createMemberArea
 
-    security.declareProtected(ManageUsers, 'deleteMemberArea')
+    @security.protected(ManageUsers)
     @postonly
     def deleteMemberArea(self, member_id, REQUEST=None):
         """ Delete member area of member specified by member_id.
@@ -303,7 +303,7 @@ class MembershipTool(UniqueObject, Folder):
         else:
             return 0
 
-    security.declarePublic('isAnonymousUser')
+    @security.public
     def isAnonymousUser(self):
         '''
         Returns 1 if the user is not logged in.
@@ -313,7 +313,7 @@ class MembershipTool(UniqueObject, Folder):
             return 1
         return 0
 
-    security.declarePublic('checkPermission')
+    @security.public
     def checkPermission(self, permissionName, object, subobjectName=None):
         '''
         Checks whether the current user has the given permission on
@@ -323,7 +323,7 @@ class MembershipTool(UniqueObject, Folder):
             object = getattr(object, subobjectName)
         return _checkPermission(permissionName, object)
 
-    security.declareProtected(ManageUsers, 'isMemberAccessAllowed')
+    @security.protected(ManageUsers)
     def isMemberAccessAllowed(self, member_id):
         """Check if the authenticated user is this member or an user manager.
         """
@@ -335,7 +335,7 @@ class MembershipTool(UniqueObject, Folder):
             return True
         return sm.checkPermission(ManageUsers, self)
 
-    security.declarePublic('credentialsChanged')
+    @security.public
     def credentialsChanged(self, password, REQUEST=None):
         '''
         Notifies the authentication mechanism that this user has changed
@@ -352,7 +352,7 @@ class MembershipTool(UniqueObject, Folder):
             if cctool is not None:
                 cctool.credentialsChanged(user, name, password, REQUEST)
 
-    security.declareProtected(ManageUsers, 'getMemberById')
+    @security.protected(ManageUsers)
     def getMemberById(self, id):
         '''
         Returns the given member.
@@ -392,7 +392,7 @@ class MembershipTool(UniqueObject, Folder):
              stacklevel=2)
         return self.acl_users
 
-    security.declareProtected(ManageUsers, 'listMemberIds')
+    @security.protected(ManageUsers)
     def listMemberIds(self):
         '''Lists the ids of all members.  This may eventually be
         replaced with a set of methods for querying pieces of the
@@ -401,13 +401,13 @@ class MembershipTool(UniqueObject, Folder):
         user_folder = self.acl_users
         return [ x.getId() for x in user_folder.getUsers() ]
 
-    security.declareProtected(ManageUsers, 'listMembers')
+    @security.protected(ManageUsers)
     def listMembers(self):
         '''Gets the list of all members.
         '''
         return map(self.wrapUser, self.acl_users.getUsers())
 
-    security.declareProtected(ListPortalMembers, 'searchMembers')
+    @security.protected(ListPortalMembers)
     def searchMembers(self, search_param, search_term):
         """ Search the membership """
         mdtool = queryUtility(IMemberDataTool)
@@ -415,7 +415,7 @@ class MembershipTool(UniqueObject, Folder):
             return mdtool.searchMemberData(search_param, search_term)
         return None
 
-    security.declareProtected(View, 'getCandidateLocalRoles')
+    @security.protected(View)
     def getCandidateLocalRoles(self, obj):
         """ What local roles can I assign?
         """
@@ -431,7 +431,7 @@ class MembershipTool(UniqueObject, Folder):
         local_roles.sort()
         return tuple(local_roles)
 
-    security.declareProtected(View, 'setLocalRoles')
+    @security.protected(View)
     @postonly
     def setLocalRoles(self, obj, member_ids, member_role, reindex=1,
                       REQUEST=None):
@@ -449,7 +449,7 @@ class MembershipTool(UniqueObject, Folder):
         if reindex and hasattr(aq_base(obj), 'reindexObjectSecurity'):
             obj.reindexObjectSecurity()
 
-    security.declareProtected(View, 'deleteLocalRoles')
+    @security.protected(View)
     @postonly
     def deleteLocalRoles(self, obj, member_ids, reindex=1, recursive=0,
                          REQUEST=None):
@@ -469,7 +469,7 @@ class MembershipTool(UniqueObject, Folder):
             # reindexObjectSecurity is always recursive
             obj.reindexObjectSecurity()
 
-    security.declarePrivate('addMember')
+    @security.private
     def addMember(self, id, password, roles, domains, properties=None):
         '''Adds a new member to the user folder.  Security checks will have
         already been performed.  Called by portal_registration.
@@ -480,7 +480,7 @@ class MembershipTool(UniqueObject, Folder):
             member = self.getMemberById(id)
             member.setMemberProperties(properties)
 
-    security.declareProtected(ManageUsers, 'deleteMembers')
+    @security.protected(ManageUsers)
     @postonly
     def deleteMembers(self, member_ids, delete_memberareas=1,
                       delete_localroles=1, REQUEST=None):
@@ -522,7 +522,7 @@ class MembershipTool(UniqueObject, Folder):
 
         return tuple(member_ids)
 
-    security.declarePublic('getHomeFolder')
+    @security.public
     def getHomeFolder(self, id=None, verifyPermission=0):
         """Returns a member's home folder object or None.
         Set verifyPermission to 1 to return None when the user
@@ -530,7 +530,7 @@ class MembershipTool(UniqueObject, Folder):
         """
         return None
 
-    security.declarePublic('getHomeUrl')
+    @security.public
     def getHomeUrl(self, id=None, verifyPermission=0):
         """Returns the URL to a member's home folder or None.
         Set verifyPermission to 1 to return None when the user

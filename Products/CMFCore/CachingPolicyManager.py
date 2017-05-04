@@ -88,7 +88,7 @@ class CPMCache(Cache):
     """
     security = ClassSecurityInfo()
 
-    security.declarePrivate('ZCache_invalidate')
+    @security.private
     def ZCache_invalidate(self, ob):
         """ An object is forced out of the cache
 
@@ -97,7 +97,7 @@ class CPMCache(Cache):
         """
         pass
 
-    security.declarePrivate('ZCache_get')
+    @security.private
     def ZCache_get(self, ob, view_name, keywords, mtime_func, default):
         """ An object is retrieved from the cache
 
@@ -105,7 +105,7 @@ class CPMCache(Cache):
         """
         pass
 
-    security.declarePrivate('ZCache_set')
+    @security.private
     def ZCache_set(self, ob, data, view_name, keywords, mtime_func):
         """ An object is pushed into the cache
 
@@ -480,13 +480,13 @@ class CachingPolicyManager(SimpleItem, CacheManager):
     security.declareProtected(ManagePortal, 'manage_cachingPolicies')
     manage_cachingPolicies = DTMLFile('cachingPolicies', _dtmldir)
 
-    security.declarePublic('listPolicies')
+    @security.public
     def listPolicies(self):
         """List '(id, (policy, typeObjectName))' tuples for all policies.
         """
         return tuple([ (id, self._policies[id]) for id in self._policy_ids ])
 
-    security.declareProtected(ManagePortal, 'addPolicy')
+    @security.protected(ManagePortal)
     def addPolicy(self,
                   policy_id,
                   predicate, # TALES expr (def. 'python:1')
@@ -554,7 +554,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
                                          + '?manage_tabs_message='
                                          + 'Policy+added.')
 
-    security.declareProtected(ManagePortal, 'updatePolicy')
+    @security.protected(ManagePortal)
     def updatePolicy(self,
                      policy_id,
                      predicate, # TALES expr (def. 'python:1')
@@ -622,7 +622,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
                                          + '?manage_tabs_message='
                                          + 'Policy+updated.')
 
-    security.declareProtected(ManagePortal, 'movePolicyUp')
+    @security.protected(ManagePortal)
     def movePolicyUp(self, policy_id, REQUEST=None):
         """
             Move a caching policy up in the list.
@@ -639,7 +639,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
                                          + '/manage_cachingPolicies'
                                          + '?manage_tabs_message=%s' % msg)
 
-    security.declareProtected(ManagePortal, 'movePolicyDown')
+    @security.protected(ManagePortal)
     def movePolicyDown(self, policy_id, REQUEST=None):
         """
             Move a caching policy down in the list.
@@ -656,7 +656,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
                                          + '/manage_cachingPolicies'
                                          + '?manage_tabs_message=%s' % msg)
 
-    security.declareProtected(ManagePortal, 'removePolicy')
+    @security.protected(ManagePortal)
     def removePolicy(self, policy_id, REQUEST=None):
         """
             Remove a caching policy.
@@ -670,7 +670,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
     #
     #   Policy manipulation methods.
     #
-    security.declarePrivate('_addPolicy')
+    @security.private
     def _addPolicy(self,
                    policy_id,
                    predicate,
@@ -723,7 +723,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         idlist.append(policy_id)
         self._policy_ids = tuple(idlist)
 
-    security.declarePrivate('_updatePolicy')
+    @security.private
     def _updatePolicy(self,
                       policy_id,
                       predicate,
@@ -768,7 +768,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
                                                   pre_check,
                                                   post_check)
 
-    security.declarePrivate('_reorderPolicy')
+    @security.private
     def _reorderPolicy(self, policy_id, newIndex):
         """
             Reorder a policy in our registry.
@@ -783,7 +783,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         idlist.insert(newIndex, pred)
         self._policy_ids = tuple(idlist)
 
-    security.declarePrivate('_removePolicy')
+    @security.private
     def _removePolicy(self, policy_id):
         """
             Remove a policy from our registry.
@@ -800,7 +800,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
     #
     #   'portal_caching' interface methods
     #
-    security.declareProtected(View, 'getHTTPCachingHeaders')
+    @security.protected(View)
     def getHTTPCachingHeaders(self, content, view_method, keywords, time=None):
         """
             Return a list of HTTP caching headers based on 'content',
@@ -815,7 +815,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
 
         return ()
 
-    security.declareProtected(View, 'getModTimeAndETag')
+    @security.protected(View)
     def getModTimeAndETag(self, content, view_method, keywords, time=None):
         """ Return the modification time and ETag for the content object,
             view method, and keywords as the tuple (modification_time, etag,
@@ -841,7 +841,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
     #
     # OFS.CacheManager API
     #
-    security.declarePrivate('ZCacheManager_getCache')
+    @security.private
     def ZCacheManager_getCache(self):
         """ Retrieve a cache object
         """

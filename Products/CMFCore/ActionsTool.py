@@ -65,7 +65,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
     manage_overview = DTMLFile( 'explainActionsTool', _dtmldir )
     manage_actionProviders = DTMLFile('manageActionProviders', _dtmldir)
 
-    security.declareProtected(ManagePortal, 'manage_aproviders')
+    @security.protected(ManagePortal)
     def manage_aproviders(self
                         , apname=''
                         , chosen=()
@@ -89,7 +89,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             return self.manage_actionProviders(self , REQUEST
                           , manage_tabs_message='Providers changed.')
 
-    security.declareProtected( ManagePortal, 'manage_editActionsForm' )
+    @security.protected(ManagePortal)
     def manage_editActionsForm( self, REQUEST, manage_tabs_message=None ):
         """ Show the 'Actions' management tab.
         """
@@ -108,7 +108,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
     #
     #   ActionProvider interface
     #
-    security.declarePrivate('listActions')
+    @security.private
     def listActions(self, info=None, object=None):
         """ List all the actions defined by a provider.
         """
@@ -125,13 +125,13 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
     #
     #   Programmatically manipulate the list of action providers
     #
-    security.declareProtected(ManagePortal, 'listActionProviders')
+    @security.protected(ManagePortal)
     def listActionProviders(self):
         """ List the ids of all Action Providers queried by this tool.
         """
         return self.action_providers
 
-    security.declareProtected(ManagePortal, 'addActionProvider')
+    @security.protected(ManagePortal)
     def addActionProvider(self, provider_name):
         """ Add an Action Provider id to the providers queried by this tool.
         """
@@ -142,7 +142,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             ap.append(provider_name)
             self.action_providers = tuple(ap)
 
-    security.declareProtected(ManagePortal, 'deleteActionProvider')
+    @security.protected(ManagePortal)
     def deleteActionProvider( self, provider_name ):
         """ Delete an Action Provider id from providers queried by this tool.
         """
@@ -154,7 +154,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
     #
     #   'portal_actions' interface methods
     #
-    security.declarePublic('listFilteredActionsFor')
+    @security.public
     def listFilteredActionsFor(self, object=None):
         """ List all actions available to the user.
         """

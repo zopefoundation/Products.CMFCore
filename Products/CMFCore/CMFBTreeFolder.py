@@ -50,7 +50,7 @@ class CMFBTreeFolder(BTreeFolder2Base, PortalFolderBase):
         PortalFolderBase._checkId(self, id, allow_dup)
         BTreeFolder2Base._checkId(self, id, allow_dup)
 
-    security.declareProtected(AddPortalFolders, 'manage_addPortalFolder')
+    @security.protected(AddPortalFolders)
     def manage_addPortalFolder(self, id, title='', REQUEST=None):
         """Add a new PortalFolder object with id *id*.
         """

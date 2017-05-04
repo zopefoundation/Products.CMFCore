@@ -114,7 +114,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     manage_compareResults = DTMLFile('compareResults', _dtmldir,
                                  management_view='Compare')
 
-    security.declareProtected(ManagePortal, 'manage_skinLayers')
+    @security.protected(ManagePortal)
     def manage_skinLayers(self, chosen=(), add_skin=0, del_skin=0,
                           skinname='', skinpath='', REQUEST=None):
         """ Change the skinLayers.
@@ -149,7 +149,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                 self, REQUEST, management_view='Properties', manage_tabs_message='Skins changed.')
 
 
-    security.declareProtected(ManagePortal, 'isFirstInSkin')
+    @security.protected(ManagePortal)
     def isFirstInSkin(self, template_path, skin=None):
         """
         Is the specified template the one that would get returned from the current
@@ -179,7 +179,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         else:
             return 0
 
-    security.declareProtected(ManagePortal, 'manage_properties')
+    @security.protected(ManagePortal)
     def manage_properties(self, default_skin='', request_varname='',
                           allow_any=0, chosen=(), add_skin=0,
                           del_skin=0, skinname='', skinpath='',
@@ -193,8 +193,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
             return self.manage_propertiesForm(
                 self, REQUEST, management_view='Properties', manage_tabs_message='Properties changed.')
 
-    security.declarePrivate('PUT_factory')
-
+    @security.private
     def PUT_factory( self, name, typ, body ):
         """
             Dispatcher for PUT requests to non-existent IDs.  Returns
@@ -226,7 +225,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     PUT_factory__replaceable__ = REPLACEABLE
 
 
-    security.declarePrivate('testSkinPath')
+    @security.private
     def testSkinPath(self, p):
         """ Calls SkinsContainer.getSkinByPath().
         """
@@ -235,7 +234,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     #
     #   'SkinsContainer' interface methods
     #
-    security.declareProtected(AccessContentsInformation, 'getSkinPath')
+    @security.protected(AccessContentsInformation)
     def getSkinPath(self, name):
         """ Convert a skin name to a skin path.
         """
@@ -246,13 +245,13 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                 return name
         return p  # Can be None
 
-    security.declareProtected(AccessContentsInformation, 'getDefaultSkin')
+    @security.protected(AccessContentsInformation)
     def getDefaultSkin(self):
         """ Get the default skin name.
         """
         return self.default_skin
 
-    security.declareProtected(AccessContentsInformation, 'getRequestVarname')
+    @security.protected(AccessContentsInformation)
     def getRequestVarname(self):
         """ Get the variable name to look for in the REQUEST.
         """
@@ -261,7 +260,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     #
     #   UI methods
     #
-    security.declareProtected(AccessContentsInformation, 'getAllowAny')
+    @security.protected(AccessContentsInformation)
     def getAllowAny(self):
         '''
         Used by the management UI.  Returns a flag indicating whether
@@ -269,7 +268,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         '''
         return self.allow_any
 
-    security.declareProtected(AccessContentsInformation, 'getCookiePersistence')
+    @security.protected(AccessContentsInformation)
     def getCookiePersistence(self):
         '''
         Used by the management UI.  Returns a flag indicating whether
@@ -277,7 +276,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         '''
         return self.cookie_persistence
 
-    security.declareProtected(AccessContentsInformation, 'getSkinPaths')
+    @security.protected(AccessContentsInformation)
     def getSkinPaths(self):
         '''
         Used by the management UI.  Returns the list of skin name to
@@ -293,7 +292,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     #
     #   'portal_skins' interface methods
     #
-    security.declarePublic('getSkinSelections')
+    @security.public
     def getSkinSelections(self):
         """ Get the sorted list of available skin names.
         """
@@ -302,7 +301,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         rval.sort()
         return rval
 
-    security.declareProtected(View, 'updateSkinCookie')
+    @security.protected(View)
     def updateSkinCookie(self):
         """ If needed, updates the skin cookie based on the member preference.
         """
@@ -336,7 +335,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                     return 1
         return 0
 
-    security.declareProtected(View, 'clearSkinCookie')
+    @security.protected(View)
     def clearSkinCookie(self):
         """ Expire the skin cookie.
         """
@@ -346,7 +345,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         portal_path = req['BASEPATH1'] + '/' + utool(1)
         resp.expireCookie(self.request_varname, path=portal_path)
 
-    security.declareProtected(ManagePortal, 'addSkinSelection')
+    @security.protected(ManagePortal)
     def addSkinSelection(self, skinname, skinpath, test=0, make_default=0):
         '''
         Adds a skin selection.
@@ -371,7 +370,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         if make_default:
             self.default_skin = skinname
 
-    security.declareProtected(AccessContentsInformation, 'getDiff')
+    @security.protected(AccessContentsInformation)
     def getDiff(self, item_one_path, item_two_path, reverse=0):
         """ Return a diff between one and two.
         """

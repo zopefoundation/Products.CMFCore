@@ -79,7 +79,7 @@ class SkinnableObjectManager(ObjectManager):
                         ignore[name] = 1
         raise AttributeError(name)
 
-    security.declarePrivate('getSkin')
+    @security.private
     def getSkin(self, name=None):
         """Returns the requested skin.
         """
@@ -94,7 +94,7 @@ class SkinnableObjectManager(ObjectManager):
                     skinob = stool.getSkinByPath('')
         return skinob
 
-    security.declarePublic('getSkinNameFromRequest')
+    @security.public
     def getSkinNameFromRequest(self, REQUEST=None):
         '''Returns the skin name from the Request.'''
         if REQUEST is None:
@@ -106,7 +106,7 @@ class SkinnableObjectManager(ObjectManager):
                 return None
             return name
 
-    security.declarePublic('changeSkin')
+    @security.public
     def changeSkin(self, skinname, REQUEST=None):
         '''Change the current skin.
 
@@ -120,7 +120,7 @@ class SkinnableObjectManager(ObjectManager):
             if REQUEST is not None:
                 REQUEST._hold(SkinDataCleanup(tid))
 
-    security.declarePublic('getCurrentSkinName')
+    @security.public
     def getCurrentSkinName(self):
         '''Return the current skin name.
         '''
@@ -136,14 +136,14 @@ class SkinnableObjectManager(ObjectManager):
         # and if that fails...
         return None
 
-    security.declarePublic('clearCurrentSkin')
+    @security.public
     def clearCurrentSkin(self):
         """Clear the current skin."""
         tid = get_ident()
         if tid in SKINDATA:
             del SKINDATA[tid]
 
-    security.declarePublic('setupCurrentSkin')
+    @security.public
     def setupCurrentSkin(self, REQUEST=None):
         '''
         Sets up skindata so that __getattr__ can find it.

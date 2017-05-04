@@ -50,7 +50,7 @@ class ActionCategory(IFAwareObjectManager, OrderedFolder):
 
     security = ClassSecurityInfo()
 
-    security.declarePrivate('listActions')
+    @security.private
     def listActions(self):
         """ List the actions defined in this category and its subcategories.
         """
@@ -128,7 +128,7 @@ class Action(PropertyManager, SimpleItem):
             elif hasattr(self, attr):
                 delattr(self, attr)
 
-    security.declarePrivate('getInfoData')
+    @security.private
     def getInfoData(self):
         """ Get the data needed to create an ActionInfo.
         """
@@ -291,7 +291,7 @@ class ActionInformation(SimpleItem):
                   icon_expr,
                   link_target)
 
-    security.declarePrivate('edit')
+    @security.private
     def edit(self,
              id=_unchanged,
              title=_unchanged,
@@ -338,19 +338,19 @@ class ActionInformation(SimpleItem):
         if link_target is not _unchanged:
             self.link_target = link_target
 
-    security.declareProtected(View, 'Title')
+    @security.protected(View)
     def Title(self):
         """ Return the Action title.
         """
         return self.title or self.getId()
 
-    security.declareProtected(View, 'Description')
+    @security.protected(View)
     def Description(self):
         """ Return a description of the action.
         """
         return self.description
 
-    security.declarePrivate('testCondition')
+    @security.private
     def testCondition(self, ec):
         """ Evaluate condition using context, 'ec', and return 0 or 1.
         """
@@ -359,14 +359,14 @@ class ActionInformation(SimpleItem):
         else:
             return True
 
-    security.declarePublic('getAction')
+    @security.public
     def getAction(self, ec):
         """ Compute the action using context, 'ec'; return a mapping of
             info about the action.
         """
         return ActionInfo(self, ec)
 
-    security.declarePrivate('_getActionObject')
+    @security.private
     def _getActionObject(self):
         """ Find the action object, working around name changes.
         """
@@ -380,7 +380,7 @@ class ActionInformation(SimpleItem):
 
         return action
 
-    security.declarePublic('getActionExpression')
+    @security.public
     def getActionExpression(self):
         """ Return the text of the TALES expression for our URL.
         """
@@ -393,7 +393,7 @@ class ActionInformation(SimpleItem):
                 self.action = Expression(expr)
         return expr
 
-    security.declarePrivate('setActionExpression')
+    @security.private
     def setActionExpression(self, action):
         if action and isinstance(action, basestring):
             if (not action.startswith('string:')
@@ -402,13 +402,13 @@ class ActionInformation(SimpleItem):
             action = Expression(action)
         self.action = action
 
-    security.declarePrivate('_getIconExpressionObject')
+    @security.private
     def _getIconExpressionObject(self):
         """ Find the icon expression object, working around name changes.
         """
         return getattr(self, 'icon_expr', None)
 
-    security.declarePublic('getIconExpression')
+    @security.public
     def getIconExpression(self):
         """ Return the text of the TALES expression for our icon URL.
         """
@@ -421,7 +421,7 @@ class ActionInformation(SimpleItem):
                 self.icon_expr = Expression(expr)
         return expr
 
-    security.declarePrivate('setIconExpression')
+    @security.private
     def setIconExpression(self, icon_expr):
         if icon_expr and isinstance(icon_expr, basestring):
             if (not icon_expr.startswith('string:')
@@ -430,13 +430,13 @@ class ActionInformation(SimpleItem):
             icon_expr = Expression(icon_expr)
         self.icon_expr = icon_expr
 
-    security.declarePublic('getCondition')
+    @security.public
     def getCondition(self):
         """ Return the text of the TALES expression for our condition.
         """
         return getattr(self, 'condition', None) and self.condition.text or ''
 
-    security.declarePublic('getPermissions')
+    @security.public
     def getPermissions(self):
         """ Return the permission, if any, required to execute the action.
 
@@ -444,25 +444,25 @@ class ActionInformation(SimpleItem):
         """
         return self.permissions
 
-    security.declarePublic('getCategory')
+    @security.public
     def getCategory(self):
         """ Return the category in which the action should be grouped.
         """
         return self.category or 'object'
 
-    security.declarePublic('getVisibility')
+    @security.public
     def getVisibility(self):
         """ Return whether the action should be visible in the CMF UI.
         """
         return bool(self.visible)
 
-    security.declarePublic('getLinkTarget')
+    @security.public
     def getLinkTarget(self):
         """ Return the rendered link tag's target attribute value
         """
         return self.link_target
 
-    security.declarePrivate('getMapping')
+    @security.private
     def getMapping(self):
         """ Get a mapping of this object's data.
         """
@@ -478,13 +478,13 @@ class ActionInformation(SimpleItem):
                 'icon_expr': self.getIconExpression(),
                 'link_target': self.getLinkTarget()}
 
-    security.declarePrivate('clone')
+    @security.private
     def clone(self):
         """ Get a newly-created AI just like us.
         """
         return self.__class__(priority=self.priority, **self.getMapping())
 
-    security.declarePrivate('getInfoData')
+    @security.private
     def getInfoData(self):
         """ Get the data needed to create an ActionInfo.
         """

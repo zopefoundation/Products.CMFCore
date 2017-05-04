@@ -90,13 +90,13 @@ class FSImage(FSObject):
     __str__ = Image.__str__.__func__
 
     _image_tag = Image.tag.__func__
-    security.declareProtected(View, 'tag')
+    @security.protected(View)
     def tag(self, *args, **kw):
         # Hook into an opportunity to reload metadata.
         self._updateFromFS()
         return self._image_tag(*args, **kw)
 
-    security.declareProtected(View, 'index_html')
+    @security.protected(View)
     def index_html(self, REQUEST, RESPONSE):
         """
         The default view of the contents of a File or Image.
@@ -140,7 +140,7 @@ class FSImage(FSObject):
     def modified(self):
         return self.getModTime()
 
-    security.declareProtected(View, 'getContentType')
+    @security.protected(View)
     def getContentType(self):
         """Get the content type of a file or image.
 
@@ -149,7 +149,7 @@ class FSImage(FSObject):
         self._updateFromFS()
         return self.content_type
 
-    security.declareProtected(View, 'get_size')
+    @security.protected(View)
     def get_size(self):
         """
             Return the size of the image.

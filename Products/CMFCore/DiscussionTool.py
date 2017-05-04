@@ -51,7 +51,7 @@ class OldDiscussable(Implicit):
     def __init__(self, content):
         self.content = content
 
-    security.declareProtected(ReplyToItem, 'createReply')
+    @security.protected(ReplyToItem)
     def createReply(self, title, text, REQUEST, RESPONSE):
         """
             Create a reply in the proper place
@@ -82,7 +82,7 @@ class OldDiscussable(Implicit):
 
         return location, repr(id)
 
-    security.declareProtected(View, 'getReplyResults')
+    @security.protected(View)
     def getReplyResults(self):
         """
             Return the ZCatalog results that represent this object's replies.
@@ -95,7 +95,7 @@ class OldDiscussable(Implicit):
             return ctool.searchResults(in_reply_to=urllib.unquote(
                                                    '/' + self.absolute_url(1)))
 
-    security.declareProtected(View, 'getReplies')
+    @security.protected(View)
     def getReplies(self):
         """
             Return a sequence of the DiscussionResponse objects which are

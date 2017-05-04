@@ -53,7 +53,7 @@ class ActionProviderBase:
     #
     #   ActionProvider interface
     #
-    security.declarePrivate('listActions')
+    @security.private
     def listActions(self, info=None, object=None):
         """ List all the actions defined by a provider.
         """
@@ -65,7 +65,7 @@ class ActionProviderBase:
 
         return oldstyle_actions
 
-    security.declarePrivate('getActionObject')
+    @security.private
     def getActionObject(self, action):
         """Return the actions object or None if action doesn't exist.
         """
@@ -86,7 +86,7 @@ class ActionProviderBase:
         # no action found
         return None
 
-    security.declarePublic('listActionInfos')
+    @security.public
     def listActionInfos(self, action_chain=None, object=None,
                         check_visibility=1, check_permissions=1,
                         check_condition=1, max=-1):
@@ -122,7 +122,7 @@ class ActionProviderBase:
                 break
         return action_infos
 
-    security.declarePublic('getActionInfo')
+    @security.public
     def getActionInfo(self, action_chain, object=None, check_visibility=0,
                       check_condition=0):
         """ Get an ActionInfo object specified by a chain of actions.
@@ -148,7 +148,7 @@ class ActionProviderBase:
     #
     #   ZMI methods
     #
-    security.declareProtected( ManagePortal, 'manage_editActionsForm' )
+    @security.protected(ManagePortal)
     def manage_editActionsForm( self, REQUEST, manage_tabs_message=None ):
 
         """ Show the 'Actions' management tab.
@@ -170,7 +170,7 @@ class ActionProviderBase:
                                  , manage_tabs_message=manage_tabs_message
                                  )
 
-    security.declareProtected( ManagePortal, 'addAction' )
+    @security.protected(ManagePortal)
     def addAction( self
                  , id
                  , name
@@ -214,7 +214,7 @@ class ActionProviderBase:
             return self.manage_editActionsForm(
                 REQUEST, manage_tabs_message='Added.')
 
-    security.declareProtected( ManagePortal, 'changeActions' )
+    @security.protected(ManagePortal)
     def changeActions( self, properties=None, REQUEST=None ):
 
         """ Update our list of actions.
@@ -233,7 +233,7 @@ class ActionProviderBase:
             return self.manage_editActionsForm(REQUEST, manage_tabs_message=
                                                'Actions changed.')
 
-    security.declareProtected( ManagePortal, 'deleteActions' )
+    @security.protected(ManagePortal)
     def deleteActions( self, selections=(), REQUEST=None ):
 
         """ Delete actions indicated by indexes in 'selections'.
@@ -254,7 +254,7 @@ class ActionProviderBase:
                 REQUEST, manage_tabs_message=(
                 'Deleted %d action(s).' % len(sels)))
 
-    security.declareProtected( ManagePortal, 'moveUpActions' )
+    @security.protected(ManagePortal)
     def moveUpActions( self, selections=(), REQUEST=None ):
 
         """ Move the specified actions up one slot in our list.
@@ -281,7 +281,7 @@ class ActionProviderBase:
                 REQUEST, manage_tabs_message=(
                 'Moved up %d action(s).' % len(sels)))
 
-    security.declareProtected( ManagePortal, 'moveDownActions' )
+    @security.protected(ManagePortal)
     def moveDownActions( self, selections=(), REQUEST=None ):
 
         """ Move the specified actions down one slot in our list.
@@ -312,14 +312,14 @@ class ActionProviderBase:
     #
     #   Helper methods
     #
-    security.declarePrivate( '_cloneActions' )
+    @security.private
     def _cloneActions( self ):
 
         """ Return a list of actions, cloned from our current list.
         """
         return map( lambda x: x.clone(), list( self._actions ) )
 
-    security.declarePrivate( '_extractAction' )
+    @security.private
     def _extractAction( self, properties, index ):
 
         """ Extract an ActionInformation from the funky form properties.

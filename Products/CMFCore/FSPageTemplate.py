@@ -145,7 +145,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
             self.write(data)
 
-    security.declarePrivate('read')
+    @security.private
     def read(self):
         # Tie in on an opportunity to auto-update
         self._updateFromFS()
@@ -182,7 +182,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
             _setCacheHeaders(self, extra_context)
         return result
 
-    security.declareProtected(ViewManagementScreens, 'pt_source_file')
+    @security.protected(ViewManagementScreens)
     def pt_source_file(self):
 
         """ Return a file name to be compiled into the TAL code.
@@ -192,7 +192,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     security.declarePrivate('_ZPT_exec')
     _ZPT_exec = ZopePageTemplate._exec.__func__
 
-    security.declarePrivate('_exec')
+    @security.private
     def _exec(self, bound_names, args, kw):
         """Call a FSPageTemplate"""
         try:

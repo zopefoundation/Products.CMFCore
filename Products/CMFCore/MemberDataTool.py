@@ -94,7 +94,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
     #
     #   'portal_memberdata' interface methods
     #
-    security.declarePrivate('getMemberDataContents')
+    @security.private
     def getMemberDataContents(self):
         '''
         Return the number of members stored in the _members
@@ -114,7 +114,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         return [{'member_count': member_count,
                  'orphan_count': orphan_count}]
 
-    security.declarePrivate('searchMemberData')
+    @security.private
     def searchMemberData(self, search_param, search_term, attributes=()):
         """ Search members. """
         res = []
@@ -150,7 +150,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
         return res
 
-    security.declarePrivate('searchMemberDataContents')
+    @security.private
     def searchMemberDataContents(self, search_param, search_term):
         """ Search members. This method will be deprecated soon. """
         res = []
@@ -174,7 +174,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
                                 'email': memberProperty('email', '')})
         return res
 
-    security.declarePrivate('pruneMemberDataContents')
+    @security.private
     def pruneMemberDataContents(self):
         """ Delete data contents of all members not listet in acl_users.
         """
@@ -186,7 +186,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
             if member_id not in user_list:
                 del members[member_id]
 
-    security.declarePrivate('wrapUser')
+    @security.private
     def wrapUser(self, u):
         '''
         If possible, returns the Member object that corresponds
@@ -194,13 +194,13 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         '''
         return getMultiAdapter((u, self), IMember)
 
-    security.declarePrivate('registerMemberData')
+    @security.private
     def registerMemberData(self, m, id):
         """ Add the given member data to the _members btree.
         """
         self._members[id] = aq_base(m)
 
-    security.declarePrivate('deleteMemberData')
+    @security.private
     def deleteMemberData(self, member_id):
         """ Delete member data of specified member.
         """
@@ -238,20 +238,20 @@ class MemberAdapter(object):
         id = user.getId()
         self._md = tool._members.setdefault(id, MemberData(id))
 
-    security.declarePrivate('notifyModified')
+    @security.private
     def notifyModified(self):
         # Links self to parent for full persistence.
         self._tool.registerMemberData(self._md, self.getId())
 
-    security.declarePublic('getUser')
+    @security.public
     def getUser(self):
         return self._user
 
-    security.declarePublic('getMemberId')
+    @security.public
     def getMemberId(self):
         return self._user.getId()
 
-    security.declareProtected(SetOwnProperties, 'setProperties')
+    @security.protected(SetOwnProperties)
     def setProperties(self, properties=None, **kw):
         '''Allows the authenticated member to set his/her own properties.
         Accepts either keyword arguments or a mapping for the "properties"
@@ -269,7 +269,7 @@ class MemberAdapter(object):
                 raise BadRequest(failMessage)
         self.setMemberProperties(properties)
 
-    security.declarePrivate('setMemberProperties')
+    @security.private
     def setMemberProperties(self, mapping):
         '''Sets the properties of the member.
         '''
@@ -287,7 +287,7 @@ class MemberAdapter(object):
         # Hopefully we can later make notifyModified() implicit.
         self.notifyModified()
 
-    security.declarePublic('getProperty')
+    @security.public
     def getProperty(self, id, default=_marker):
         # First, check the wrapper (w/o acquisition).
         value = getattr(self._md, id, _marker)
@@ -314,12 +314,12 @@ class MemberAdapter(object):
         # Otherwise return the tool value
         return tool_value
 
-    security.declarePrivate('getPassword')
+    @security.private
     def getPassword(self):
         """Return the password of the user."""
         return self._user._getPassword()
 
-    security.declarePrivate('setSecurityProfile')
+    @security.private
     def setSecurityProfile(self, password=None, roles=None, domains=None):
         """Set the user's basic security profile"""
         u = self._user
@@ -340,37 +340,37 @@ class MemberAdapter(object):
     #
     #   'IUser' interface methods
     #
-    security.declarePublic('getId')
+    @security.public
     def getId(self):
         """Get the ID of the user.
         """
         return self._user.getId()
 
-    security.declarePublic('getUserName')
+    @security.public
     def getUserName(self):
         """Get the name used by the user to log into the system.
         """
         return self._user.getUserName()
 
-    security.declarePublic('getRoles')
+    @security.public
     def getRoles(self):
         """Get a sequence of the global roles assigned to the user.
         """
         return self._user.getRoles()
 
-    security.declarePublic('getRolesInContext')
+    @security.public
     def getRolesInContext(self, object):
         """Get a sequence of the roles assigned to the user in a context.
         """
         return self._user.getRolesInContext(object)
 
-    security.declarePublic('getDomains')
+    @security.public
     def getDomains(self):
         """Get a sequence of the domain restrictions for the user.
         """
         return self._user.getDomains()
 
-    security.declarePublic('has_role')
+    @security.public
     def has_role(self, roles, object=None):
         """Check to see if a user has a given role or roles."""
         return self._user.has_role(roles, object)

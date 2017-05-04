@@ -51,7 +51,7 @@ class MajorMinorPredicate(SimpleItem):
     def __init__(self, id):
         self.id = id
 
-    security.declareProtected(ManagePortal, 'getMajorType')
+    @security.protected(ManagePortal)
     def getMajorType(self):
         """ Get major content types.
         """
@@ -59,7 +59,7 @@ class MajorMinorPredicate(SimpleItem):
             return 'None'
         return ' '.join(self.major)
 
-    security.declareProtected(ManagePortal, 'getMinorType')
+    @security.protected(ManagePortal)
     def getMinorType(self):
         """ Get minor content types.
         """
@@ -67,7 +67,7 @@ class MajorMinorPredicate(SimpleItem):
             return 'None'
         return ' '.join(self.minor)
 
-    security.declareProtected(ManagePortal, 'edit')
+    @security.protected(ManagePortal)
     def edit(self, major, minor, COMMA_SPLIT=re.compile(r'[, ]')):
 
         if major == 'None':
@@ -110,7 +110,7 @@ class MajorMinorPredicate(SimpleItem):
 
         return 1
 
-    security.declareProtected(ManagePortal, 'getTypeLabel')
+    @security.protected(ManagePortal)
     def getTypeLabel(self):
         """
             Return a human-readable label for the predicate type.
@@ -139,7 +139,7 @@ class ExtensionPredicate(SimpleItem):
     def __init__(self, id):
         self.id = id
 
-    security.declareProtected(ManagePortal, 'getExtensions')
+    @security.protected(ManagePortal)
     def getExtensions(self):
         """ Get filename extensions.
         """
@@ -147,7 +147,7 @@ class ExtensionPredicate(SimpleItem):
             return 'None'
         return ' '.join(self.extensions)
 
-    security.declareProtected(ManagePortal, 'edit')
+    @security.protected(ManagePortal)
     def edit(self, extensions, COMMA_SPLIT=re.compile(r'[, ]')):
 
         if extensions == 'None':
@@ -174,7 +174,7 @@ class ExtensionPredicate(SimpleItem):
 
         return ext in self.extensions
 
-    security.declareProtected(ManagePortal, 'getTypeLabel')
+    @security.protected(ManagePortal)
     def getTypeLabel(self):
         """
             Return a human-readable label for the predicate type.
@@ -205,13 +205,13 @@ class MimeTypeRegexPredicate(SimpleItem):
     def __init__(self, id):
         self.id = id
 
-    security.declareProtected(ManagePortal, 'getPatternStr')
+    @security.protected(ManagePortal)
     def getPatternStr(self):
         if self.pattern is None:
             return 'None'
         return self.pattern.pattern
 
-    security.declareProtected(ManagePortal, 'edit')
+    @security.protected(ManagePortal)
     def edit(self, pattern):
         if pattern == 'None':
             pattern = None
@@ -232,7 +232,7 @@ class MimeTypeRegexPredicate(SimpleItem):
 
         return self.pattern.match(typ)
 
-    security.declareProtected(ManagePortal, 'getTypeLabel')
+    @security.protected(ManagePortal)
     def getTypeLabel(self):
         """
             Return a human-readable label for the predicate type.
@@ -263,7 +263,7 @@ class NameRegexPredicate(SimpleItem):
     def __init__(self, id):
         self.id = id
 
-    security.declareProtected(ManagePortal, 'getPatternStr')
+    @security.protected(ManagePortal)
     def getPatternStr(self):
         """
             Return a string representation of our pattern.
@@ -272,7 +272,7 @@ class NameRegexPredicate(SimpleItem):
             return 'None'
         return self.pattern.pattern
 
-    security.declareProtected(ManagePortal, 'edit')
+    @security.protected(ManagePortal)
     def edit(self, pattern):
         if pattern == 'None':
             pattern = None
@@ -293,7 +293,7 @@ class NameRegexPredicate(SimpleItem):
 
         return self.pattern.match(name)
 
-    security.declareProtected(ManagePortal, 'getTypeLabel')
+    @security.protected(ManagePortal)
     def getTypeLabel(self):
         """
             Return a human-readable label for the predicate type.
@@ -353,7 +353,7 @@ class ContentTypeRegistry(SimpleItem):
     security.declareProtected(ManagePortal, 'manage_predicates')
     manage_predicates = DTMLFile('registryPredList', _dtmldir)
 
-    security.declareProtected(ManagePortal, 'doAddPredicate')
+    @security.protected(ManagePortal)
     def doAddPredicate(self, predicate_id, predicate_type, REQUEST):
         """
         """
@@ -362,7 +362,7 @@ class ContentTypeRegistry(SimpleItem):
                                      + '/manage_predicates'
                                      + '?manage_tabs_message=Predicate+added.')
 
-    security.declareProtected(ManagePortal, 'doUpdatePredicate')
+    @security.protected(ManagePortal)
     def doUpdatePredicate(self, predicate_id, predicate, typeObjectName,
                           REQUEST):
         """
@@ -372,7 +372,7 @@ class ContentTypeRegistry(SimpleItem):
                                    + '/manage_predicates'
                                    + '?manage_tabs_message=Predicate+updated.')
 
-    security.declareProtected(ManagePortal, 'doMovePredicateUp')
+    @security.protected(ManagePortal)
     def doMovePredicateUp(self, predicate_id, REQUEST):
         """
         """
@@ -387,7 +387,7 @@ class ContentTypeRegistry(SimpleItem):
                                      + '/manage_predicates'
                                      + '?manage_tabs_message=%s' % msg)
 
-    security.declareProtected(ManagePortal, 'doMovePredicateDown')
+    @security.protected(ManagePortal)
     def doMovePredicateDown(self, predicate_id, REQUEST):
         """
         """
@@ -402,7 +402,7 @@ class ContentTypeRegistry(SimpleItem):
                                      + '/manage_predicates'
                                      + '?manage_tabs_message=%s' % msg)
 
-    security.declareProtected(ManagePortal, 'doRemovePredicate')
+    @security.protected(ManagePortal)
     def doRemovePredicate(self, predicate_id, REQUEST):
         """
         """
@@ -414,7 +414,7 @@ class ContentTypeRegistry(SimpleItem):
     security.declareProtected(ManagePortal, 'manage_testRegistry')
     manage_testRegistry = DTMLFile('registryTest', _dtmldir)
 
-    security.declareProtected(ManagePortal, 'doTestRegistry')
+    @security.protected(ManagePortal)
     def doTestRegistry(self, name, content_type, body, REQUEST):
         """
         """
@@ -455,7 +455,7 @@ class ContentTypeRegistry(SimpleItem):
         """
         return self.predicates.get(predicate_id, (None, None))[1]
 
-    security.declareProtected(ManagePortal, 'addPredicate')
+    @security.protected(ManagePortal)
     def addPredicate(self, predicate_id, predicate_type):
         """
             Add a predicate to this element of type 'typ' to the registry.
@@ -474,7 +474,7 @@ class ContentTypeRegistry(SimpleItem):
         self.predicates[predicate_id] = (klass(predicate_id), None)
         self.predicate_ids = self.predicate_ids + (predicate_id,)
 
-    security.declareProtected(ManagePortal, 'updatePredicate')
+    @security.protected(ManagePortal)
     def updatePredicate(self, predicate_id, predicate, typeObjectName):
         """
             Update a predicate in this element.
@@ -486,7 +486,7 @@ class ContentTypeRegistry(SimpleItem):
         mapply(predObj.edit, (), predicate.__dict__)
         self.assignTypeName(predicate_id, typeObjectName)
 
-    security.declareProtected(ManagePortal, 'removePredicate')
+    @security.protected(ManagePortal)
     def removePredicate(self, predicate_id):
         """
             Remove a predicate from the registry.
@@ -497,7 +497,7 @@ class ContentTypeRegistry(SimpleItem):
         idlist = idlist[:ndx] + idlist[ndx + 1:]
         self.predicate_ids = tuple(idlist)
 
-    security.declareProtected(ManagePortal, 'reorderPredicate')
+    @security.protected(ManagePortal)
     def reorderPredicate(self, predicate_id, newIndex):
         """
             Move a given predicate to a new location in the list.
@@ -509,7 +509,7 @@ class ContentTypeRegistry(SimpleItem):
         idlist.insert(newIndex, pred)
         self.predicate_ids = tuple(idlist)
 
-    security.declareProtected(ManagePortal, 'assignTypeName')
+    @security.protected(ManagePortal)
     def assignTypeName(self, predicate_id, typeObjectName):
         """
             Bind the given predicate to a particular type object.

@@ -470,7 +470,7 @@ class DirectoryViewSurrogate(Folder):
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
     manage_propertiesForm = DTMLFile( 'dirview_properties', _dtmldir )
 
-    security.declareProtected(ManagePortal, 'manage_properties')
+    @security.protected(ManagePortal)
     def manage_properties(self, reg_key, REQUEST=None):
         """ Update the directory path of the DirectoryView.
         """
@@ -479,7 +479,7 @@ class DirectoryViewSurrogate(Folder):
             REQUEST['RESPONSE'].redirect( '%s/manage_propertiesForm'
                                         % self.absolute_url() )
 
-    security.declareProtected(ACI, 'getCustomizableObject')
+    @security.protected(ACI)
     def getCustomizableObject(self):
         ob = aq_parent(aq_inner(self))
         while ob:
@@ -489,7 +489,7 @@ class DirectoryViewSurrogate(Folder):
                 break
         return ob
 
-    security.declareProtected(ACI, 'listCustFolderPaths')
+    @security.protected(ACI)
     def listCustFolderPaths(self, adding_meta_type=None):
         """ List possible customization folders as key, value pairs.
         """
@@ -499,7 +499,7 @@ class DirectoryViewSurrogate(Folder):
         rval.sort()
         return rval
 
-    security.declareProtected(ACI, 'getDirPath')
+    @security.protected(ACI)
     def getDirPath(self):
         return self.__dict__['_real']._dirpath
 

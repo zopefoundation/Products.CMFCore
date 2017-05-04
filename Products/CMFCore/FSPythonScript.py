@@ -48,7 +48,7 @@ class CustomizedPythonScript(PythonScript):
         self.write(text)
         self.original_source = text
 
-    security.declareProtected(ViewManagementScreens, 'getDiff')
+    @security.protected(ViewManagementScreens)
     def getDiff(self):
         """ Return a diff of the current source with the original source.
         """
@@ -138,12 +138,12 @@ class FSPythonScript(FSObject, Script):
                 param_names.append(name.split('=', 1)[0])
         return param_names
 
-    security.declareProtected(ViewManagementScreens, 'read')
+    @security.protected(ViewManagementScreens)
     def read(self):
         self._updateFromFS()
         return self._source
 
-    security.declareProtected(ViewManagementScreens, 'document_src')
+    @security.protected(ViewManagementScreens)
     def document_src(self, REQUEST=None, RESPONSE=None):
         """Return unprocessed document source."""
 
@@ -151,27 +151,27 @@ class FSPythonScript(FSObject, Script):
             RESPONSE.setHeader('Content-Type', 'text/plain')
         return self._source
 
-    security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
+    @security.protected(ViewManagementScreens)
     def PrincipiaSearchSource(self):
         "Support for searching - the document's contents are searched."
         return "%s\n%s" % (self._params, self._body)
 
-    security.declareProtected(ViewManagementScreens, 'params')
+    @security.protected(ViewManagementScreens)
     def params(self):
         return self._params
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
     manage_haveProxy = PythonScript.manage_haveProxy.__func__
 
-    security.declareProtected(ViewManagementScreens, 'body')
+    @security.protected(ViewManagementScreens)
     def body(self):
         return self._body
 
-    security.declareProtected(ViewManagementScreens, 'get_size')
+    @security.protected(ViewManagementScreens)
     def get_size(self):
         return len(self.read())
 
-    security.declareProtected(FTPAccess, 'manage_FTPget')
+    @security.protected(FTPAccess)
     def manage_FTPget(self):
         "Get source for FTP download"
         self.REQUEST.RESPONSE.setHeader('Content-Type', 'text/plain')

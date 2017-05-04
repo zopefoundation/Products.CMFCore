@@ -69,7 +69,7 @@ _marker = []  # Create a new marker object.
 
 _tool_interface_registry = {}
 
-security.declarePrivate('registerToolInterface')
+@security.private
 def registerToolInterface(tool_id, tool_interface):
     """ Register a tool ID for an interface
 
@@ -78,14 +78,14 @@ def registerToolInterface(tool_id, tool_interface):
     global  _tool_interface_registry
     _tool_interface_registry[tool_id] = tool_interface
 
-security.declarePrivate('getToolInterface')
+@security.private
 def getToolInterface(tool_id):
     """ Get the interface registered for a tool ID
     """
     global  _tool_interface_registry
     return _tool_interface_registry.get(tool_id, None)
 
-security.declarePublic('getToolByName')
+@security.public
 def getToolByName(obj, name, default=_marker):
 
     """ Get the tool, 'toolname', by acquiring it.
@@ -123,7 +123,7 @@ def getToolByName(obj, name, default=_marker):
             raise AttributeError(name)
         return tool
 
-security.declarePublic('getUtilityByInterfaceName')
+@security.public
 def getUtilityByInterfaceName(dotted_name, default=_marker):
     """ Get a tool by its fully-qualified dotted interface path
 
@@ -144,7 +144,7 @@ def getUtilityByInterfaceName(dotted_name, default=_marker):
             raise
         return default
 
-security.declarePublic('cookString')
+@security.public
 def cookString(text):
 
     """ Make a Zope-friendly ID from 'text'.
@@ -157,7 +157,7 @@ def cookString(text):
     cooked = re.sub(rgx, "", text).lower()
     return cooked
 
-security.declarePublic('tuplize')
+@security.public
 def tuplize(valueName, value):
 
     """ Make a tuple from 'value'.
@@ -176,17 +176,17 @@ def tuplize(valueName, value):
 #   Security utilities, callable only from unrestricted code.
 #
 # deprecated alias
-security.declarePrivate('_getAuthenticatedUser')
+@security.private
 def _getAuthenticatedUser(self):
     return getSecurityManager().getUser()
 
-security.declarePrivate('_checkPermission')
+@security.private
 def _checkPermission(permission, obj):
     return getSecurityManager().checkPermission(permission, obj)
 
 # If Zope ever provides a call to getRolesInContext() through
 # the SecurityManager API, the method below needs to be updated.
-security.declarePrivate('_limitGrantedRoles')
+@security.private
 def _limitGrantedRoles(roles, context, special_roles=()):
     # Only allow a user to grant roles already possessed by that user,
     # with the exception that all special_roles can also be granted.
@@ -202,7 +202,7 @@ def _limitGrantedRoles(roles, context, special_roles=()):
         if role not in special_roles and role not in user_roles:
             raise AccessControl_Unauthorized('Too many roles specified.')
 
-security.declarePrivate('_mergedLocalRoles')
+@security.private
 def _mergedLocalRoles(object):
     """Returns a merging of object and its ancestors'
     __ac_local_roles__."""
@@ -231,7 +231,7 @@ def _mergedLocalRoles(object):
 
     return deepcopy(merged)
 
-security.declarePrivate('_ac_inherited_permissions')
+@security.private
 def _ac_inherited_permissions(ob, all=0):
     # Get all permissions not defined in ourself that are inherited
     # This will be a sequence of tuples with a name as the first item and
@@ -251,7 +251,7 @@ def _ac_inherited_permissions(ob, all=0):
         r = list(perms) + r
     return r
 
-security.declarePrivate('_modifyPermissionMappings')
+@security.private
 def _modifyPermissionMappings(ob, map):
     """
     Modifies multiple role to permission mappings.
@@ -446,7 +446,7 @@ def _checkConditionalGET(obj, extra_context):
 
     return True
 
-security.declarePrivate('_setCacheHeaders')
+@security.private
 def _setCacheHeaders(obj, extra_context):
     """Set cache headers according to cache policy manager for the obj."""
     REQUEST = getattr(obj, 'REQUEST', None)
@@ -713,7 +713,7 @@ def registerIcon(klass, iconspec, _prefix=None):
 #
 KEYSPLITRE = re.compile(r'[,;]')
 
-security.declarePublic('keywordsplitter')
+@security.public
 def keywordsplitter(headers, names=('Subject', 'Keywords',),
                     splitter=KEYSPLITRE.split):
     """ Split keywords out of headers, keyed on names.  Returns list.
@@ -730,7 +730,7 @@ def keywordsplitter(headers, names=('Subject', 'Keywords',),
 #
 CONTRIBSPLITRE = re.compile(r';')
 
-security.declarePublic('contributorsplitter')
+@security.public
 def contributorsplitter(headers, names=('Contributors',),
                         splitter=CONTRIBSPLITRE.split):
     """ Split contributors out of headers, keyed on names.  Returns list.
@@ -740,7 +740,7 @@ def contributorsplitter(headers, names=('Contributors',),
 #
 #   Directory-handling utilities
 #
-security.declarePublic('normalize')
+@security.public
 def normalize(p):
     # the first .replace is needed to help normpath when dealing with Windows
     # paths under *nix, the second to normalize to '/'
@@ -749,7 +749,7 @@ def normalize(p):
 import Products
 ProductsPath = [ abspath(ppath) for ppath in Products.__path__ ]
 
-security.declarePrivate('getContainingPackage')
+@security.private
 def getContainingPackage(module):
     parts = module.split('.')
     while parts:
@@ -761,7 +761,7 @@ def getContainingPackage(module):
 
     raise ValueError('Unable to find package for module %s' % module)
 
-security.declarePrivate('getPackageLocation')
+@security.private
 def getPackageLocation(module):
     """ Return the filesystem location of a module.
 
@@ -771,7 +771,7 @@ def getPackageLocation(module):
     package = getContainingPackage(module)
     return package_home({'__name__': package})
 
-security.declarePrivate('getPackageName')
+@security.private
 def getPackageName(globals_):
     module = globals_['__name__']
     return getContainingPackage(module)
