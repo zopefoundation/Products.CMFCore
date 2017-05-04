@@ -25,7 +25,7 @@ from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
 from zope.globalrequest import getRequest
 from zope.i18nmessageid import Message
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import IAction
@@ -39,12 +39,11 @@ from Products.CMFCore.utils import _checkPermission
 _unchanged = [] # marker
 
 
+@implementer(IActionCategory)
 class ActionCategory(IFAwareObjectManager, OrderedFolder):
 
     """ Group of Action objects.
     """
-
-    implements(IActionCategory)
 
     _product_interfaces = (IActionCategory, IAction)
 
@@ -67,12 +66,11 @@ class ActionCategory(IFAwareObjectManager, OrderedFolder):
 InitializeClass(ActionCategory)
 
 
+@implementer(IAction)
 class Action(PropertyManager, SimpleItem):
 
     """ Reference to an action.
     """
-
-    implements(IAction)
 
     i18n_domain = 'cmf_default'
     link_target = ''
@@ -165,12 +163,11 @@ class Action(PropertyManager, SimpleItem):
 InitializeClass(Action)
 
 
+@implementer(IActionInfo)
 class ActionInfo(UserDict):
 
     """ A lazy dictionary for Action infos.
     """
-
-    implements(IActionInfo)
 
     __allow_access_to_unprotected_subobjects__ = 1
 
@@ -249,6 +246,7 @@ class ActionInfo(UserDict):
         return False
 
 
+@implementer(IAction)
 class ActionInformation(SimpleItem):
 
     """ Represent a single selectable action.
@@ -256,8 +254,6 @@ class ActionInformation(SimpleItem):
     Actions generate links to views of content, or to specific methods
     of the site.  They can be filtered via their conditions.
     """
-
-    implements(IAction)
 
     link_target = ''
 

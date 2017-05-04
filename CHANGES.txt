@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.4.0 (unreleased)
 ------------------
 
+- use zope.interface.implementer decorator instead of 
+  zope.interface.implements
+
 
 2.4.0b1 (2017-05-04)
 --------------------

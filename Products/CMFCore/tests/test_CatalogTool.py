@@ -20,7 +20,7 @@ from Testing.ZopeTestCase import installProduct
 from zope.component import getSiteManager
 from zope.globalrequest import clearRequest
 from zope.globalrequest import setRequest
-from zope.interface import implements
+from zope.interface import implementer
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.interfaces import IContentish
@@ -56,8 +56,8 @@ class IndexableObjectWrapperTests(unittest.TestCase):
     def _makeOne(self, vars, obj):
         from Products.CMFCore.interfaces import ICatalogTool
 
+        @implementer(ICatalogTool)
         class FakeCatalog(Implicit):
-            implements(ICatalogTool)
             id = 'portal_catalog'
 
         getSiteManager().registerUtility(FakeWorkflowTool(vars), IWorkflowTool)
@@ -141,13 +141,11 @@ class CatalogToolTests(SecurityTest):
     def _makeContent(self, *args, **kw):
         from Products.CMFCore.interfaces import IIndexableObject
 
+        @implementer(IIndexableObject)
         class CatalogDummyContent(DummyContent):
-
             """ Dummy content that already provides IIndexableObject
                 and therefore does not need a wrapper to be registered
             """
-
-            implements(IIndexableObject)
             allowedRolesAndUsers = ['Manager'] # default value
 
         return CatalogDummyContent(*args, **kw)

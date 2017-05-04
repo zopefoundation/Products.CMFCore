@@ -17,7 +17,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from App.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
 from Products.CMFCore.DynamicType import DynamicType
@@ -29,6 +29,7 @@ from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import Message as _
 
 
+@implementer(IContentish)
 class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
 
     """ Base class for portal objects.
@@ -38,8 +39,6 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
         Derived classes must implement the interface described in
         interfaces/DublinCore.py.
     """
-
-    implements(IContentish)
 
     manage_options = ( ( { 'label'  : 'Dublin Core'
                          , 'action' : 'manage_metadata'

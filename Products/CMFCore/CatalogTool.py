@@ -25,7 +25,7 @@ from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.component import adapts
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
@@ -61,9 +61,9 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
             return ObjectSpecification(provided, cls)
 
 
+@implementer(IIndexableObjectWrapper, IIndexableObject)
 class IndexableObjectWrapper(object):
 
-    implements(IIndexableObjectWrapper, IIndexableObject)
     adapts(IContentish, ICatalogTool)
     __providedBy__ = IndexableObjectSpecification()
 
@@ -127,12 +127,11 @@ class IndexableObjectWrapper(object):
         return ob.portal_type or ''
 
 
+@implementer(ICatalogTool)
 class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     """ This is a ZCatalog that filters catalog queries.
     """
-
-    implements(ICatalogTool)
 
     id = 'portal_catalog'
     meta_type = 'CMF Catalog'

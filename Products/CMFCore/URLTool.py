@@ -21,7 +21,7 @@ from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.component import queryUtility
 from zope.globalrequest import getRequest
-from zope.interface import implements
+from zope.interface import implementer
 from ZPublisher.BaseRequest import RequestContainer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
@@ -34,12 +34,11 @@ from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 
+@implementer(IURLTool)
 class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
 
     """ CMF URL Tool.
     """
-
-    implements(IURLTool)
 
     id = 'portal_url'
     meta_type = 'CMF URL Tool'

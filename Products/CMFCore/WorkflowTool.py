@@ -30,7 +30,6 @@ from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.event import notify
 from zope.interface import implementer
-from zope.interface import implements
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IConfigurableWorkflowTool
@@ -55,13 +54,12 @@ from Products.CMFCore.WorkflowCore import WorkflowException
 _marker = []  # Create a new marker object.
 
 
+@implementer(IConfigurableWorkflowTool, IWorkflowTool)
 class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                    ActionProviderBase):
 
     """ Mediator tool, mapping workflow objects
     """
-
-    implements(IConfigurableWorkflowTool, IWorkflowTool)
 
     id = 'portal_workflow'
     meta_type = 'CMF Workflow Tool'
@@ -609,8 +607,8 @@ InitializeClass(WorkflowTool)
 registerToolInterface('portal_workflow', IWorkflowTool)
 
 
+@implementer(IWorkflowStatus)
 class DefaultWorkflowStatus(object):
-    implements(IWorkflowStatus)
     adapts(IWorkflowAware, IWorkflowDefinition)
 
     def __init__(self, context, workflow):

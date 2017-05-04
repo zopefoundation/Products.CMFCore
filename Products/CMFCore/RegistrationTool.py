@@ -22,7 +22,7 @@ from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import IRegistrationTool
@@ -37,12 +37,11 @@ from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 
+@implementer(IRegistrationTool)
 class RegistrationTool(UniqueObject, SimpleItem):
 
     """ Create and modify users by making calls to portal_membership.
     """
-
-    implements(IRegistrationTool)
 
     id = 'portal_registration'
     meta_type = 'CMF Registration Tool'

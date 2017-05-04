@@ -20,7 +20,7 @@ from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IActionCategory
@@ -33,6 +33,7 @@ from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 
+@implementer(IActionsTool)
 class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                   ActionProviderBase):
 
@@ -40,8 +41,6 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         Weave together the various sources of "actions" which are apropos
         to the current user and context.
     """
-
-    implements(IActionsTool)
 
     id = 'portal_actions'
     meta_type = 'CMF Actions Tool'

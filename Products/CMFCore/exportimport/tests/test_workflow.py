@@ -18,7 +18,7 @@ import Testing
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
@@ -93,9 +93,8 @@ _FRAGMENT_IMPORT = """\
 """
 
 
+@implementer(IConfigurableWorkflowTool)
 class DummyWorkflowTool(Folder):
-
-    implements(IConfigurableWorkflowTool)
 
     meta_type = 'Dummy Workflow Tool'
 

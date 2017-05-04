@@ -20,7 +20,7 @@ from Acquisition import aq_parent
 from Acquisition import Implicit
 from OFS.OrderedFolder import OrderedFolder
 from zope.component import getSiteManager
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IActionProvider
@@ -217,9 +217,9 @@ _REMOVE_IMPORT = """\
 """
 
 
+@implementer(IActionProvider)
 class DummyTool(OrderedFolder, ActionProviderBase):
-
-    implements(IActionProvider)
+    pass
 
 
 class DummyUser(Implicit):
@@ -237,9 +237,9 @@ class DummyMembershipTool(DummyTool):
         return DummyUser().__of__(aq_parent(self))
 
 
+@implementer(IActionsTool)
 class DummyActionsTool(DummyTool):
 
-    implements(IActionsTool)
     id = 'portal_actions'
     meta_type = 'CMF Actions Tool'
 

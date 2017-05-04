@@ -23,7 +23,7 @@ from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from Persistence import PersistentMapping
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 from ZPublisher.mapply import mapply
 
 from Products.CMFCore.interfaces import IContentTypeRegistry
@@ -34,14 +34,13 @@ from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import registerToolInterface
 
 
+@implementer(IContentTypeRegistryPredicate)
 class MajorMinorPredicate(SimpleItem):
 
     """
         Predicate matching on 'major/minor' content types.
         Empty major or minor implies wildcard (all match).
     """
-
-    implements(IContentTypeRegistryPredicate)
 
     major = minor = None
     PREDICATE_TYPE = 'major_minor'
@@ -123,13 +122,12 @@ class MajorMinorPredicate(SimpleItem):
 InitializeClass(MajorMinorPredicate)
 
 
+@implementer(IContentTypeRegistryPredicate)
 class ExtensionPredicate(SimpleItem):
 
     """
         Predicate matching on filename extensions.
     """
-
-    implements(IContentTypeRegistryPredicate)
 
     extensions = None
     PREDICATE_TYPE = 'extension'
@@ -187,6 +185,7 @@ class ExtensionPredicate(SimpleItem):
 InitializeClass(ExtensionPredicate)
 
 
+@implementer(IContentTypeRegistryPredicate)
 class MimeTypeRegexPredicate(SimpleItem):
 
     """
@@ -194,8 +193,6 @@ class MimeTypeRegexPredicate(SimpleItem):
         string patterns (other objects conforming to 'match' can
         also be passed).
     """
-
-    implements(IContentTypeRegistryPredicate)
 
     pattern = None
     PREDICATE_TYPE = 'mimetype_regex'
@@ -245,6 +242,7 @@ class MimeTypeRegexPredicate(SimpleItem):
 InitializeClass(MimeTypeRegexPredicate)
 
 
+@implementer(IContentTypeRegistryPredicate)
 class NameRegexPredicate(SimpleItem):
 
     """
@@ -252,8 +250,6 @@ class NameRegexPredicate(SimpleItem):
         for string patterns (other objects conforming to 'match'
         and 'pattern' can also be passed).
     """
-
-    implements(IContentTypeRegistryPredicate)
 
     pattern = None
     PREDICATE_TYPE = 'name_regex'
@@ -319,13 +315,12 @@ for klass in (MajorMinorPredicate, ExtensionPredicate, MimeTypeRegexPredicate,
     registerPredicateType(klass.PREDICATE_TYPE, klass)
 
 
+@implementer(IContentTypeRegistry)
 class ContentTypeRegistry(SimpleItem):
 
     """
         Registry for rules which map PUT args to a CMF Type Object.
     """
-
-    implements(IContentTypeRegistry)
 
     meta_type = 'Content Type Registry'
     id = 'content_type_registry'

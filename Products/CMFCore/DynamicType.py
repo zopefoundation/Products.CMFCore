@@ -20,7 +20,7 @@ from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.defaultview import queryDefaultViewName
 
 from Products.CMFCore.Expression import getExprContext
@@ -29,14 +29,13 @@ from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
 
 
+@implementer(IDynamicType)
 class DynamicType:
 
     """
     Mixin for portal content that allows the object to take on
     a dynamic type property.
     """
-
-    implements(IDynamicType)
 
     portal_type = None
 

@@ -18,7 +18,7 @@ from five.localsitemanager.registry import PersistentComponents
 from Products.Five.component.interfaces import IObjectManagerSite
 from zope.component.interfaces import ComponentLookupError
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 from zope.traversing.interfaces import BeforeTraverseEvent
 
 from Products.CMFCore.interfaces import ISiteRoot
@@ -32,9 +32,9 @@ from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.Skinnable import SkinnableObjectManager
 
 
+@implementer(ISiteRoot, IObjectManagerSite)
 class PortalObjectBase(PortalFolder, SkinnableObjectManager):
 
-    implements(ISiteRoot, IObjectManagerSite)
     meta_type = 'Portal Site'
 
     # Ensure certain attributes come from the correct base class.

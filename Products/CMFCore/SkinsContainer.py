@@ -16,16 +16,15 @@
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from App.class_init import InitializeClass
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.exceptions import SkinPathError
 from Products.CMFCore.interfaces import ISkinsContainer
 from Products.CMFCore.permissions import AccessContentsInformation
 
 
+@implementer(ISkinsContainer)
 class SkinsContainer:
-
-    implements(ISkinsContainer)
 
     security = ClassSecurityInfo()
 

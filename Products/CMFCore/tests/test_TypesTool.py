@@ -56,12 +56,12 @@ class TypesToolTests(unittest.TestCase):
         verifyObject(IActionProvider, self._makeOne())
 
     def test_listActions_passes_all_context_information_to_TIs(self):
-        from zope.interface import implements
+        from zope.interface import implementer
         from Products.CMFCore.interfaces import ITypeInformation
         from Products.CMFCore.tests.base.dummy import DummyContent
 
+        @implementer(ITypeInformation)
         class ActionTesterTypeInfo:
-            implements(ITypeInformation)
             id = 'Dummy Content'
 
             def listActions(self, info=None, obj=None):

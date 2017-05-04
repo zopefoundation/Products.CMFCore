@@ -26,7 +26,7 @@ from DateTime import DateTime
 from OFS.Image import manage_addFile
 from zope.component import getSiteManager
 from zope.component.interfaces import IFactory
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.verify import verifyClass
 
 from Products.CMFCore.exceptions import BadRequest
@@ -51,8 +51,8 @@ def extra_meta_types():
              'permission': 'View'}]
 
 
+@implementer(ICatalogTool)
 class DummyCatalogTool:
-    implements(ICatalogTool)
 
     def __init__(self):
         self.paths = []

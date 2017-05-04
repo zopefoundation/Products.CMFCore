@@ -21,7 +21,7 @@ from ConfigParser import ConfigParser
 from StringIO import StringIO
 
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
 
 from Products.CMFCore.interfaces import ITypesTool
@@ -66,6 +66,7 @@ class FolderishDAVAwareFileAdapter(DAVAwareFileAdapter):
 #
 #   Filesystem export/import adapters
 #
+@implementer(IFilesystemExporter, IFilesystemImporter)
 class StructureFolderWalkingAdapter(object):
     """ Tree-walking exporter for "folderish" types.
 
@@ -93,8 +94,6 @@ class StructureFolderWalkingAdapter(object):
     objects that exist in the site but are NOT in the 'structure' hierarchy,
     and thus will not be recreated during the import process.
     """
-
-    implements(IFilesystemExporter, IFilesystemImporter)
 
     def __init__(self, context):
         self.context = context

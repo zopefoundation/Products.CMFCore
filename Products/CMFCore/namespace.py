@@ -16,7 +16,7 @@
 from zope.component import adapts
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 from zope.location.interfaces import LocationError
 from zope.traversing.interfaces import ITraversable
@@ -25,13 +25,13 @@ from interfaces import IFolderish
 from Products.CMFCore.interfaces import ITypesTool
 
 
+@implementer(ITraversable)
 class AddViewTraverser(object):
 
     """Add view traverser.
     """
 
     adapts(IFolderish, Interface)
-    implements(ITraversable)
 
     def __init__(self, context, request):
         self.context = context

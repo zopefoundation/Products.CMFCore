@@ -21,7 +21,7 @@ from AccessControl.SecurityManagement import newSecurityManager
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 from zope.component import getSiteManager
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
 from Products.CMFCore.exceptions import NotFound
@@ -118,9 +118,8 @@ class DummyWorkflowTool(SimpleItem):
         self.log.append('created %s' % physicalpath(obj))
 
 
+@implementer(IContentish)
 class TheClass(CMFCatalogAware, Folder):
-
-    implements(IContentish)
 
     def __init__(self, id):
         self._setId(id)

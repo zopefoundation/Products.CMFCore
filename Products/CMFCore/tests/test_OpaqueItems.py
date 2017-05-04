@@ -17,7 +17,7 @@ import unittest
 import Testing
 
 from zope.component import getSiteManager
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.interfaces import ICallableOpaqueItem
 from Products.CMFCore.interfaces import ICallableOpaqueItemEvents
@@ -45,11 +45,11 @@ def addDummyContent(container, id, opaqueItem):
     return getattr(container, id)
 
 
+@implementer(IContentish)
 class DummyContent(OriginalDummyContent):
 
     """ A Dummy piece of PortalContent with additional attributes
     """
-    implements(IContentish)
 
     def __init__(self, id='dummy', opaqueItem=None, *args, **kw):
         OriginalDummyContent.__init__(self, id, *args, **kw)
@@ -95,20 +95,17 @@ class OpaqueBase:
         return self.id
 
 
+@implementer(ICallableOpaqueItem)
 class Marker(OpaqueBase):
-
     """ Opaque item without manage_after/before hookes but marked as callable
     """
+    pass
 
-    implements(ICallableOpaqueItem)
 
-
+@implementer(ICallableOpaqueItemEvents)
 class Hooks(OpaqueBase):
-
     """ Opaque item with manage_after/before hooks but not marked as callable
     """
-
-    implements(ICallableOpaqueItemEvents)
 
     def manage_afterAdd(self, item, container):
         self.addCount = self.addCounter

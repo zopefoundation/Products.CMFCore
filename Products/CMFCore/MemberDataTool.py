@@ -29,7 +29,7 @@ from zope.component import adapts
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
-from zope.interface import implements
+from zope.interface import implementer
 from ZPublisher.Converters import type_converters
 
 from Products.CMFCore.exceptions import BadRequest
@@ -47,12 +47,11 @@ from Products.CMFCore.utils import UniqueObject
 _marker = []  # Create a new marker object.
 
 
+@implementer(IMemberDataTool)
 class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
     """ This tool wraps user objects, making them act as Member objects.
     """
-
-    implements(IMemberDataTool)
 
     id = 'portal_memberdata'
     meta_type = 'CMF Member Data Tool'
@@ -221,13 +220,13 @@ class MemberData(Persistent):
         self.id = id
 
 
+@implementer(IMember)
 class MemberAdapter(object):
 
     """Member data adapter.
     """
 
     adapts(IUser, IMemberDataTool)
-    implements(IMember)
 
     security = ClassSecurityInfo()
 

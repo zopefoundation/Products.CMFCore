@@ -29,7 +29,7 @@ from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Products.PythonScripts.PythonScript import PythonScript
 from zope.component import getUtility
 from zope.globalrequest import getRequest
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.DirectoryView import base_ignore
@@ -58,12 +58,11 @@ def modifiedOptions():
     return tuple(rval)
 
 
+@implementer(ISkinsTool)
 class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
 
     """ This tool is used to supply skins to a portal.
     """
-
-    implements(ISkinsTool)
 
     id = 'portal_skins'
     meta_type = 'CMF Skins Tool'

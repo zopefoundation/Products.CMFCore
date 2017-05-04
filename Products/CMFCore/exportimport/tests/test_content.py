@@ -917,12 +917,12 @@ four,five,six
 
 def _makeCSVAware(id):
     from OFS.SimpleItem import SimpleItem
-    from zope.interface import implements
+    from zope.interface import implementer
     from Products.CMFCore.interfaces import IDynamicType
     from Products.GenericSetup.interfaces import ICSVAware
 
+    @implementer(IDynamicType, ICSVAware)
     class _TestCSVAware(SimpleItem):
-        implements(IDynamicType, ICSVAware)
         _was_put = None
         portal_type = TEST_CSV_AWARE
 
@@ -950,12 +950,12 @@ description = %s
 
 def _makeINIAware(id):
     from OFS.SimpleItem import SimpleItem
-    from zope.interface import implements
+    from zope.interface import implementer
     from Products.CMFCore.interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IINIAware
 
+    @implementer(IDynamicType, IINIAware)
     class _TestINIAware(SimpleItem):
-        implements(IDynamicType, IINIAware)
         _was_put = None
         title = 'INI title'
         description = 'INI description'
@@ -989,12 +989,12 @@ Description: %s
 
 def _makeDAVAware(id):
     from OFS.SimpleItem import SimpleItem
-    from zope.interface import implements
+    from zope.interface import implementer
     from Products.CMFCore.interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IDAVAware
 
+    @implementer(IDynamicType, IDAVAware)
     class _TestDAVAware(SimpleItem):
-        implements(IDynamicType, IDAVAware)
         _was_put = None
         title = 'DAV title'
         description = 'DAV description'
@@ -1020,12 +1020,12 @@ def _makeDAVAware(id):
 TEST_DAV_FOLDER = 'Test DAV Folder'
 def _makeDAVAwareFolder(id):
     from Products.CMFCore.PortalFolder import PortalFolder
-    from zope.interface import implements
+    from zope.interface import implementer
     from Products.CMFCore.interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IDAVAware
 
+    @implementer(IDynamicType, IDAVAware)
     class _TestDAVAwareFolder(PortalFolder):
-        implements(IDynamicType, IDAVAware)
         _was_put = None
         body = 'DAV body'
         portal_type = TEST_DAV_FOLDER
@@ -1050,11 +1050,11 @@ TEST_CONTENT = 'Test Content'
 
 def _makeItem(self):
     from OFS.SimpleItem import SimpleItem
-    from zope.interface import implements
+    from zope.interface import implementer
     from Products.CMFCore.interfaces import IDynamicType
 
+    @implementer(IDynamicType)
     class _TestContent(SimpleItem):
-        implements(IDynamicType)
         portal_type = TEST_CONTENT
 
         def getPortalTypeName(self):

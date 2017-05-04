@@ -21,7 +21,7 @@ import os
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
@@ -176,9 +176,8 @@ class DummySite(Folder):
         self._skin_setup_called = True
 
 
+@implementer(ISkinsTool)
 class DummySkinsTool(Folder):
-
-    implements(ISkinsTool)
 
     meta_type = 'Dummy Skins Tool'
     default_skin = 'default_skin'

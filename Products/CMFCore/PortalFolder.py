@@ -26,7 +26,7 @@ from OFS.OrderSupport import OrderSupport
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.factory import Factory
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.CMFCatalogAware import OpaqueItemManager
 from Products.CMFCore.DynamicType import DynamicType
@@ -48,12 +48,11 @@ from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 
 
+@implementer(IFolderish, IMutableMinimalDublinCore)
 class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
     """Base class for portal folder.
     """
-
-    implements(IFolderish, IMutableMinimalDublinCore)
 
     security = ClassSecurityInfo()
 

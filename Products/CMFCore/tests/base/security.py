@@ -16,7 +16,7 @@
 from AccessControl.interfaces import IUser
 from AccessControl.PermissionRole import rolesForPermissionOn
 from Acquisition import Implicit
-from zope.interface import implements
+from zope.interface import implementer
 
 
 class PermissiveSecurityPolicy:
@@ -48,9 +48,8 @@ class PermissiveSecurityPolicy:
         return context.user.allowed(object, roles)
 
 
+@implementer(IUser)
 class _BaseUser(Implicit):
-
-    implements(IUser)
 
     def getId(self):
         return self._id

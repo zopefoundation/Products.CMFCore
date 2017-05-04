@@ -18,7 +18,7 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.interfaces import IUndoTool
@@ -30,12 +30,11 @@ from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
 
+@implementer(IUndoTool)
 class UndoTool(UniqueObject, SimpleItem):
 
     """ This tool is used to undo changes.
     """
-
-    implements(IUndoTool)
 
     id = 'portal_undo'
     meta_type = 'CMF Undo Tool'

@@ -29,7 +29,7 @@ from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from zope.component import getUtility
 from zope.container.interfaces import IObjectMovedEvent
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import ICachingPolicy
@@ -121,6 +121,7 @@ class CPMCache(Cache):
 InitializeClass(CPMCache)
 
 
+@implementer(ICachingPolicy)
 class CachingPolicy:
     """
         Represent a single class of cachable objects:
@@ -207,8 +208,6 @@ class CachingPolicy:
             Unfortunately these are needed to make IE behave correctly.
 
     """
-
-    implements(ICachingPolicy)
 
     def __init__(self,
                  policy_id,
@@ -450,13 +449,12 @@ class CachingPolicy:
         return headers
 
 
+@implementer(ICachingPolicyManager)
 class CachingPolicyManager(SimpleItem, CacheManager):
     """
         Manage the set of CachingPolicy objects for the site;  dispatch
         to them from skin methods.
     """
-
-    implements(ICachingPolicyManager)
 
     id = 'caching_policy_manager'
     meta_type = 'CMF Caching Policy Manager'

@@ -24,7 +24,7 @@ from zope.container.contained import notifyContainerModified
 from zope.container.contained import ObjectAddedEvent
 from zope.container.contained import ObjectRemovedEvent
 from zope.event import notify
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import IContentish
@@ -74,9 +74,9 @@ class DummyObject(Implicit):
         return self._id
 
 
+@implementer(ITypeInformation)
 class DummyType(DummyObject):
     """ A Dummy Type object """
-    implements(ITypeInformation)
 
     def __init__(self, id='Dummy Content', title='Dummy Content', actions=()):
         """ To fake out some actions, pass in a sequence of tuples where the
@@ -111,11 +111,11 @@ class DummyType(DummyObject):
         return True
 
 
+@implementer(IContentish)
 class DummyContent( PortalContent, Item ):
     """
     A Dummy piece of PortalContent
     """
-    implements(IContentish)
 
     meta_type = 'Dummy'
     portal_type = 'Dummy Content'
@@ -213,11 +213,11 @@ class DummyFactoryDispatcher:
     __allow_access_to_unprotected_subobjects__ = { 'addFoo' : 1 }
 
 
+@implementer(IObjectManager)
 class DummyFolder(DummyObject):
 
     """Dummy Container for testing.
     """
-    implements(IObjectManager)
 
     def __init__( self, id='dummy', fake_product=0, prefix='' ):
         self._prefix = prefix
@@ -279,13 +279,13 @@ class DummyFolder(DummyObject):
     def getTypeInfo(self):
         return self.portal_types.getTypeInfo(self)  # Can return None.
 
+@implementer(ISiteRoot)
 class DummySite(DummyFolder):
     """ A dummy portal folder.
     """
 
     _domain = 'http://www.foobar.com'
     _path = 'bar'
-    implements(ISiteRoot)
 
     def absolute_url(self, relative=0):
         return '/'.join( (self._domain, self._path, self._id) )

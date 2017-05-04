@@ -20,7 +20,7 @@ from OFS.SimpleItem import SimpleItem
 from zope.component import adapter
 from zope.component import getSiteManager
 from zope.component import provideHandler
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
@@ -43,9 +43,9 @@ class Dummy(SimpleItem):
         return self._id
 
 
+@implementer(IWorkflowDefinition)
 class DummyWorkflow(Dummy):
 
-    implements(IWorkflowDefinition)
     meta_type = 'DummyWorkflow'
     _isAWorkflow = 1
     _known_actions = ()
@@ -127,9 +127,9 @@ def notifyExceptionHandler(evt):
                                                    evt.exc))
 
 
+@implementer(IContentish, IWorkflowAware)
 class DummyContent(Dummy):
 
-    implements(IContentish, IWorkflowAware)
     meta_type = 'Dummy'
 
     def getPortalTypeName(self):

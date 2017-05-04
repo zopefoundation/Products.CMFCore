@@ -28,7 +28,7 @@ from App.special_dtml import HTMLFile
 from OFS.Folder import Folder
 from OFS.ObjectManager import bad_id
 from Persistence import Persistent
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSObject import BadFile
@@ -395,12 +395,11 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
             listFolderHierarchy(subob, subpath, rval, adding_meta_type)
 
 
+@implementer(IDirectoryView)
 class DirectoryView(Persistent):
 
     """ Directory views mount filesystem directories.
     """
-
-    implements(IDirectoryView)
 
     meta_type = 'Filesystem Directory View'
     _dirpath = None
@@ -438,12 +437,11 @@ class DirectoryView(Persistent):
 InitializeClass(DirectoryView)
 
 
+@implementer(IDirectoryView)
 class DirectoryViewSurrogate(Folder):
 
     """ Folderish DirectoryView.
     """
-
-    implements(IDirectoryView)
 
     meta_type = 'Filesystem Directory View'
     all_meta_types = ()

@@ -29,7 +29,7 @@ from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
 from zope.container.interfaces import IObjectMovedEvent
 from zope.globalrequest import getRequest
-from zope.interface import implements
+from zope.interface import implementer
 from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest
 
@@ -54,12 +54,12 @@ class CookieCrumblerDisabled(Exception):
     """
 
 
+@implementer(ICookieCrumbler)
 class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     """Reads cookies during traversal and simulates the HTTP auth headers.
     """
 
-    implements(ICookieCrumbler)
     id = 'cookie_authentication'
 
     manage_options = (

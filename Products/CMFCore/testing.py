@@ -19,7 +19,7 @@ from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import adapts
 from zope.component.hooks import setHooks
 from zope.i18n.interfaces import IUserPreferredLanguages
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface.verify import verifyClass
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.testing.cleanup import cleanUp
@@ -86,9 +86,9 @@ class ConformsToContent:
         verifyClass(IWorkflowAware, self._getTargetClass())
 
 
+@implementer(IUserPreferredLanguages)
 class BrowserLanguages(object):
 
-    implements(IUserPreferredLanguages)
     adapts(IHTTPRequest)
 
     def __init__(self, context):
@@ -188,9 +188,8 @@ _DUMMY_ZCML = """\
 """
 
 
+@implementer(IWorkflowDefinition)
 class DummyWorkflow(SimpleItem):
-
-    implements(IWorkflowDefinition)
 
     meta_type = 'Dummy Workflow'
 

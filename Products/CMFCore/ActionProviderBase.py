@@ -18,7 +18,7 @@ from warnings import warn
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.ActionInformation import ActionInfo
 from Products.CMFCore.ActionInformation import ActionInformation
@@ -30,12 +30,11 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import _dtmldir
 
 
+@implementer(IActionProvider)
 class ActionProviderBase:
 
     """ Provide ActionTabs and management methods for ActionProviders
     """
-
-    implements(IActionProvider)
 
     security = ClassSecurityInfo()
 

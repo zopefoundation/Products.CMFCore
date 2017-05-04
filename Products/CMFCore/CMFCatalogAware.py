@@ -27,7 +27,7 @@ from zope.component import queryUtility
 from zope.component import subscribers
 from zope.container.interfaces import IObjectAddedEvent
 from zope.container.interfaces import IObjectMovedEvent
-from zope.interface import implements
+from zope.interface import implementer
 from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
@@ -45,12 +45,11 @@ from Products.CMFCore.utils import _dtmldir
 logger = logging.getLogger('CMFCore.CMFCatalogAware')
 
 
+@implementer(ICatalogAware)
 class CatalogAware(Base):
 
     """Mix-in for notifying the catalog tool.
     """
-
-    implements(ICatalogAware)
 
     security = ClassSecurityInfo()
 
@@ -130,12 +129,11 @@ class CatalogAware(Base):
 InitializeClass(CatalogAware)
 
 
+@implementer(IWorkflowAware)
 class WorkflowAware(Base):
 
     """Mix-in for notifying the workflow tool.
     """
-
-    implements(IWorkflowAware)
 
     security = ClassSecurityInfo()
 
@@ -197,12 +195,11 @@ class WorkflowAware(Base):
 InitializeClass(WorkflowAware)
 
 
+@implementer(IOpaqueItemManager)
 class OpaqueItemManager(Base):
 
     """Mix-in for managing opaque items.
     """
-
-    implements(IOpaqueItemManager)
 
     security = ClassSecurityInfo()
 

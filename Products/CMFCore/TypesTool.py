@@ -33,7 +33,7 @@ from zope.container.contained import ObjectAddedEvent
 from zope.event import notify
 from zope.globalrequest import getRequest
 from zope.i18nmessageid import Message
-from zope.interface import implements
+from zope.interface import implementer
 from zope.lifecycleevent import ObjectCreatedEvent
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
@@ -61,12 +61,12 @@ logger = logging.getLogger('CMFCore.TypesTool')
 _marker = []  # Create a new marker.
 
 
+@implementer(IAction)
 class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
     """ Base class for information about a content type.
     """
 
-    implements(IAction)
 
     manage_options = (
         SimpleItemWithProperties.manage_options[:1] +
@@ -425,12 +425,11 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 InitializeClass(TypeInformation)
 
 
+@implementer(ITypeInformation)
 class FactoryTypeInformation(TypeInformation):
 
     """ Portal content factory.
     """
-
-    implements(ITypeInformation)
 
     security = ClassSecurityInfo()
 
@@ -575,12 +574,11 @@ class FactoryTypeInformation(TypeInformation):
 InitializeClass(FactoryTypeInformation)
 
 
+@implementer(ITypeInformation)
 class ScriptableTypeInformation(TypeInformation):
 
     """ Invokes a script rather than a factory to create the content.
     """
-
-    implements(ITypeInformation)
 
     security = ClassSecurityInfo()
 
@@ -642,13 +640,12 @@ allowedTypes = [
     ]
 
 
+@implementer(ITypesTool)
 class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                 ActionProviderBase):
 
     """ Provides a configurable registry of portal content types.
     """
-
-    implements(ITypesTool)
 
     id = 'portal_types'
     meta_type = 'CMF Types Tool'

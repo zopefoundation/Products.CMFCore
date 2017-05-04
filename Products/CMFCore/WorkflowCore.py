@@ -13,7 +13,7 @@
 """ Common pieces of the workflow architecture.
 """
 
-from zope.interface import implements
+from zope.interface import implementer
 from zope.component.interfaces import ObjectEvent
 
 from Products.CMFCore.interfaces import IWorkflowActionEvent
@@ -58,27 +58,29 @@ class ObjectMoved( Exception ):
 
 # Events
 
+@implementer(IWorkflowActionEvent)
 class WorkflowActionEvent(ObjectEvent):
-    implements(IWorkflowActionEvent)
     
     def __init__(self, object, workflow, action):
         ObjectEvent.__init__(self, object)
         self.workflow = workflow
         self.action = action
     
+@implementer(IActionWillBeInvokedEvent)
 class ActionWillBeInvokedEvent(WorkflowActionEvent):
-    implements(IActionWillBeInvokedEvent)
+    pass
 
             
+@implementer(IActionRaisedExceptionEvent)
 class ActionRaisedExceptionEvent(WorkflowActionEvent):
-    implements(IActionRaisedExceptionEvent)
+    pass
     
     def __init__(self, object, workflow, action, exc):
         WorkflowActionEvent.__init__(self, object, workflow, action)
         self.exc = exc
     
+@implementer(IActionSucceededEvent)
 class ActionSucceededEvent(WorkflowActionEvent):
-    implements(IActionSucceededEvent)
     
     def __init__(self, object, workflow, action, result):
         WorkflowActionEvent.__init__(self, object, workflow, action)

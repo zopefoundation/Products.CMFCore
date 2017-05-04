@@ -23,7 +23,7 @@ from DateTime.DateTime import DateTime
 from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
 from zope.component import queryUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
@@ -38,13 +38,12 @@ from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import UniqueObject
 
 
+@implementer(IOldstyleDiscussable)
 class OldDiscussable(Implicit):
 
     """
         Adapter for PortalContent to implement "old-style" discussions.
     """
-
-    implements(IOldstyleDiscussable)
 
     security = ClassSecurityInfo()
 
@@ -119,9 +118,8 @@ class OldDiscussable(Implicit):
 InitializeClass(OldDiscussable)
 
 
+@implementer(IOldstyleDiscussionTool)
 class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
-
-    implements(IOldstyleDiscussionTool)
 
     id = 'portal_discussion'
     meta_type = 'Oldstyle CMF Discussion Tool'
