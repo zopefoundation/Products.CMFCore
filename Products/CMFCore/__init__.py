@@ -13,6 +13,13 @@
 """ Portal services base objects
 """
 
+try:
+    import Products.ZSQLMethods
+    import FSZSQLMethod
+    HAVE_ZSQL = True
+except ImportError:
+    HAVE_ZSQL = False
+
 import PortalFolder
 import MembershipTool, WorkflowTool, CatalogTool, DiscussionTool
 import ActionsTool, UndoTool, RegistrationTool, SkinsTool
@@ -21,7 +28,6 @@ import URLTool
 import DirectoryView, FSImage, FSFile, FSPropertiesObject
 import FSDTMLMethod, FSPythonScript
 import FSPageTemplate
-import FSZSQLMethod
 import ActionInformation
 import CookieCrumbler
 import ContentTypeRegistry
@@ -114,8 +120,9 @@ def initialize(context):
                        'images/fspt.gif', globals())
     utils.registerIcon(FSPropertiesObject.FSPropertiesObject,
                        'images/fsprops.gif', globals())
-    utils.registerIcon(FSZSQLMethod.FSZSQLMethod,
-                       'images/fssqlmethod.gif', globals())
+    if HAVE_ZSQL:
+        utils.registerIcon(FSZSQLMethod.FSZSQLMethod,
+                           'images/fssqlmethod.gif', globals())
 
     utils.ToolInit( 'CMF Core Tool'
                   , tools=tools
