@@ -16,6 +16,7 @@
 import unittest
 
 from Acquisition import Implicit
+from Testing.ZopeTestCase import installProduct
 from zope.component import getSiteManager
 from zope.globalrequest import clearRequest
 from zope.globalrequest import setRequest
@@ -28,6 +29,8 @@ from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
+
+installProduct('PluginIndexes')
 
 class FakeFolder(Implicit):
     id = 'portal'

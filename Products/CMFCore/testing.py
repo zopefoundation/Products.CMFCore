@@ -13,6 +13,7 @@
 """ Unit test mixin classes and layers.
 """
 
+from OFS import bbb
 from OFS.SimpleItem import SimpleItem
 from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import adapts
@@ -32,11 +33,10 @@ class ConformsToFolder:
 
     def test_conforms_to_IWritelock(self):
         try:
-            from webdav.interfaces import IWriteLock
+            from OFS.interfaces import IWriteLock
         except ImportError:
-            self.skipTest("'webdav' not importable.")
-        else:
-            verifyClass(IWriteLock, self._getTargetClass())
+            from webdav.interfaces import IWriteLock
+        verifyClass(IWriteLock, self._getTargetClass())
 
     def test_conforms_to_IDynamicType(self):
         from Products.CMFCore.interfaces import IDynamicType
@@ -69,10 +69,11 @@ class ConformsToContent:
 
         verifyClass(ICatalogableDublinCore, self._getTargetClass())
         verifyClass(IContentish, self._getTargetClass())
-        verifyClass(IDAVAware, self._getTargetClass())
         verifyClass(IDublinCore, self._getTargetClass())
         verifyClass(IDynamicType, self._getTargetClass())
         verifyClass(IMutableDublinCore, self._getTargetClass())
+        if bbb.HAS_ZSERVER:
+            verifyClass(IDAVAware, self._getTargetClass())
 
     def test_content_extra_interfaces(self):
         # in the long run these interfaces will become deprecated
@@ -134,12 +135,13 @@ class TraversingEventZCMLLayer(ZopeLite):
 
     @classmethod
     def testSetUp(cls):
+        import OFS
         import Products.Five
         import zope.traversing
 
         zcml.load_config('meta.zcml', Products.Five)
         zcml.load_config('configure.zcml', zope.traversing)
-        zcml.load_config('event.zcml', Products.Five)
+        zcml.load_config('event.zcml', OFS)
         zcml.load_config('event.zcml', Products.CMFCore)
         zcml.load_config('tool.zcml', Products.CMFCore)
         setHooks()

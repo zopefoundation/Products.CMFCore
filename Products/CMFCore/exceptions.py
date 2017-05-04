@@ -16,13 +16,12 @@
 from AccessControl import ModuleSecurityInfo
 from AccessControl import Unauthorized as AccessControl_Unauthorized
 from OFS.CopySupport import CopyError
-try:
-    from webdav.Lockable import ResourceLockedError
-except ImportError:
-    class ResourceLockedError(Exception):
-        pass
 from zExceptions import BadRequest
 from zExceptions import NotFound
+try:
+    from zExceptions import ResourceLockedError
+except ImportError:
+    from webdav.Lockable import ResourceLockedError
 from zExceptions import Unauthorized as zExceptions_Unauthorized
 
 

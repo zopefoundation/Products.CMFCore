@@ -479,7 +479,7 @@ InitializeClass(PortalFolder)
 
 PortalFolderFactory = Factory(PortalFolder)
 
-manage_addPortalFolder = PortalFolder.manage_addPortalFolder.im_func
+manage_addPortalFolder = PortalFolder.manage_addPortalFolder.__func__
 
 
 class ContentFilter:

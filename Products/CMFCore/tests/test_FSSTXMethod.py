@@ -82,9 +82,9 @@ class _TemplateSwitcher:
         self._old_STX_TEMPLATE = Products.CMFCore.FSSTXMethod._STX_TEMPLATE
 
     def tearDown(self):
+        self._setWhichTemplate(self._old_STX_TEMPLATE)
         TransactionalTest.tearDown(self)
         FSSTXMaker.tearDown(self)
-        self._setWhichTemplate(self._old_STX_TEMPLATE)
 
     def _setWhichTemplate(self, which):
         import Products.CMFCore.FSSTXMethod
@@ -112,8 +112,8 @@ class FSSTXMethodTests(TransactionalTest, FSSTXMaker, _TemplateSwitcher):
 
     def tearDown(self):
         FSSTXMaker.tearDown(self)
-        TransactionalTest.tearDown(self)
         _TemplateSwitcher.tearDown(self)
+        TransactionalTest.tearDown(self)
 
     def test___call___with_DTML(self):
         self._setWhichTemplate('DTML')
@@ -190,8 +190,9 @@ class FSSTXMethodCustomizationTests(SecurityTest,
     def tearDown(self):
         cleanUp()
         FSSTXMaker.tearDown(self)
-        SecurityTest.tearDown(self)
         _TemplateSwitcher.tearDown(self)
+        SecurityTest.tearDown(self)
+
 
     def test_customize_alternate_root(self):
         from OFS.Folder import Folder

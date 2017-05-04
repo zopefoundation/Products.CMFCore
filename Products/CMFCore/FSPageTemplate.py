@@ -19,6 +19,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
+from OFS import bbb
 from Products.PageTemplates.PageTemplate import PageTemplate
 from Products.PageTemplates.utils import charsetFromMetaEquiv
 from Products.PageTemplates.utils import encodingFromXMLPreamble
@@ -53,8 +54,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     _owner = None  # Unowned
 
     manage_options = (
-        {'label': 'Customize', 'action': 'manage_main'},
-        {'label': 'Test', 'action': 'ZScriptHTML_tryForm'})
+        {'label': 'Customize', 'action': 'manage_main'},)
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -190,7 +190,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return 'file:%s' % self._filepath
 
     security.declarePrivate('_ZPT_exec')
-    _ZPT_exec = ZopePageTemplate._exec.im_func
+    _ZPT_exec = ZopePageTemplate._exec.__func__
 
     security.declarePrivate('_exec')
     def _exec(self, bound_names, args, kw):
@@ -247,22 +247,21 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return result
 
     # Copy over more methods
-    security.declareProtected(FTPAccess, 'manage_FTPget')
-    manage_FTPget = ZopePageTemplate.manage_FTPget.im_func
+    if bbb.HAS_ZSERVER:
+        security.declareProtected(FTPAccess, 'manage_FTPget')
+        manage_FTPget = ZopePageTemplate.manage_FTPget.__func__
 
     security.declareProtected(View, 'get_size')
-    get_size = ZopePageTemplate.get_size.im_func
+    get_size = ZopePageTemplate.get_size.__func__
     getSize = get_size
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = ZopePageTemplate.PrincipiaSearchSource.im_func
+    PrincipiaSearchSource = ZopePageTemplate.PrincipiaSearchSource.__func__
 
     security.declareProtected(ViewManagementScreens, 'document_src')
-    document_src = ZopePageTemplate.document_src.im_func
+    document_src = ZopePageTemplate.document_src.__func__
 
-    pt_getContext = ZopePageTemplate.pt_getContext.im_func
-
-    ZScriptHTML_tryParams = ZopePageTemplate.ZScriptHTML_tryParams.im_func
+    pt_getContext = ZopePageTemplate.pt_getContext.__func__
 
     source_dot_xml = Src()
 
