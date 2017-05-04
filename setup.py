@@ -20,7 +20,7 @@ README = ( _package_doc('README.txt')
          )
 
 setup(name='Products.%s' % NAME,
-      version='2.4.0.dev0',
+      version='2.4.0b1',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
@@ -46,7 +46,7 @@ setup(name='Products.%s' % NAME,
                      ],
       install_requires=[
           'setuptools',
-          'Zope2 >= 2.13.12',
+          'Zope2 >= 4.0a3',
           'docutils',
           'five.globalrequest',
           'five.localsitemanager',

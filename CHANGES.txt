@@ -1,8 +1,10 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.0 (unreleased)
-------------------
+2.4.0b1 (2017-05-04)
+--------------------
+
+- Target use with Zope 4:  no longer support 2.13.x.
 
 - Make sure RegistrationTool.addMember is not published
   [vangheem]
