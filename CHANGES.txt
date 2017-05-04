@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.3.1 (unreleased)
+3.0.0 (unreleased)
 ------------------
 
 - Make sure RegistrationTool.addMember is not published

@@ -8,7 +8,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 package = os.path.join(here, 'Products', NAME)
 
 def _package_doc(name):
-    f = open(os.path.join(package, name))
+    f = open(os.path.join(here, name))
     return f.read()
 
 _boundary = '\n' + ('-' * 60) + '\n\n'
@@ -20,7 +20,7 @@ README = ( _package_doc('README.txt')
          )
 
 setup(name='Products.%s' % NAME,
-      version=_package_doc('version.txt').strip(),
+      version='3.0.0.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
