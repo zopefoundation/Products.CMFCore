@@ -1,6 +1,9 @@
 include *.txt
+include *.cfg
+include *.py
 
 recursive-include Products *
 recursive-include docs *
 
 global-exclude *.pyc
+global-exclude *.pyo
