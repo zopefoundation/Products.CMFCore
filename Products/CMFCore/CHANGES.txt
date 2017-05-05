@@ -1,16 +1,8 @@
 Products.CMFCore Changelog
 ==========================
 
-2.2.12 (unreleased)
+2.2.12 (2017-05-05)
 -------------------
-
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
 
 Bug fixes:
 
