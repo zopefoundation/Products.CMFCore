@@ -41,6 +41,12 @@ Bug fixes:
   Part of PLIP 1343: https://github.com/plone/Products.CMFPlone/issues/1343
   [gforcada]
 
+- Remove zope.app.publication dependency.
+  [gforcada]
+
+- Remove eggtestinfo dependency.
+  [gforcada]
+
 2.2.10 (2015-09-11)
 -------------------
 
