@@ -15,7 +15,12 @@
 
 import unittest
 from Testing import ZopeTestCase
-ZopeTestCase.installProduct('ZSQLMethods', 1)
+try:
+    import Products.ZSQLMethods
+    ZopeTestCase.installProduct('ZSQLMethods', 1)
+    HAVE_ZSQL = True
+except ImportError:
+    HAVE_ZSQL = False
 
 from os.path import join
 
@@ -23,7 +28,6 @@ from Acquisition import aq_base
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.FSZSQLMethod import FSZSQLMethod
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
@@ -31,12 +35,14 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 class FSZSQLMaker(FSDVTest):
 
     def _makeOne(self, id, filename):
+        from Products.CMFCore.FSZSQLMethod import FSZSQLMethod
         path = join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()
         return FSZSQLMethod(id, path, properties=metadata.getProperties())
 
 
+@unittest.skipUnless(HAVE_ZSQL, 'Products.ZSQLMethods not installed.')
 class FSZSQLMethodTests(FSDVTest):
 
     def setUp(self):
@@ -57,6 +63,7 @@ class FSZSQLMethodTests(FSDVTest):
         self.assertFalse(zsql.allow_simple_one_argument_traversal is None)
 
 
+@unittest.skipUnless(HAVE_ZSQL, 'Products.ZSQLMethods not installed.')
 class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
 
     def setUp(self):
