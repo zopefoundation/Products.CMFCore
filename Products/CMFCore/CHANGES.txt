@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.3.1 (unreleased)
+2.3.1 (2017-05-05)
 ------------------
 
 - Improve the new indexing object wrapping for unindexing by using a
