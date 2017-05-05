@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Acquisition import Implicit
 from Products.CMFCore.indexing import getQueue
 from Products.CMFCore.indexing import INDEX
 from Products.CMFCore.indexing import IndexQueue
@@ -8,6 +9,8 @@ from Products.CMFCore.indexing import UNINDEX
 from Products.CMFCore.interfaces import IIndexing
 from Products.CMFCore.interfaces import IIndexQueue
 from Products.CMFCore.interfaces import IIndexQueueProcessor
+from Products.CMFCore.tests.base.dummy import DummyContent
+from Products.CMFCore.tests.base.dummy import DummyFolder
 from threading import currentThread
 from threading import Thread
 from time import sleep
@@ -429,3 +432,40 @@ class QueueTransactionManagerTests(TestCase):
         self.assertEqual(self.queue.getState(), [])
         self.assertEqual(self.queue.processed, [(INDEX, 'foo', None)])
         self.assertEqual(self.queue.state, 'finished')
+
+
+class FakeFolder(Implicit):
+    id = 'portal'
+
+    def getPhysicalPath(self):
+        return ('portal',)
+
+class UnindexWrapperTests(TestCase):
+
+    def setUp(self):
+        self.root = FakeFolder()
+        self.root.sub1 = DummyFolder('sub1')
+        self.root.sub1.testcontent = DummyContent('testcontent')
+        self.root.sub1.testcontent.title = 'Test Title'
+
+    def test_wrap_content(self):
+        from Products.CMFCore.indexing import wrap
+
+        unwrapped = self.root.sub1.testcontent
+        wrapped = wrap(unwrapped)
+
+        self.failUnless(unwrapped.getPhysicalPath()[-1], 'testcontent')
+        self.assertEquals(unwrapped.getPhysicalPath(), 
+                          wrapped.getPhysicalPath())
+        self.assertEquals(hash(unwrapped), hash(wrapped))
+        self.assertEquals(unwrapped.Title(), wrapped.Title())
+
+        # change the id of our test content, which changes getPhysicalPath
+        # All other attributes/methods remain unchanged
+        unwrapped.id = 'test2'
+        self.failUnless(unwrapped.getPhysicalPath()[-1], 'test2')
+        self.assertNotEquals(unwrapped.getPhysicalPath(),
+                             wrapped.getPhysicalPath())
+        self.assertEquals(hash(unwrapped), hash(wrapped))
+        self.assertEquals(unwrapped.Title(), wrapped.Title())
+

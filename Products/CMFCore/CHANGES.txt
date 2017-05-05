@@ -17,6 +17,11 @@ Bug fixes:
 - Pin GenericSetup, GS 1.9.0 requires Zope4
   [dataflake]
 
+- Improve the new indexing object wrapping for unindexing by using a 
+  module-level wrapper class based on zope.proxy instead of a class
+  at method level.
+  Some discussion available at GitHub PR #15.
+  [dataflake]
 
 2.2.11 (2017-04-01)
 -------------------

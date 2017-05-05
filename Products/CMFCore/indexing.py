@@ -11,6 +11,8 @@ from transaction import get as getTransaction
 from transaction.interfaces import ISavepointDataManager
 from zope.component import getSiteManager
 from zope.interface import implementer
+from zope.proxy import non_overridable
+from zope.proxy import ProxyBase
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 
@@ -92,6 +94,17 @@ def processQueue():
     return processed
 
 
+class PathProxy(ProxyBase):
+    
+    def __init__(self, obj):
+        super(PathProxy, self).__init__(obj)
+        self._old_path = obj.getPhysicalPath()
+
+    @non_overridable
+    def getPhysicalPath(self):
+        return self._old_path
+
+
 def wrap(obj):
     """ the indexing key, i.e. the path to the object in the case of the
         portal catalog, might have changed while the unindex operation was
@@ -105,27 +118,7 @@ def wrap(obj):
     if getattr(aq_base(obj), 'getPhysicalPath', None) is None:
         return obj
 
-    class PathWrapper(obj.__class__):
-
-        def __init__(self):
-            self.__dict__.update(
-                dict(
-                    context=obj,
-                    path=obj.getPhysicalPath(),
-                    REQUEST=getattr(obj, 'REQUEST', None)
-                )
-            )
-
-        def __getattr__(self, name):
-            return getattr(aq_inner(self.context), name)
-
-        def __hash__(self):
-            return hash(self.context)   # make the wrapper transparent...
-
-        def getPhysicalPath(self):
-            return self.path
-
-    return PathWrapper().__of__(aq_parent(obj))
+    return PathProxy(obj)
 
 
 @implementer(IIndexQueue)
