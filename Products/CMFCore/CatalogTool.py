@@ -31,6 +31,9 @@ from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 
+from Products.CMFCore.indexing import filterTemporaryItems
+from Products.CMFCore.indexing import getQueue
+from Products.CMFCore.indexing import processQueue
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IContentish
@@ -45,6 +48,16 @@ from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _mergedLocalRoles
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
+
+import os
+
+
+CATALOG_OPTIMIZATION_DISABLED = os.environ.get(
+    'CATALOG_OPTIMIZATION_DISABLED',
+    'false'
+)
+CATALOG_OPTIMIZATION_DISABLED = CATALOG_OPTIMIZATION_DISABLED.lower() in \
+    ('true', 't', 'yes', 'y', '1')
 
 
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):
@@ -187,6 +200,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             Calls ZCatalog.searchResults with extra arguments that
             limit the results to what the user is allowed to see.
         """
+        processQueue()
         user = getSecurityManager().getUser()
         kw['allowedRolesAndUsers'] = self._listAllowedRolesAndUsers(user)
 
@@ -252,6 +266,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         If you're in doubt if you should use this method or
         'searchResults' use the latter.
         """
+        processQueue()
         return ZCatalog.searchResults(self, REQUEST, **kw)
 
     def __url(self, ob):
@@ -275,20 +290,62 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     @security.private
     def indexObject(self, object):
+        if not CATALOG_OPTIMIZATION_DISABLED:
+            obj = filterTemporaryItems(object)
+            if obj is not None:
+                indexer = getQueue()
+                indexer.index(obj)
+        else:
+            self._indexObject(object)
+
+    security.declarePrivate('unindexObject')
+    def unindexObject(self, object):
+        if not CATALOG_OPTIMIZATION_DISABLED:
+            obj = filterTemporaryItems(object, checkId=False)
+            if obj is not None:
+                indexer = getQueue()
+                indexer.unindex(obj)
+        else:
+            self._unindexObject(object)
+
+    security.declarePrivate('reindexObject')
+    def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
+        # `CMFCatalogAware.reindexObject` also updates the modification date
+        # of the object for the "reindex all" case.  unfortunately, some other
+        # packages like `CMFEditions` check that date to see if the object was
+        # modified during the request, which fails when it's only set on commit
+        if not CATALOG_OPTIMIZATION_DISABLED:
+            if idxs in (None, []) and \
+                    hasattr(aq_base(object), 'notifyModified'):
+                self.notifyModified()
+            obj = filterTemporaryItems(object)
+            if obj is not None:
+                indexer = getQueue()
+                indexer.reindex(obj, idxs, update_metadata=update_metadata)
+        else:
+            self._reindexObject(
+                object,
+                idxs=idxs,
+                update_metadata=update_metadata,
+                uid=uid
+            )
+
+    security.declarePrivate('_indexObject')
+    def _indexObject(self, object):
         """Add to catalog.
         """
         url = self.__url(object)
         self.catalog_object(object, url)
 
     @security.private
-    def unindexObject(self, object):
+    def _unindexObject(self, object):
         """Remove from catalog.
         """
         url = self.__url(object)
         self.uncatalog_object(url)
 
     @security.private
-    def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
+    def _reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
         """Update catalog after object data has changed.
 
         The optional idxs argument is a list of specific indexes
