@@ -4,6 +4,28 @@ Products.CMFCore Changelog
 2.3.1 (unreleased)
 ------------------
 
+- Improve the new indexing object wrapping for unindexing by using a
+  module-level wrapper class based on zope.proxy instead of a class
+  at method level.
+  Some discussion available at GitHub PR #15.
+  [dataflake]
+
+- Queue and process indexing operations (index, reindex, unindex) at 
+  transaction boundaries. This allows to reduce redundant operations 
+  and thus improving performance.
+  Operations are processed just at transaction boundaries or whenever 
+  a catalog search is performed.
+  Part of PLIP 1343: https://github.com/plone/Products.CMFPlone/issues/1343
+  [gforcada]
+
+- Provide a ``CATALOG_OPTIMIZATION_DISABLED`` environment variable to 
+  disable any catalog optimization. This is mostly meant to be used so that 
+  tests which may need some adaptation do not break after updating to 
+  this version. Set it to ``true``, i.e. 
+  ``export CATALOG_OPTIMIZATION_DISABLED=true`` before running tests.
+  Part of PLIP 1343: https://github.com/plone/Products.CMFPlone/issues/1343
+  [gforcada]
+
 - Make sure RegistrationTool.addMember is not published
   [vangheem]
 

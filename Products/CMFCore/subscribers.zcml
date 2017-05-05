@@ -1,0 +1,47 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- See docstring on subscribers.py -->
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.objectAdded"
+      for="zope.lifecycleevent.interfaces.IObjectCreatedEvent"
+      trusted="y" />
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.objectAdded"
+      for="zope.lifecycleevent.interfaces.IObjectAddedEvent"
+      trusted="y" />
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.objectModified"
+      for="zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+      trusted="y" />
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.objectCopied"
+      for="zope.lifecycleevent.interfaces.IObjectCopiedEvent"
+      trusted="y" />
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.objectRemoved"
+      for="zope.lifecycleevent.interfaces.IObjectRemovedEvent"
+      trusted="y" />
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.objectMoved"
+      for="zope.lifecycleevent.interfaces.IObjectMovedEvent"
+      trusted="y" />
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.dispatchObjectMovedEvent"
+      for="OFS.interfaces.IItem
+           zope.lifecycleevent.interfaces.IObjectMovedEvent"
+      trusted="y" />
+
+  <subscriber
+      handler="Products.CMFCore.subscribers.objectTransitioned"
+      for="Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+      trusted="y" />
+
+</configure>
