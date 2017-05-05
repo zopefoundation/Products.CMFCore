@@ -10,6 +10,10 @@ Products.CMFCore Changelog
 - Don't fail on catalog inconsistency when doing `reindexObjectSecurity`
   [tomgross]
 
+- Pin GenericSetup, GS 1.9.0 requires Zope4
+  [dataflake]
+
+
 2.3.0 (2015-02-20)
 ------------------
 

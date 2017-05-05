@@ -54,6 +54,7 @@ setup(name='Products.%s' % NAME,
           'Products.MailHost',
           'Products.PythonScripts < 4',
           'Products.ZCTextIndex < 4',
+          'Products.GenericSetup < 1.9.0',
           'Products.ZSQLMethods',
           ],
       tests_require=[
