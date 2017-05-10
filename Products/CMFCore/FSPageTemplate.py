@@ -155,8 +155,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
     expand = 0
 
-    func_defaults = None
-    func_code = ZopePageTemplate.func_code
+    __defaults__ = func_defaults = None
+    __code__ = func_code = ZopePageTemplate.func_code
     _default_bindings = ZopePageTemplate._default_bindings
 
     security.declareProtected(View, '__call__')
