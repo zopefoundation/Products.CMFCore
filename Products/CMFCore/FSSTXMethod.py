@@ -123,16 +123,14 @@ class FSSTXMethod(FSObject):
     #
     #   "Wesleyan" interface (we need to be "methodish").
     #
-    class func_code:
+    class _func_code:
         pass
 
-    func_code = func_code()
-    func_code.co_varnames = ()
-    func_code.co_argcount = 0
-    func_code.__roles__ = ()
+    __code__ = _func_code()
+    __code__.co_varnames = ()
+    __code__.co_argcount = 0
 
-    func_defaults__roles__ = ()
-    func_defaults = ()
+    __defaults__ = ()
 
     index_html = None   # No accidental acquisition
 
