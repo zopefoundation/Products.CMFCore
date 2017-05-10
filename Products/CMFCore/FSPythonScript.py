@@ -188,8 +188,8 @@ class FSPythonScript(FSObject, Script):
         if compile:
             ps._makeFunction()
             self._v_ft = ps._v_ft
-            self.__code__ = self.func_code = ps.func_code
-            self.__defaults__ = self.func_defaults = ps.func_defaults
+            self.func_code = ps.func_code
+            self.func_defaults = ps.func_defaults
         self._body = ps._body
         self._params = ps._params
         self.title = ps.title
@@ -202,13 +202,13 @@ class FSPythonScript(FSObject, Script):
         # just in time for mapply().  Truly odd, but so is mapply(). :P
         self._updateFromFS()
         return self.__dict__.get('func_defaults', None)
-    __defaults__ = func_defaults = ComputedAttribute(func_defaults, 1)
+    func_defaults = ComputedAttribute(func_defaults, 1)
 
     def func_code(self):
         # See func_defaults.
         self._updateFromFS()
         return self.__dict__.get('func_code', None)
-    __code__ = func_code = ComputedAttribute(func_code, 1)
+    func_code = ComputedAttribute(func_code, 1)
 
     def title(self):
         # See func_defaults.

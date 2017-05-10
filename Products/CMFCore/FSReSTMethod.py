@@ -121,13 +121,13 @@ class FSReSTMethod(FSObject):
     class func_code:
         pass
 
-    __code__ = func_code = func_code()
-    __code__.co_varnames = func_code.co_varnames = ()
-    __code__.co_argcount = func_code.co_argcount = 0
+    func_code = func_code()
+    func_code.co_varnames = ()
+    func_code.co_argcount = 0
     func_code.__roles__ = ()
 
     func_defaults__roles__ = ()
-    __defaults__ = func_defaults = ()
+    func_defaults = ()
 
     index_html = None   # No accidental acquisition
 
