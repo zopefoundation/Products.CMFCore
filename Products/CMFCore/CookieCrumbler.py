@@ -176,7 +176,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         cookie login is disabled for this request, raises
         CookieCrumblerDisabled.
         """
-        if (req.__class__ is not HTTPRequest
+        if (not isinstance(req, HTTPRequest)
             or not req['REQUEST_METHOD'] in ('HEAD', 'GET', 'PUT', 'POST')
             or 'WEBDAV_SOURCE_PORT' in req.environ):
             raise CookieCrumblerDisabled
