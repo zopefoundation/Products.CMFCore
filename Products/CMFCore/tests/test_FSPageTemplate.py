@@ -77,7 +77,8 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = script.__of__(self.app)
         script()
         self.assertEqual(script.content_type, 'text/html')
-        self.assertEqual(self.RESPONSE.getHeader('content-type'), 'text/html')
+        self.assertEqual(self.RESPONSE.getHeader('content-type'), 
+                         'text/html; charset=utf-8')
 
     def test_ContentTypeOverride(self):
         script = self._makeOne('testPT_utf8', 'testPT_utf8.pt')
@@ -93,7 +94,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = script.__of__(self.app)
         script()
         self.assertEqual(self.RESPONSE.getHeader('content-type'),
-                         'text/xml')
+                         'text/xml; charset=utf-8')
 
     def test_CharsetFromFSMetadata(self):
         # testPT3 is an UTF-16 encoded file (see its .metadatafile)
