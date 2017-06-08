@@ -3,6 +3,7 @@
 *.mo
 *.pyc
 *.pyo
+*.swp
 .eggs
 .installed.cfg
 .mr.developer.cfg
