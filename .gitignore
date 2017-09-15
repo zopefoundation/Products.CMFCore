@@ -4,7 +4,7 @@
 *.pyc
 *.pyo
 *.swp
-.coverage
+.coverage*
 .eggs
 .installed.cfg
 .mr.developer.cfg
