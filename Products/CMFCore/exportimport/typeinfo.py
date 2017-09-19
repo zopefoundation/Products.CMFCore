@@ -77,7 +77,8 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
                 continue
             if child.getAttribute('name') != 'content_icon':
                 continue
-            icon = 'string:${portal_url}/%s' % self._getNodeText(child)
+            text = self._getNodeText(child)
+            icon = 'string:${portal_url}/%s' % text if text else ''
             new_child = self._doc.createElement('property')
             new_child.setAttribute('name', 'icon_expr')
             new_child.appendChild(self._doc.createTextNode(icon))
