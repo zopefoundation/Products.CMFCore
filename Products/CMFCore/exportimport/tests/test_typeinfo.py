@@ -168,6 +168,16 @@ _NORMAL_TOOL_EXPORT = """\
 </object>
 """
 
+_EXTENDED_TOOL_EXPORT = """\
+<?xml version="1.0"?>
+<object name="portal_types" meta_type="CMF Types Tool">
+ <property name="title"/>
+ <object name="foo" meta_type="Factory-based Type Information"/>
+ <object name="bar" meta_type="Scriptable Type Information"/>
+ <object name="baz" meta_type="Scriptable Type Information"/>
+</object>
+"""
+
 _FILENAME_EXPORT = """\
 <?xml version="1.0"?>
 <object name="portal_types" meta_type="CMF Types Tool">
@@ -296,6 +306,50 @@ _BAR_CMF21_IMPORT = """\
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
     url_expr="string:${object_url}/bar_edit_form"
+    icon_expr="" link_target="" visible="True">
+  <permission value="Modify portal content"/>
+ </action>
+ <action title="Contents" action_id="contents" category="object"
+    condition_expr="" url_expr="string:${object_url}/folder_contents"
+    icon_expr="" link_target="" visible="True">
+  <permission value="Access contents information"/>
+ </action>
+ <action title="Metadata" action_id="metadata" category="object"
+    condition_expr="" url_expr="string:${object_url}/metadata_edit_form"
+    icon_expr="" link_target="" visible="True">
+  <permission value="Modify portal content"/>
+ </action>
+</object>
+"""
+
+_BAZ_CMF21_IMPORT = """\
+<?xml version="1.0"?>
+<object name="%s" meta_type="Scriptable Type Information"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title">Baz</property>
+ <property name="description">Baz things</property>
+ <property name="content_icon"></property>
+ <property name="content_meta_type">Baz Thing</property>
+ <property name="permission">Add portal content</property>
+ <property name="constructor_path">make_bar</property>
+ <property name="add_view_expr">string:${folder_url}/baz_add_view</property>
+ <property name="link_target"/>
+ <property name="immediate_view">baz_view</property>
+ <property name="global_allow">True</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types">
+  <element value="foo"/>
+ </property>
+ <property name="allow_discussion">True</property>
+ <alias from="(Default)" to="baz_view"/>
+ <alias from="view" to="baz_view"/>
+ <action title="View" action_id="view" category="object" condition_expr=""
+    url_expr="string:${object_url}/baz_view"
+    icon_expr="" link_target="" visible="True">
+  <permission value="View"/>
+ </action>
+ <action title="Edit" action_id="edit" category="object" condition_expr=""
+    url_expr="string:${object_url}/baz_edit_form"
     icon_expr="" link_target="" visible="True">
   <permission value="Modify portal content"/>
  </action>
@@ -468,6 +522,7 @@ class importTypesToolTests(_TypeInfoSetup):
     _EMPTY_TOOL_EXPORT = _EMPTY_TOOL_EXPORT
     _FILENAME_EXPORT = _FILENAME_EXPORT
     _NORMAL_TOOL_EXPORT = _NORMAL_TOOL_EXPORT
+    _EXTENDED_TOOL_EXPORT = _EXTENDED_TOOL_EXPORT
 
     def test_empty_default_purge(self):
         from Products.CMFCore.exportimport.typeinfo import importTypesTool
@@ -550,15 +605,18 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertEqual(len(tool.objectIds()), 0)
 
         context = DummyImportContext(site)
-        context._files['types.xml'] = self._NORMAL_TOOL_EXPORT
+        context._files['types.xml'] = self._EXTENDED_TOOL_EXPORT
         context._files['types/foo.xml'] = _FOO_EXPORT % 'foo'
         context._files['types/bar.xml'] = _BAR_CMF21_IMPORT % 'bar'
+        context._files['types/baz.xml'] = _BAZ_CMF21_IMPORT % 'baz'
         importTypesTool(context)
 
-        self.assertEqual(len(tool.objectIds()), 2)
+        self.assertEqual(len(tool.objectIds()), 3)
         self.assertTrue('foo' in tool.objectIds())
         self.assertTrue('bar' in tool.objectIds())
+        self.assertTrue('baz' in tool.objectIds())
         self.assertEqual(tool.bar.icon_expr, 'string:${portal_url}/bar.png')
+        self.assertEqual(tool.baz.icon_expr, '')
 
     def test_normal_update(self):
         from Products.CMFCore.exportimport.typeinfo import importTypesTool

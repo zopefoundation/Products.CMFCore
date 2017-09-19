@@ -7,6 +7,9 @@ Products.CMFCore Changelog
 - remove dependency on ``five.globalrequest``, its functionality
   is provided by ``zope.globalrequest``.
 
+- Do not autogenerate `string:${portal_url}/`, when no input for
+  `content_icon` was provided.
+  [pgrunewald]
 
 2.4.0b2 (2017-05-05)
 --------------------
