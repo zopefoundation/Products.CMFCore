@@ -235,11 +235,12 @@ class MemberAdapter(object):
         self._tool = tool
         self.__parent__ = aq_parent(aq_inner(user))
         id = user.getId()
-        self._md = tool._members.setdefault(id, MemberData(id))
+        self._md = tool._members.get(id, MemberData(id))
 
     @security.private
     def notifyModified(self):
         # Links self to parent for full persistence.
+        self._tool._members[id] = self._md
         self._tool.registerMemberData(self._md, self.getId())
 
     @security.public
