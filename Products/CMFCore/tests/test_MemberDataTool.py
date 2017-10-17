@@ -157,6 +157,17 @@ class MemberAdapterTests(unittest.TestCase):
         verifyClass(IMemberData, self._getTargetClass())
         verifyClass(IUser, self._getTargetClass())
 
+    def test_init_does_not_persist_change(self):
+        user = DummyUser('bob', 'pw', ['Role'], [])
+        self._makeOne(user, self.site.portal_memberdata)
+        self.assertNotIn(user.getId(), self.site.portal_memberdata._members)
+
+    def test_notifyModified_persists_change(self):
+        user = DummyUser('bob', 'pw', ['Role'], [])
+        member = self._makeOne(user, self.site.portal_memberdata)
+        member.notifyModified()
+        self.assertIn(user.getId(), self.site.portal_memberdata._members)
+
     def test_setProperties(self):
         user = DummyUser('bob', 'pw', ['Role'], [])
         user = user.__of__(self.site.acl_users)
