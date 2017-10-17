@@ -240,7 +240,6 @@ class MemberAdapter(object):
     @security.private
     def notifyModified(self):
         # Links self to parent for full persistence.
-        self._tool._members[id] = self._md
         self._tool.registerMemberData(self._md, self.getId())
 
     @security.public
