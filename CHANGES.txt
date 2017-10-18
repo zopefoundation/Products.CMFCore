@@ -11,6 +11,10 @@ Products.CMFCore Changelog
   `content_icon` was provided.
   [pgrunewald]
 
+- Avoid writing MemberData to the member data tool until
+  properties are actually set.
+  [davisagli]
+
 2.4.0b2 (2017-05-05)
 --------------------
 
