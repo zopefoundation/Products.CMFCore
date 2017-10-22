@@ -21,7 +21,7 @@ from zope.interface import Interface
 from zope.location.interfaces import LocationError
 from zope.traversing.interfaces import ITraversable
 
-from interfaces import IFolderish
+from .interfaces import IFolderish
 from Products.CMFCore.interfaces import ITypesTool
 
 

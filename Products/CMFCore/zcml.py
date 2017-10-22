@@ -22,9 +22,9 @@ from zope.configuration.fields import Tokens
 from zope.interface import Interface
 from zope.schema import ASCIILine
 
-from DirectoryView import _dirreg
-from DirectoryView import _generateKey
-from DirectoryView import ignore
+from .DirectoryView import _dirreg
+from .DirectoryView import _generateKey
+from .DirectoryView import ignore
 
 
 class IRegisterDirectoryDirective(Interface):

@@ -13,5 +13,5 @@
 """CMFCore export / import support.
 """
 
-from content import exportSiteStructure
-from content import importSiteStructure
+from .content import exportSiteStructure
+from .content import importSiteStructure
