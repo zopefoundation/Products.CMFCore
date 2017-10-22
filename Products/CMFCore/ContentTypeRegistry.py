@@ -15,13 +15,13 @@
 
 import os
 import re
-import urllib
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from Persistence import PersistentMapping
+from six.moves import urllib
 from zope.component import getUtility
 from zope.interface import implementer
 from ZPublisher.mapply import mapply
@@ -422,7 +422,7 @@ class ContentTypeRegistry(SimpleItem):
         REQUEST['RESPONSE'].redirect(self.absolute_url()
                                      + '/manage_testRegistry'
                                      + '?testResults=Type:+%s'
-                                     % urllib.quote(typeName))
+                                     % urllib.parse.quote(typeName))
 
     #
     #   Predicate manipulation

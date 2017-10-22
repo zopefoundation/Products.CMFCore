@@ -13,7 +13,6 @@
 """ Basic portal discussion access tool.
 """
 
-import urllib
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import Implicit
@@ -36,6 +35,9 @@ from Products.CMFCore.permissions import ReplyToItem
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import UniqueObject
+
+
+from six.moves import urllib
 
 
 @implementer(IOldstyleDiscussable)
@@ -91,7 +93,7 @@ class OldDiscussable(Implicit):
         """
         ctool = queryUtility(ICatalogTool)
         if ctool is not None:
-            return ctool.searchResults(in_reply_to=urllib.unquote(
+            return ctool.searchResults(in_reply_to=urllib.parse.unquote(
                                                    '/' + self.absolute_url(1)))
 
     @security.protected(View)

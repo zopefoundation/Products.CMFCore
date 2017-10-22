@@ -14,7 +14,6 @@
 """
 
 from base64 import encodestring, decodestring
-from urllib import quote, unquote
 
 from AccessControl.Permissions import view_management_screens
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -26,6 +25,7 @@ from DateTime.DateTime import DateTime
 from OFS.interfaces import IObjectWillBeMovedEvent
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
+from six.moves.urllib.parse import quote, unquote
 from zope.component import getUtility
 from zope.container.interfaces import IObjectMovedEvent
 from zope.globalrequest import getRequest
