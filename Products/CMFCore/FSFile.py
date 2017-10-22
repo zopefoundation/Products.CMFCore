@@ -15,6 +15,7 @@
 
 import codecs
 import os
+import six
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
@@ -75,7 +76,7 @@ class FSFile(FSObject):
             # Last resort: Use the (imperfect) content type guessing
             # mechanism from OFS.Image, which ultimately uses the
             # Python mimetypes module.
-            if not isinstance(body, basestring):
+            if not isinstance(body, six.string_types):
                 body = body.data
             content_type, enc = guess_content_type(
                 getattr(file, 'filename', id), body, content_type)

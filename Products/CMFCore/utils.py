@@ -17,6 +17,7 @@ import re
 from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
+import six
 from six.moves._thread import allocate_lock
 import sys
 from warnings import warn
@@ -168,7 +169,7 @@ def tuplize(valueName, value):
         return value
     if isinstance(value, list):
         return tuple(value)
-    if isinstance(value, basestring):
+    if isinstance(value, six.string_types):
         return tuple(value.split())
     raise ValueError("%s of unsupported type" % valueName)
 
@@ -262,7 +263,7 @@ def _modifyPermissionMappings(ob, map):
     perm_info = _ac_inherited_permissions(ob, 1)
     for name, settings in map.items():
         cur_roles = rolesForPermissionOn(name, ob)
-        if isinstance(cur_roles, basestring):
+        if isinstance(cur_roles, six.string_types):
             cur_roles = [cur_roles]
         else:
             cur_roles = list(cur_roles)
@@ -340,7 +341,7 @@ def parse_etags(text,
 
     if value:
         result.append(value)
-    return apply(parse_etags, (text[l:], result))
+    return parse_etags(*(text[l:], result))
 
 def _checkConditionalGET(obj, extra_context):
     """A conditional GET is done using one or both of the request
@@ -392,7 +393,7 @@ def _checkConditionalGET(obj, extra_context):
 
     (content_mod_time, content_etag, set_last_modified_header) = ret
     if content_mod_time:
-        mod_time_secs = long(content_mod_time.timeTime())
+        mod_time_secs = int(content_mod_time.timeTime())
     else:
         mod_time_secs = None
 
@@ -406,7 +407,7 @@ def _checkConditionalGET(obj, extra_context):
         # understand the screwy date string as a lucky side effect
         # of the way they parse it).
         try:
-            if_modified_since = long(DateTime(if_modified_since).timeTime())
+            if_modified_since = int(DateTime(if_modified_since).timeTime())
         except:
             if_modified_since = None
 
@@ -721,7 +722,7 @@ def keywordsplitter(headers, names=('Subject', 'Keywords',),
     out = []
     for head in names:
         keylist = splitter(headers.get(head, ''))
-        keylist = map(lambda x: x.strip(), keylist)
+        keylist = [x.strip() for x in keylist]
         out.extend([ key for key in keylist if key ])
     return out
 
@@ -785,7 +786,7 @@ def _OldCacheHeaders(obj):
 
     RESPONSE = REQUEST.RESPONSE
     header = REQUEST.getHeader('If-Modified-Since', None)
-    last_mod = long(obj.modified().timeTime())
+    last_mod = int(obj.modified().timeTime())
 
     if header is not None:
         header = header.split(';')[0]
@@ -797,7 +798,7 @@ def _OldCacheHeaders(obj):
         # of the way they parse it).
         try:
             mod_since = DateTime(header)
-            mod_since = long(mod_since.timeTime())
+            mod_since = int(mod_since.timeTime())
         except (TypeError, DateTimeError):
             mod_since = None
 
@@ -833,7 +834,7 @@ def _FSCacheHeaders(obj):
         # of the way they parse it).
         try:
             mod_since = DateTime(header)
-            mod_since = long(mod_since.timeTime())
+            mod_since = int(mod_since.timeTime())
         except (TypeError, DateTimeError):
             mod_since = None
 

@@ -214,8 +214,8 @@ class ActionProviderBaseTests(SecurityTest):
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            old_ids = one_ids = map(idify, one.listActions())
-            another_ids = map(idify, another.listActions())
+            old_ids = one_ids = list(map(idify, one.listActions()))
+            another_ids = list(map(idify, another.listActions()))
 
             self.assertEqual(one_ids, another_ids)
 
@@ -227,8 +227,8 @@ class ActionProviderBaseTests(SecurityTest):
                                'category_0': 'quality',
                                'visible_0': 1})
 
-            one_ids = map(idify, one.listActions())
-            another_ids = map(idify, another.listActions())
+            one_ids = list(map(idify, one.listActions()))
+            another_ids = list(map(idify, another.listActions()))
         self.assertFalse(one_ids == another_ids)
         self.assertEqual(old_ids, another_ids)
 
@@ -279,7 +279,7 @@ class ActionProviderBaseTests(SecurityTest):
             INVALID_ID = 'invalid_id'
             try:
                 rval = apb.getActionInfo('object/%s' % INVALID_ID)
-            except ValueError, e:
+            except ValueError as e:
                 message = e.args[0]
                 detail = '"%s" does not offer action "%s"' % (message,
                                                               INVALID_ID)

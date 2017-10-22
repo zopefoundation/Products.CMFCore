@@ -13,6 +13,8 @@
 """CookieCrumbler tests.
 """
 
+from six import StringIO
+from six.moves.urllib.parse import quote
 import unittest
 import Testing
 
@@ -23,7 +25,6 @@ from zope.testing.cleanup import cleanUp
 
 def makerequest(root, stdout, stdin=None):
     # Customized version of Testing.makerequest.makerequest()
-    from six import StringIO
     from ZPublisher.HTTPRequest import HTTPRequest
     from ZPublisher.HTTPResponse import HTTPResponse
 
@@ -71,8 +72,6 @@ class CookieCrumblerTests(unittest.TestCase):
 
     def _makeSite(self):
         import base64
-        from six import StringIO
-        from six.moves.urllib.parse import quote
 
         from OFS.DTMLMethod import DTMLMethod
         from OFS.Folder import Folder
@@ -227,7 +226,7 @@ class CookieCrumblerTests(unittest.TestCase):
 
         bt_added = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_added.items()), 1)
-        k, v = bt_added.items()[0]
+        k, v = list(bt_added.items())[0]
         self.assertTrue(k[1].startswith(self._getTargetClass().meta_type))
         self.assertEqual(v.name, cc.id)
 

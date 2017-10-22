@@ -483,12 +483,12 @@ class CachingPolicyManagerTests(unittest.TestCase):
                            'python:"%s" in keywords.keys()' % policy_id,
                            None, 0, 0, 0, 0, '', '')
 
-        ids = tuple(map(lambda x: x[0], mgr.listPolicies()))
+        ids = tuple([x[0] for x in mgr.listPolicies()])
         self.assertEqual(ids, policy_ids)
 
         mgr._reorderPolicy('bar', 3)
 
-        ids = tuple(map(lambda x: x[0], mgr.listPolicies()))
+        ids = tuple([x[0] for x in mgr.listPolicies()])
         self.assertEqual(ids, ('foo', 'baz', 'qux', 'bar'))
 
     def _makeOneWithPolicies(self):

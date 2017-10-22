@@ -13,6 +13,7 @@
 """ Basic workflow tool.
 """
 
+import six
 import sys
 
 from AccessControl.requestmethod import postonly
@@ -374,7 +375,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         if cbt is None:
             self._chains_by_type = cbt = PersistentMapping()
 
-        if isinstance(chain, basestring):
+        if isinstance(chain, six.string_types):
             if chain == '(Default)':
                 chain = None
             else:
@@ -411,7 +412,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         """ Get the chain that applies to the given object.
         """
         cbt = self._chains_by_type
-        if isinstance(ob, basestring):
+        if isinstance(ob, six.string_types):
             pt = ob
         elif hasattr(aq_base(ob), 'getPortalTypeName'):
             pt = ob.getPortalTypeName()
@@ -516,10 +517,10 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             notify(ActionWillBeInvokedEvent(ob, w, action))
         try:
             res = func(*args, **kw)
-        except ObjectDeleted, ex:
+        except ObjectDeleted as ex:
             res = ex.getResult()
             reindex = 0
-        except ObjectMoved, ex:
+        except ObjectMoved as ex:
             res = ex.getResult()
             ob = ex.getNewObject()
         except:
@@ -528,7 +529,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                 for w in wfs:
                     w.notifyException(ob, action, exc)
                     notify(ActionRaisedExceptionEvent(ob, w, action, exc))
-                raise exc[0], exc[1], exc[2]
+                raise exc[0](exc[1]).with_traceback(exc[2])
             finally:
                 exc = None
         for w in wfs:

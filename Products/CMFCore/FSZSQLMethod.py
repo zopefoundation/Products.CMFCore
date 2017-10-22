@@ -105,7 +105,7 @@ class FSZSQLMethod(SQL, FSObject):
         try:
             connection_id = (parameters.get('connection id', '') or
                                 parameters['connection_id'])
-        except KeyError, e:
+        except KeyError as e:
             raise ValueError("The '%s' parameter is required "
                              "but was not supplied" % e)
 

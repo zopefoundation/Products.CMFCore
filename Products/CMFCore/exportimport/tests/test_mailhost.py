@@ -21,6 +21,9 @@ from Products.MailHost.interfaces import IMailHost
 
 from zope.component import getSiteManager
 
+from Zope2.App import zcml
+
+
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
@@ -51,7 +54,10 @@ _ZOPE211_EXPORT = """\
 class _MailHostSetup(BaseRegistryTests):
 
     def _initSite(self, use_changed=False):
+        import Products.MailHost
         from Products.MailHost.MailHost import MailHost
+
+        zcml.load_config('exportimport.zcml', Products.MailHost)
 
         site = Folder(id='site').__of__(self.app)
         mh = MailHost('MailHost')

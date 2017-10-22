@@ -193,7 +193,7 @@ class DynamicTypeSecurityTests(SecurityTest):
         INVALID_ID = 'invalid_id'
         try:
             foo.getActionInfo('object/%s' % INVALID_ID)
-        except ValueError, e:
+        except ValueError as e:
             message = e.args[0]
             detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)
             self.assertTrue(message.find(INVALID_ID) != -1, detail)

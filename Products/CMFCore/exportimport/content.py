@@ -17,6 +17,7 @@ from csv import reader
 from csv import writer
 import itertools
 import operator
+import six
 from six import StringIO
 from six.moves.configparser import ConfigParser
 
@@ -44,7 +45,7 @@ def importSiteStructure(context):
 
 
 def encode_if_needed(text, encoding):
-    if isinstance(text, unicode):
+    if isinstance(text, six.text_type):
         result = text.encode(encoding)
     else:
         # no need to encode;
@@ -196,7 +197,7 @@ class StructureFolderWalkingAdapter(object):
         wf_stream = StringIO(workflow_states)
 
         object_rowiter = reader(object_stream, dialect)
-        ours = filter(None, tuple(object_rowiter))
+        ours = [_f for _f in tuple(object_rowiter) if _f]
         our_ids = set([item[0] for item in ours])
 
         prior = set(context.contentIds())

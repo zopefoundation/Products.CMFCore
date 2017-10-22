@@ -14,6 +14,7 @@
 """
 
 import logging
+import six
 from warnings import warn
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -566,7 +567,7 @@ class FactoryTypeInformation(TypeInformation):
                 obj._setPortalTypeName(self.getId())
             notify(ObjectCreatedEvent(obj))
             rval = container._setObject(id, obj)
-            newid = isinstance(rval, basestring) and rval or id
+            newid = isinstance(rval, six.string_types) and rval or id
             obj = container._getOb(newid)
 
         return obj
@@ -734,7 +735,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             an object, rather than a string, attempt to look up
             the appropriate type info using its portal_type.
         """
-        if not isinstance(contentType, basestring):
+        if not isinstance(contentType, six.string_types):
             if hasattr(aq_base(contentType), 'getPortalTypeName'):
                 contentType = contentType.getPortalTypeName()
                 if contentType is None:

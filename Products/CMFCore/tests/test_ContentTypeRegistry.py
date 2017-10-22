@@ -208,10 +208,10 @@ class ContentTypeRegistryTests(unittest.TestCase):
         predIDs = ('foo', 'bar', 'baz', 'qux')
         for predID in predIDs:
             reg.addPredicate(predID, 'name_regex')
-        ids = tuple(map(lambda x: x[0], reg.listPredicates()))
+        ids = tuple([x[0] for x in reg.listPredicates()])
         self.assertEqual(ids, predIDs)
         reg.reorderPredicate('bar', 3)
-        ids = tuple(map(lambda x: x[0], reg.listPredicates()))
+        ids = tuple([x[0] for x in reg.listPredicates()])
         self.assertEqual(ids, ('foo', 'baz', 'qux', 'bar'))
 
     def test_lookup(self):
