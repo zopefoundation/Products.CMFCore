@@ -16,7 +16,7 @@
 import unittest
 import Testing
 
-from StringIO import StringIO
+from six import StringIO
 
 from Acquisition import Implicit
 from zope.component import getSiteManager

@@ -17,7 +17,7 @@ the browser request.  Skins are stored in a fixed-name subobject.
 """
 
 import logging
-from thread import get_ident
+from six.moves._thread import get_ident
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base

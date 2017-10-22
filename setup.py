@@ -55,6 +55,7 @@ setup(name='Products.%s' % NAME,
           'Products.PythonScripts',
           'Products.StandardCacheManagers',
           'Products.ZCTextIndex',
+          'six',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',

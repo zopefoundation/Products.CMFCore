@@ -20,9 +20,10 @@ from zope.component import eventtesting
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
+
 def makerequest(root, stdout, stdin=None):
     # Customized version of Testing.makerequest.makerequest()
-    from cStringIO import StringIO
+    from six import StringIO
     from ZPublisher.HTTPRequest import HTTPRequest
     from ZPublisher.HTTPResponse import HTTPResponse
 
@@ -70,8 +71,8 @@ class CookieCrumblerTests(unittest.TestCase):
 
     def _makeSite(self):
         import base64
-        import urllib
-        from cStringIO import StringIO
+        from six import StringIO
+        from six.moves.urllib.parse import quote
 
         from OFS.DTMLMethod import DTMLMethod
         from OFS.Folder import Folder
@@ -110,7 +111,7 @@ class CookieCrumblerTests(unittest.TestCase):
         req = makerequest(root, StringIO())
         self._finally = req.close
 
-        credentials = urllib.quote(
+        credentials = quote(
             base64.encodestring('abraham:pass-w').rstrip())
 
         return root, cc, req, credentials

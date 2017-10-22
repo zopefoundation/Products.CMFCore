@@ -20,8 +20,8 @@ ZopeTestCase.installProduct('PythonScripts', 1)
 import os
 import warnings
 from os.path import join
+from six.moves._thread import start_new_thread
 from sys import exc_info
-from thread import start_new_thread
 from time import sleep
 
 from Acquisition import aq_base

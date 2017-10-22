@@ -14,7 +14,7 @@
 """
 
 from base64 import encodestring, decodestring
-from urllib import quote, unquote
+from six.moves.urllib.parse import quote, unquote
 
 from AccessControl.Permissions import view_management_screens
 from AccessControl.SecurityInfo import ClassSecurityInfo

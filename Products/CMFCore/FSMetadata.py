@@ -15,7 +15,7 @@
 
 import logging
 from os.path import exists
-from ConfigParser import ConfigParser
+from six.moves.configparser import ConfigParser
 
 import re
 

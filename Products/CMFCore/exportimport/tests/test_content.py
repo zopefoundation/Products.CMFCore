@@ -16,8 +16,8 @@
 import unittest
 
 from csv import reader
-from ConfigParser import ConfigParser
-from StringIO import StringIO
+from six import StringIO
+from six.moves.configparser import ConfigParser
 
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
