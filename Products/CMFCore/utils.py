@@ -13,6 +13,12 @@
 """ Utility functions.
 """
 
+import re
+import sys
+from os import path as os_path
+from os.path import abspath
+from warnings import warn
+
 from copy import deepcopy
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
@@ -40,18 +46,12 @@ from OFS.misc_ import misc_ as misc_images
 from Products.CMFCore.exceptions import AccessControl_Unauthorized
 from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.interfaces import ICachingPolicyManager
-from os import path as os_path
-from os.path import abspath
 from six.moves._thread import allocate_lock
-from warnings import warn
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
-
-import re
-import sys
 
 
 SUBTEMPLATE = '__SUBTEMPLATE__'

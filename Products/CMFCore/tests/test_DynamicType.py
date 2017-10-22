@@ -13,6 +13,8 @@
 """ Unit tests for DynamicType module.
 """
 
+import unittest
+
 from Acquisition import Implicit
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
@@ -37,8 +39,6 @@ from zope.publisher.interfaces import IDefaultViewName
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.testing.cleanup import cleanUp
-
-import unittest
 
 
 def defineDefaultViewName(name, for_=None):

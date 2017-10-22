@@ -13,6 +13,9 @@
 """Filesystem exporter / importer adapters.
 """
 
+import itertools
+import operator
+
 from csv import reader
 from csv import writer
 from DateTime import DateTime
@@ -26,9 +29,6 @@ from six.configparser import ConfigParser
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
-
-import itertools
-import operator
 
 
 #

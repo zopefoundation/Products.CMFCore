@@ -13,11 +13,11 @@
 """Handles reading the properties for an object that comes from the filesystem.
 """
 
-from os.path import exists
-from six.configparser import ConfigParser
-
 import logging
 import re
+
+from os.path import exists
+from six.configparser import ConfigParser
 
 
 logger = logging.getLogger('CMFCore.FSMetadata')

@@ -12,6 +12,7 @@
 ##############################################################################
 """Filesystem exporter / importer adapter unit tests.
 """
+import unittest
 
 from csv import reader
 from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool
@@ -23,8 +24,6 @@ from six import StringIO
 from six.configparser import ConfigParser
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
-
-import unittest
 
 
 class SiteStructureExporterTests(unittest.TestCase):
