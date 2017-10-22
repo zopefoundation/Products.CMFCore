@@ -20,28 +20,28 @@ try:
 except ImportError:
     HAVE_ZSQL = False
 
-import PortalFolder
-import MembershipTool, WorkflowTool, CatalogTool, DiscussionTool
-import ActionsTool, UndoTool, RegistrationTool, SkinsTool
-import MemberDataTool, TypesTool
-import URLTool
-import DirectoryView, FSImage, FSFile, FSPropertiesObject
-import FSDTMLMethod, FSPythonScript
-import FSPageTemplate
-import ActionInformation
-import CookieCrumbler
-import ContentTypeRegistry
-import CachingPolicyManager
-import CMFBTreeFolder
-import utils
-from permissions import AddPortalFolders
+from . import PortalFolder
+from . import MembershipTool, WorkflowTool, CatalogTool, DiscussionTool
+from . import ActionsTool, UndoTool, RegistrationTool, SkinsTool
+from . import MemberDataTool, TypesTool
+from . import URLTool
+from . import DirectoryView, FSImage, FSFile, FSPropertiesObject
+from . import FSDTMLMethod, FSPythonScript
+from . import FSPageTemplate
+from . import ActionInformation
+from . import CookieCrumbler
+from . import ContentTypeRegistry
+from . import CachingPolicyManager
+from . import CMFBTreeFolder
+from . import utils
+from .permissions import AddPortalFolders
 
 
 # Make sure security is initialized
-import FSReSTMethod
-import FSSTXMethod
-import PortalContent
-import PortalObject
+from . import FSReSTMethod
+from . import FSSTXMethod
+from . import PortalContent
+from . import PortalObject
 
 tools = (
     MembershipTool.MembershipTool,
