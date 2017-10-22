@@ -981,7 +981,7 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         try:
             callable(*args, **kw)
-        except CopyError, e:
+        except CopyError as e:
             if ce_regex is not None:
                 pattern = re.compile(ce_regex, re.DOTALL)
                 if pattern.search(str(e)) is None:
@@ -989,7 +989,7 @@ class PortalFolderCopySupportTests(SecurityTest):
             else:
                 self.fail("Paste failed; no pattern:\n%s" % e)
 
-        except zExceptions_Unauthorized, e:
+        except zExceptions_Unauthorized as e:
             pass
         else:
             self.fail("Paste allowed unexpectedly.")

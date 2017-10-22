@@ -517,10 +517,10 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             notify(ActionWillBeInvokedEvent(ob, w, action))
         try:
             res = func(*args, **kw)
-        except ObjectDeleted, ex:
+        except ObjectDeleted as ex:
             res = ex.getResult()
             reindex = 0
-        except ObjectMoved, ex:
+        except ObjectMoved as ex:
             res = ex.getResult()
             ob = ex.getNewObject()
         except:
@@ -529,7 +529,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                 for w in wfs:
                     w.notifyException(ob, action, exc)
                     notify(ActionRaisedExceptionEvent(ob, w, action, exc))
-                raise exc[0], exc[1], exc[2]
+                raise exc[0](exc[1]).with_traceback(exc[2])
             finally:
                 exc = None
         for w in wfs:

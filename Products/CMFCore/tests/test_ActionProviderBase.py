@@ -279,7 +279,7 @@ class ActionProviderBaseTests(SecurityTest):
             INVALID_ID = 'invalid_id'
             try:
                 rval = apb.getActionInfo('object/%s' % INVALID_ID)
-            except ValueError, e:
+            except ValueError as e:
                 message = e.args[0]
                 detail = '"%s" does not offer action "%s"' % (message,
                                                               INVALID_ID)
