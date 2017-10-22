@@ -13,28 +13,10 @@
 """ Unit tests for DynamicType module.
 """
 
-import unittest
-import Testing
-
-from StringIO import StringIO
-
 from Acquisition import Implicit
-from zope.component import getSiteManager
-from zope.component import provideAdapter
-from zope.interface import alsoProvides
-from zope.interface.verify import verifyClass
-from zope.publisher.browser import BrowserView
-from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.publisher.interfaces.browser import IBrowserView
-try:
-    from zope.publisher.interfaces import IDefaultViewName
-except ImportError:  # BBB: zope.component had this before the ZTK
-    from zope.component.interfaces import IDefaultViewName
-from zope.testing.cleanup import cleanUp
-from ZPublisher.HTTPRequest import HTTPRequest
-from ZPublisher.HTTPResponse import HTTPResponse
-
 from Products.CMFCore.DynamicType import DynamicType
+from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
+from Products.CMFCore.TypesTool import TypesTool
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
@@ -43,8 +25,20 @@ from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
-from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
-from Products.CMFCore.TypesTool import TypesTool
+from ZPublisher.HTTPRequest import HTTPRequest
+from ZPublisher.HTTPResponse import HTTPResponse
+from six import StringIO
+from zope.component import getSiteManager
+from zope.component import provideAdapter
+from zope.interface import alsoProvides
+from zope.interface.verify import verifyClass
+from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces import IDefaultViewName
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IBrowserView
+from zope.testing.cleanup import cleanUp
+
+import unittest
 
 
 def defineDefaultViewName(name, for_=None):

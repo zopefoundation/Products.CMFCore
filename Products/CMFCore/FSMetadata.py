@@ -13,10 +13,10 @@
 """Handles reading the properties for an object that comes from the filesystem.
 """
 
-import logging
 from os.path import exists
-from ConfigParser import ConfigParser
+from six.configparser import ConfigParser
 
+import logging
 import re
 
 

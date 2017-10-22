@@ -17,24 +17,24 @@ import unittest
 from Testing import ZopeTestCase
 ZopeTestCase.installProduct('PythonScripts', 1)
 
-import os
-import warnings
-from os.path import join
-from sys import exc_info
-from thread import start_new_thread
-from time import sleep
-
 from Acquisition import aq_base
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
-from Products.StandardCacheManagers import RAMCacheManager
-from zope.testing.cleanup import cleanUp
-
+from os.path import join
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSPythonScript import FSPythonScript
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.StandardCacheManagers import RAMCacheManager
+from sys import exc_info
+from six._thread import start_new_thread
+from time import sleep
+from zope.testing.cleanup import cleanUp
+
+
+import os
+import warnings
 
 
 class FSPSMaker(FSDVTest):

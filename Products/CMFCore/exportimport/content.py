@@ -15,23 +15,21 @@
 
 from csv import reader
 from csv import writer
-import itertools
-import operator
-from ConfigParser import ConfigParser
-from StringIO import StringIO
-
+from DateTime import DateTime
+from Products.CMFCore.interfaces import ITypesTool
+from Products.GenericSetup.content import DAVAwareFileAdapter
+from Products.GenericSetup.content import _globtest
+from Products.GenericSetup.interfaces import IFilesystemExporter
+from Products.GenericSetup.interfaces import IFilesystemImporter
+from six import StringIO
+from six.configparser import ConfigParser
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
 
-from Products.CMFCore.interfaces import ITypesTool
-from Products.GenericSetup.content import _globtest
-from DateTime import DateTime
-from Products.GenericSetup.interfaces import IFilesystemExporter
-from Products.GenericSetup.interfaces import IFilesystemImporter
-from Products.GenericSetup.content import DAVAwareFileAdapter
-from Products.GenericSetup.content import _globtest
-from Products.CMFCore.utils import getToolByName
+import itertools
+import operator
+
 
 #
 #   setup_tool handlers

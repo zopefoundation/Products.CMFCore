@@ -13,21 +13,18 @@
 """Filesystem exporter / importer adapter unit tests.
 """
 
-import unittest
-
 from csv import reader
-from ConfigParser import ConfigParser
-from StringIO import StringIO
-
+from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool
+from Products.CMFCore.interfaces import ITypesTool
+from Products.CMFCore.testing import DummyWorkflow
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
+from six import StringIO
+from six.configparser import ConfigParser
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import ITypesTool
-from Products.GenericSetup.tests.common import DummyExportContext
-from Products.GenericSetup.tests.common import DummyImportContext
-
-from Products.CMFCore.testing import DummyWorkflow
-from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool
+import unittest
 
 
 class SiteStructureExporterTests(unittest.TestCase):
