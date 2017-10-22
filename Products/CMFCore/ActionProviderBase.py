@@ -317,7 +317,7 @@ class ActionProviderBase:
 
         """ Return a list of actions, cloned from our current list.
         """
-        return map( lambda x: x.clone(), list( self._actions ) )
+        return [x.clone() for x in list( self._actions )]
 
     @security.private
     def _extractAction( self, properties, index ):

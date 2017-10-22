@@ -72,12 +72,12 @@ class MajorMinorPredicate(SimpleItem):
         if major == 'None':
             major = None
         if type(major) is type(''):
-            major = filter(None, COMMA_SPLIT.split(major))
+            major = [_f for _f in COMMA_SPLIT.split(major) if _f]
 
         if minor == 'None':
             minor = None
         if type(minor) is type(''):
-            minor = filter(None, COMMA_SPLIT.split(minor))
+            minor = [_f for _f in COMMA_SPLIT.split(minor) if _f]
 
         self.major = major
         self.minor = minor
@@ -151,7 +151,7 @@ class ExtensionPredicate(SimpleItem):
         if extensions == 'None':
             extensions = None
         if type(extensions) is type(''):
-            extensions = filter(None, COMMA_SPLIT.split(extensions))
+            extensions = [_f for _f in COMMA_SPLIT.split(extensions) if _f]
 
         self.extensions = extensions
 
@@ -343,7 +343,7 @@ class ContentTypeRegistry(SimpleItem):
     def listPredicateTypes(self):
         """
         """
-        return map(lambda x: x[0], _predicate_types)
+        return [x[0] for x in _predicate_types]
 
     security.declareProtected(ManagePortal, 'manage_predicates')
     manage_predicates = DTMLFile('registryPredList', _dtmldir)

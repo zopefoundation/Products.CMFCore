@@ -72,11 +72,11 @@ class UndoTool(UniqueObject, SimpleItem):
         if not _checkPermission(ManagePortal, object):
             # Filter out transactions done by other members of the portal.
             user_id = getSecurityManager().getUser().getId()
-            transactions = filter(
+            transactions = tuple(filter(
                 lambda record, user_id=user_id:
                 record['user_name'].split()[-1] == user_id,
                 transactions
-                )
+                ))
         return transactions
 
     security.declarePublic('undo')
@@ -92,7 +92,7 @@ class UndoTool(UniqueObject, SimpleItem):
 
         allowed = self.listUndoableTransactionsFor( object )
 
-        for xid in map( lambda x: x['id'], allowed ):
+        for xid in [x['id'] for x in allowed]:
             xids[xid] = 1
 
         if type( transaction_info ) == type( '' ):

@@ -406,7 +406,7 @@ class MembershipTool(UniqueObject, Folder):
     def listMembers(self):
         '''Gets the list of all members.
         '''
-        return map(self.wrapUser, self.acl_users.getUsers())
+        return list(map(self.wrapUser, self.acl_users.getUsers()))
 
     @security.protected(ListPortalMembers)
     def searchMembers(self, search_param, search_term):

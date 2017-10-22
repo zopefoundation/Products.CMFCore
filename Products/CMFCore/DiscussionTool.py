@@ -103,8 +103,8 @@ class OldDiscussable(Implicit):
         ctool = queryUtility(ICatalogTool)
         if ctool is not None:
             results = self.getReplyResults()
-            rids = map(lambda x: x.data_record_id_, results)
-            objects = map(ctool.getobject, rids)
+            rids = [x.data_record_id_ for x in results]
+            objects = list(map(ctool.getobject, rids))
             return objects
 
     def quotedContents(self):

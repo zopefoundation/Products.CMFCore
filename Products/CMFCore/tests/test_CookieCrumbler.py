@@ -226,7 +226,7 @@ class CookieCrumblerTests(unittest.TestCase):
 
         bt_added = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_added.items()), 1)
-        k, v = bt_added.items()[0]
+        k, v = list(bt_added.items())[0]
         self.assertTrue(k[1].startswith(self._getTargetClass().meta_type))
         self.assertEqual(v.name, cc.id)
 

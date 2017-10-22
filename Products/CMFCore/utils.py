@@ -341,7 +341,7 @@ def parse_etags(text,
 
     if value:
         result.append(value)
-    return apply(parse_etags, (text[l:], result))
+    return parse_etags(*(text[l:], result))
 
 def _checkConditionalGET(obj, extra_context):
     """A conditional GET is done using one or both of the request
@@ -722,7 +722,7 @@ def keywordsplitter(headers, names=('Subject', 'Keywords',),
     out = []
     for head in names:
         keylist = splitter(headers.get(head, ''))
-        keylist = map(lambda x: x.strip(), keylist)
+        keylist = [x.strip() for x in keylist]
         out.extend([ key for key in keylist if key ])
     return out
 

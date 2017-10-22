@@ -661,7 +661,7 @@ class ContentFilterTests(unittest.TestCase):
         dummy = self.dummy
         self.assertTrue(cfilter(dummy))
         desc = str(cfilter)
-        lines = filter(None, desc.split('; '))
+        lines = [_f for _f in desc.split('; ') if _f]
         self.assertFalse(lines)
 
     def test_Type(self):
