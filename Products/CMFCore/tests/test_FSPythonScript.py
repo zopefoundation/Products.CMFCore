@@ -20,6 +20,7 @@ ZopeTestCase.installProduct('PythonScripts', 1)
 import os
 import warnings
 from os.path import join
+from six.moves._thread import start_new_thread
 from sys import exc_info
 from time import sleep
 
@@ -28,7 +29,6 @@ from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 from Products.StandardCacheManagers import RAMCacheManager
-from six.moves._thread import start_new_thread
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSMetadata import FSMetadata

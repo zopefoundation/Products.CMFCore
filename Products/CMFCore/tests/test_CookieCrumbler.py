@@ -71,8 +71,8 @@ class CookieCrumblerTests(unittest.TestCase):
 
     def _makeSite(self):
         import base64
-        import urllib
         from six import StringIO
+        import urllib
 
         from OFS.DTMLMethod import DTMLMethod
         from OFS.Folder import Folder

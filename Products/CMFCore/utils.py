@@ -17,8 +17,9 @@ import re
 from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
-from warnings import warn
+from six.moves._thread import allocate_lock
 import sys
+from warnings import warn
 
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
@@ -43,7 +44,6 @@ from OFS.misc_ import Misc_ as MiscImage
 from OFS.ObjectManager import UNIQUE
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
-from six.moves._thread import allocate_lock
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError

@@ -13,6 +13,7 @@
 """ Basic portal discussion access tool.
 """
 
+from six.moves import urllib
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import Implicit
@@ -35,9 +36,6 @@ from Products.CMFCore.permissions import ReplyToItem
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import UniqueObject
-
-
-from six.moves import urllib
 
 
 @implementer(IOldstyleDiscussable)
