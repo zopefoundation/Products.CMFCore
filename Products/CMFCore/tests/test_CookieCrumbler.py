@@ -14,6 +14,7 @@
 """
 
 import unittest
+import Testing
 
 from zope.component import eventtesting
 from zope.interface.verify import verifyClass
@@ -71,11 +72,11 @@ class CookieCrumblerTests(unittest.TestCase):
     def _makeSite(self):
         import base64
         import urllib
+        from six import StringIO
 
         from OFS.DTMLMethod import DTMLMethod
         from OFS.Folder import Folder
         from OFS.userfolder import UserFolder
-        from six import StringIO
 
         root = Folder()
         root.isTopLevelPrincipiaApplicationObject = 1  # User folder needs this

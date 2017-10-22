@@ -14,38 +14,35 @@
 """
 
 import re
-import sys
+from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
 from warnings import warn
+import sys
 
-from copy import deepcopy
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.Role import gather_permissions
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityInfo import ModuleSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from Acquisition import Implicit
 from Acquisition import aq_get
 from Acquisition import aq_parent
+from Acquisition import Implicit
 from Acquisition.interfaces import IAcquirer
+from App.class_init import InitializeClass
 from App.Common import package_home
 from App.Common import rfc1123_date
 from App.ImageFile import ImageFile
-from App.class_init import InitializeClass
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
 from DateTime.interfaces import DateTimeError
 from ExtensionClass import Base
+from OFS.misc_ import misc_ as misc_images
+from OFS.misc_ import Misc_ as MiscImage
 from OFS.ObjectManager import UNIQUE
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
-from OFS.misc_ import Misc_ as MiscImage
-from OFS.misc_ import misc_ as misc_images
-from Products.CMFCore.exceptions import AccessControl_Unauthorized
-from Products.CMFCore.exceptions import NotFound
-from Products.CMFCore.interfaces import ICachingPolicyManager
 from six.moves._thread import allocate_lock
 from zope.component import getUtility
 from zope.component import queryUtility
@@ -53,6 +50,9 @@ from zope.component.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 
+from Products.CMFCore.exceptions import AccessControl_Unauthorized
+from Products.CMFCore.exceptions import NotFound
+from Products.CMFCore.interfaces import ICachingPolicyManager
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 

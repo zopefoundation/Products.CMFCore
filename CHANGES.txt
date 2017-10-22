@@ -15,7 +15,7 @@ Products.CMFCore Changelog
   properties are actually set.
   [davisagli]
 
-- Python 2 / 3 compatible imports using six and organize imports in the changed files.
+- Python 2 / 3 compatible imports.
   [rudaporto]
 
 
