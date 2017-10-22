@@ -18,6 +18,9 @@ Products.CMFCore Changelog
 - Python 2 / 3 compatible imports.
   [rudaporto]
 
+- Update Products.MailHost dependency to 4.0
+  [dataflake]
+
 
 2.4.0b2 (2017-05-05)
 --------------------
