@@ -17,7 +17,7 @@ import logging
 import re
 
 from os.path import exists
-from six.configparser import ConfigParser
+from six.moves.configparser import ConfigParser
 
 
 logger = logging.getLogger('CMFCore.FSMetadata')

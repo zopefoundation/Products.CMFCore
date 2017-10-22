@@ -21,7 +21,7 @@ from Products.CMFCore.testing import DummyWorkflow
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 from six import StringIO
-from six.configparser import ConfigParser
+from six.moves.configparser import ConfigParser
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 

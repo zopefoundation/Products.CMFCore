@@ -25,7 +25,7 @@ from Products.GenericSetup.content import _globtest
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter
 from six import StringIO
-from six.configparser import ConfigParser
+from six.moves.configparser import ConfigParser
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
