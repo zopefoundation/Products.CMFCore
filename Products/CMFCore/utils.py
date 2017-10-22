@@ -393,7 +393,7 @@ def _checkConditionalGET(obj, extra_context):
 
     (content_mod_time, content_etag, set_last_modified_header) = ret
     if content_mod_time:
-        mod_time_secs = long(content_mod_time.timeTime())
+        mod_time_secs = int(content_mod_time.timeTime())
     else:
         mod_time_secs = None
 
@@ -407,7 +407,7 @@ def _checkConditionalGET(obj, extra_context):
         # understand the screwy date string as a lucky side effect
         # of the way they parse it).
         try:
-            if_modified_since = long(DateTime(if_modified_since).timeTime())
+            if_modified_since = int(DateTime(if_modified_since).timeTime())
         except:
             if_modified_since = None
 
@@ -786,7 +786,7 @@ def _OldCacheHeaders(obj):
 
     RESPONSE = REQUEST.RESPONSE
     header = REQUEST.getHeader('If-Modified-Since', None)
-    last_mod = long(obj.modified().timeTime())
+    last_mod = int(obj.modified().timeTime())
 
     if header is not None:
         header = header.split(';')[0]
@@ -798,7 +798,7 @@ def _OldCacheHeaders(obj):
         # of the way they parse it).
         try:
             mod_since = DateTime(header)
-            mod_since = long(mod_since.timeTime())
+            mod_since = int(mod_since.timeTime())
         except (TypeError, DateTimeError):
             mod_since = None
 
@@ -834,7 +834,7 @@ def _FSCacheHeaders(obj):
         # of the way they parse it).
         try:
             mod_since = DateTime(header)
-            mod_since = long(mod_since.timeTime())
+            mod_since = int(mod_since.timeTime())
         except (TypeError, DateTimeError):
             mod_since = None
 
