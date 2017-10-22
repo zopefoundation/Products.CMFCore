@@ -72,7 +72,7 @@ class CookieCrumblerTests(unittest.TestCase):
     def _makeSite(self):
         import base64
         from six import StringIO
-        import urllib
+        from six.moves.urllib.parse import quote
 
         from OFS.DTMLMethod import DTMLMethod
         from OFS.Folder import Folder
@@ -111,7 +111,7 @@ class CookieCrumblerTests(unittest.TestCase):
         req = makerequest(root, StringIO())
         self._finally = req.close
 
-        credentials = urllib.quote(
+        credentials = quote(
             base64.encodestring('abraham:pass-w').rstrip())
 
         return root, cc, req, credentials
