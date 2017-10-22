@@ -28,7 +28,7 @@ from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.StandardCacheManagers import RAMCacheManager
 from sys import exc_info
-from six._thread import start_new_thread
+from six.moves._thread import start_new_thread
 from time import sleep
 from zope.testing.cleanup import cleanUp
 

@@ -21,7 +21,7 @@ from Acquisition import aq_base
 from App.class_init import InitializeClass
 from OFS.ObjectManager import ObjectManager
 from Products.CMFCore.interfaces import ISkinsTool
-from six._thread import get_ident
+from six.moves._thread import get_ident
 from ZODB.POSException import ConflictError
 from zope.component import queryUtility
 

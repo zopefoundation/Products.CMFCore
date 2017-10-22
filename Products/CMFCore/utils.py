@@ -42,7 +42,7 @@ from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.interfaces import ICachingPolicyManager
 from os import path as os_path
 from os.path import abspath
-from six._thread import allocate_lock
+from six.moves._thread import allocate_lock
 from warnings import warn
 from zope.component import getUtility
 from zope.component import queryUtility
