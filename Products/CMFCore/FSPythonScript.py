@@ -14,6 +14,7 @@
 """
 
 from difflib import unified_diff
+from six import get_unbound_function
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import InitializeClass
@@ -124,7 +125,7 @@ class FSPythonScript(FSObject, Script):
         self._updateFromFS()
         return Script.__call__(self, *args, **kw)
 
-    _exec = PythonScript._exec.__func__
+    _exec = get_unbound_function(PythonScript._exec)
 
     security.declareProtected(ViewManagementScreens, 'getModTime')
     # getModTime defined in FSObject
@@ -161,7 +162,7 @@ class FSPythonScript(FSObject, Script):
         return self._params
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
-    manage_haveProxy = PythonScript.manage_haveProxy.__func__
+    manage_haveProxy = get_unbound_function(PythonScript.manage_haveProxy)
 
     @security.protected(ViewManagementScreens)
     def body(self):

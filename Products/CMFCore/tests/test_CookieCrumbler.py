@@ -13,6 +13,8 @@
 """CookieCrumbler tests.
 """
 
+from six import StringIO
+from six.moves.urllib.parse import quote
 import unittest
 import Testing
 
@@ -23,7 +25,6 @@ from zope.testing.cleanup import cleanUp
 
 def makerequest(root, stdout, stdin=None):
     # Customized version of Testing.makerequest.makerequest()
-    from six import StringIO
     from ZPublisher.HTTPRequest import HTTPRequest
     from ZPublisher.HTTPResponse import HTTPResponse
 
@@ -71,8 +72,6 @@ class CookieCrumblerTests(unittest.TestCase):
 
     def _makeSite(self):
         import base64
-        from six import StringIO
-        from six.moves.urllib.parse import quote
 
         from OFS.DTMLMethod import DTMLMethod
         from OFS.Folder import Folder

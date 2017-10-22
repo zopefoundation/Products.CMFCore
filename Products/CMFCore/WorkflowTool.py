@@ -13,6 +13,7 @@
 """ Basic workflow tool.
 """
 
+import six
 import sys
 
 from AccessControl.requestmethod import postonly
@@ -374,7 +375,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         if cbt is None:
             self._chains_by_type = cbt = PersistentMapping()
 
-        if isinstance(chain, basestring):
+        if isinstance(chain, six.string_types):
             if chain == '(Default)':
                 chain = None
             else:
@@ -411,7 +412,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         """ Get the chain that applies to the given object.
         """
         cbt = self._chains_by_type
-        if isinstance(ob, basestring):
+        if isinstance(ob, six.string_types):
             pt = ob
         elif hasattr(aq_base(ob), 'getPortalTypeName'):
             pt = ob.getPortalTypeName()

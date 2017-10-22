@@ -13,6 +13,7 @@
 """ Implement a shared base for tools which provide actions.
 """
 
+import six
 from warnings import warn
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -98,7 +99,7 @@ class ActionProviderBase:
 
         if action_chain:
             filtered_actions = []
-            if isinstance(action_chain, basestring):
+            if isinstance(action_chain, six.string_types):
                 action_chain = (action_chain,)
             for action_ident in action_chain:
                 sep = action_ident.rfind('/')
@@ -339,7 +340,7 @@ class ActionProviderBase:
         if category == '':
             category = 'object'
 
-        if isinstance(permissions, basestring):
+        if isinstance(permissions, six.string_types):
             permissions = ( permissions, )
 
         return ActionInformation( id=id

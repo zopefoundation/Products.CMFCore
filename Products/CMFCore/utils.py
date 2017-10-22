@@ -17,6 +17,7 @@ import re
 from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
+import six
 from six.moves._thread import allocate_lock
 import sys
 from warnings import warn
@@ -168,7 +169,7 @@ def tuplize(valueName, value):
         return value
     if isinstance(value, list):
         return tuple(value)
-    if isinstance(value, basestring):
+    if isinstance(value, six.string_types):
         return tuple(value.split())
     raise ValueError("%s of unsupported type" % valueName)
 
@@ -262,7 +263,7 @@ def _modifyPermissionMappings(ob, map):
     perm_info = _ac_inherited_permissions(ob, 1)
     for name, settings in map.items():
         cur_roles = rolesForPermissionOn(name, ob)
-        if isinstance(cur_roles, basestring):
+        if isinstance(cur_roles, six.string_types):
             cur_roles = [cur_roles]
         else:
             cur_roles = list(cur_roles)

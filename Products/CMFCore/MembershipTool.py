@@ -14,6 +14,7 @@
 """
 
 import logging
+import six
 from warnings import warn
 
 from AccessControl.requestmethod import postonly
@@ -489,7 +490,7 @@ class MembershipTool(UniqueObject, Folder):
         # Delete members in acl_users.
         acl_users = self.acl_users
         if _checkPermission(ManageUsers, acl_users):
-            if isinstance(member_ids, basestring):
+            if isinstance(member_ids, six.string_types):
                 member_ids = (member_ids,)
             member_ids = list(member_ids)
             for member_id in member_ids[:]:

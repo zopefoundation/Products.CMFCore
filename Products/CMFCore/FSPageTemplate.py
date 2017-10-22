@@ -14,6 +14,8 @@
 """
 
 import re
+import six
+from six import get_unbound_function
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -107,7 +109,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                     encoding = xml_info.group(1) or 'utf-8'
                     self.content_type = 'text/xml; charset=%s' % encoding
 
-            if not isinstance(data, unicode):
+            if not isinstance(data, six.text_type):
                 if encoding is None:
                     charset = getattr(self, 'charset', None)
 
@@ -136,10 +138,10 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                 for enc in preferred:
                     try:
                         data = unicode(data, enc)
-                        if isinstance(data, unicode):
+                        if isinstance(data, six.text_type):
                             break
                     except UnicodeDecodeError:
-                            continue
+                        continue
                 else:
                     data = unicode(data)
 
@@ -190,7 +192,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return 'file:%s' % self._filepath
 
     security.declarePrivate('_ZPT_exec')
-    _ZPT_exec = ZopePageTemplate._exec.__func__
+    _ZPT_exec = get_unbound_function(ZopePageTemplate._exec)
 
     @security.private
     def _exec(self, bound_names, args, kw):
@@ -249,19 +251,19 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     # Copy over more methods
     if bbb.HAS_ZSERVER:
         security.declareProtected(FTPAccess, 'manage_FTPget')
-        manage_FTPget = ZopePageTemplate.manage_FTPget.__func__
+        manage_FTPget = get_unbound_function(ZopePageTemplate.manage_FTPget)
 
     security.declareProtected(View, 'get_size')
-    get_size = ZopePageTemplate.get_size.__func__
+    get_size = get_unbound_function(ZopePageTemplate.get_size)
     getSize = get_size
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = ZopePageTemplate.PrincipiaSearchSource.__func__
+    PrincipiaSearchSource = get_unbound_function(ZopePageTemplate.PrincipiaSearchSource)
 
     security.declareProtected(ViewManagementScreens, 'document_src')
-    document_src = ZopePageTemplate.document_src.__func__
+    document_src = get_unbound_function(ZopePageTemplate.document_src)
 
-    pt_getContext = ZopePageTemplate.pt_getContext.__func__
+    pt_getContext = get_unbound_function(ZopePageTemplate.pt_getContext)
 
     source_dot_xml = Src()
 

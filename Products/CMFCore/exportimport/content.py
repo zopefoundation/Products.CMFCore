@@ -17,6 +17,7 @@ from csv import reader
 from csv import writer
 import itertools
 import operator
+import six
 from six import StringIO
 from six.moves.configparser import ConfigParser
 
@@ -44,7 +45,7 @@ def importSiteStructure(context):
 
 
 def encode_if_needed(text, encoding):
-    if isinstance(text, unicode):
+    if isinstance(text, six.text_type):
         result = text.encode(encoding)
     else:
         # no need to encode;

@@ -14,6 +14,7 @@
 """
 
 import unittest
+import six
 import Testing
 
 from zope.component import getSiteManager
@@ -56,7 +57,7 @@ class DummyContent(OriginalDummyContent):
         if opaqueItem is None:
             self.opaqueItem = 'noncallable'
             self.opaqueItemsId = 'opaqueItem'
-        elif isinstance(opaqueItem, basestring):
+        elif isinstance(opaqueItem, six.string_types):
             Hooks(self, opaqueItem)
             self.opaqueItemsId = opaqueItem
         else:
