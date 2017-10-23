@@ -429,8 +429,7 @@ class MembershipTool(UniqueObject, Folder):
         else:
             local_roles = [ role for role in member_roles
                             if role not in ('Member', 'Authenticated') ]
-        local_roles.sort()
-        return tuple(local_roles)
+        return tuple(sorted(local_roles))
 
     @security.protected(View)
     @postonly

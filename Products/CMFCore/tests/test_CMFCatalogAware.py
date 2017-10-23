@@ -183,8 +183,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         cat = self.ctool
         cat.setObs([foo, bar, hop])
         foo.reindexObjectSecurity()
-        l = list(cat.log)
-        l.sort()
+        l = sorted(cat.log)
         self.assertEqual(l, [
             "reindex /site/foo %s" % str(CMF_SECURITY_INDEXES),
             "reindex /site/foo/bar %s" % str(CMF_SECURITY_INDEXES),

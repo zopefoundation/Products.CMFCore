@@ -259,8 +259,7 @@ class ActionProviderBase:
 
         """ Move the specified actions up one slot in our list.
         """
-        sels = list( map( int, selections ) )  # Convert to a list of integers.
-        sels.sort()
+        sels = sorted( map( int, selections ) )  # Convert to list of ints
 
         new_actions = self._cloneActions()
 
@@ -286,8 +285,7 @@ class ActionProviderBase:
 
         """ Move the specified actions down one slot in our list.
         """
-        sels = list( map( int, selections ) )  # Convert to a list of integers.
-        sels.sort()
+        sels = sorted(list( map( int, selections ) ))  # Convert to list of ints
         sels.reverse()
 
         new_actions = self._cloneActions()

@@ -60,10 +60,9 @@ class FactoryTypeInformationAddView(AddWithPresettingsViewBase):
                     obj_ids.append(obj_id)
                 if not obj_ids:
                     continue
-                obj_ids.sort()
                 profiles.append({'id': info['id'],
                                  'title': info['title'],
-                                 'obj_ids': tuple(obj_ids)})
+                                 'obj_ids': tuple(sorted(obj_ids))})
         return tuple(profiles)
 
     def _initSettings(self, obj, profile_id, obj_path):

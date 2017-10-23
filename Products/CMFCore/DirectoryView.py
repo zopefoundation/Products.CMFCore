@@ -351,8 +351,7 @@ class DirectoryRegistry:
         return self._directories.get(reg_key, None)
 
     def listDirectories(self):
-        dirs = self._directories.keys()
-        dirs.sort()
+        dirs = sorted(self._directories.keys())
         return dirs
 
 

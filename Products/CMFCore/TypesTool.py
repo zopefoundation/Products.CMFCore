@@ -790,8 +790,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             if name:
                 typenames[name] = None
 
-        result = typenames.keys()
-        result.sort()
+        result = sorted(typenames.keys())
         return result
 
     @security.public
@@ -847,8 +846,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             aliases = ti.getMethodAliases()
             for k in aliases.keys():
                 _dict[k] = 1
-        rval = _dict.keys()
-        rval.sort()
+        rval = sorted(_dict.keys())
         return rval
 
 InitializeClass(TypesTool)

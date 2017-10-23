@@ -200,8 +200,7 @@ class DummySkinsTool(Folder):
         return 'portal_skins'
 
     def getSkinPaths(self):
-        result = list(self._selections.items())
-        result.sort()
+        result = sorted(self._selections.items())
         return result
 
     def addSkinSelection(self, skinname, skinpath, test=0, make_default=0):

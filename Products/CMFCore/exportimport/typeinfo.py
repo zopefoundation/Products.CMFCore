@@ -86,8 +86,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
 
     def _extractAliases(self):
         fragment = self._doc.createDocumentFragment()
-        aliases = self.context.getMethodAliases().items()
-        aliases.sort()
+        aliases = sorted(self.context.getMethodAliases().items())
         for k, v in aliases:
             child = self._doc.createElement('alias')
             child.setAttribute('from', k)

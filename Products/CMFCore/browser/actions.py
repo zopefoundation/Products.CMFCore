@@ -49,10 +49,9 @@ class ActionAddView(AddWithPresettingsViewBase):
                     if node.nodeName != 'object':
                         continue
                     obj_ids += self._extractChildren(node)
-                obj_ids.sort()
                 profiles.append({'id': info['id'],
                                  'title': info['title'],
-                                 'obj_ids': tuple(obj_ids)})
+                                 'obj_ids': tuple(sorted(obj_ids))})
         return tuple(profiles)
 
     def _extractChildren(self, node):

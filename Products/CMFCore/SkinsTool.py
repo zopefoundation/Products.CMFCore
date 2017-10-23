@@ -283,9 +283,8 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         '''
         sels = self._getSelections()
         rval = []
-        for key, value in sels.items():
+        for key, value in sorted(sels.items()):
             rval.append((key, value))
-        rval.sort()
         return rval
 
     #
@@ -296,8 +295,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         """ Get the sorted list of available skin names.
         """
         sels = self._getSelections()
-        rval = list(sels.keys())
-        rval.sort()
+        rval = sorted(sels.keys())
         return rval
 
     @security.protected(View)
