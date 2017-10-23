@@ -82,7 +82,7 @@ def registerDirectory(_context, name, directory=None, recursive=False,
 def cleanUp():
     global _directory_regs
     for reg_key in _directory_regs:
-        for key in _dirreg._directories.keys():
+        for key in list(_dirreg._directories.keys()):
             if key.startswith(reg_key):
                 del _dirreg._directories[key]
     _directory_regs = []

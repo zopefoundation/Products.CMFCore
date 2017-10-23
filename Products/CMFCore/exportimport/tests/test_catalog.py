@@ -84,7 +84,7 @@ class _CatalogToolSetup(BaseRegistryTests):
             ctool._delObject(obj_id)
         for idx_id in ctool.indexes():
             ctool.delIndex(idx_id)
-        for col in ctool.schema()[:]:
+        for col in list(ctool.schema()):
             ctool.delColumn(col)
 
         if foo > 0:

@@ -234,7 +234,7 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
                        'url_expr': 'url_expr',
                        'condition_expr': 'available_expr',
                        'visible': 'visible'}
-            for old, new in mapping.iteritems():
+            for old, new in mapping.items():
                 newchild = doc.createElement('property')
                 newchild.setAttribute('name', new)
                 newsub = doc.createTextNode(child.getAttribute(old))
