@@ -108,7 +108,9 @@ Products.CMFCore Changelog
   'smtp_queue_directory' exports (newly added in GenericSetup).
 
 - tools: Converted all tools into local utilities.
-
+  The registration is not done here, see CMFDefault_ as an example of a
+  registration via GenericSetup.
+  
 - MemberDataTool: Changed property modes to 'w' and added 'fullname' property.
 
 - setup handlers: Improved content type registry handler.
@@ -211,6 +213,7 @@ Products.CMFCore Changelog
 
 - Require at least Zope 2.13.12.
 
+.. _CMFDefault : https://github.com/zopefoundation/Products.CMFDefault/blob/master/Products/CMFDefault/profiles/default/componentregistry.xml
 
 2.2.5 (2011-11-01)
 ------------------
