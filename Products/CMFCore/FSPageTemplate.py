@@ -137,13 +137,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
                 for enc in preferred:
                     try:
-                        data = unicode(data, enc)
+                        data = six.text_type(data, enc)
                         if isinstance(data, six.text_type):
                             break
                     except UnicodeDecodeError:
                         continue
                 else:
-                    data = unicode(data)
+                    data = six.text_type(data)
 
             self.write(data)
 
