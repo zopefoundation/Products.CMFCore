@@ -30,7 +30,7 @@ Products.CMFCore Changelog
   egg specifying the ``zsql`` extra.
   [dataflake]
 
-- use zope.interface.implementer decorator instead of 
+- use zope.interface.implementer decorator instead of
   zope.interface.implements
   [dataflake]
 
@@ -43,18 +43,18 @@ Products.CMFCore Changelog
   Some discussion available at GitHub PR #15.
   [dataflake]
 
-- Queue and process indexing operations (index, reindex, unindex) at 
-  transaction boundaries. This allows to reduce redundant operations 
+- Queue and process indexing operations (index, reindex, unindex) at
+  transaction boundaries. This allows to reduce redundant operations
   and thus improving performance.
-  Operations are processed just at transaction boundaries or whenever 
+  Operations are processed just at transaction boundaries or whenever
   a catalog search is performed.
   Part of PLIP 1343: https://github.com/plone/Products.CMFPlone/issues/1343
   [gforcada]
 
-- Provide a ``CATALOG_OPTIMIZATION_DISABLED`` environment variable to 
-  disable any catalog optimization. This is mostly meant to be used so that 
-  tests which may need some adaptation do not break after updating to 
-  this version. Set it to ``true``, i.e. 
+- Provide a ``CATALOG_OPTIMIZATION_DISABLED`` environment variable to
+  disable any catalog optimization. This is mostly meant to be used so that
+  tests which may need some adaptation do not break after updating to
+  this version. Set it to ``true``, i.e.
   ``export CATALOG_OPTIMIZATION_DISABLED=true`` before running tests.
   Part of PLIP 1343: https://github.com/plone/Products.CMFPlone/issues/1343
   [gforcada]
@@ -110,7 +110,7 @@ Products.CMFCore Changelog
 - tools: Converted all tools into local utilities.
   The registration is not done here, see CMFDefault_ as an example of a
   registration via GenericSetup.
-  
+
 - MemberDataTool: Changed property modes to 'w' and added 'fullname' property.
 
 - setup handlers: Improved content type registry handler.
