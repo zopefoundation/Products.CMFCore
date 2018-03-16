@@ -7,33 +7,34 @@ NAME = 'CMFCore'
 here = os.path.abspath(os.path.dirname(__file__))
 package = os.path.join(here, 'Products', NAME)
 
+
 def _package_doc(name):
     f = open(os.path.join(here, name))
     return f.read()
 
+
 _boundary = '\n' + ('-' * 60) + '\n\n'
-README = ( _package_doc('README.txt')
-         + _boundary
-         + _package_doc('CHANGES.txt')
-         + _boundary
-         + "Download\n========"
-         )
+README = _boundary.join([
+    _package_doc('README.txt'),
+    _package_doc('CHANGES.txt'),
+    "Download\n========",
+])
 
 setup(name='Products.%s' % NAME,
       version='2.4.0b3.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Framework :: Plone",
-        "Framework :: Zope2",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: Zope Public License",
-        "Programming Language :: Python",
-        "Topic :: Software Development",
-        "Topic :: Software Development :: Libraries :: Application Frameworks",
-        ],
-      keywords='web application server zope zope2 cmf',
+          "Development Status :: 5 - Production/Stable",
+          "Framework :: Plone",
+          "Framework :: Zope2",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: Zope Public License",
+          "Programming Language :: Python",
+          "Topic :: Software Development",
+          "Topic :: Software Development :: Libraries :: Application Frameworks",  # noqa
+      ],
+      keywords='web application server zope cmf',
       author="Zope Foundation and Contributors",
       author_email="zope-cmf@zope.org",
       url="http://pypi.python.org/pypi/Products.CMFCore",
@@ -42,8 +43,9 @@ setup(name='Products.%s' % NAME,
       include_package_data=True,
       namespace_packages=['Products'],
       zip_safe=False,
-      setup_requires=['eggtestinfo',
-                     ],
+      setup_requires=[
+          'eggtestinfo',
+      ],
       install_requires=[
           'setuptools',
           'Zope2 >= 4.0a3',
