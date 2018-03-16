@@ -17,7 +17,6 @@ _boundary = '\n' + ('-' * 60) + '\n\n'
 README = _boundary.join([
     _package_doc('README.txt'),
     _package_doc('CHANGES.txt'),
-    "Download\n========",
 ])
 
 setup(name='Products.%s' % NAME,
@@ -37,7 +36,7 @@ setup(name='Products.%s' % NAME,
       keywords='web application server zope cmf',
       author="Zope Foundation and Contributors",
       author_email="zope-cmf@zope.org",
-      url="http://pypi.python.org/pypi/Products.CMFCore",
+      url="https://github.com/zopefoundation/Products.CMFCore",
       license="ZPL 2.1 (http://www.zope.org/Resources/License/ZPL-2.1)",
       packages=find_packages(),
       include_package_data=True,
