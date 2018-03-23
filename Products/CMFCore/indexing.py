@@ -95,7 +95,7 @@ def processQueue():
 
 
 class PathProxy(ProxyBase):
-    
+
     def __init__(self, obj):
         super(PathProxy, self).__init__(obj)
         self._old_path = obj.getPhysicalPath()
@@ -325,4 +325,4 @@ class QueueTM(local):
     abort = tpc_abort
 
     def sortKey(self):
-        return id(self)
+        return str(id(self))
