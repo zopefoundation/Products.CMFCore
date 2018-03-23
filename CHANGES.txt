@@ -6,6 +6,8 @@ Products.CMFCore Changelog
 
 - Fix Python 3 compatibility.
   [ale-rt]
+- sortKey for a DataManager must be text to be sortable.
+  [pbauer]
 
 
 2.4.0b3 (2018-03-16)
