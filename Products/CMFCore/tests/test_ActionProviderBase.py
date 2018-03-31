@@ -54,11 +54,12 @@ class DummyAction:
     def clone(self):
         return self.__class__(self.value)
 
-    def __cmp__(self, other):
-        return (cmp(type(self), type(other))
-                or cmp(self.__class__, other.__class__)
-                or cmp(self.value, other.value)
-                or 0)
+    def __eq__(self, other):
+        return (
+            type(self) == type(other) and
+            self.__class__ == other.__class__ and
+            self.value == other.value
+        )
 
 
 class ActionProviderBaseTests(SecurityTest):
