@@ -271,7 +271,7 @@ class QueueTests(CleanUp, TestCase):
 
         queue.setState([(REINDEX, 'A', ('a', 'b'), 1), (REINDEX, 'A', ('b', 'c'), 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', ['a', 'c', 'b'], 1)])
+        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', ['a', 'b', 'c'], 1)])
 
         queue.setState([(INDEX, 'A', None, None), (REINDEX, 'A', None, 1)])
         queue.optimize()
@@ -455,7 +455,7 @@ class UnindexWrapperTests(TestCase):
         wrapped = wrap(unwrapped)
 
         self.failUnless(unwrapped.getPhysicalPath()[-1], 'testcontent')
-        self.assertEquals(unwrapped.getPhysicalPath(), 
+        self.assertEquals(unwrapped.getPhysicalPath(),
                           wrapped.getPhysicalPath())
         self.assertEquals(hash(unwrapped), hash(wrapped))
         self.assertEquals(unwrapped.Title(), wrapped.Title())

@@ -95,7 +95,7 @@ def processQueue():
 
 
 class PathProxy(ProxyBase):
-    
+
     def __init__(self, obj):
         super(PathProxy, self).__init__(obj)
         self._old_path = obj.getPhysicalPath()
@@ -189,7 +189,7 @@ class IndexQueue(local):
                 # and takes precedence
                 if attr and iattr and isinstance(attr, (tuple, list)) and \
                         isinstance(iattr, (tuple, list)):
-                    attr = list(set(attr).union(iattr))
+                    attr = sorted(set(attr).union(iattr))
                 else:
                     attr = []
 
