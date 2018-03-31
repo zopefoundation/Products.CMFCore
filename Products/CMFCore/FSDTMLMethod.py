@@ -153,7 +153,11 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
             if 'content_type' in self.__dict__:
                 c = self.content_type
             else:
-                c, _e = guess_content_type(self.getId(), r)
+                if six.PY2:
+                    c, _e = guess_content_type(self.getId(), r)
+                else:
+                    c, _e = guess_content_type(self.getId(), r.encode())
+
             RESPONSE.setHeader('Content-Type', c)
         if RESPONSE is not None:
             # caching policy manager hook
