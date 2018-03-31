@@ -1,3 +1,4 @@
+# coding=utf-8
 ##############################################################################
 #
 # Copyright (c) 2005 Zope Foundation and Contributors.
@@ -231,10 +232,14 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser = ConfigParser()
         parser.readfp(StringIO(text))
 
-        self.assertEqual(parser.get('DEFAULT', 'title'),
-            ITEMS_TITLE.encode('utf8'))
-        self.assertEqual(parser.get('DEFAULT', 'description'),
-            ITEMS_DESCRIPTION.encode('utf8'))
+        self.assertEqual(
+            parser.get('DEFAULT', 'title'),
+            'Actualité',
+        )
+        self.assertEqual(
+            parser.get('DEFAULT', 'description'),
+            'Actualité récentes',
+        )
 
     def test_export_site_with_exportable_simple_items(self):
         self._setUpAdapters()
@@ -282,14 +287,14 @@ class SiteStructureExporterTests(unittest.TestCase):
         ITEM_IDS = ('foo', 'bar', 'baz')
 
         site = _makeFolder('site', site_folder=True)
-        
+
         site._setObject('portal_workflow', self._makeWorkflowTool())
         wftool = site.portal_workflow
         wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
         wftool.foo_workflow.state_var = "state"
         wftool.setDefaultChain('foo_workflow')
         wftool.setChainForPortalTypes((TEST_INI_AWARE,), 'foo_workflow', verify=False)
-        
+
         site.title = 'AAA'
         site.description = 'DESCRIPTION'
         for id in ITEM_IDS:
@@ -355,10 +360,14 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser = ConfigParser()
         parser.readfp(StringIO(text))
 
-        self.assertEqual(parser.get('DEFAULT', 'title'),
-            ITEMS_TITLE.encode('utf8'))
-        self.assertEqual(parser.get('DEFAULT', 'description'),
-            ITEMS_DESCRIPTION.encode('utf8'))
+        self.assertEqual(
+            parser.get('DEFAULT', 'title'),
+            'Actualité',
+        )
+        self.assertEqual(
+            parser.get('DEFAULT', 'description'),
+            'Actualité récentes',
+        )
 
     def test_export_site_with_exportable_simple_items_unicode_latin1(self):
         self._setUpAdapters()
@@ -404,10 +413,14 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser = ConfigParser()
         parser.readfp(StringIO(text))
 
-        self.assertEqual(parser.get('DEFAULT', 'title'),
-            ITEMS_TITLE.encode('latin1'))
-        self.assertEqual(parser.get('DEFAULT', 'description'),
-            ITEMS_DESCRIPTION.encode('latin1'))
+        self.assertEqual(
+            parser.get('DEFAULT', 'title'),
+            u'Actualité',
+        )
+        self.assertEqual(
+            parser.get('DEFAULT', 'description'),
+            'Actualité récentes',
+        )
 
     def test_export_site_with_subfolders(self):
         self._setUpAdapters()
@@ -480,7 +493,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         context = DummyExportContext(site)
         exporter = self._getExporter()
         exporter(context)
-        
+
         filename, text, content_type = context._wrote[-1]
         self.assertEqual(filename, 'structure/foo/.properties')
         self.assertEqual(content_type, 'text/plain')
@@ -639,7 +652,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         content = site.contentValues()
         self.assertEqual(len(content), len(FOLDER_IDS))
         self.assertEqual(content[0].title, "Sub Folder Title")
-                
+
     def test_import_site_with_subitems(self):
         self._setUpAdapters()
         ITEM_IDS = ('foo', 'bar', 'baz')
@@ -669,14 +682,14 @@ class SiteStructureExporterTests(unittest.TestCase):
         ITEM_IDS = ('foo', 'bar', 'baz')
 
         site = _makeFolder('site', site_folder=True)
-        
+
         site._setObject('portal_workflow', self._makeWorkflowTool())
         wftool = site.portal_workflow
         wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
         wftool.foo_workflow.state_var = "state"
         wftool.setDefaultChain('foo_workflow')
         wftool.setChainForPortalTypes((TEST_INI_AWARE,), 'foo_workflow', verify=False)
-        
+
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
                             ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
@@ -1106,7 +1119,7 @@ def _makeFolder(id, site_folder=False):
         ttool._setObject(TEST_FOLDER, _TypeInfo(TEST_FOLDER))
         ttool._setObject(TEST_DAV_FOLDER, _TypeInfo(TEST_DAV_FOLDER))
         getSiteManager().registerUtility(ttool, ITypesTool)
-    
+
     return folder
 
 

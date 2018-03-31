@@ -13,7 +13,8 @@
 """ Cookie Crumbler: Enable cookies for non-cookie user folders.
 """
 
-from base64 import encodestring, decodestring
+import base64
+import six
 from six.moves.urllib.parse import quote, unquote
 
 from AccessControl.Permissions import view_management_screens
@@ -197,7 +198,12 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 attempt = ATTEMPT_LOGIN
                 name = req[self.name_cookie]
                 pw = req[self.pw_cookie]
-                ac = encodestring('%s:%s' % (name, pw)).rstrip()
+                if six.PY2:
+                    base64.encodestring('%s:%s' % (name, pw)).rstrip()
+                else:
+                    ac = base64.encodebytes(
+                        ('%s:%s' % (name, pw)).encode()
+                    ).rstrip().decode()
                 self._setAuthHeader(ac, req, resp)
                 if req.get(self.persist_cookie, 0):
                     # Persist the user name (but not the pw or session)
@@ -221,7 +227,10 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 ac = unquote(req[self.auth_cookie])
                 if ac and ac != 'deleted':
                     try:
-                        decodestring(ac)
+                        if six.PY2:
+                            base64.decodestring(ac)
+                        else:
+                            base64.decodebytes(ac.encode())
                     except:
                         # Not a valid auth header.
                         pass
@@ -244,7 +253,6 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             attempt = self.modifyRequest(req, resp)
         except CookieCrumblerDisabled:
             return
-
         if attempt != ATTEMPT_NONE:
             # Trying to log in or resume a session
             if self.cache_header_value:
@@ -266,7 +274,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         if request is None:
             request = getRequest() # BBB for Membershiptool
         reponse = request['RESPONSE']
-        ac = encodestring('%s:%s' % (name, pw)).rstrip()
+        ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
         method = self.getCookieMethod('setAuthCookie',
                                        self.defaultSetAuthCookie)
         method(reponse, self.auth_cookie, quote(ac))

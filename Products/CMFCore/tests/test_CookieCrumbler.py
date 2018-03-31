@@ -13,10 +13,10 @@
 """CookieCrumbler tests.
 """
 
+import six
 from six import StringIO
 from six.moves.urllib.parse import quote
 import unittest
-import Testing
 
 from zope.component import eventtesting
 from zope.interface.verify import verifyClass
@@ -43,7 +43,7 @@ def makerequest(root, stdout, stdin=None):
 class CookieCrumblerTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.CookieCrumbler  import CookieCrumbler
+        from Products.CMFCore.CookieCrumbler import CookieCrumbler
         return CookieCrumbler
 
     def _makeOne(self, *args, **kw):
@@ -77,9 +77,12 @@ class CookieCrumblerTests(unittest.TestCase):
         from OFS.Folder import Folder
         from OFS.userfolder import UserFolder
 
-        root = Folder()
+        class TestFolder(Folder):
+            def getPhysicalPath(self):
+                return ()
+
+        root = TestFolder()
         root.isTopLevelPrincipiaApplicationObject = 1  # User folder needs this
-        root.getPhysicalPath = lambda: ()  # hack
         root._View_Permission = ('Anonymous',)
 
         users = UserFolder()
@@ -110,8 +113,14 @@ class CookieCrumblerTests(unittest.TestCase):
         req = makerequest(root, StringIO())
         self._finally = req.close
 
-        credentials = quote(
-            base64.encodestring('abraham:pass-w').rstrip())
+        if six.PY2:
+            credentials = quote(
+                base64.encodestring('abraham:pass-w').rstrip()
+            )
+        else:
+            credentials = quote(
+                base64.encodebytes(b'abraham:pass-w').rstrip()
+            )
 
         return root, cc, req, credentials
 

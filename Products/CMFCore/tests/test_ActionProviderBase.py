@@ -201,9 +201,10 @@ class ActionProviderBaseTests(SecurityTest):
 
         apb = self._makeProvider()
         apb._actions = tuple(map(DummyAction, ['0', '1', '2']))
+        highander_action = apb._actions[1]  # There can be only one
         apb.deleteActions(selections=(0, 2))
         self.assertEqual(len(apb._actions), 1)
-        self.assertTrue(DummyAction('1') in apb._actions)
+        self.assertTrue(highander_action in apb._actions)
 
     def test_DietersNastySharingBug(self):
 

@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.test_FSSecurity import MetadataChecker

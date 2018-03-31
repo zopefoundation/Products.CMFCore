@@ -225,6 +225,35 @@ class ActionInfo(UserDict):
         c._lazy_keys = self._lazy_keys[:]
         return c
 
+    def update(*args, **kwargs):
+        if not args:
+            raise TypeError("descriptor 'update' of 'UserDict' object "
+                            "needs an argument")
+        self = args[0]
+        args = args[1:]
+        if len(args) > 1:
+            raise TypeError('expected at most 1 arguments, got %d' % len(args))
+        if args:
+            dict = args[0]
+        elif 'dict' in kwargs:
+            dict = kwargs.pop('dict')
+            import warnings
+            warnings.warn("Passing 'dict' as keyword argument is deprecated",
+                          PendingDeprecationWarning, stacklevel=2)
+        else:
+            dict = None
+        if dict is None:
+            pass
+        elif isinstance(dict, UserDict):
+            self.data.update(dict.data)
+        elif isinstance(dict, type({})) or not hasattr(dict, 'items'):
+            self.data.update(dict)
+        else:
+            for k, v in dict.items():
+                self[k] = v
+        if len(kwargs):
+            self.data.update(kwargs)
+
     def _checkPermissions(self, ec):
         """ Check permissions in the current context.
         """
