@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
@@ -29,7 +28,7 @@ from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
 from Products.CMFCore.interfaces import ICachingPolicyManager
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
-_CP_XML = """\
+_CP_XML = b"""\
 <caching-policy name="foo_policy" enable_304s="False" etag_func=""
    last_modified="True" max_age_secs="0" mtime_func="object/modified"
    must_revalidate="False" no_cache="False" no_store="False"
@@ -37,8 +36,8 @@ _CP_XML = """\
    proxy_revalidate="False" public="False" vary=""/>
 """
 
-_CPM_BODY = """\
-<?xml version="1.0"?>
+_CPM_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="caching_policy_manager" meta_type="CMF Caching Policy Manager">
  <caching-policy name="foo_policy" enable_304s="False" etag_func=""
     last_modified="True" max_age_secs="600" mtime_func="object/modified"
@@ -165,7 +164,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'cachingpolicymgr.xml')
-        self._compareDOM(text, self._EMPTY_EXPORT)
+        self._compareDOM(text.decode('utf8'), self._EMPTY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_policy(self):
@@ -179,7 +178,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'cachingpolicymgr.xml')
-        self._compareDOM(text, self._WITH_POLICY_EXPORT)
+        self._compareDOM(text.decode('utf8'), self._WITH_POLICY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
