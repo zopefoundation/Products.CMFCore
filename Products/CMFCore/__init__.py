@@ -15,7 +15,7 @@
 
 try:
     import Products.ZSQLMethods
-    import FSZSQLMethod
+    from . import FSZSQLMethod
     HAVE_ZSQL = True
 except ImportError:
     HAVE_ZSQL = False
@@ -63,7 +63,7 @@ _EXTRA_CONSTRUCTORS = (PortalFolder.manage_addPortalFolder,
 
 # Because persistent objects may be out there which were
 # created when the module was in that product, we need
-# __module_aliases__ . 
+# __module_aliases__ .
 __module_aliases__ = ( ( 'Products.BTreeFolder2.CMFBTreeFolder'
                        , 'Products.CMFCore.CMFBTreeFolder'
                        )
