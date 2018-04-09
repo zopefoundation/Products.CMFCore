@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import os
 
@@ -73,7 +72,7 @@ class FSFileTests(TransactionalTest, FSDVTest):
         _path, ref = self._extractFile('test_file.swf')
         file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
-        self.assertEqual(len(str(file)), len(ref))
+        self.assertEqual(len(str(file)), len(str(ref)))
 
     def test_index_html(self):
         path, ref = self._extractFile('test_file.swf')

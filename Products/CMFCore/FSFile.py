@@ -76,8 +76,7 @@ class FSFile(FSObject):
             # Last resort: Use the (imperfect) content type guessing
             # mechanism from OFS.Image, which ultimately uses the
             # Python mimetypes module.
-            if not isinstance(body, six.string_types) and \
-                    getattr(body, 'data', None) is not None:
+            if not isinstance(body, (six.string_types, six.binary_type)):
                 body = body.data
             content_type, enc = guess_content_type(
                 getattr(file, 'filename', id), body, content_type)
