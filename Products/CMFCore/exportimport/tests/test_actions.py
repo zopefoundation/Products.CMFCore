@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from Acquisition import aq_parent
 from Acquisition import Implicit
@@ -34,7 +33,7 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-_ACTION_XML = """\
+_ACTION_XML = b"""\
 <object name="foo_action" meta_type="CMF Action">
  <property name="title">Foo</property>
  <property name="description"></property>
@@ -47,7 +46,7 @@ _ACTION_XML = """\
 </object>
 """
 
-_ACTIONCATEGORY_XML = """\
+_ACTIONCATEGORY_XML = b"""\
 <object name="foo_category" meta_type="CMF Action Category">
  <property name="title"></property>
  <object name="foo_action" meta_type="CMF Action">
@@ -63,8 +62,8 @@ _ACTIONCATEGORY_XML = """\
 </object>
 """
 
-_ACTIONSTOOL_BODY = """\
-<?xml version="1.0"?>
+_ACTIONSTOOL_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="portal_actions" meta_type="CMF Actions Tool"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
  <action-provider name="portal_actions"/>
@@ -84,7 +83,7 @@ _ACTIONSTOOL_BODY = """\
 </object>
 """
 
-_EMPTY_EXPORT = """\
+_EMPTY_EXPORT = b"""\
 <?xml version="1.0"?>
 <object name="portal_actions" meta_type="CMF Actions Tool"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
@@ -92,7 +91,7 @@ _EMPTY_EXPORT = """\
 </object>
 """
 
-_OLD_EXPORT = """\
+_OLD_EXPORT = b"""\
 <?xml version="1.0"?>
 <object name="portal_actions" meta_type="CMF Actions Tool"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
@@ -126,7 +125,7 @@ _OLD_EXPORT = """\
 """
 
 _NORMAL_EXPORT = """\
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <object name="portal_actions" meta_type="CMF Actions Tool"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
  <action-provider name="portal_actions">
@@ -142,7 +141,7 @@ _NORMAL_EXPORT = """\
 </object>
 """
 
-_NEWSYTLE_EXPORT = """\
+_NEWSYTLE_EXPORT = b"""\
 <?xml version="1.0"?>
 <object name="portal_actions" meta_type="CMF Actions Tool"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
@@ -406,7 +405,7 @@ class exportActionProvidersTests(_ActionSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'actions.xml')
-        self._compareDOM(text, _EMPTY_EXPORT)
+        self._compareDOM(text.decode('utf8'), _EMPTY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
@@ -429,7 +428,7 @@ class exportActionProvidersTests(_ActionSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'actions.xml')
-        self._compareDOM(text, _NORMAL_EXPORT)
+        self._compareDOM(text.decode('utf-8'), _NORMAL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
@@ -536,7 +535,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'actions.xml')
-        self._compareDOM(text, _NEWSYTLE_EXPORT)
+        self._compareDOM(text.decode('utf8'), _NEWSYTLE_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_i18n(self):
@@ -563,7 +562,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'actions.xml')
-        self._compareDOM(text, _I18N_IMPORT)
+        self._compareDOM(text.decode('utf8'), _I18N_IMPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_insert_skip_purge(self):
