@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
@@ -30,8 +29,8 @@ from Products.CMFCore.interfaces import IWorkflowTool
 from Products.CMFCore.testing import DummyWorkflow
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
-_WORKFLOWTOOL_BODY = """\
-<?xml version="1.0"?>
+_WORKFLOWTOOL_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="portal_workflow" meta_type="CMF Workflow Tool">
  <property name="title"></property>
  <object name="foo_workflow" meta_type="Dummy Workflow"/>
@@ -144,7 +143,7 @@ class DummyWorkflowTool(Folder):
             if wf is not None:
                 res.append(wf)
         return res
-    
+
     def setStatusOf(self, workflow_id, ob, state):
         if workflow_id not in self._states:
             self._states[workflow_id] = {}
@@ -153,7 +152,7 @@ class DummyWorkflowTool(Folder):
 
     def getStatusOf(self, workflow_id, ob):
         return self._states[workflow_id][ob]
-    
+
     def updateRoleMappingsFor(self, ob):
         return NotImplemented
 
@@ -203,7 +202,7 @@ class exportWorkflowToolTests(_WorkflowSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'workflows.xml')
-        self._compareDOM(text, _EMPTY_TOOL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _EMPTY_TOOL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
@@ -224,7 +223,7 @@ class exportWorkflowToolTests(_WorkflowSetup):
         self.assertEqual(len(context._wrote), 2)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'workflows.xml')
-        self._compareDOM(text, _NORMAL_TOOL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _NORMAL_TOOL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
