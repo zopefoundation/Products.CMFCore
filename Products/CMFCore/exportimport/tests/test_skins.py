@@ -34,13 +34,13 @@ from Products.CMFCore.testing import ExportImportZCMLLayer
 
 _TESTS_PATH = os.path.split(__file__)[0]
 
-_DIRECTORYVIEW_XML = """\
+_DIRECTORYVIEW_XML = b"""\
 <object name="foo_directoryview" meta_type="Filesystem Directory View"
    directory="Products.CMFCore.exportimport.tests:one"/>
 """
 
-_SKINSTOOL_BODY = """\
-<?xml version="1.0"?>
+_SKINSTOOL_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="portal_skins" meta_type="CMF Skins Tool" allow_any="False"
    cookie_persistence="False" default_skin="" request_varname="portal_skin">
  <object name="foo_directoryview" meta_type="Filesystem Directory View"
@@ -331,7 +331,7 @@ class exportSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'skins.xml')
-        self._compareDOM(text, _EMPTY_EXPORT)
+        self._compareDOM(text.decode('utf8'), _EMPTY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
@@ -353,7 +353,7 @@ class exportSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'skins.xml')
-        self._compareDOM(text, _NORMAL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _NORMAL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
