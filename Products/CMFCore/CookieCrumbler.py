@@ -199,7 +199,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 name = req[self.name_cookie]
                 pw = req[self.pw_cookie]
                 if six.PY2:
-                    base64.encodestring('%s:%s' % (name, pw)).rstrip()
+                    ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
                 else:
                     ac = base64.encodebytes(
                         ('%s:%s' % (name, pw)).encode()
