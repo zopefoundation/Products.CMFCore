@@ -18,6 +18,7 @@ import unittest
 
 from csv import reader
 from six import StringIO
+from six import binary_type
 from six.moves.configparser import ConfigParser
 
 from zope.component import getSiteManager
@@ -29,6 +30,12 @@ from Products.GenericSetup.tests.common import DummyImportContext
 
 from Products.CMFCore.testing import DummyWorkflow
 from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool
+
+
+def safe_bytes(value, encoding='utf8'):
+    if isinstance(value, binary_type):
+        return value
+    return value.encode(encoding)
 
 
 class SiteStructureExporterTests(unittest.TestCase):
@@ -233,12 +240,12 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser.readfp(StringIO(text))
 
         self.assertEqual(
-            parser.get('DEFAULT', 'title'),
-            'Actualité',
+            safe_bytes(parser.get('DEFAULT', 'title')),
+            ITEMS_TITLE.encode('utf8'),
         )
         self.assertEqual(
-            parser.get('DEFAULT', 'description'),
-            'Actualité récentes',
+            safe_bytes(parser.get('DEFAULT', 'description')),
+            ITEMS_DESCRIPTION.encode('utf8'),
         )
 
     def test_export_site_with_exportable_simple_items(self):
@@ -361,12 +368,12 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser.readfp(StringIO(text))
 
         self.assertEqual(
-            parser.get('DEFAULT', 'title'),
-            'Actualité',
+            safe_bytes(parser.get('DEFAULT', 'title')),
+            ITEMS_TITLE.encode('utf8'),
         )
         self.assertEqual(
-            parser.get('DEFAULT', 'description'),
-            'Actualité récentes',
+            safe_bytes(parser.get('DEFAULT', 'description')),
+            ITEMS_DESCRIPTION.encode('utf8'),
         )
 
     def test_export_site_with_exportable_simple_items_unicode_latin1(self):
@@ -414,12 +421,12 @@ class SiteStructureExporterTests(unittest.TestCase):
         parser.readfp(StringIO(text))
 
         self.assertEqual(
-            parser.get('DEFAULT', 'title'),
-            u'Actualité',
+            safe_bytes(parser.get('DEFAULT', 'title'), 'latin1'),
+            ITEMS_TITLE.encode('latin1'),
         )
         self.assertEqual(
-            parser.get('DEFAULT', 'description'),
-            'Actualité récentes',
+            safe_bytes(parser.get('DEFAULT', 'description'), 'latin1'),
+            ITEMS_DESCRIPTION.encode('latin1'),
         )
 
     def test_export_site_with_subfolders(self):

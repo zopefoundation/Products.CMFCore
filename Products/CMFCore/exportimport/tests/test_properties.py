@@ -14,6 +14,7 @@
 """Site properties xml adapter and setup handler unit tests.
 """
 
+import six
 import unittest
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
@@ -75,12 +76,15 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         obj._setProperty('foo_boolean', False, 'boolean')
 
     def _verifyImport(self, obj):
-        self.assertEqual(type(obj.title), str)
+        self.assertIsInstance(obj.title, str)
         self.assertEqual(obj.title, 'Foo')
-        self.assertEqual(type(obj.foo_string), str)
+        self.assertIsInstance(obj.foo_string, str)
         self.assertEqual(obj.foo_string, 'foo')
-        self.assertEqual(type(obj.bar_string), str)
-        self.assertEqual(obj.bar_string, u'B\xe4r')
+        self.assertIsInstance(obj.bar_string, str)
+        self.assertEqual(
+            obj.bar_string,
+            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r'
+        )
         self.assertEqual(type(obj.foo_boolean), bool)
         self.assertEqual(obj.foo_boolean, False)
 
@@ -242,7 +246,11 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         site = self._initSite(foo=0, bar=0)
         site._updateProperty('title', NONASCII)
 
-        self.assertEqual(site.title, NONASCII)
+        self.assertIsInstance(site.title, str)
+        self.assertEqual(
+            site.title,
+            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r',
+        )
 
         # export the site properties
         context = DummyExportContext(site)
@@ -258,7 +266,10 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         context._files['properties.xml'] = text
         importSiteProperties(context)
 
-        self.assertEqual(site.title, NONASCII)
+        self.assertEqual(
+            site.title,
+            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r',
+        )
 
 
 def test_suite():
