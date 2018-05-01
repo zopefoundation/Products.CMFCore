@@ -38,7 +38,10 @@ class PropertiesXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
     def _exportNode(self):
         """Export the object as a DOM node.
         """
-        self._encoding = self.context.getProperty('default_charset', 'utf-8')
+        self._encoding = self.context.getProperty(
+            'default_charset',
+            self._encoding,
+        )
 
         node = self._doc.createElement('site')
         node.appendChild(self._extractProperties())
@@ -49,19 +52,16 @@ class PropertiesXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
     def _importNode(self, node):
         """Import the object from the DOM node.
         """
-        self._encoding = self.context.getProperty('default_charset', 'utf-8')
-
         for child in node.childNodes:
             if child.nodeName != 'property':
                 continue
             if child.getAttribute('name') != 'default_charset':
                 continue
-            self._encoding = self._getNodeText(child) or 'utf-8'
+            self._encoding = self._getNodeText(child) or self._encoding
             break
 
         if self.environ.shouldPurge():
             self._purgeProperties()
-
         self._initProperties(node)
 
         self._logger.info('Site properties imported.')

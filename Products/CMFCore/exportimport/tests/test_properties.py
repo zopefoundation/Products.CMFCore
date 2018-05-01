@@ -76,15 +76,14 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         obj._setProperty('foo_boolean', False, 'boolean')
 
     def _verifyImport(self, obj):
+        self.assertIsInstance(obj.default_charset, str)
+        self.assertEqual(obj.default_charset, 'iso-8859-1')
         self.assertIsInstance(obj.title, str)
         self.assertEqual(obj.title, 'Foo')
         self.assertIsInstance(obj.foo_string, str)
         self.assertEqual(obj.foo_string, 'foo')
         self.assertIsInstance(obj.bar_string, str)
-        self.assertEqual(
-            obj.bar_string,
-            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r'
-        )
+        self.assertEqual(obj.bar_string, 'B\xe4r')
         self.assertEqual(type(obj.foo_boolean), bool)
         self.assertEqual(obj.foo_boolean, False)
 
