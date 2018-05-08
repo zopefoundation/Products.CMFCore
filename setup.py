@@ -20,7 +20,7 @@ README = _boundary.join([
 ])
 
 setup(name='Products.%s' % NAME,
-      version='2.4.0.dev0',
+      version='3.0.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
@@ -31,7 +31,9 @@ setup(name='Products.%s' % NAME,
           "License :: OSI Approved :: Zope Public License",
           "Programming Language :: Python :: 2",
           "Programming Language :: Python :: 2.7",
-          "Programming Language :: Python :: 2 :: Only",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.5",
+          "Programming Language :: Python :: 3.6",
           "Programming Language :: Python :: Implementation :: CPython",
           "Topic :: Software Development :: Libraries :: Application Frameworks",  # noqa
       ],
