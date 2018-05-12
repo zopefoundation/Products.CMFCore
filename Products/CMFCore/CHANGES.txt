@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.2.13 (unreleased)
 -------------------
 
+Bug fixes:
+
+- Fix notifyModified called on a wrong object. PR #44
+  [mamico]
 
 2.2.12 (2017-05-05)
 -------------------
