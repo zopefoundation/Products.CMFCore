@@ -6,6 +6,8 @@ Products.CMFCore Changelog
 
 - Fix Python 3 compatibility.
   [ale-rt]
+- Fix notifyModified called on a wrong object.
+  [mamico]
 
 
 2.4.0b3 (2018-03-16)
