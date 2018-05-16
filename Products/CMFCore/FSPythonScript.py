@@ -16,8 +16,8 @@
 from difflib import unified_diff
 from six import get_unbound_function
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from ComputedAttribute import ComputedAttribute
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
@@ -103,7 +103,7 @@ class FSPythonScript(FSObject, Script):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'rU')
+        file = open(self._filepath, 'r')
         try:
             data = file.read()
         finally:

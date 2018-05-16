@@ -15,9 +15,9 @@
 
 from difflib import unified_diff
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from DateTime import DateTime
 from OFS.DTMLMethod import DTMLMethod

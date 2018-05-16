@@ -13,7 +13,7 @@
 """ PortalObject: The portal root object class
 """
 
-from App.class_init import InitializeClass
+from AccessControl.class_init import InitializeClass
 from five.localsitemanager.registry import PersistentComponents
 from Products.Five.component.interfaces import IObjectManagerSite
 from zope.component.interfaces import ComponentLookupError

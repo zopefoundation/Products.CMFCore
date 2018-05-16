@@ -13,14 +13,14 @@
 """ Basic portal catalog.
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
-from Products.PluginIndexes.common import safe_callable
+from Products.PluginIndexes.util import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.component import adapts
 from zope.component import queryMultiAdapter

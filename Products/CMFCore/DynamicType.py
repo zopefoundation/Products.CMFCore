@@ -13,9 +13,9 @@
 """ DynamicType: Mixin for dynamic properties.
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_get
-from App.class_init import InitializeClass
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility

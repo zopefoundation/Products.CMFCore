@@ -302,7 +302,10 @@ class StructureFolderWalkingAdapter(object):
 
             stream = StringIO('\n'.join(lines))
             parser = ConfigParser(defaults={'title': '', 'description': 'NONE'})
-            parser.readfp(stream)
+            try:
+                parser.read_file(stream)
+            except AttributeError:  # Python 2
+                parser.readfp(stream)
 
             title = parser.get('DEFAULT', 'title')
             description = parser.get('DEFAULT', 'description')

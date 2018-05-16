@@ -17,8 +17,8 @@ import os
 import re
 from six.moves import urllib
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from Persistence import PersistentMapping

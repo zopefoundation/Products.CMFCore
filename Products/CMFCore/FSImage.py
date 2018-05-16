@@ -16,8 +16,8 @@
 import os
 from six import get_unbound_function
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.Image import getImageInfo
 from OFS.Image import Image

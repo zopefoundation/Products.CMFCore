@@ -13,8 +13,8 @@
 """CMFBTreeFolder
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from zope.component.factory import Factory
 

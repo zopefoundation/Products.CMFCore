@@ -17,9 +17,9 @@ import re
 import six
 from six import get_unbound_function
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS import bbb
 from Products.PageTemplates.PageTemplate import PageTemplate

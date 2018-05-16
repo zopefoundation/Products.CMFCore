@@ -17,8 +17,8 @@ import codecs
 import os
 import six
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.Image import File
 from zope.contenttype import guess_content_type

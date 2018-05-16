@@ -22,6 +22,7 @@ from six.moves._thread import allocate_lock
 import sys
 from warnings import warn
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.Role import gather_permissions
@@ -32,7 +33,6 @@ from Acquisition import aq_get
 from Acquisition import aq_parent
 from Acquisition import Implicit
 from Acquisition.interfaces import IAcquirer
-from App.class_init import InitializeClass
 from App.Common import package_home
 from App.Common import rfc1123_date
 from App.ImageFile import ImageFile
@@ -312,9 +312,9 @@ parse_etags_lock = allocate_lock()
 def parse_etags(text,
                 result=None,
                 # quoted etags (assumed separated by whitespace + a comma)
-                etagre_quote=re.compile('(\s*\"([^\"]*)\"\s*,{0,1})'),
+                etagre_quote=re.compile(r'(\s*\"([^\"]*)\"\s*,{0,1})'),
                 # non-quoted etags (assumed separated by whitespace + a comma)
-                etagre_noquote=re.compile('(\s*([^,]*)\s*,{0,1})'),
+                etagre_noquote=re.compile(r'(\s*([^,]*)\s*,{0,1})'),
                 acquire=parse_etags_lock.acquire,
                 release=parse_etags_lock.release):
 

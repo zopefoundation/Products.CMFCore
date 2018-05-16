@@ -100,7 +100,7 @@ class QueueTests(CleanUp, TestCase):
         self.queue.clear()
 
     def testInterface(self):
-        self.failUnless(IIndexQueue.providedBy(self.queue))
+        self.assertTrue(IIndexQueue.providedBy(self.queue))
 
     def testQueueHook(self):
         class CaptainHook(object):
@@ -244,59 +244,59 @@ class QueueTests(CleanUp, TestCase):
         queue = self.queue
         queue.setState([(REINDEX, 'A', None, 1), (REINDEX, 'A', None, 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
+        self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
 
         queue.setState([(INDEX, 'A', None, 1), (REINDEX, 'A', None, 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(INDEX, 'A', [], 1)])
+        self.assertEqual(queue.getState(), [(INDEX, 'A', [], 1)])
 
         queue.setState([(INDEX, 'A', None, None), (UNINDEX, 'A', None, None)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [])
+        self.assertEqual(queue.getState(), [])
 
         queue.setState([(UNINDEX, 'A', None, None), (INDEX, 'A', None, None)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', [], None)])
+        self.assertEqual(queue.getState(), [(REINDEX, 'A', [], None)])
 
     def testOptimizeQueueWithAttributes(self):
         queue = self.queue
 
         queue.setState([(REINDEX, 'A', None, 1), (REINDEX, 'A', ('a', 'b'), 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
+        self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
 
         queue.setState([(REINDEX, 'A', ('a', 'b'), 1), (REINDEX, 'A', None, 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
+        self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
 
         queue.setState([(REINDEX, 'A', ('a', 'b'), 1), (REINDEX, 'A', ('b', 'c'), 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', ['a', 'b', 'c'], 1)])
+        self.assertEqual(queue.getState(), [(REINDEX, 'A', ['a', 'b', 'c'], 1)])
 
         queue.setState([(INDEX, 'A', None, None), (REINDEX, 'A', None, 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(INDEX, 'A', [], 1)])
+        self.assertEqual(queue.getState(), [(INDEX, 'A', [], 1)])
 
         queue.setState([(REINDEX, 'A', ('a', 'b'), 1), (UNINDEX, 'A', None, None), (INDEX, 'A', None, 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
+        self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
 
     def testOptimizeQueueSortsByOpcode(self):
         queue = self.queue
 
         queue.setState([(INDEX, 'C', None, 1), (UNINDEX, 'B', None, None)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(),
+        self.assertEqual(queue.getState(),
             [(UNINDEX, 'B', [], None), (INDEX, 'C', [], 1)])
 
         queue.setState([(REINDEX, 'A', None, 1), (UNINDEX, 'B', None, None)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(),
+        self.assertEqual(queue.getState(),
             [(UNINDEX, 'B', [], None), (REINDEX, 'A', [], 1)])
 
         queue.setState([(REINDEX, 'A', None, 1), (UNINDEX, 'B', None, None), (INDEX, 'C', None, 1)])
         queue.optimize()
-        self.failUnlessEqual(queue.getState(),
+        self.assertEqual(queue.getState(),
             [(UNINDEX, 'B', [], None), (REINDEX, 'A', [], 1), (INDEX, 'C', [], 1)])
 
 
@@ -305,7 +305,7 @@ class QueueThreadTests(TestCase):
 
     def setUp(self):
         self.me = getQueue()
-        self.failUnless(IIndexQueue.providedBy(self.me), 'non-queued indexer found')
+        self.assertTrue(IIndexQueue.providedBy(self.me), 'non-queued indexer found')
 
     def tearDown(self):
         self.me.clear()
@@ -390,7 +390,7 @@ class QueueThreadTests(TestCase):
             tid = 't%d' % idx
             queue = queues[thread]
             names = [name for op, name, attrs, metadata in queue]
-            self.assertEquals(names, [tid] * idx)
+            self.assertEqual(names, [tid] * idx)
 
 
 class QueueTransactionManagerTests(TestCase):
@@ -454,17 +454,17 @@ class UnindexWrapperTests(TestCase):
         unwrapped = self.root.sub1.testcontent
         wrapped = wrap(unwrapped)
 
-        self.failUnless(unwrapped.getPhysicalPath()[-1], 'testcontent')
-        self.assertEquals(unwrapped.getPhysicalPath(),
+        self.assertTrue(unwrapped.getPhysicalPath()[-1], 'testcontent')
+        self.assertEqual(unwrapped.getPhysicalPath(),
                           wrapped.getPhysicalPath())
-        self.assertEquals(hash(unwrapped), hash(wrapped))
-        self.assertEquals(unwrapped.Title(), wrapped.Title())
+        self.assertEqual(hash(unwrapped), hash(wrapped))
+        self.assertEqual(unwrapped.Title(), wrapped.Title())
 
         # change the id of our test content, which changes getPhysicalPath
         # All other attributes/methods remain unchanged
         unwrapped.id = 'test2'
-        self.failUnless(unwrapped.getPhysicalPath()[-1], 'test2')
-        self.assertNotEquals(unwrapped.getPhysicalPath(),
+        self.assertTrue(unwrapped.getPhysicalPath()[-1], 'test2')
+        self.assertNotEqual(unwrapped.getPhysicalPath(),
                              wrapped.getPhysicalPath())
-        self.assertEquals(hash(unwrapped), hash(wrapped))
-        self.assertEquals(unwrapped.Title(), wrapped.Title())
+        self.assertEqual(hash(unwrapped), hash(wrapped))
+        self.assertEqual(unwrapped.Title(), wrapped.Title())

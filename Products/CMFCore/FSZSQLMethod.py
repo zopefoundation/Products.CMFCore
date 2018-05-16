@@ -15,9 +15,9 @@
 
 import logging
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
-from App.class_init import InitializeClass
 from App.config import getConfiguration
 from App.special_dtml import DTMLFile
 from Products.ZSQLMethods.SQL import SQL

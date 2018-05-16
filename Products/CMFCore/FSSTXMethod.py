@@ -14,8 +14,8 @@
 """ FSSTXMethod: Filesystem methodish Structured Text document.
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from DocumentTemplate.DT_HTML import HTML as DTML_HTML
 from OFS.DTMLDocument import DTMLDocument

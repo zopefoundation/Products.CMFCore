@@ -17,8 +17,8 @@
 from docutils.core import publish_parts
 from docutils.writers.html4css1 import Writer
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 

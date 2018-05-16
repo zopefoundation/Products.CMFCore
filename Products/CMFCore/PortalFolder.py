@@ -19,10 +19,10 @@ import re
 import six
 from six import get_unbound_function
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_parent, aq_inner, aq_base
-from App.class_init import InitializeClass
 from OFS.Folder import Folder
 from OFS.OrderSupport import OrderSupport
 from zope.component import getUtility

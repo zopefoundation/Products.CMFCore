@@ -16,8 +16,8 @@
 import six
 from warnings import warn
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from zope.interface import implementer
 

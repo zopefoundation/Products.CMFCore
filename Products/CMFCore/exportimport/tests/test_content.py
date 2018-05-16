@@ -100,6 +100,14 @@ class SiteStructureExporterTests(unittest.TestCase):
                        (IINIAware,),
                        IFilesystemImporter)
 
+    def _get_config_parser(self, text):
+        parser = ConfigParser()
+        try:
+            parser.read_file(StringIO(text))
+        except AttributeError:  # Python 2
+            parser.readfp(StringIO(text))
+        return parser
+
     def tearDown(self):
         cleanUp()
 
@@ -124,8 +132,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
 
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(parser.get('DEFAULT', 'Title'),
                          site.title)
@@ -154,8 +161,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
 
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(parser.get('DEFAULT', 'Title'),
                          site.title)
@@ -190,8 +196,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         filename, text, content_type = context._wrote[1]
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
         self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
@@ -236,8 +241,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         filename, text, content_type = context._wrote[1]
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(
             safe_bytes(parser.get('DEFAULT', 'title')),
@@ -283,8 +287,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         filename, text, content_type = context._wrote[1]
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
         self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
@@ -364,8 +367,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         filename, text, content_type = context._wrote[1]
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(
             safe_bytes(parser.get('DEFAULT', 'title')),
@@ -417,8 +419,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         filename, text, content_type = context._wrote[1]
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(
             safe_bytes(parser.get('DEFAULT', 'title'), 'latin1'),
@@ -469,8 +470,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             self.assertEqual(filename,
                              '/'.join(('structure', id, '.properties')))
             self.assertEqual(content_type, 'text/plain')
-            parser = ConfigParser()
-            parser.readfp(StringIO(text))
+            parser = self._get_config_parser(text)
 
             self.assertEqual(parser.get('DEFAULT', 'Title'), 'Title: %s' % id)
 
@@ -478,8 +478,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
 
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(parser.get('DEFAULT', 'title'), 'AAA')
         self.assertEqual(parser.get('DEFAULT', 'description'), 'DESCRIPTION')
@@ -533,8 +532,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.properties')
         self.assertEqual(content_type, 'text/plain')
 
-        parser = ConfigParser()
-        parser.readfp(StringIO(text))
+        parser = self._get_config_parser(text)
 
         self.assertEqual(parser.get('DEFAULT', 'Title'),
                                     site.title)

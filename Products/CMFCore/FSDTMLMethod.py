@@ -16,9 +16,9 @@
 import six
 from six import get_unbound_function
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from App.special_dtml import HTML
 from DocumentTemplate.security import RestrictedDTML

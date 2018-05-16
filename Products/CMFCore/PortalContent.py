@@ -13,9 +13,9 @@
 """ PortalContent: Base class for all CMF content.
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
-from App.class_init import InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implementer
 

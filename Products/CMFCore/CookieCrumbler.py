@@ -17,11 +17,11 @@ import base64
 import six
 from six.moves.urllib.parse import quote, unquote
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.Permissions import view_management_screens
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from App.class_init import InitializeClass
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
 from OFS.interfaces import IObjectWillBeMovedEvent

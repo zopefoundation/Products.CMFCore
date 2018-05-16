@@ -19,9 +19,9 @@ the browser request.  Skins are stored in a fixed-name subobject.
 import logging
 from six.moves._thread import get_ident
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
-from App.class_init import InitializeClass
 from OFS.ObjectManager import ObjectManager
 from ZODB.POSException import ConflictError
 from zope.component import queryUtility

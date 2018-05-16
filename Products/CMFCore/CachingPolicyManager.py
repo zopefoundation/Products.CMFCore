@@ -13,8 +13,8 @@
 """Caching tool implementation.
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import InitializeClass
 from App.Common import rfc1123_date
 from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime

@@ -13,12 +13,12 @@
 """ Basic member data tool.
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.interfaces import IUser
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from BTrees.OOBTree import OOBTree
 from DateTime.DateTime import DateTime

@@ -13,9 +13,9 @@
 """ Base class for objects that supply skins.
 """
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
-from App.class_init import InitializeClass
 from zope.interface import implementer
 
 from Products.CMFCore.exceptions import SkinPathError

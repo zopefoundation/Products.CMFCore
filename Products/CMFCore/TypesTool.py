@@ -17,11 +17,11 @@ import logging
 import six
 from warnings import warn
 
+from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from Acquisition import aq_get
-from App.class_init import InitializeClass
 from App.special_dtml import DTMLFile
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
