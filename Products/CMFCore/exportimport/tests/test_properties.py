@@ -228,7 +228,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertTrue('foo' in site.propertyIds())
         self.assertEqual(site.getProperty('foo'), 'Foo')
         self.assertTrue('bar' in site.propertyIds())
-        self.assertEqual(site.getProperty('bar'), ('Bar',))
+        self.assertEqual(site.getProperty('bar'), (b'Bar',))
 
 
 class roundtripSitePropertiesTests(_SitePropertiesSetup):
