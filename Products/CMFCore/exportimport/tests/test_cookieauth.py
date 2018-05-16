@@ -28,8 +28,8 @@ from Products.CMFCore.CookieCrumbler import CookieCrumbler
 from Products.CMFCore.interfaces import ICookieCrumbler
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
-_COOKIECRUMBLER_BODY = """\
-<?xml version="1.0"?>
+_COOKIECRUMBLER_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="cookie_authentication" meta_type="Cookie Crumbler">
  <property name="auth_cookie">__ac</property>
  <property name="name_cookie">__ac_name</property>
@@ -133,7 +133,7 @@ class exportCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'cookieauth.xml')
-        self._compareDOM(text, _DEFAULT_EXPORT)
+        self._compareDOM(text.decode('utf8'), _DEFAULT_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
@@ -147,7 +147,7 @@ class exportCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'cookieauth.xml')
-        self._compareDOM(text, _CHANGED_EXPORT)
+        self._compareDOM(text.decode('utf8'), _CHANGED_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 

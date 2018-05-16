@@ -45,20 +45,22 @@ def importSiteStructure(context):
 
 
 def encode_if_needed(text, encoding):
-    if isinstance(text, six.text_type):
-        result = text.encode(encoding)
+    if six.PY2:
+        if isinstance(text, six.text_type):
+            text = text.encode(encoding)
     else:
+        if not isinstance(text, six.text_type):
+            text = text.decode(encoding)
         # no need to encode;
         # let's avoid double encoding in case of encoded string
-        result = text
-    return result
+    return text
 
 
 class FolderishDAVAwareFileAdapter(DAVAwareFileAdapter):
     """ A version of the DAVAwareFileAdapter that uses .properties to store
     the DAV result, rather than its own id. For use in serialising folderish
     objects. """
-    
+
     def _getFileName(self):
         """ Return the name under which our file data is stored.
         """
@@ -113,8 +115,8 @@ class StructureFolderWalkingAdapter(object):
         objects_csv_writer = writer(objects_stream)
         wf_stream = StringIO()
         wf_csv_writer = writer(wf_stream)
-        
-        
+
+
         if not root:
             subdir = '%s/%s' % (subdir, self.context.getId())
 
@@ -127,7 +129,7 @@ class StructureFolderWalkingAdapter(object):
         else:
             for object_id, object, ignored in exportable:
                 objects_csv_writer.writerow((object_id, object.getPortalTypeName()))
-            
+
                 workflows = wft.getWorkflowsFor(object)
                 for workflow in workflows:
                     workflow_id = workflow.getId()
@@ -137,20 +139,20 @@ class StructureFolderWalkingAdapter(object):
                         continue
                     state = state_record.get(state_variable)
                     wf_csv_writer.writerow((object_id, workflow_id, state))
-        
+
             export_context.writeDataFile('.workflow_states',
                                          text=wf_stream.getvalue(),
                                          content_type='text/comma-separated-values',
                                          subdir=subdir,
                                         )
-        
+
         export_context.writeDataFile('.objects',
                                      text=objects_stream.getvalue(),
                                      content_type='text/comma-separated-values',
                                      subdir=subdir,
                                     )
 
-        
+
         parser = ConfigParser()
 
         title = self.context.Title()
@@ -191,7 +193,7 @@ class StructureFolderWalkingAdapter(object):
         workflow_states = import_context.readDataFile('.workflow_states', subdir)
         if objects is None:
             return
-        
+
         dialect = 'excel'
         object_stream = StringIO(objects)
         wf_stream = StringIO(workflow_states)
@@ -239,20 +241,20 @@ class StructureFolderWalkingAdapter(object):
             wrapped = context._getOb(object_id)
 
             IFilesystemImporter(wrapped).import_(import_context, subdir)
-        
+
         if workflow_states is not None:
             existing = context.objectIds()
             wft = context.portal_workflow
             wf_rowiter = reader(wf_stream, dialect)
             wf_by_objectid = itertools.groupby(wf_rowiter, operator.itemgetter(0))
-        
+
             for object_id, states in wf_by_objectid:
                 if object_id not in existing:
                     logger = import_context.getLogger('SFWA')
                     logger.warning("Couldn't set workflow for object %s/%s as it doesn't exist" %
                                    (context.id, object_id))
                     continue
-            
+
                 object = context[object_id]
                 for object_id, workflow_id, state_id in states:
                     workflow = wft.getWorkflowById(workflow_id)
@@ -264,14 +266,14 @@ class StructureFolderWalkingAdapter(object):
                         state_variable: state_id,
                         'time': DateTime(),
                         }
-                
+
                     wft.setStatusOf(workflow_id, object, wf_state)
                     workflow.updateRoleMappingsFor(object)
-            
+
                 object.reindexObject()
-            
-        
-    
+
+
+
     def _makeInstance(self, id, portal_type, subdir, import_context):
 
         context = self.context
@@ -295,7 +297,7 @@ class StructureFolderWalkingAdapter(object):
                 except (AttributeError, MethodNotAllowed):
                     # Fall through to old implemenatation below
                     pass
-            
+
             lines = properties.splitlines()
 
             stream = StringIO('\n'.join(lines))

@@ -14,8 +14,8 @@
 """Site properties xml adapter and setup handler unit tests.
 """
 
+import six
 import unittest
-import Testing
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
@@ -24,8 +24,8 @@ from Products.GenericSetup.tests.common import DummyImportContext
 
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
-_PROPERTIES_BODY = u"""\
-<?xml version="1.0"?>
+_PROPERTIES_BODY = b"""\
+<?xml version="1.0" encoding="iso-8859-1"?>
 <site>
  <property name="title">Foo</property>
  <property name="default_charset" type="string">iso-8859-1</property>
@@ -33,7 +33,7 @@ _PROPERTIES_BODY = u"""\
  <property name="bar_string" type="string">B\xe4r</property>
  <property name="foo_boolean" type="boolean">False</property>
 </site>
-""".encode('utf-8')
+"""
 
 _EMPTY_EXPORT = """\
 <?xml version="1.0" ?>
@@ -76,12 +76,14 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         obj._setProperty('foo_boolean', False, 'boolean')
 
     def _verifyImport(self, obj):
-        self.assertEqual(type(obj.title), str)
+        self.assertIsInstance(obj.default_charset, str)
+        self.assertEqual(obj.default_charset, 'iso-8859-1')
+        self.assertIsInstance(obj.title, str)
         self.assertEqual(obj.title, 'Foo')
-        self.assertEqual(type(obj.foo_string), str)
+        self.assertIsInstance(obj.foo_string, str)
         self.assertEqual(obj.foo_string, 'foo')
-        self.assertEqual(type(obj.bar_string), str)
-        self.assertEqual(obj.bar_string, u'B\xe4r'.encode('iso-8859-1'))
+        self.assertIsInstance(obj.bar_string, str)
+        self.assertEqual(obj.bar_string, 'B\xe4r')
         self.assertEqual(type(obj.foo_boolean), bool)
         self.assertEqual(obj.foo_boolean, False)
 
@@ -130,7 +132,7 @@ class exportSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'properties.xml')
-        self._compareDOM(text, _EMPTY_EXPORT)
+        self._compareDOM(text.decode('utf8'), _EMPTY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
@@ -144,7 +146,7 @@ class exportSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'properties.xml')
-        self._compareDOM(text, _NORMAL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _NORMAL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
@@ -226,7 +228,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertTrue('foo' in site.propertyIds())
         self.assertEqual(site.getProperty('foo'), 'Foo')
         self.assertTrue('bar' in site.propertyIds())
-        self.assertEqual(site.getProperty('bar'), ('Bar',))
+        self.assertEqual(site.getProperty('bar'), (b'Bar',))
 
 
 class roundtripSitePropertiesTests(_SitePropertiesSetup):
@@ -239,11 +241,15 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         from Products.CMFCore.exportimport.properties \
                 import importSiteProperties
 
-        NONASCII = u'B\xe4r'.encode('utf-8')
+        NONASCII = u'B\xe4r'
         site = self._initSite(foo=0, bar=0)
         site._updateProperty('title', NONASCII)
 
-        self.assertEqual(site.title, NONASCII)
+        self.assertIsInstance(site.title, str)
+        self.assertEqual(
+            site.title,
+            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r',
+        )
 
         # export the site properties
         context = DummyExportContext(site)
@@ -259,7 +265,10 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         context._files['properties.xml'] = text
         importSiteProperties(context)
 
-        self.assertEqual(site.title, NONASCII)
+        self.assertEqual(
+            site.title,
+            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r',
+        )
 
 
 def test_suite():

@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
@@ -29,8 +28,8 @@ from Products.CMFCore.interfaces import IMemberDataTool
 from Products.CMFCore.MemberDataTool import MemberDataTool
 from Products.CMFCore.testing import ExportImportZCMLLayer
 
-_MEMBERDATATOOL_BODY = """\
-<?xml version="1.0"?>
+_MEMBERDATATOOL_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="portal_memberdata" meta_type="CMF Member Data Tool">
  <property name="email"></property>
  <property name="portal_skin"></property>
@@ -41,8 +40,8 @@ _MEMBERDATATOOL_BODY = """\
 </object>
 """
 
-_DEFAULT_EXPORT = """\
-<?xml version="1.0"?>
+_DEFAULT_EXPORT = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="portal_memberdata" meta_type="CMF Member Data Tool">
  <property name="email"></property>
  <property name="portal_skin"></property>
@@ -116,7 +115,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'memberdata.xml')
-        self._compareDOM(text, _DEFAULT_EXPORT)
+        self._compareDOM(text.decode('utf8'), _DEFAULT_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
@@ -130,7 +129,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'memberdata.xml')
-        self._compareDOM(text, _CHANGED_EXPORT)
+        self._compareDOM(text.decode('utf8'), _CHANGED_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 

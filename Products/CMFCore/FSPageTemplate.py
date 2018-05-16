@@ -41,7 +41,7 @@ from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _setCacheHeaders
 
 
-xml_detect_re = re.compile('^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
+xml_detect_re = re.compile(b'^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
 charset_re = re.compile(r'charset.*?=.*?(?P<charset>[\w\-]*)',
                         re.I | re.M | re.S)
 _marker = object()
@@ -85,10 +85,15 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         """Read the data from the filesystem.
         """
         if reparse:
-            # not 'rb', as this is a text file!
-            file = open(self._filepath, 'rU')
+            if six.PY2:
+                # not 'rb', as this is a text file!
+                file = open(self._filepath, 'rU')
+            else:
+                file = open(self._filepath, 'br')
             try:
                 data = file.read()
+                if not six.PY2:
+                    data = data.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
             finally:
                 file.close()
 

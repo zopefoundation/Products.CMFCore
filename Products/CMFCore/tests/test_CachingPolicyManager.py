@@ -42,7 +42,7 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 ACCLARK = DateTime('2001/01/01')
-portal_owner = 'portal_owner'
+portal_owner = b'portal_owner'
 
 
 class DummyContent2:
@@ -610,13 +610,13 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
                                FSPageTemplate('dummy_view', path))
 
         uf = self.app.acl_users
-        password = 'secret'
+        password = b'secret'
         uf.userFolderAddUser(portal_owner, password, ['Manager'], [])
         user = uf.getUserById(portal_owner)
         if not hasattr(user, 'aq_base'):
             user = user.__of__(uf)
         newSecurityManager(None, user)
-        owner_auth = '%s:%s' % (portal_owner, password)
+        owner_auth = b'%s:%s' % (portal_owner, password)
         self.auth_header = "Basic %s" % base64.encodestring(owner_auth)
 
         self.portal._setObject('doc1', DummyContent('doc1'))

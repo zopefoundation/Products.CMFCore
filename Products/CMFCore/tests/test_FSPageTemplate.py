@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf8 -*-
 ##############################################################################
 #
 # Copyright (c) 2002 Zope Foundation and Contributors.
@@ -77,7 +77,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = script.__of__(self.app)
         script()
         self.assertEqual(script.content_type, 'text/html')
-        self.assertEqual(self.RESPONSE.getHeader('content-type'), 
+        self.assertEqual(self.RESPONSE.getHeader('content-type'),
                          'text/html; charset=utf-8')
 
     def test_ContentTypeOverride(self):
@@ -101,8 +101,9 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         # is respected
         script = self._makeOne('testPT3', 'testPT3.pt')
         script = script.__of__(self.app)
+        script.charset = 'utf-16'
         data = script.read()
-        self.assertTrue(u'123üöäß' in data)
+        self.assertTrue(u'123Ã¼Ã¶Ã¤ÃŸ' in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFrom2FSMetadata(self):
@@ -111,14 +112,14 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = self._makeOne('testPT4', 'testPT4.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.assertTrue(u'123üöäß' in data)
+        self.assertTrue(u'123Ã¼Ã¶Ã¤ÃŸ' in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFromContentTypeMetadata(self):
         script = self._makeOne('testPT5', 'testPT5.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.assertTrue(u'123üöäß' in data)
+        self.assertTrue(u'123Ã¼Ã¶Ã¤ÃŸ' in data)
         self.assertEqual(script.content_type, 'text/html; charset=utf-16')
 
     def test_BadCall(self):

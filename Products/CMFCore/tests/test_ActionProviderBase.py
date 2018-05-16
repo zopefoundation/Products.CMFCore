@@ -54,11 +54,12 @@ class DummyAction:
     def clone(self):
         return self.__class__(self.value)
 
-    def __cmp__(self, other):
-        return (cmp(type(self), type(other))
-                or cmp(self.__class__, other.__class__)
-                or cmp(self.value, other.value)
-                or 0)
+    def __eq__(self, other):
+        return (
+            type(self) == type(other) and
+            self.__class__ == other.__class__ and
+            self.value == other.value
+        )
 
 
 class ActionProviderBaseTests(SecurityTest):
@@ -200,9 +201,10 @@ class ActionProviderBaseTests(SecurityTest):
 
         apb = self._makeProvider()
         apb._actions = tuple(map(DummyAction, ['0', '1', '2']))
+        highander_action = apb._actions[1]  # There can be only one
         apb.deleteActions(selections=(0, 2))
         self.assertEqual(len(apb._actions), 1)
-        self.assertTrue(DummyAction('1') in apb._actions)
+        self.assertTrue(highander_action in apb._actions)
 
     def test_DietersNastySharingBug(self):
 

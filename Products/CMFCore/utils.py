@@ -183,6 +183,8 @@ def _getAuthenticatedUser(self):
 
 @security.private
 def _checkPermission(permission, obj):
+    if not isinstance(permission, six.string_types):
+        permission = permission.decode()
     return getSecurityManager().checkPermission(permission, obj)
 
 # If Zope ever provides a call to getRolesInContext() through

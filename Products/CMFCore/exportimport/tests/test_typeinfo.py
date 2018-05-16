@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
@@ -32,8 +31,8 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-_FTI_BODY = """\
-<?xml version="1.0"?>
+_FTI_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="foo_fti" meta_type="Factory-based Type Information"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
  <property name="title"></property>
@@ -57,8 +56,8 @@ _FTI_BODY = """\
 </object>
 """
 
-_TYPESTOOL_BODY = """\
-<?xml version="1.0"?>
+_TYPESTOOL_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="portal_types" meta_type="CMF Types Tool">
  <property name="title"></property>
  <object name="foo_type" meta_type="Factory-based Type Information"/>
@@ -467,7 +466,7 @@ class exportTypesToolTests(_TypeInfoSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'types.xml')
-        self._compareDOM(text, _EMPTY_TOOL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _EMPTY_TOOL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
@@ -480,17 +479,17 @@ class exportTypesToolTests(_TypeInfoSetup):
         self.assertEqual(len(context._wrote), 3)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'types.xml')
-        self._compareDOM(text, _NORMAL_TOOL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _NORMAL_TOOL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
         filename, text, content_type = context._wrote[2]
         self.assertEqual(filename, 'types/bar.xml')
-        self._compareDOM(text, _BAR_EXPORT % 'bar')
+        self._compareDOM(text.decode('utf8'), _BAR_EXPORT % 'bar')
         self.assertEqual(content_type, 'text/xml')
 
         filename, text, content_type = context._wrote[1]
         self.assertEqual(filename, 'types/foo.xml')
-        self._compareDOM(text, _FOO_EXPORT % 'foo')
+        self._compareDOM(text.decode('utf8'), _FOO_EXPORT % 'foo')
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_filenames(self):
@@ -503,15 +502,15 @@ class exportTypesToolTests(_TypeInfoSetup):
         self.assertEqual(len(context._wrote), 3)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'types.xml')
-        self._compareDOM(text, _FILENAME_EXPORT)
+        self._compareDOM(text.decode('utf8'), _FILENAME_EXPORT)
         self.assertEqual(content_type, 'text/xml')
         filename, text, content_type = context._wrote[2]
         self.assertEqual(filename, 'types/bar_object.xml')
-        self._compareDOM(text, _BAR_EXPORT % 'bar object')
+        self._compareDOM(text.decode('utf8'), _BAR_EXPORT % 'bar object')
         self.assertEqual(content_type, 'text/xml')
         filename, text, content_type = context._wrote[1]
         self.assertEqual(filename, 'types/foo_object.xml')
-        self._compareDOM(text, _FOO_EXPORT % 'foo object')
+        self._compareDOM(text.decode('utf8'), _FOO_EXPORT % 'foo object')
         self.assertEqual(content_type, 'text/xml')
 
 

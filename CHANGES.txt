@@ -1,11 +1,14 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.0 (unreleased)
-------------------
+2.4.0b4 (unreleased)
+--------------------
 
-- Fix Python 3 compatibility.
+- Add support for Python 3.5 and 3.6.
   [ale-rt]
+
+- sortKey for a DataManager must be text to be sortable.
+  [pbauer]
 
 
 2.4.0b3 (2018-03-16)

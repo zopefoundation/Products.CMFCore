@@ -116,7 +116,7 @@ class exportCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'catalog.xml')
-        self._compareDOM(text, _EMPTY_EXPORT)
+        self._compareDOM(text.decode('utf8'), _EMPTY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
@@ -129,7 +129,7 @@ class exportCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'catalog.xml')
-        self._compareDOM(text, _NORMAL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _NORMAL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
@@ -196,7 +196,7 @@ class importCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'catalog.xml')
-        self._compareDOM(text, _NORMAL_EXPORT)
+        self._compareDOM(text.decode('utf8'), _NORMAL_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal_update(self):

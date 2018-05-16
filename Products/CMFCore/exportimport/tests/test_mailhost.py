@@ -86,7 +86,7 @@ class exportMailHostTests(_MailHostSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'mailhost.xml')
-        self._compareDOM(text, _DEFAULT_EXPORT)
+        self._compareDOM(text.decode('utf8'), _DEFAULT_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
@@ -99,7 +99,7 @@ class exportMailHostTests(_MailHostSetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'mailhost.xml')
-        self._compareDOM(text, _CHANGED_EXPORT)
+        self._compareDOM(text.decode('utf8'), _CHANGED_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
@@ -115,9 +115,9 @@ class importMailHostTests(_MailHostSetup):
         context._files['mailhost.xml'] = _CHANGED_EXPORT
         importMailHost(context)
 
-        self.assertEqual(mh.smtp_pwd, 'value1')
+        self.assertEqual(mh.smtp_pwd, b'value1')
         self.assertEqual(mh.smtp_host, 'value2')
-        self.assertEqual(mh.smtp_uid, 'value3')
+        self.assertEqual(mh.smtp_uid, b'value3')
         self.assertEqual(mh.smtp_port, 1)
         self.assertEqual(mh.smtp_queue, False)
         self.assertEqual(mh.smtp_queue_directory, '/tmp')
@@ -130,9 +130,9 @@ class importMailHostTests(_MailHostSetup):
         context._files['mailhost.xml'] = _ZOPE211_EXPORT
         importMailHost(context)
 
-        self.assertEqual(mh.smtp_pwd, 'value1')
+        self.assertEqual(mh.smtp_pwd, b'value1')
         self.assertEqual(mh.smtp_host, 'value2')
-        self.assertEqual(mh.smtp_uid, 'value3')
+        self.assertEqual(mh.smtp_uid, b'value3')
         self.assertEqual(mh.smtp_port, 1)
         self.assertEqual(mh.smtp_queue, False)
         self.assertEqual(mh.smtp_queue_directory, '/tmp')

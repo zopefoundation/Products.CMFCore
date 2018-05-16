@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
@@ -34,8 +33,8 @@ _TEST_PREDICATES = (
  ('logfiles', 'name_regex', ('error_log-.*',), 'Log File'),
 )
 
-_CTR_BODY = """\
-<?xml version="1.0"?>
+_CTR_BODY = b"""\
+<?xml version="1.0" encoding="utf-8"?>
 <object name="content_type_registry" meta_type="Content Type Registry">
  <predicate name="foo_predicate" content_type_name="Foo Type"
     predicate_type="major_minor">
@@ -124,12 +123,12 @@ class _ContentTypeRegistrySetup(BaseRegistryTests):
     NAME_REGEX_TYPENAME = _TEST_PREDICATES[3][3]
 
     _EMPTY_EXPORT = """\
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <object name="content_type_registry" meta_type="Content Type Registry"/>
 """
 
     _WITH_POLICY_EXPORT = """\
-<?xml version="1.0"?>
+<?xml version="1.0"  encoding="utf-8"?>
 <object name="content_type_registry" meta_type="Content Type Registry">
  <predicate name="%s" content_type_name="%s"
     predicate_type="major_minor">
@@ -197,7 +196,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'contenttyperegistry.xml')
-        self._compareDOM(text, self._EMPTY_EXPORT)
+        self._compareDOM(text.decode('utf8'), self._EMPTY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_policy(self):
@@ -211,7 +210,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
         self.assertEqual(len(context._wrote), 1)
         filename, text, content_type = context._wrote[0]
         self.assertEqual(filename, 'contenttyperegistry.xml')
-        self._compareDOM(text, self._WITH_POLICY_EXPORT)
+        self._compareDOM(text.decode('utf8'), self._WITH_POLICY_EXPORT)
         self.assertEqual(content_type, 'text/xml')
 
 
