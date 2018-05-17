@@ -20,7 +20,7 @@ README = _boundary.join([
 ])
 
 setup(name='Products.%s' % NAME,
-      version='2.4.0b4.dev0',
+      version='2.4.0b4',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
@@ -51,7 +51,7 @@ setup(name='Products.%s' % NAME,
       ],
       install_requires=[
           'setuptools',
-          'Zope2 >= 4.0a3',
+          'Zope >= 4.0b4',
           'docutils',
           'five.localsitemanager',
           'Products.BTreeFolder2',
