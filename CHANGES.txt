@@ -6,6 +6,8 @@ Products.CMFCore Changelog
 
 - Add support for Python 3.5 and 3.6.
   [ale-rt]
+- Fix notifyModified called on a wrong object.
+  [mamico]
 
 - sortKey for a DataManager must be text to be sortable.
   [pbauer]

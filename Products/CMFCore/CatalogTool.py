@@ -317,7 +317,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         if not CATALOG_OPTIMIZATION_DISABLED:
             if idxs in (None, []) and \
                     hasattr(aq_base(object), 'notifyModified'):
-                self.notifyModified()
+                object.notifyModified()
             obj = filterTemporaryItems(object)
             if obj is not None:
                 indexer = getQueue()
