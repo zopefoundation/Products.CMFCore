@@ -511,7 +511,6 @@ class PortalFolderSecurityTests(SecurityTest):
     def test__checkId_Five(self):
         test = self._makeOne('test')
         self.assertRaises(BadRequest, test._checkId, '@@view')
-        self.assertRaises(BadRequest, test._checkId, '++resource++icon.png')
 
     def test_checkIdAvailableCatchesBadRequest(self):
         #
