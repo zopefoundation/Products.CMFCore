@@ -13,7 +13,6 @@
 """ PortalFolder: CMF-enabled Folder objects.
 """
 
-import base64
 import marshal
 import re
 import six
@@ -48,6 +47,8 @@ from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import ManageProperties
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
+from Products.CMFCore.utils import base64_decode
+from Products.CMFCore.utils import base64_encode
 
 
 @implementer(IFolderish, IMutableMinimalDublinCore)
@@ -239,7 +240,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         for key, value in REQUEST.items():
             if key[:10] == 'filter_by_':
                 filter[key[10:]] = value
-        encoded = base64.encodestring( marshal.dumps(filter) ).strip()
+        encoded = base64_encode(marshal.dumps(filter))
         encoded = ''.join( encoded.split('\n') )
         return encoded
 
@@ -250,7 +251,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         """
         filter = {}
         if encoded:
-            filter.update(marshal.loads(base64.decodestring(encoded)))
+            filter.update(marshal.loads(base64_decode(encoded)))
         return filter
 
     def content_type( self ):

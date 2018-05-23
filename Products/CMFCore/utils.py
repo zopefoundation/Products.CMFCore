@@ -14,6 +14,7 @@
 """
 
 import re
+import base64
 from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
@@ -855,6 +856,20 @@ class SimpleRecord:
 
     def __init__(self, **kw):
         self.__dict__.update(kw)
+
+
+def base64_encode(text):
+    # Helper method to avoid deprecation warning under Python 3
+    if six.PY2:
+        return base64.encodestring(text).rstrip()
+    return base64.encodebytes(text).rstrip()
+
+
+def base64_decode(text):
+    # Helper method to avoid deprecation warning under Python 3
+    if six.PY2:
+        return base64.decodestring(text)
+    return base64.decodebytes(text)
 
 
 security.declarePublic('Message')

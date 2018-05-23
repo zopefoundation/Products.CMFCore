@@ -40,6 +40,7 @@ from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import TransactionalTest
+from Products.CMFCore.utils import base64_encode
 
 ACCLARK = DateTime('2001/01/01')
 portal_owner = b'portal_owner'
@@ -617,7 +618,7 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
             user = user.__of__(uf)
         newSecurityManager(None, user)
         owner_auth = b'%s:%s' % (portal_owner, password)
-        self.auth_header = "Basic %s" % base64.encodestring(owner_auth)
+        self.auth_header = "Basic %s" % base64_encode(owner_auth)
 
         self.portal._setObject('doc1', DummyContent('doc1'))
         self.portal._setObject('doc2', DummyContent('doc2'))

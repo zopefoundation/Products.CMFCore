@@ -22,6 +22,8 @@ from zope.component import eventtesting
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
+from Products.CMFCore.utils import base64_encode
+
 
 def makerequest(root, stdout, stdin=None):
     # Customized version of Testing.makerequest.makerequest()
@@ -71,8 +73,6 @@ class CookieCrumblerTests(unittest.TestCase):
         cleanUp()
 
     def _makeSite(self):
-        import base64
-
         from OFS.DTMLMethod import DTMLMethod
         from OFS.Folder import Folder
         from OFS.userfolder import UserFolder
@@ -113,14 +113,7 @@ class CookieCrumblerTests(unittest.TestCase):
         req = makerequest(root, StringIO())
         self._finally = req.close
 
-        if six.PY2:
-            credentials = quote(
-                base64.encodestring('abraham:pass-w').rstrip()
-            )
-        else:
-            credentials = quote(
-                base64.encodebytes(b'abraham:pass-w').rstrip()
-            )
+        credentials = quote(base64_encode(b'abraham:pass-w'))
 
         return root, cc, req, credentials
 
