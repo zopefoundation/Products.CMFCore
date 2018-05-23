@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import os
 import re
@@ -45,6 +44,7 @@ class FSSTXMaker(FSDVTest):
         metadata.read()
         return FSSTXMethod(id, path, properties=metadata.getProperties())
 
+
 _EXPECTED_HTML = """\
 <html>
 <body>
@@ -70,6 +70,7 @@ BODY GOES HERE
 """
 
 WS = re.compile(r'\s+')
+
 
 def _normalize_whitespace(text):
     return ' '.join(WS.split(text.rstrip()))
@@ -161,8 +162,8 @@ class FSSTXMethodTests(TransactionalTest, FSSTXMaker, _TemplateSwitcher):
         getSiteManager().registerUtility(cpm, ICachingPolicyManager)
         script = self._makeOne('testSTX', 'testSTX.stx')
         script = script.__of__(self.app)
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time + 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time + 3600)
         data = script(self.REQUEST, self.RESPONSE)
 
         self.assertEqual(data, '')
@@ -177,8 +178,7 @@ ZPT_META_TYPES = ({'name': 'Page Template',
 
 class FSSTXMethodCustomizationTests(SecurityTest,
                                     FSSTXMaker,
-                                    _TemplateSwitcher,
-                                   ):
+                                    _TemplateSwitcher):
 
     def setUp(self):
         _TemplateSwitcher.setUp(self)
@@ -192,7 +192,6 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         FSSTXMaker.tearDown(self)
         _TemplateSwitcher.tearDown(self)
         SecurityTest.tearDown(self)
-
 
     def test_customize_alternate_root(self):
         from OFS.Folder import Folder

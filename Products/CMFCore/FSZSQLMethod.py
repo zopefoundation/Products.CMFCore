@@ -81,7 +81,7 @@ class FSZSQLMethod(SQL, FSObject):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r') # not 'rb', as this is a text file!
+        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
         try:
             data = file.read()
         finally:
@@ -104,7 +104,7 @@ class FSZSQLMethod(SQL, FSObject):
         # check for required parameters
         try:
             connection_id = (parameters.get('connection id', '') or
-                                parameters['connection_id'])
+                             parameters['connection_id'])
         except KeyError as e:
             raise ValueError("The '%s' parameter is required "
                              "but was not supplied" % e)
@@ -139,9 +139,10 @@ class FSZSQLMethod(SQL, FSObject):
                 self = ImplicitAcquisitionWrapper(self, parent)
                 self._updateFromFS()
                 return self
-            except:
+            except Exception:
                 logger.exception("Error during __of__")
                 raise
+
 
 InitializeClass(FSZSQLMethod)
 

@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import os
 from os.path import join as path_join
@@ -92,15 +91,15 @@ class FSImageTests(TransactionalTest, FSDVTest):
         image = self._makeOne('test_image', 'test_image.gif')
         image = image.__of__(self.app)
 
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time + 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = \
+            '%s;' % rfc1123_date(mod_time + 3600)
 
         data = image.index_html(self.REQUEST, self.RESPONSE)
 
         self.assertEqual(data, '')
         # test that we don't supply a content-length
         self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
-                                                  None)
+                         None)
         self.assertEqual(self.RESPONSE.getStatus(), 304)
 
     def test_index_html_without_304(self):
@@ -110,8 +109,8 @@ class FSImageTests(TransactionalTest, FSDVTest):
         image = self._makeOne('test_image', 'test_image.gif')
         image = image.__of__(self.app)
 
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time - 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time - 3600)
 
         data = image.index_html(self.REQUEST, self.RESPONSE)
 
@@ -127,10 +126,9 @@ class FSImageTests(TransactionalTest, FSDVTest):
 
         mod_time = os.stat(path).st_mtime
 
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time)
-        self.REQUEST.environ['IF_NONE_MATCH'
-                            ] = '%s;' % FAKE_ETAG
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time)
+        self.REQUEST.environ['IF_NONE_MATCH'] = '%s;' % FAKE_ETAG
 
         data = file.index_html(self.REQUEST, self.RESPONSE)
         self.assertEqual(len(data), 0)
@@ -182,8 +180,8 @@ class FSImageTests(TransactionalTest, FSDVTest):
 
         mod_time = os.stat(path)[8]
 
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time + 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time + 3600)
 
         data = image.index_html(self.REQUEST, self.RESPONSE)
 

@@ -15,7 +15,6 @@
 
 import unittest
 import six
-import Testing
 
 from zope.component import getSiteManager
 from zope.interface import implementer
@@ -40,9 +39,10 @@ def extra_meta_types():
     return [{'name': 'Dummy', 'action': 'manage_addFolder',
              'permission': 'View'}]
 
+
 def addDummyContent(container, id, opaqueItem):
-    container._setObject(id, DummyContent(id, opaqueItem=opaqueItem,
-                                          catalog=1))
+    container._setObject(id,
+                         DummyContent(id, opaqueItem=opaqueItem, catalog=1))
     return getattr(container, id)
 
 
@@ -155,7 +155,7 @@ class ManageBeforeAfterTests(SecurityTest):
         folder._setObject('sub', PortalFolder('sub', ''))
         sub = self.sub = folder.sub
 
-        #----- hacks to allow pasting (see also test_PortalFolder)
+        # ----- hacks to allow pasting (see also test_PortalFolder)
         # WAAA! force sub to allow paste of Dummy object.
         sub.all_meta_types = extra_meta_types()
 

@@ -74,8 +74,7 @@ _FRAGMENT2_IMPORT = """\
 
 
 class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase,
-                                         unittest.TestCase,
-                                        ):
+                                         unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -160,8 +159,7 @@ class _ContentTypeRegistrySetup(BaseRegistryTests):
        MIMETYPE_REGEX,
        NAME_REGEX_ID,
        NAME_REGEX_TYPENAME,
-       NAME_REGEX,
-      )
+       NAME_REGEX)
 
     def _initSite(self, mit_predikat=False):
         from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
@@ -171,8 +169,8 @@ class _ContentTypeRegistrySetup(BaseRegistryTests):
         getSiteManager().registerUtility(ctr, IContentTypeRegistry)
 
         if mit_predikat:
-            for (predicate_id, predicate_type, edit_args, content_type_name
-                ) in _TEST_PREDICATES:
+            for (predicate_id, predicate_type, edit_args,
+                 content_type_name) in _TEST_PREDICATES:
                 ctr.addPredicate(predicate_id, predicate_type)
                 predicate = ctr.getPredicate(predicate_id)
                 predicate.edit(*edit_args)

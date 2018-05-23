@@ -13,6 +13,6 @@
 """ CMFCore.interfaces package.
 """
 
-from ._content import *
-from ._tools import *
-from ._events import *
+from ._content import *  # noqa
+from ._tools import *  # noqa
+from ._events import *  # noqa

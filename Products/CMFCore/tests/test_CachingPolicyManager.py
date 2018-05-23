@@ -14,9 +14,7 @@
 """
 
 import unittest
-import Testing
 
-import base64
 import os
 from os.path import join as path_join
 
@@ -147,7 +145,7 @@ class CachingPolicyTests(unittest.TestCase):
 
     def test_typePredicateMiss(self):
         policy = self._makePolicy('typePredicate',
-                                 predicate='python:object.Type() == "Foolish"')
+                                  predicate='python:object.Type()=="Foolish"')
         context = self._makeContext()
         headers = policy.getHeaders(context)
 
@@ -423,8 +421,8 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertEqual(len(headers), 0)
 
         self.assertRaises(KeyError, mgr._updatePolicy,
-                           'xyzzy', None, None, None, None, None, None, '',
-                           '', None, None, None, None, None)
+                          'xyzzy', None, None, None, None, None, None, '',
+                          '', None, None, None, None, None)
         self.assertRaises(KeyError, mgr._removePolicy, 'xyzzy')
         self.assertRaises(KeyError, mgr._reorderPolicy, 'xyzzy', -1)
 

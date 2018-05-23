@@ -252,7 +252,7 @@ class DummyActionsTool(DummyTool):
         return self._providers[:]
 
     def deleteActionProvider(self, provider_name):
-        self._providers = [ x for x in self._providers if x != provider_name ]
+        self._providers = [x for x in self._providers if x != provider_name]
 
 
 class ActionNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
@@ -494,9 +494,9 @@ class importActionProvidersTests(_ActionSetup):
 
     def test_normal(self):
         from Products.CMFCore.exportimport.actions \
-                import exportActionProviders
+            import exportActionProviders
         from Products.CMFCore.exportimport.actions \
-                import importActionProviders
+            import importActionProviders
 
         site, atool = self._initSite(1, 1)
         foo = site.portal_foo
@@ -540,9 +540,9 @@ class importActionProvidersTests(_ActionSetup):
 
     def test_i18n(self):
         from Products.CMFCore.exportimport.actions \
-                import exportActionProviders
+            import exportActionProviders
         from Products.CMFCore.exportimport.actions \
-                import importActionProviders
+            import importActionProviders
 
         site, atool = self._initSite(0, 0)
 

@@ -98,7 +98,7 @@ class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
         content = content.__of__(self.app)
         script = self._makeOne('testDTML', 'testDTML.dtml')
         script = script.__of__(content)
-        self.REQUEST.environ['IF_MODIFIED_SINCE' ] = '%s;' % \
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
             rfc1123_date(mod_time + 3600)
         data = script(content, self.REQUEST, self.RESPONSE)
 

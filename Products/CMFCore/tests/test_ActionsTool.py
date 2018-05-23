@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import warnings
 
@@ -65,11 +64,11 @@ class ActionsToolTests(unittest.TestCase):
         tool.action_providers = ('portal_actions',)
         tool.addActionProvider('foo')
         self.assertEqual(tool.listActionProviders(),
-                          ('portal_actions', 'foo'))
+                         ('portal_actions', 'foo'))
         tool.addActionProvider('portal_url')
         tool.addActionProvider('foo')
         self.assertEqual(tool.listActionProviders(),
-                          ('portal_actions', 'foo', 'portal_url'))
+                         ('portal_actions', 'foo', 'portal_url'))
 
     def test_deleteActionProvider(self):
         tool = self._makeOne()
@@ -146,15 +145,15 @@ class ActionsToolSecurityTests(SecurityTest):
         # Check that listFilteredActionsFor works for objects that return
         # ActionInformation objects
         tool = self.tool
+        act = 'string:${folder_url}/folder_contents'
         tool._actions = (
               ActionInformation(id='folderContents',
                                 title='Folder contents',
-                                action=Expression(text='string:'
-                                             '${folder_url}/folder_contents'),
+                                action=Expression(text=act),
                                 icon_expr=Expression(text='string:'
-                                             '${folder_url}/icon.gif'),
+                                                     '${folder_url}/icon.gif'),
                                 condition=Expression(text='python: '
-                                                      'folder is not object'),
+                                                     'folder is not object'),
                                 permissions=('List folder contents',),
                                 category='folder',
                                 link_target='_top',

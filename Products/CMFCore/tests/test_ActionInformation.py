@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from OFS.Folder import manage_addFolder
 from Products.PythonScripts.PythonScript import manage_addPythonScript
@@ -303,7 +302,7 @@ class ActionInfoSecurityTests(SecurityTest):
         action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
         ec = createExprContext(self.folder, self.site, None)
         ai = self._makeOne(action, ec)
-        ai['category'] = 'folder' # pfff
+        ai['category'] = 'folder'  # pfff
 
         self.assertEqual(ai['category'], WANTED['category'])
         self.assertEqual(ai['allowed'], WANTED['allowed'])
@@ -320,7 +319,7 @@ class ActionInfoSecurityTests(SecurityTest):
         action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
         ec = createExprContext(self.site, self.site, self.object)
         ai = self._makeOne(action, ec)
-        ai['category'] = 'workflow' # pfff
+        ai['category'] = 'workflow'  # pfff
 
         self.assertEqual(ai['category'], WANTED['category'])
         self.assertEqual(ai['allowed'], WANTED['allowed'])
@@ -337,7 +336,7 @@ class ActionInfoSecurityTests(SecurityTest):
         action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
         ec = createExprContext(self.site, self.site, self.object)
         ai = self._makeOne(action, ec)
-        ai['category'] = 'document' # pfff
+        ai['category'] = 'document'  # pfff
 
         self.assertEqual(ai['category'], WANTED['category'])
         self.assertEqual(ai['allowed'], WANTED['allowed'])

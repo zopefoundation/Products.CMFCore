@@ -14,15 +14,15 @@
 """
 
 from AccessControl import ModuleSecurityInfo
-from AccessControl import Unauthorized as AccessControl_Unauthorized
-from OFS.CopySupport import CopyError
-from zExceptions import BadRequest
-from zExceptions import NotFound
+from AccessControl import Unauthorized as AccessControl_Unauthorized  # noqa
+from OFS.CopySupport import CopyError  # noqa
+from zExceptions import BadRequest  # noqa
+from zExceptions import NotFound  # noqa
 try:
-    from zExceptions import ResourceLockedError
+    from zExceptions import ResourceLockedError  # noqa
 except ImportError:
-    from webdav.Lockable import ResourceLockedError
-from zExceptions import Unauthorized as zExceptions_Unauthorized
+    from webdav.Lockable import ResourceLockedError  # noqa
+from zExceptions import Unauthorized as zExceptions_Unauthorized  # noqa
 
 
 security = ModuleSecurityInfo('Products.CMFCore.exceptions')
@@ -34,11 +34,10 @@ security.declarePublic('AccessControl_Unauthorized')
 security.declarePublic('BadRequest')
 security.declarePublic('CopyError')
 security.declarePublic('NotFound')
-security.declarePublic('ResourceLockedError')
-security.declarePublic('zExceptions_Unauthorized')
 
 
-security.declarePublic('SkinPathError')
+@security.public
 class SkinPathError(Exception):
     """ Invalid skin path error.
     """
+    pass

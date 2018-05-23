@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from six import StringIO
 
@@ -38,7 +37,6 @@ from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.interfaces import IMembershipTool
 from Products.CMFCore.interfaces import ITypesTool
 from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.tests.base.dummy import DummyObject
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool
 from Products.CMFCore.tests.base.testcase import SecurityTest
@@ -90,7 +88,6 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
         fti = FTIDATA_CMF[0].copy()
         ttool._setObject('Dummy Content 15', FTI(**fti))
         self.site._setObject('foo', DummyContent())
-        dummy_view = self.site._setObject('dummy_view', DummyObject())
 
     def tearDown(self):
         cleanUp()
@@ -112,8 +109,8 @@ class DynamicTypeDefaultTraversalTests(unittest.TestCase):
         r.traverse('foo')
         self.assertEqual(r.URL, '/foo/dummy_view')
         self.assertEqual(r.response.base, '/foo/',
-                          'CMF Collector issue #192 (wrong base): %s'
-                          % (r.response.base or 'empty',))
+                         'CMF Collector issue #192 (wrong base): %s'
+                         % (r.response.base or 'empty',))
 
     def test_default_viewname_but_no_view_doesnt_override_fti(self):
         response = HTTPResponse()

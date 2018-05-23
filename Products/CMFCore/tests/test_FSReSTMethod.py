@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import os
 import re
@@ -52,6 +51,7 @@ class FSReSTMaker(FSDVTest):
         metadata.read()
         return FSReSTMethod(id, path, properties=metadata.getProperties())
 
+
 _EXPECTED_HTML = """\
 <html>
 <body>
@@ -80,6 +80,7 @@ BODY GOES HERE
 """
 
 WS = re.compile(r'\s+')
+
 
 def _normalize_whitespace(text):
     return ' '.join(WS.split(text.rstrip()))
@@ -134,8 +135,8 @@ class FSReSTMethodTests(TransactionalTest, FSReSTMaker):
         getSiteManager().registerUtility(cpm, ICachingPolicyManager)
         script = self._makeOne('testReST', 'testReST.rst')
         script = script.__of__(self.app)
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time + 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time + 3600)
         data = script(self.REQUEST, self.RESPONSE)
 
         self.assertEqual(data, '')

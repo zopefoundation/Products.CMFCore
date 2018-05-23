@@ -15,9 +15,12 @@ class ICookieCrumbler(Interface):
     name_cookie = Attribute("""They key of the authorised user cookie""")
     pw_cookie = Attribute("""The key of the password cookie""")
     persist_cookie = Attribute("""The key of the persistent cookie""")
-    local_cookie_path = Attribute("""If True, the cookie tied to the local path?""")
-    cache_header_value = Attribute("""If present, the login page will not be cached""")
-    log_username = Attribute("""If True, the username will in appear in Zope's log""")
+    local_cookie_path = Attribute("""\
+        If True, the cookie tied to the local path?""")
+    cache_header_value = Attribute("""\
+        If present, the login page will not be cached""")
+    log_username = Attribute("""\
+        If True, the username will in appear in Zope's log""")
 
     def delRequestVar(req, name):
         """No errors of any sort may propagate, and we don't care *what*
@@ -26,7 +29,6 @@ class ICookieCrumbler(Interface):
     def getCookiePath():
         """Get the path for the cookie
         the parent URL if local_cookie_path is True otherwise /"""
-        return path
 
     def getCookieMethod(name, default):
         """Get the cookie handler.

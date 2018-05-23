@@ -53,7 +53,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
     manage_options = (({'label': 'Overview',
                         'action': 'manage_overview'},
                        {'label': 'Configure',
-                         'action': 'manage_configuration'})
+                        'action': 'manage_configuration'})
                       + SimpleItem.manage_options)
 
     #
@@ -92,7 +92,6 @@ class RegistrationTool(UniqueObject, SimpleItem):
         """ Return the currently-used member ID pattern """
         return self.default_member_id_pattern
 
-
     #
     #   'portal_registration' interface methods
     #
@@ -123,7 +122,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
         """
         # we don't use these to avoid typos: OQ0Il1
         chars = 'ABCDEFGHJKLMNPRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'
-        return ''.join([ choice(chars) for i in range(6) ])
+        return ''.join([choice(chars) for i in range(6)])
 
     @security.protected(AddPortalMember)
     def addMember(self, id, password, roles=('Member',), domains='',

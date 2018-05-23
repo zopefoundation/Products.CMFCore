@@ -115,6 +115,7 @@ class OldDiscussable(Implicit):
 
         return ""
 
+
 InitializeClass(OldDiscussable)
 
 
@@ -140,13 +141,13 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
     #
     #   'portal_discussion' interface methods
     #
-    security.declarePublic('getDiscussionFor')
+    @security.public
     def getDiscussionFor(self, content):
         '''Gets the PortalDiscussion object that applies to content.
         '''
         return OldDiscussable(content).__of__(content)
 
-    security.declarePublic('isDiscussionAllowedFor')
+    @security.public
     def isDiscussionAllowedFor(self, content):
         '''
             Returns a boolean indicating whether a discussion is
@@ -158,5 +159,6 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
         if typeInfo:
             return typeInfo.allowDiscussion()
         return 0
+
 
 InitializeClass(DiscussionTool)

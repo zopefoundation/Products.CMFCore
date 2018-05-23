@@ -132,7 +132,7 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
             child = self._doc.createElement('action-provider')
             child.setAttribute('name', provider_id)
             # BBB: for CMF 1.6 action settings
-            # We only do this for the portal_actions tool itself. Other 
+            # We only do this for the portal_actions tool itself. Other
             # providers are responsible for their own action import/export.
             if provider_id == 'portal_actions':
                 sub = self._extractOldstyleActions(provider_id)
@@ -198,7 +198,7 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
                 self.context.addActionProvider(provider_id)
 
             # BBB: for CMF 1.6 action setting exports
-            # We only do this for the portal_actions tool itself. Other 
+            # We only do this for the portal_actions tool itself. Other
             # providers are responsible for their own action import/export.
             if provider_id == 'portal_actions':
                 self._initOldstyleActions(child)
@@ -208,7 +208,7 @@ class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
         # This code transparently migrates old export data containing
         # "old-style" action information to "new-style" actions.
         # It does this by synthesizing "new-style" export data from the
-        # existing export and then importing that instead of the 
+        # existing export and then importing that instead of the
         # "real" export data, which also moves these actions into the
         # actions tool.
         doc = node.ownerDocument
@@ -266,6 +266,7 @@ def importActionProviders(context):
         return
 
     importObjects(tool, '', context)
+
 
 def exportActionProviders(context):
     """Export actions tool.

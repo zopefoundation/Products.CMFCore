@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from AccessControl.SecurityManagement import newSecurityManager
 from OFS.Folder import Folder
@@ -209,8 +208,8 @@ class MembershipToolMemberAreaTests(SecurityTest):
                          'CMF Collector issue #162 (LocalRoles broken): %s'
                          % str(f.get_local_roles()))
         for p in (View, AccessContentsInformation):
-            roles = [ r['name'] for r in f.rolesOfPermission(p)
-                      if r['selected'] ]
+            roles = [r['name'] for r in f.rolesOfPermission(p)
+                     if r['selected']]
             self.assertEqual(roles, ['Manager', 'Owner', 'Reviewer'])
             self.assertEqual(bool(f.acquiredRolesAreUsedBy(p)), False)
 
@@ -248,8 +247,8 @@ class MembershipToolMemberAreaTests(SecurityTest):
                          'CMF Collector issue #162 (LocalRoles broken): %s'
                          % str(f.get_local_roles()))
         for p in (View, AccessContentsInformation):
-            roles = [ r['name'] for r in f.rolesOfPermission(p)
-                      if r['selected'] ]
+            roles = [r['name'] for r in f.rolesOfPermission(p)
+                     if r['selected']]
             self.assertEqual(roles, ['Manager', 'Owner', 'Reviewer'])
             self.assertEqual(bool(f.acquiredRolesAreUsedBy(p)), False)
 
