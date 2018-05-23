@@ -179,6 +179,7 @@ def importCachingPolicyManager(context):
 
     importObjects(tool, '', context)
 
+
 def exportCachingPolicyManager(context):
     """Export caching policy manager settings as an XML file.
     """

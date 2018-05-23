@@ -126,20 +126,20 @@ _TI_LIST = ({
                  'action': 'string:${object_url}/bar_view',
                  'permissions': (View,),
                  },
-                {'id':     'edit',
-                 'title':  'Edit',
-                 'action': 'string:${object_url}/bar_edit_form',
-                 'permissions': (ModifyPortalContent,),
+                 {'id':     'edit',
+                  'title':  'Edit',
+                  'action': 'string:${object_url}/bar_edit_form',
+                  'permissions': (ModifyPortalContent,),
                  },
-                {'id':     'contents',
-                 'title':  'Contents',
-                 'action': 'string:${object_url}/folder_contents',
-                 'permissions': (AccessContentsInformation,),
+                 {'id':     'contents',
+                  'title':  'Contents',
+                  'action': 'string:${object_url}/folder_contents',
+                  'permissions': (AccessContentsInformation,),
                  },
-                {'id':     'metadata',
-                 'title':  'Metadata',
-                 'action': 'string:${object_url}/metadata_edit_form',
-                 'permissions': (ModifyPortalContent,),
+                 {'id':     'metadata',
+                  'title':  'Metadata',
+                  'action': 'string:${object_url}/metadata_edit_form',
+                  'permissions': (ModifyPortalContent,),
                  },
                ),
     })
@@ -645,7 +645,8 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertEqual(tool.foo.icon_expr, 'string:${portal_url}/foo.png')
         self.assertEqual(tool.foo.immediate_view, 'foo_view')
         self.assertEqual(tool.foo._aliases,
-               {'(Default)': 'foo_view', 'view': 'foo_view', 'spam': 'eggs'})
+                         {'(Default)': 'foo_view', 'view': 'foo_view',
+                          'spam': 'eggs'})
 
     def test_action_remove(self):
         from Products.CMFCore.exportimport.typeinfo import importTypesTool

@@ -16,7 +16,7 @@
 import unittest
 from Testing import ZopeTestCase
 try:
-    import Products.ZSQLMethods
+    import Products.ZSQLMethods  # noqa
     ZopeTestCase.installProduct('ZSQLMethods', 1)
     HAVE_ZSQL = True
 except ImportError:

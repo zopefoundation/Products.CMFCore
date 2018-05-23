@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import transaction
 from AccessControl import SecurityManager
@@ -46,6 +45,7 @@ from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
 from Products.CMFCore.WorkflowTool import WorkflowTool
 
+
 def extra_meta_types():
     return [{'name': 'Dummy', 'action': 'manage_addFolder',
              'permission': 'View'}]
@@ -72,10 +72,12 @@ class DummyCatalogTool:
     def __len__(self):
         return len(self.paths)
 
+
 def has_path(catalog, path):
     if isinstance(path, tuple):
         path = '/'.join(path)
     return path in catalog.paths
+
 
 def has_id(catalog, id):
     return id in catalog.ids
@@ -456,7 +458,7 @@ class PortalFolderSecurityTests(SecurityTest):
         test = self._makeOne('test')
         test._setObject('foo', DummyContent('foo'))
         self.assertRaises(BadRequest, test._setObject, 'foo',
-                                      DummyContent('foo'))
+                          DummyContent('foo'))
 
     def test__checkId_Duplicate(self):
         #
@@ -912,10 +914,10 @@ class ContentFilterTests(unittest.TestCase):
         self.assertTrue('Title: foo' in lines)
 
 
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #   Tests for security-related CopySupport lifted from the Zope 2.7
 #   / head OFS.tests.testCopySupport (see Collector #259).
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ADD_IMAGES_AND_FILES = 'Add images and files'
 FILE_META_TYPES = ({'name': 'File',
                     'action': 'manage_addFile',
@@ -1131,7 +1133,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         folder1.manage_permission(DeleteObjects, roles=(), acquire=0)
 
         folder1._setObject('sub', PortalFolder('sub'))
-        transaction.savepoint(optimistic=True) # get a _p_jar for 'sub'
+        transaction.savepoint(optimistic=True)  # get a _p_jar for 'sub'
 
         def _no_delete_objects(permission, object, context):
             return permission != DeleteObjects
@@ -1141,7 +1143,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         cookie = folder1.manage_cutObjects(ids=('sub',))
         self._assertCopyErrorUnauth(folder2.manage_pasteObjects, cookie,
                                     ce_regex='Insufficient Privileges'
-                                            + '.*%s' % DeleteObjects)
+                                    + '.*%s' % DeleteObjects)
 
     def test_paste_with_restricted_item_content_type_not_allowed(self):
         #   Test from CMF Collector #216 (Plone #2186), for the case
@@ -1156,7 +1158,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         folder1.portal_type = UNRESTRICTED_TYPE
         folder2.portal_type = RESTRICTED_TYPE
 
-        self._initPolicyAndUser() # ensure that sec. machinery allows paste
+        self._initPolicyAndUser()  # ensure that sec. machinery allows paste
 
         ttool = TypesTool()
         ttool._setObject(RESTRICTED_TYPE,
@@ -1193,7 +1195,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         folder1.portal_type = UNRESTRICTED_TYPE
         folder2.portal_type = RESTRICTED_TYPE
 
-        self._initPolicyAndUser() # ensure that sec. machinery allows paste
+        self._initPolicyAndUser()  # ensure that sec. machinery allows paste
 
         ttool = TypesTool()
         ttool._setObject(RESTRICTED_TYPE,
@@ -1232,7 +1234,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         folder1.portal_type = RESTRICTED_TYPE
         folder2.portal_type = UNRESTRICTED_TYPE
 
-        self._initPolicyAndUser() # ensure that sec. machinery allows paste
+        self._initPolicyAndUser()  # ensure that sec. machinery allows paste
 
         ttool = TypesTool()
         ttool._setObject(RESTRICTED_TYPE,
@@ -1245,11 +1247,11 @@ class PortalFolderCopySupportTests(SecurityTest):
                              allowed_content_types=()))
         ttool._setObject(UNRESTRICTED_TYPE,
                          FTI(id=UNRESTRICTED_TYPE,
-                            title=UNRESTRICTED_TYPE,
-                            meta_type=PortalFolder.meta_type,
-                            product='CMFCore',
-                            factory='manage_addPortalFolder',
-                            global_allow=1))
+                             title=UNRESTRICTED_TYPE,
+                             meta_type=PortalFolder.meta_type,
+                             product='CMFCore',
+                             factory='manage_addPortalFolder',
+                             global_allow=1))
         getSiteManager().registerUtility(ttool, ITypesTool)
 
         # copy and pasting the object into the folder should raise
@@ -1265,5 +1267,4 @@ def test_suite():
         unittest.makeSuite(PortalFolderSecurityTests),
         unittest.makeSuite(PortalFolderMoveTests),
         unittest.makeSuite(ContentFilterTests),
-        unittest.makeSuite(PortalFolderCopySupportTests),
-        ))
+        unittest.makeSuite(PortalFolderCopySupportTests)))

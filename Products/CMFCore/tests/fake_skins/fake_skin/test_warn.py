@@ -1,1 +1,1 @@
-context.warn_me()
+context.warn_me()  # noqa

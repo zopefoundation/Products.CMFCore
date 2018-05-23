@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import warnings
 

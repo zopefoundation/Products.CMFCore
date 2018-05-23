@@ -83,8 +83,8 @@ class ContentTypeRegistryXMLAdapter(XMLAdapterBase):
                 parent.addPredicate(predicate_id, predicate_type)
 
             if child.hasAttribute('content_type_name'):
-                content_type_name = str(child.getAttribute('content_type_name'))
-                parent.assignTypeName(predicate_id, content_type_name)
+                ct_type_name = str(child.getAttribute('content_type_name'))
+                parent.assignTypeName(predicate_id, ct_type_name)
 
             if child.hasAttribute('insert-before'):
                 insert_before = child.getAttribute('insert-before')
@@ -129,6 +129,7 @@ class ContentTypeRegistryXMLAdapter(XMLAdapterBase):
             return
         self.context.predicate_ids = tuple(predicate_ids)
 
+
 def importContentTypeRegistry(context):
     """Import content type registry settings from an XML file.
     """
@@ -140,6 +141,7 @@ def importContentTypeRegistry(context):
         return
 
     importObjects(tool, '', context)
+
 
 def exportContentTypeRegistry(context):
     """Export content type registry settings as an XML file.

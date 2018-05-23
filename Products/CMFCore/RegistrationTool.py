@@ -17,7 +17,6 @@ from random import choice
 import re
 
 from AccessControl.class_init import InitializeClass
-from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
@@ -51,18 +50,17 @@ class RegistrationTool(UniqueObject, SimpleItem):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( ({'label': 'Overview',
-                         'action': 'manage_overview'},
-                        {'label': 'Configure',
+    manage_options = (({'label': 'Overview',
+                        'action': 'manage_overview'},
+                       {'label': 'Configure',
                          'action': 'manage_configuration'})
-                     + SimpleItem.manage_options
-                     )
+                      + SimpleItem.manage_options)
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainRegistrationTool', _dtmldir )
+    manage_overview = DTMLFile('explainRegistrationTool', _dtmldir)
 
     security.declareProtected(ManagePortal, 'manage_configuration')
     manage_configuration = DTMLFile('configureRegistrationTool', _dtmldir)
@@ -98,34 +96,34 @@ class RegistrationTool(UniqueObject, SimpleItem):
     #
     #   'portal_registration' interface methods
     #
-    security.declarePublic('isRegistrationAllowed')
+    @security.public
     def isRegistrationAllowed(self, REQUEST):
         '''Returns a boolean value indicating whether the user
         is allowed to add a member to the portal.
         '''
         return _checkPermission(AddPortalMember, self.aq_inner.aq_parent)
 
-    security.declarePublic('testPasswordValidity')
+    @security.public
     def testPasswordValidity(self, password, confirm=None):
         '''If the password is valid, returns None.  If not, returns
         a string explaining why.
         '''
         return None
 
-    security.declarePublic('testPropertiesValidity')
+    @security.public
     def testPropertiesValidity(self, new_properties, member=None):
         '''If the properties are valid, returns None.  If not, returns
         a string explaining why.
         '''
         return None
 
-    security.declarePublic('generatePassword')
+    @security.public
     def generatePassword(self):
         """ Generate a valid password.
         """
         # we don't use these to avoid typos: OQ0Il1
         chars = 'ABCDEFGHJKLMNPRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'
-        return ''.join( [ choice(chars) for i in range(6) ] )
+        return ''.join([ choice(chars) for i in range(6) ])
 
     @security.protected(AddPortalMember)
     def addMember(self, id, password, roles=('Member',), domains='',
@@ -171,14 +169,14 @@ class RegistrationTool(UniqueObject, SimpleItem):
         '''
         if len(id) < 1 or id == 'Anonymous User':
             return 0
-        if not self._ALLOWED_MEMBER_ID_PATTERN.match( id ):
+        if not self._ALLOWED_MEMBER_ID_PATTERN.match(id):
             return 0
         mtool = getUtility(IMembershipTool)
         if mtool.getMemberById(id) is not None:
             return 0
         return 1
 
-    security.declarePublic('afterAdd')
+    @security.public
     def afterAdd(self, member, id, password, properties):
         '''Called by portal_registration.addMember()
         after a member has been added successfully.'''
@@ -190,6 +188,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
         if user ID is not found.
         '''
         raise NotImplementedError
+
 
 InitializeClass(RegistrationTool)
 registerToolInterface('portal_registration', IRegistrationTool)

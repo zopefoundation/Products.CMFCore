@@ -68,6 +68,7 @@ def importMemberDataTool(context):
 
     importObjects(tool, '', context)
 
+
 def exportMemberDataTool(context):
     """Export member data tool settings as an XML file.
     """

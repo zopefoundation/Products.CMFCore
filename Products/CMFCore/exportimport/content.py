@@ -26,19 +26,19 @@ from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
 
 from Products.CMFCore.interfaces import ITypesTool
-from Products.GenericSetup.content import _globtest
 from DateTime import DateTime
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter
 from Products.GenericSetup.content import DAVAwareFileAdapter
 from Products.GenericSetup.content import _globtest
-from Products.CMFCore.utils import getToolByName
+
 
 #
 #   setup_tool handlers
 #
 def exportSiteStructure(context):
     IFilesystemExporter(context.getSite()).export(context, 'structure', True)
+
 
 def importSiteStructure(context):
     IFilesystemImporter(context.getSite()).import_(context, 'structure', True)
@@ -65,6 +65,7 @@ class FolderishDAVAwareFileAdapter(DAVAwareFileAdapter):
         """ Return the name under which our file data is stored.
         """
         return '.properties'
+
 
 #
 #   Filesystem export/import adapters
@@ -105,6 +106,7 @@ class StructureFolderWalkingAdapter(object):
         """ See IFilesystemExporter.
         """
         self._encoding = self.context.getProperty('default_charset', 'utf-8')
+        content_type = 'text/comma-separated-values'
 
         # Enumerate exportable children
         exportable = self.context.contentItems()
@@ -116,7 +118,6 @@ class StructureFolderWalkingAdapter(object):
         wf_stream = StringIO()
         wf_csv_writer = writer(wf_stream)
 
-
         if not root:
             subdir = '%s/%s' % (subdir, self.context.getId())
 
@@ -125,10 +126,12 @@ class StructureFolderWalkingAdapter(object):
         except AttributeError:
             # No workflow tool to export definitions from
             for object_id, object, ignored in exportable:
-                objects_csv_writer.writerow((object_id, object.getPortalTypeName()))
+                objects_csv_writer.writerow((object_id,
+                                             object.getPortalTypeName()))
         else:
             for object_id, object, ignored in exportable:
-                objects_csv_writer.writerow((object_id, object.getPortalTypeName()))
+                objects_csv_writer.writerow((object_id,
+                                             object.getPortalTypeName()))
 
                 workflows = wft.getWorkflowsFor(object)
                 for workflow in workflows:
@@ -142,16 +145,13 @@ class StructureFolderWalkingAdapter(object):
 
             export_context.writeDataFile('.workflow_states',
                                          text=wf_stream.getvalue(),
-                                         content_type='text/comma-separated-values',
-                                         subdir=subdir,
-                                        )
+                                         content_type=content_type,
+                                         subdir=subdir)
 
         export_context.writeDataFile('.objects',
                                      text=objects_stream.getvalue(),
-                                     content_type='text/comma-separated-values',
-                                     subdir=subdir,
-                                    )
-
+                                     content_type=content_type,
+                                     subdir=subdir)
 
         parser = ConfigParser()
 
@@ -167,13 +167,13 @@ class StructureFolderWalkingAdapter(object):
         parser.write(stream)
 
         try:
-            FolderishDAVAwareFileAdapter(self.context).export(export_context, subdir, root)
+            FolderishDAVAwareFileAdapter(self.context).export(export_context,
+                                                              subdir, root)
         except (AttributeError, MethodNotAllowed):
             export_context.writeDataFile('.properties',
-                                        text=stream.getvalue(),
-                                        content_type='text/plain',
-                                        subdir=subdir,
-                                        )
+                                         text=stream.getvalue(),
+                                         content_type='text/plain',
+                                         subdir=subdir)
 
         for id, object in self.context.objectItems():
 
@@ -190,7 +190,8 @@ class StructureFolderWalkingAdapter(object):
             subdir = '%s/%s' % (subdir, context.getId())
 
         objects = import_context.readDataFile('.objects', subdir)
-        workflow_states = import_context.readDataFile('.workflow_states', subdir)
+        workflow_states = import_context.readDataFile('.workflow_states',
+                                                      subdir)
         if objects is None:
             return
 
@@ -213,7 +214,7 @@ class StructureFolderWalkingAdapter(object):
 
         delete = import_context.readDataFile('.delete', subdir)
         if not delete:
-            delete= set()
+            delete = set()
         else:
             deletable = prior.difference(our_ids)
             delete = set(_globtest(delete, deletable))
@@ -246,33 +247,30 @@ class StructureFolderWalkingAdapter(object):
             existing = context.objectIds()
             wft = context.portal_workflow
             wf_rowiter = reader(wf_stream, dialect)
-            wf_by_objectid = itertools.groupby(wf_rowiter, operator.itemgetter(0))
+            wf_by_objectid = itertools.groupby(wf_rowiter,
+                                               operator.itemgetter(0))
 
             for object_id, states in wf_by_objectid:
                 if object_id not in existing:
                     logger = import_context.getLogger('SFWA')
-                    logger.warning("Couldn't set workflow for object %s/%s as it doesn't exist" %
-                                   (context.id, object_id))
+                    logger.warning("Couldn't set workflow for object %s/%s, it"
+                                   " doesn't exist" % (context.id, object_id))
                     continue
 
                 object = context[object_id]
                 for object_id, workflow_id, state_id in states:
                     workflow = wft.getWorkflowById(workflow_id)
                     state_variable = workflow.state_var
-                    wf_state = {
-                        'action': None,
-                        'actor': None,
-                        'comments': "Setting state to %s" % state_id,
-                        state_variable: state_id,
-                        'time': DateTime(),
-                        }
+                    wf_state = {'action': None,
+                                'actor': None,
+                                'comments': "Setting state to %s" % state_id,
+                                state_variable: state_id,
+                                'time': DateTime()}
 
                     wft.setStatusOf(workflow_id, object, wf_state)
                     workflow.updateRoleMappingsFor(object)
 
                 object.reindexObject()
-
-
 
     def _makeInstance(self, id, portal_type, subdir, import_context):
 
@@ -284,7 +282,7 @@ class StructureFolderWalkingAdapter(object):
 
         try:
             tool.constructContent(portal_type, context, id)
-        except ValueError: # invalid type
+        except ValueError:  # invalid type
             return None
 
         content = context._getOb(id)
@@ -292,7 +290,8 @@ class StructureFolderWalkingAdapter(object):
         if properties is not None:
             if '[DEFAULT]' not in properties:
                 try:
-                    FolderishDAVAwareFileAdapter(content).import_(import_context, subdir)
+                    adp = FolderishDAVAwareFileAdapter
+                    adp(content).import_(import_context, subdir)
                     return content
                 except (AttributeError, MethodNotAllowed):
                     # Fall through to old implemenatation below
@@ -301,7 +300,8 @@ class StructureFolderWalkingAdapter(object):
             lines = properties.splitlines()
 
             stream = StringIO('\n'.join(lines))
-            parser = ConfigParser(defaults={'title': '', 'description': 'NONE'})
+            parser = ConfigParser(defaults={'title': '',
+                                            'description': 'NONE'})
             try:
                 parser.read_file(stream)
             except AttributeError:  # Python 2

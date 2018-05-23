@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import transaction
 from AccessControl.SecurityManagement import newSecurityManager
@@ -36,6 +35,7 @@ from Products.CMFCore.tests.test_PortalFolder import _AllowedUser
 from Products.CMFCore.tests.test_PortalFolder import _SensitiveSecurityPolicy
 
 CMF_SECURITY_INDEXES = CMFCatalogAware._cmf_security_indexes
+
 
 def physicalpath(ob):
     return '/'.join(ob.getPhysicalPath())
@@ -183,8 +183,8 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         cat = self.ctool
         cat.setObs([foo, bar, hop])
         foo.reindexObjectSecurity()
-        l = sorted(cat.log)
-        self.assertEqual(l, [
+        log = sorted(cat.log)
+        self.assertEqual(log, [
             "reindex /site/foo %s" % str(CMF_SECURITY_INDEXES),
             "reindex /site/foo/bar %s" % str(CMF_SECURITY_INDEXES),
             "reindex /site/foo/hop %s" % str(CMF_SECURITY_INDEXES),
@@ -205,7 +205,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         finally:
             self._ignore_log_errors()
         self.assertRaises(NotFound, foo.reindexObjectSecurity)
-        self.assertFalse(self.logged) # no logging due to raise
+        self.assertFalse(self.logged)  # no logging due to raise
 
     def test_reindexObjectSecurity_missing_noraise(self):
         # Raising disabled
@@ -220,7 +220,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
                          ["reindex /site/foo %s" % str(CMF_SECURITY_INDEXES)])
         self.assertFalse(foo.notified)
         self.assertFalse(missing.notified)
-        self.assertEqual(len(self.logged), 1) # logging because no raise
+        self.assertEqual(len(self.logged), 1)  # logging because no raise
 
     def test_catalog_tool(self):
         foo = self.site.foo
@@ -290,7 +290,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
     def test_object_indexed_after_copy_and_pasting(self):
 
-        self._initPolicyAndUser() # allow copy/paste operations
+        self._initPolicyAndUser()  # allow copy/paste operations
         site = self._makeSite()
         site.folder1 = SimpleFolder('folder1')
         folder1 = site.folder1
@@ -311,7 +311,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
     def test_object_reindexed_after_cut_and_paste(self):
 
-        self._initPolicyAndUser() # allow copy/paste operations
+        self._initPolicyAndUser()  # allow copy/paste operations
         site = self._makeSite()
         site.folder1 = SimpleFolder('folder1')
         folder1 = site.folder1
@@ -333,7 +333,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
     def test_object_reindexed_after_moving(self):
 
-        self._initPolicyAndUser() # allow copy/paste operations
+        self._initPolicyAndUser()  # allow copy/paste operations
         site = self._makeSite()
 
         bar = TheClass('bar')

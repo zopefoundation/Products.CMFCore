@@ -32,7 +32,7 @@ def manage_addCMFBTreeFolder(dispatcher, id, title='', REQUEST=None):
     dispatcher._setObject(id, ob, suppress_events=True)
     ob = dispatcher._getOb(id)
     if REQUEST is not None:
-        REQUEST['RESPONSE'].redirect(ob.absolute_url() + '/manage_main' )
+        REQUEST['RESPONSE'].redirect(ob.absolute_url() + '/manage_main')
 
 
 class CMFBTreeFolder(BTreeFolder2Base, PortalFolderBase):
@@ -57,8 +57,9 @@ class CMFBTreeFolder(BTreeFolder2Base, PortalFolderBase):
         ob = PortalFolder(id, title)
         self._setObject(id, ob, suppress_events=True)
         if REQUEST is not None:
-            return self.folder_contents( # XXX: ick!
+            return self.folder_contents(  # XXX: ick!
                 self, REQUEST, portal_status_message="Folder added")
+
 
 InitializeClass(CMFBTreeFolder)
 

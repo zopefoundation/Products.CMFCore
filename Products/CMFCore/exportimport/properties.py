@@ -85,6 +85,7 @@ def importSiteProperties(context):
 
     importer.body = body
 
+
 def exportSiteProperties(context):
     """ Export site properties as an XML file.
     """

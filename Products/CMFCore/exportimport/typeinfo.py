@@ -164,8 +164,8 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             else:
                 if action_obj is None:
                     self.context.addAction(id, title, action, condition,
-                                           tuple(permissions), category, visible,
-                                           icon_expr=icon_expr, 
+                                           tuple(permissions), category,
+                                           visible, icon_expr=icon_expr,
                                            link_target=link_target)
                 else:
                     action_obj.edit(title=title, action=action,
@@ -220,6 +220,7 @@ def importTypesTool(context):
         return
 
     importObjects(tool, '', context)
+
 
 def exportTypesTool(context):
     """Export types tool content types as a set of XML files.

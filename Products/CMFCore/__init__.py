@@ -14,7 +14,7 @@
 """
 
 try:
-    import Products.ZSQLMethods
+    import Products.ZSQLMethods  # noqa
     from . import FSZSQLMethod
     HAVE_ZSQL = True
 except ImportError:
@@ -36,26 +36,23 @@ from . import CMFBTreeFolder
 from . import utils
 from .permissions import AddPortalFolders
 
-
 # Make sure security is initialized
-from . import FSReSTMethod
-from . import FSSTXMethod
-from . import PortalContent
-from . import PortalObject
+from . import FSReSTMethod  # noqa
+from . import FSSTXMethod  # noqa
+from . import PortalContent  # noqa
+from . import PortalObject  # noqa
 
-tools = (
-    MembershipTool.MembershipTool,
-    RegistrationTool.RegistrationTool,
-    WorkflowTool.WorkflowTool,
-    CatalogTool.CatalogTool,
-    DiscussionTool.DiscussionTool,
-    ActionsTool.ActionsTool,
-    UndoTool.UndoTool,
-    SkinsTool.SkinsTool,
-    MemberDataTool.MemberDataTool,
-    TypesTool.TypesTool,
-    URLTool.URLTool,
-    )
+tools = (MembershipTool.MembershipTool,
+         RegistrationTool.RegistrationTool,
+         WorkflowTool.WorkflowTool,
+         CatalogTool.CatalogTool,
+         DiscussionTool.DiscussionTool,
+         ActionsTool.ActionsTool,
+         UndoTool.UndoTool,
+         SkinsTool.SkinsTool,
+         MemberDataTool.MemberDataTool,
+         TypesTool.TypesTool,
+         URLTool.URLTool)
 
 # BBB: oldstyle constructors
 _EXTRA_CONSTRUCTORS = (PortalFolder.manage_addPortalFolder,
@@ -64,11 +61,9 @@ _EXTRA_CONSTRUCTORS = (PortalFolder.manage_addPortalFolder,
 # Because persistent objects may be out there which were
 # created when the module was in that product, we need
 # __module_aliases__ .
-__module_aliases__ = ( ( 'Products.BTreeFolder2.CMFBTreeFolder'
-                       , 'Products.CMFCore.CMFBTreeFolder'
-                       )
-                     ,
-                     )
+__module_aliases__ = (('Products.BTreeFolder2.CMFBTreeFolder',
+                       'Products.CMFCore.CMFBTreeFolder'),)
+
 
 def initialize(context):
     context.registerClass(
@@ -76,29 +71,24 @@ def initialize(context):
         constructors=(('manage_addDirectoryViewForm',
                        DirectoryView.manage_addDirectoryViewForm),
                       DirectoryView.manage_addDirectoryView,
-                      DirectoryView.manage_listAvailableDirectories,
-                      ),
-        icon='images/dirview.gif'
-        )
+                      DirectoryView.manage_listAvailableDirectories),
+        icon='images/dirview.gif')
 
     context.registerClass(
         CookieCrumbler.CookieCrumbler,
         constructors=(CookieCrumbler.manage_addCCForm,
                       CookieCrumbler.manage_addCC),
-        icon = 'images/cookie.gif'
-        )
+        icon='images/cookie.gif')
 
     context.registerClass(
         ContentTypeRegistry.ContentTypeRegistry,
-        constructors=( ContentTypeRegistry.manage_addRegistry, ),
-        icon = 'images/registry.gif'
-        )
+        constructors=(ContentTypeRegistry.manage_addRegistry,),
+        icon='images/registry.gif')
 
     context.registerClass(
         CachingPolicyManager.CachingPolicyManager,
-        constructors=( CachingPolicyManager.manage_addCachingPolicyManager, ),
-        icon = 'images/registry.gif'
-        )
+        constructors=(CachingPolicyManager.manage_addCachingPolicyManager,),
+        icon='images/registry.gif')
 
     utils.registerIcon(ActionInformation.ActionCategory,
                        'images/cmf_action_category.gif', globals())
@@ -124,18 +114,14 @@ def initialize(context):
         utils.registerIcon(FSZSQLMethod.FSZSQLMethod,
                            'images/fssqlmethod.gif', globals())
 
-    utils.ToolInit( 'CMF Core Tool'
-                  , tools=tools
-                  , icon='tool.gif'
-                  ).initialize( context )
+    utils.ToolInit('CMF Core Tool', tools=tools,
+                   icon='tool.gif').initialize(context)
 
     # BBB: register oldstyle constructors
-    utils.ContentInit( 'CMF Core Content'
-                     , content_types=()
-                     , permission=AddPortalFolders
-                     , extra_constructors=_EXTRA_CONSTRUCTORS
-                     , visibility=None
-                     ).initialize( context )
+    utils.ContentInit('CMF Core Content', content_types=(),
+                      permission=AddPortalFolders,
+                      extra_constructors=_EXTRA_CONSTRUCTORS,
+                      visibility=None).initialize(context)
 
     # make registerHelp work with 2 directories
     help = context.getProductHelp()

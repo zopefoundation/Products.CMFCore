@@ -18,7 +18,7 @@ from zope.interface import Attribute
 from zope.interface import Interface
 
 # BBB: _tools is the old location of this interface
-from ._cookieCrumbler import ICookieCrumbler
+from ._cookieCrumbler import ICookieCrumbler  # noqa
 
 _marker = object()
 
@@ -37,14 +37,13 @@ class IActionsTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IActionsTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'getUtility(IActionsTool)'.
 
-            o Must be set to "portal_actions"
-            """,
-            )
+                   o Must be set to "portal_actions"
+                   """)
 
     def listActionProviders():
         """ Return a sequence of names of all IActionProvider utilities
@@ -120,7 +119,8 @@ class IActionProvider(Interface):
         """
 
     def listActionInfos(action_chain=None, object=None, check_visibility=True,
-                        check_permissions=True, check_condition=True, max=None):
+                        check_permissions=True, check_condition=True,
+                        max=None):
         """ Return a sequence of IActionInfo objects matching given criteria.
 
         o 'action_chain' is a sequence of one or more action paths
@@ -333,14 +333,13 @@ class ICachingPolicyManager(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(ICachingPolicyManager)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(ICachingPolicyManager)'.
 
-            o Must be set to 'caching_policy_manager'.
-            """,
-            )
+                   o Must be set to 'caching_policy_manager'.
+                   """)
 
     def getHTTPCachingHeaders(content, view_method, keywords, time=None):
         """ Update HTTP caching headers in REQUEST
@@ -426,6 +425,7 @@ class IIndexableObjectWrapper(Interface):
           a user is not allowed to see.
         """
 
+
 class IIndexableObject(Interface):
 
     """ Marker interface for objects that can be indexed in
@@ -433,6 +433,7 @@ class IIndexableObject(Interface):
     """
 
     __module__ = 'Products.CMFCore.interfaces'
+
 
 #
 #   PUT factory handler interfaces
@@ -498,13 +499,13 @@ class IOldstyleDiscussionTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The tool's ID.
+                   """ The tool's ID.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(IDiscussionTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(IDiscussionTool)'.
 
-            o Must be set to 'portal_discussion'.
-            """)
+                   o Must be set to 'portal_discussion'.
+                   """)
 
     def getDiscussionFor(content):
         """ Return an IDiscussionItemContainer for 'content'.
@@ -558,14 +559,13 @@ class IMemberDataTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The tool's ID.
+                   """ The tool's ID.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(IMemberDataTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(IMemberDataTool)'.
 
-            o Must be set to 'portal_memberdata'
-            """,
-            )
+                   o Must be set to 'portal_memberdata'
+                   """)
 
     def wrapUser(user):
         """Returns an IMember instance for the given user object.
@@ -640,6 +640,7 @@ class IMemberDataTool(Interface):
         o Permission:  Private (Python only)
         """
 
+
 class IMemberData(Interface):
 
     """ MemberData interface.
@@ -680,13 +681,13 @@ class IMembershipTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The tool's ID.
+                   """ The tool's ID.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IMembershipTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'getUtility(IMembershipTool)'.
 
-            o Must be set to 'portal_membership'.
-            """)
+                   o Must be set to 'portal_membership'.
+                   """)
 
     def setPassword(password, domains=None):
         """ Allow the authenticated member to set his/her own password.
@@ -952,13 +953,13 @@ class IMetadataTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The tool's ID.
+                   """ The tool's ID.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(IMetadataTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(IMetadataTool)'.
 
-            o Must be set to 'portal_metadata'.
-            """)
+                   o Must be set to 'portal_metadata'.
+                   """)
 
     #
     #   Site-wide queries, specific to Dublin Core metadata.
@@ -1020,11 +1021,8 @@ class IMetadataTool(Interface):
     #
     #   Content-specific queries, for generic metadata.
     #
-    def listAllowedVocabulary( schema
-                             , element
-                             , content=None
-                             , content_type=None
-                             ):
+    def listAllowedVocabulary(schema, element, content=None,
+                              content_type=None):
         """ List allowed values for a given schema element and content object.
 
         o List possible keywords if both 'content' and 'content_type' are None.
@@ -1082,13 +1080,13 @@ class IPropertiesTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The tool's ID.
+                   """ The tool's ID.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IPropertiesTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'getUtility(IPropertiesTool)'.
 
-            o Must be set to 'portal_properties'.
-            """)
+                   o Must be set to 'portal_properties'.
+                   """)
 
     def editProperties(props):
         """ Change portal settings.
@@ -1122,14 +1120,13 @@ class IRegistrationTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(IRegistrationTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(IRegistrationTool)'.
 
-            o Must be set to "portal_registration"
-            """,
-            )
+                   o Must be set to "portal_registration"
+                   """)
 
     def isRegistrationAllowed(REQUEST):
         """ Return True if the current user is allowed to add a member to
@@ -1286,20 +1283,20 @@ class ISkinsTool(ISkinsContainer):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(ISkinsTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(ISkinsTool)'.
 
-            o Must be set to 'portal_skins'.
-            """,
-            )
+                   o Must be set to 'portal_skins'.
+                   """)
 
     def getSkinSelections():
         """ Get the sorted list of available skin names.
 
         o Permission:  Public
         """
+
 
 #
 # Syndication tool interface
@@ -1312,42 +1309,34 @@ class ISyndicationTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(ISyndicationTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(ISyndicationTool)'.
 
-            o Must be set to "portal_syndication"
-            """,
-            )
+                   o Must be set to "portal_syndication"
+                   """)
 
-    period = Attribute(
-        """
-        :str
-        Syndication period for the site: 'hourly', 'daily', 'weekly', 'monthly'
-        """
-        )
+    period = Attribute("""
+                       :str
+                       Syndication period for the site: 'hourly', 'daily',
+                       'weekly', 'monthly'
+                       """)
 
-    frequency = Attribute(
-        """
-        :int
-        frequency * period calculates the actual update time
-        """
-        )
+    frequency = Attribute("""
+                          :int
+                          frequency * period calculates the actual update time
+                          """)
 
-    base = Attribute(
-        """
-        :datetime
-        The baseline timestamp for site syndication
-        """
-        )
+    base = Attribute("""
+                     :datetime
+                     The baseline timestamp for site syndication
+                     """)
 
-    max_items = Attribute(
-        """
-        :int
-        The maximum number of items to be included in a feed
-        """
-        )
+    max_items = Attribute("""
+                          :int
+                          The maximum number of items to be included in a feed
+                          """)
 
     def enableSyndication(obj):
         """ Enable syndication for the passed-in object
@@ -1420,8 +1409,9 @@ class ISyndicationTool(Interface):
         """
 
     def getHTML4UpdateBase(obj=None):
-        ### Deprecated
         """ return the HTML-formatted feed publishing base date
+
+        This method is deprecated
 
         o falls back to the site-wide value if no object is passed in
 
@@ -1438,50 +1428,42 @@ class ISyndicationTool(Interface):
           does not allow syndication
         """
 
+
 class ISyndicationInfo(Interface):
     """ Provides syndication about a particular object"""
 
     __module__ = 'Products.CMFCore.interfaces'
 
-    enabled = Attribute(
-        """
-        :`bool`
-        Whether syndication is available for the object or not.
-        For this to be true both site syndication and object syndication must
-        be enabled.
+    enabled = Attribute("""
+                        :`bool`
+                        Whether syndication is available for the object or not.
+                        For this to be true both site syndication and object
+                        syndication must be enabled.
 
-        Objects that can be syndicated provide the ISyndicatable interface
-        """
-        )
+                        Objects that can be syndicated provide the
+                        ISyndicatable interface
+                        """)
 
-    period = Attribute(
-        """
-        :`str`
-        The period (daily, weekly, monthly) when the feed
-        is updated
-        """
-        )
+    period = Attribute("""
+                       :`str`
+                       The period (daily, weekly, monthly) when the feed
+                       is updated
+                       """)
 
-    frequency = Attribute(
-        """
-        :`int`
-        The frequency of the period for updates
-        """
-        )
+    frequency = Attribute("""
+                          :`int`
+                          The frequency of the period for updates
+                          """)
 
-    base = Attribute(
-        """
-        :`datetime.datime`
-        The baseline timestamp for calculating updates
-        """
-        )
+    base = Attribute("""
+                     :`datetime.datime`
+                     The baseline timestamp for calculating updates
+                     """)
 
-    max_items = Attribute(
-        """
-        :`int`
-        The maximum number of items included in a feed
-        """
-        )
+    max_items = Attribute("""
+                          :`int`
+                          The maximum number of items included in a feed
+                          """)
 
     def revert():
         """
@@ -1598,14 +1580,13 @@ class ITypesTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(ITypesTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'getUtility(ITypesTool)'.
 
-            o Must be set to "portal_types"
-            """,
-            )
+                   o Must be set to "portal_types"
+                   """)
 
     def getTypeInfo(contentType):
         """ Return an ITypeInformation for the given type name / object.
@@ -1668,14 +1649,13 @@ class IUndoTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(IUndoTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(IUndoTool)'.
 
-            o Must be set to "portal_undo"
-            """,
-            )
+                   o Must be set to "portal_undo"
+                   """)
 
     def listUndoableTransactionsFor(object,
                                     first_transaction=None,
@@ -1713,14 +1693,13 @@ class IURLTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'getUtility(IURLTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'getUtility(IURLTool)'.
 
-            o Must be set to "portal_url"
-            """,
-            )
+                   o Must be set to "portal_url"
+                   """)
 
     def __call__(relative=0, *args, **kw):
         """ Return URL of the site, as a string.
@@ -1797,14 +1776,13 @@ class IWorkflowTool(Interface):
     __module__ = 'Products.CMFCore.interfaces'
 
     id = Attribute('id',
-            """ The ID of the tool.
+                   """ The ID of the tool.
 
-            o BBB:  for use in 'getToolByName';  in the future, prefer
-              'queryUtility(IWorkflowTool)'.
+                   o BBB:  for use in 'getToolByName';  in the future, prefer
+                     'queryUtility(IWorkflowTool)'.
 
-            o Must be set to "portal_workflow"
-            """,
-            )
+                   o Must be set to "portal_workflow"
+                   """)
 
     def getCatalogVariablesFor(ob):
         """ Get a mapping of "workflow-relevant" attributes.

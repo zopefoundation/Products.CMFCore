@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from OFS.SimpleItem import SimpleItem
 from zope.component import adapter
@@ -82,10 +81,10 @@ class DummyWorkflow(Dummy):
         pass
 
     def listObjectActions(self, info):
-        return () #XXX
+        return ()  # XXX
 
     def listGlobalActions(self, info):
-        return () #XXX
+        return ()  # XXX
 
     def isActionSupported(self, ob, action):
         return action in self._known_actions
@@ -112,14 +111,17 @@ class DummyWorkflow(Dummy):
     def notifyException(self, ob, action, exc):
         self.notified('exception').append((ob, action, exc))
 
+
 @adapter(IActionWillBeInvokedEvent)
 def notifyBeforeHandler(evt):
     evt.workflow.notified('before-evt').append((evt.object, evt.action))
+
 
 @adapter(IActionSucceededEvent)
 def notifySuccessHandler(evt):
     evt.workflow.notified('success-evt').append((evt.object, evt.action,
                                                  evt.result))
+
 
 @adapter(IActionRaisedExceptionEvent)
 def notifyExceptionHandler(evt):
@@ -446,5 +448,4 @@ class WorkflowToolTests(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(WorkflowToolTests),
-        ))
+        unittest.makeSuite(WorkflowToolTests),))

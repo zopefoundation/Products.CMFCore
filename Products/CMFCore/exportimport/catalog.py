@@ -33,6 +33,7 @@ def importCatalogTool(context):
 
     importObjects(tool, '', context)
 
+
 def exportCatalogTool(context):
     """Export catalog tool.
     """

@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import aq_base
@@ -62,26 +61,21 @@ class PortalContentTests(unittest.TestCase):
         return root.dummycontent
 
     def test_DoubleDefaultAlias(self):
-        test_aliases = ( ('(Default)', '(Default)'),
-                         ('view', 'dummy_view'),
-                       )
+        test_aliases = (('(Default)', '(Default)'), ('view', 'dummy_view'))
         ob = self._setupCallTests(test_aliases)
         # PortalContent no longer supports the BBB '(Default)' alias
         self.assertRaises(NotFound, ob)
 
     def test_BlankDefaultAlias(self):
-        test_aliases = ( ('(Default)', ''),
-                         ('view', 'dummy_view'),
-                       )
+        test_aliases = (('(Default)', ''), ('view', 'dummy_view'))
         ob = self._setupCallTests(test_aliases)
         # blank values are not valid
         self.assertRaises(NotFound, ob)
 
     def test_SpecificAlias(self):
-        test_aliases = ( ('(Default)', 'dummy_view'),
-                       )
+        test_aliases = (('(Default)', 'dummy_view'),)
         ob = self._setupCallTests(test_aliases)
-        self.assertEqual( ob(), 'dummy' )
+        self.assertEqual(ob(), 'dummy')
 
 
 class TestContentCopyPaste(SecurityTest):
@@ -140,5 +134,4 @@ class TestContentCopyPaste(SecurityTest):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(PortalContentTests),
-        unittest.makeSuite(TestContentCopyPaste),
-        ))
+        unittest.makeSuite(TestContentCopyPaste)))

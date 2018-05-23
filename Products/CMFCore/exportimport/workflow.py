@@ -128,6 +128,7 @@ def importWorkflowTool(context):
 
     importObjects(tool, '', context)
 
+
 def exportWorkflowTool(context):
     """Export workflow tool and contained workflow definitions as XML files.
     """

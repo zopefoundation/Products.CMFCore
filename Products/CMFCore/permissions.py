@@ -19,7 +19,7 @@ from AccessControl.SecurityInfo import ModuleSecurityInfo
 from zope.deferredimport import deprecated
 
 deprecated("Please use addPermission from AccessControl.Permission.",
-    setDefaultRoles='AccessControl.Permission:addPermission')
+           setDefaultRoles='AccessControl.Permission:addPermission')
 
 security = ModuleSecurityInfo('Products.CMFCore.permissions')
 

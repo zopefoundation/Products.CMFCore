@@ -239,7 +239,7 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         from Products.CMFCore.exportimport.properties \
                 import exportSiteProperties
         from Products.CMFCore.exportimport.properties \
-                import importSiteProperties
+            import importSiteProperties
 
         NONASCII = u'B\xe4r'
         site = self._initSite(foo=0, bar=0)

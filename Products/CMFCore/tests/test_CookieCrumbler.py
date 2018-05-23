@@ -13,7 +13,6 @@
 """CookieCrumbler tests.
 """
 
-import six
 from six import StringIO
 from six.moves.urllib.parse import quote
 import unittest

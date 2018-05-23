@@ -33,6 +33,7 @@ def importMailHost(context):
 
     importObjects(tool, '', context)
 
+
 def exportMailHost(context):
     """Export mailhost settings as an XML file.
     """

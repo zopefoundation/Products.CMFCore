@@ -62,7 +62,8 @@ class CookieCrumblerXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
             if child.nodeName != 'property':
                 continue
             if child.getAttribute('name') not in ('auto_login_page',
-                                                'unauth_page', 'logout_page'):
+                                                  'unauth_page',
+                                                  'logout_page'):
                 continue
             node.removeChild(child)
             child.unlink()
@@ -79,6 +80,7 @@ def importCookieCrumbler(context):
         return
 
     importObjects(tool, '', context)
+
 
 def exportCookieCrumbler(context):
     """Export cookie crumbler settings as an XML file.

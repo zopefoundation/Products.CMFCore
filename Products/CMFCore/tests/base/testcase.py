@@ -80,6 +80,7 @@ class TransactionalTest(unittest.TestCase):
         transaction.abort()
         ZopeTestCase.close(self.app)
 
+
 RequestTest = TransactionalTest
 
 
@@ -97,6 +98,7 @@ class SecurityTest(TransactionalTest):
         noSecurityManager()
         setSecurityPolicy(self._oldPolicy)
         TransactionalTest.tearDown(self)
+
 
 SecurityRequestTest = SecurityTest
 

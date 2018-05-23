@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import Acquisition
 from AccessControl.SecurityManagement import newSecurityManager

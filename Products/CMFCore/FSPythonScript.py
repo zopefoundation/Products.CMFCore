@@ -40,7 +40,7 @@ class CustomizedPythonScript(PythonScript):
     """ Subclass which captures the "source" version's text.
     """
 
-    #meta_type = 'Customized Python Script'  #(need permissions here)
+    # meta_type = 'Customized Python Script'  #(need permissions here)
 
     security = ClassSecurityInfo()
 
@@ -68,6 +68,7 @@ class CustomizedPythonScript(PythonScript):
         PythonScript.manage_options[:1] +
         ({'label': 'Diff', 'action': 'manage_showDiff'},) +
         PythonScript.manage_options[1:])
+
 
 InitializeClass(CustomizedPythonScript)
 
@@ -226,6 +227,7 @@ class FSPythonScript(FSObject, Script):
             # Now do it for real
             self._updateFromFS()
         return self._bind_names
+
 
 InitializeClass(FSPythonScript)
 

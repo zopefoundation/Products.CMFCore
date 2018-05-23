@@ -89,7 +89,7 @@ class FSMetadata:
             self._properties = self._getSectionDict(cfg, 'default')
             self._security = self._getSectionDict(cfg, 'security',
                                                   self._securityParser)
-        except:
+        except Exception:
             logger.exception("Error parsing .metadata file")
 
         # to add in a new value such as proxy roles,

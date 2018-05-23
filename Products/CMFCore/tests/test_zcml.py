@@ -38,8 +38,9 @@ def test_registerDirectory():
     Make sure the directory is registered correctly::
 
       >>> from Products.CMFCore.DirectoryView import _dirreg
-      >>> reg_keys = ('Products.CMFCore:tests/fake_skins/fake_skin',
-      ...             'Products.CMFCore:tests/fake_skins/fake_skin/test_directory')
+      >>> reg_keys = (
+      ...   'Products.CMFCore:tests/fake_skins/fake_skin',
+      ...   'Products.CMFCore:tests/fake_skins/fake_skin/test_directory')
       >>> reg_keys[0] in _dirreg._directories
       True
       >>> reg_keys[1] in _dirreg._directories

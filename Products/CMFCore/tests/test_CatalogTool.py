@@ -32,6 +32,7 @@ from Products.CMFCore.tests.base.testcase import SecurityTest
 
 installProduct('PluginIndexes')
 
+
 class FakeFolder(Implicit):
     id = 'portal'
 
@@ -146,7 +147,7 @@ class CatalogToolTests(SecurityTest):
             """ Dummy content that already provides IIndexableObject
                 and therefore does not need a wrapper to be registered
             """
-            allowedRolesAndUsers = ['Manager'] # default value
+            allowedRolesAndUsers = ['Manager']  # default value
 
         return CatalogDummyContent(*args, **kw)
 

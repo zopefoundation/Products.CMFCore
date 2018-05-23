@@ -21,6 +21,7 @@ from zope.configuration.fields import PythonIdentifier
 from zope.configuration.fields import Tokens
 from zope.interface import Interface
 from zope.schema import ASCIILine
+from zope.testing.cleanup import addCleanUp
 
 from .DirectoryView import _dirreg
 from .DirectoryView import _generateKey
@@ -58,6 +59,8 @@ class IRegisterDirectoryDirective(Interface):
 
 
 _directory_regs = []
+
+
 def registerDirectory(_context, name, directory=None, recursive=False,
                       ignore=ignore):
     """ Add a new directory to the registry.
@@ -87,6 +90,6 @@ def cleanUp():
                 del _dirreg._directories[key]
     _directory_regs = []
 
-from zope.testing.cleanup import addCleanUp
+
 addCleanUp(cleanUp)
 del addCleanUp

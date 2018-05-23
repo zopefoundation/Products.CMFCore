@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from os.path import join as path_join
 
@@ -99,8 +98,8 @@ class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
         content = content.__of__(self.app)
         script = self._makeOne('testDTML', 'testDTML.dtml')
         script = script.__of__(content)
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time + 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE' ] = '%s;' % \
+            rfc1123_date(mod_time + 3600)
         data = script(content, self.REQUEST, self.RESPONSE)
 
         self.assertEqual(data, '')

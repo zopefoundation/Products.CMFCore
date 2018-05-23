@@ -73,4 +73,5 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         super(PortalObjectBase,
               self).__before_publishing_traverse__(arg1, arg2)
 
+
 InitializeClass(PortalObjectBase)

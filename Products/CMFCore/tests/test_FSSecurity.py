@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 import logging
 from os import path

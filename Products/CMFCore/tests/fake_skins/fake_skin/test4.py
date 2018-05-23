@@ -1,1 +1,1 @@
-return 'test1'
+return 'test1'  # noqa

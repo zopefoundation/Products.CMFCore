@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from zope.interface.verify import verifyClass
 

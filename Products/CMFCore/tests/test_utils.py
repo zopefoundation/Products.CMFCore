@@ -14,7 +14,6 @@
 """
 
 import unittest
-import Testing
 
 from Acquisition import Implicit
 from App.Common import rfc1123_date
