@@ -7,6 +7,9 @@ Products.CMFCore Changelog
 - Fix notifyModified called on a wrong object.
   [mamico]
 
+- full PEP-8 compliance
+
+
 2.4.0b4 (2018-05-17)
 --------------------
 

@@ -63,6 +63,7 @@ COOKED TEXT HERE
 </html>
 """
 
+
 class Warnings(object):
 
     def __init__(self):
@@ -76,14 +77,13 @@ class FSReSTMethod(FSObject):
     """ A chunk of StructuredText, rendered as a skin method of a CMF site.
     """
     meta_type = 'Filesystem ReST Method'
-    _owner = None # unowned
+    _owner = None  # unowned
     report_level = 1
     input_encoding = 'ascii'
     output_encoding = 'utf8'
 
-    manage_options=({'label' : 'Customize','action' : 'manage_main'},
-                    {'label' : 'View','action' : ''},
-                   )
+    manage_options = ({'label': 'Customize', 'action': 'manage_main'},
+                      {'label': 'View', 'action': ''})
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -105,7 +105,7 @@ class FSReSTMethod(FSObject):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r') # not 'rb', as this is a text file!
+        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
         try:
             data = file.read()
         finally:
@@ -133,34 +133,32 @@ class FSReSTMethod(FSObject):
 
     def cook(self):
         if not hasattr(self, '_v_cooked'):
-            settings = {
-                'halt_level': 6,
-                'report_level' : self.report_level,
-                'input_encoding': self.input_encoding,
-                'output_encoding': self.output_encoding,
-                'initial_header_level' : 1,
-                'stylesheet' : None,
-                'stylesheet_path' : None,
-                'pub.settings.warning_stream' :  Warnings(),
-                'file_insertion_enabled' : 0,
-                'raw_enabled' : 0,
-                }
+            settings = {'halt_level': 6,
+                        'report_level': self.report_level,
+                        'input_encoding': self.input_encoding,
+                        'output_encoding': self.output_encoding,
+                        'initial_header_level': 1,
+                        'stylesheet': None,
+                        'stylesheet_path': None,
+                        'pub.settings.warning_stream':  Warnings(),
+                        'file_insertion_enabled': 0,
+                        'raw_enabled': 0}
 
             parts = publish_parts(self.raw, writer=Writer(),
-                                settings_overrides=settings)
+                                  settings_overrides=settings)
             self._v_cooked = parts['html_body']
         return self._v_cooked
 
     _default_template = ZopePageTemplate('restmethod_view',
                                          _DEFAULT_TEMPLATE_ZPT, 'text/html')
 
-    def __call__( self, REQUEST={}, RESPONSE=None, **kw ):
+    def __call__(self, REQUEST={}, RESPONSE=None, **kw):
         """ Return our rendered StructuredText.
         """
         self._updateFromFS()
 
         if RESPONSE is not None:
-            RESPONSE.setHeader( 'Content-Type', 'text/html' )
+            RESPONSE.setHeader('Content-Type', 'text/html')
 
         view = _ViewEmulator(self.getId()).__of__(self)
         if _checkConditionalGET(view, extra_context={}):
@@ -181,7 +179,6 @@ class FSReSTMethod(FSObject):
         template = getattr(self, 'restmethod_view', self._default_template)
 
         if getattr(template, 'isDocTemp', 0):
-            #posargs = (self, REQUEST, RESPONSE)
             posargs = (self, REQUEST)
         else:
             posargs = ()
@@ -202,10 +199,11 @@ class FSReSTMethod(FSObject):
         return self.raw
 
     @security.protected(ViewManagementScreens)
-    def document_src( self ):
+    def document_src(self):
         """ Fetch our source for rendering in the ZMI.
         """
         return self.raw
+
 
 InitializeClass(FSReSTMethod)
 

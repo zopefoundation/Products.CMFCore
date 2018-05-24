@@ -49,28 +49,24 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
 
     security = ClassSecurityInfo()
 
-    manage_options = ( ( OrderedFolder.manage_options[0],
-                         ActionProviderBase.manage_options[0],
-                         {'label': 'Action Providers',
-                          'action': 'manage_actionProviders'},
-                         {'label': 'Overview',
-                          'action': 'manage_overview'} ) +
-                       OrderedFolder.manage_options[2:] )
+    manage_options = ((OrderedFolder.manage_options[0],
+                       ActionProviderBase.manage_options[0],
+                       {'label': 'Action Providers',
+                        'action': 'manage_actionProviders'},
+                       {'label': 'Overview',
+                        'action': 'manage_overview'}) +
+                      OrderedFolder.manage_options[2:])
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainActionsTool', _dtmldir )
+    manage_overview = DTMLFile('explainActionsTool', _dtmldir)
     manage_actionProviders = DTMLFile('manageActionProviders', _dtmldir)
 
     @security.protected(ManagePortal)
-    def manage_aproviders(self
-                        , apname=''
-                        , chosen=()
-                        , add_provider=0
-                        , del_provider=0
-                        , REQUEST=None):
+    def manage_aproviders(self, apname='', chosen=(), add_provider=0,
+                          del_provider=0, REQUEST=None):
         """
         Manage action providers through-the-web.
         """
@@ -85,24 +81,21 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             providers = new_providers
         self.action_providers = tuple(providers)
         if REQUEST is not None:
-            return self.manage_actionProviders(self , REQUEST
-                          , manage_tabs_message='Providers changed.')
+            return self.manage_actionProviders(
+                       self, REQUEST, manage_tabs_message='Providers changed.')
 
     @security.protected(ManagePortal)
-    def manage_editActionsForm( self, REQUEST, manage_tabs_message=None ):
+    def manage_editActionsForm(self, REQUEST, manage_tabs_message=None):
         """ Show the 'Actions' management tab.
         """
-        actions = [ ai.getMapping() for ai in self._actions ]
+        actions = [ai.getMapping() for ai in self._actions]
 
         # possible_permissions is in AccessControl.Role.RoleManager.
         pp = self.possible_permissions()
-        return self._actions_form( self
-                                 , REQUEST
-                                 , actions=actions
-                                 , possible_permissions=pp
-                                 , management_view='Actions'
-                                 , manage_tabs_message=manage_tabs_message
-                                 )
+        return self._actions_form(self, REQUEST, actions=actions,
+                                  possible_permissions=pp,
+                                  management_view='Actions',
+                                  manage_tabs_message=manage_tabs_message)
 
     #
     #   ActionProvider interface
@@ -118,7 +111,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                  DeprecationWarning, stacklevel=2)
         actions = list(oldstyle_actions)
         for category in self.objectValues():
-            actions.extend( category.listActions() )
+            actions.extend(category.listActions())
         return tuple(actions)
 
     #
@@ -142,13 +135,13 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             self.action_providers = tuple(ap)
 
     @security.protected(ManagePortal)
-    def deleteActionProvider( self, provider_name ):
+    def deleteActionProvider(self, provider_name):
         """ Delete an Action Provider id from providers queried by this tool.
         """
-        ap = list( self.action_providers )
+        ap = list(self.action_providers)
         if provider_name in ap:
-            ap.remove( provider_name )
-            self.action_providers = tuple( ap )
+            ap.remove(provider_name)
+            self.action_providers = tuple(ap)
 
     #
     #   'portal_actions' interface methods
@@ -163,26 +156,23 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         for provider_name in self.listActionProviders():
             provider = getToolByName(self, provider_name)
             if IActionProvider.providedBy(provider):
-                actions.extend( provider.listActionInfos(object=object) )
+                actions.extend(provider.listActionInfos(object=object))
 
         # Include actions from object.
         if object is not None:
             if IActionProvider.providedBy(object):
-                actions.extend( object.listActionInfos(object=object) )
+                actions.extend(object.listActionInfos(object=object))
 
         # Reorganize the actions by category.
-        filtered_actions={'user':[],
-                          'folder':[],
-                          'object':[],
-                          'global':[],
-                          'workflow':[],
-                          }
+        filtered_actions = {'user': [], 'folder': [], 'object': [],
+                            'global': [], 'workflow': []}
 
         for action in actions:
             catlist = filtered_actions.setdefault(action['category'], [])
             catlist.append(action)
 
         return filtered_actions
+
 
 InitializeClass(ActionsTool)
 registerToolInterface('portal_actions', IActionsTool)

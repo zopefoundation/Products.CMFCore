@@ -61,13 +61,12 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
     description = ''
 
-    manage_options = ( Folder.manage_options[:1]
-                     + ({'label': 'Components',
-                         'action': 'manage_components'},)
-                     + ({'label': 'Components Folder',
-                         'action': '++etc++site/manage_main'},)
-                     + Folder.manage_options[1:]
-                     )
+    manage_options = (Folder.manage_options[:1]
+                      + ({'label': 'Components',
+                          'action': 'manage_components'},)
+                      + ({'label': 'Components Folder',
+                          'action': '++etc++site/manage_main'},)
+                      + Folder.manage_options[1:])
 
     def __init__(self, id, title='', description=''):
         self.id = id
@@ -116,14 +115,14 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         """
         Edit the folder title (and possibly other attributes later)
         """
-        self.setTitle( title )
-        self.setDescription( description )
+        self.setTitle(title)
+        self.setDescription(description)
         # BBB: for ICatalogAware subclasses
         if getattr(self, 'reindexObject', None) is not None:
             self.reindexObject()
 
     @security.public
-    def allowedContentTypes( self ):
+    def allowedContentTypes(self):
         """
             List type info objects for types which can be added in
             this folder.
@@ -138,10 +137,10 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
         return [t for t in result if t.isConstructionAllowed(self)]
 
-    def _filteredItems( self, ids, filt ):
+    def _filteredItems(self, ids, filt):
         """
             Apply filter, a mapping, to child objects indicated by 'ids',
-            returning a sequence of ( id, obj ) tuples.
+            returning a sequence of (id, obj) tuples.
         """
         # Restrict allowed content types
         if filt is None:
@@ -169,9 +168,9 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         append = result.append
         get = self._getOb
         for id in ids:
-            obj = get( id )
+            obj = get(id)
             if query(obj):
-                append( (id, obj) )
+                append((id, obj))
         return result
 
     #
@@ -190,29 +189,29 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         # List IDs of contentish and folderish sub-objects.
         # (method is without docstring to disable publishing)
         #
-        return [ item[0] for item in self.contentItems(filter) ]
+        return [item[0] for item in self.contentItems(filter)]
 
     @security.public
     def contentValues(self, filter=None):
         # List contentish and folderish sub-objects.
         # (method is without docstring to disable publishing)
         #
-        return [ item[1] for item in self.contentItems(filter) ]
+        return [item[1] for item in self.contentItems(filter)]
 
     @security.protected(ListFolderContents)
     def listFolderContents(self, contentFilter=None):
         """ List viewable contentish and folderish sub-objects.
         """
-        l = []
+        fc_list = []
         for id, obj in self.contentItems(contentFilter):
             # validate() can either raise Unauthorized or return 0 to
             # mean unauthorized.
             try:
                 if getSecurityManager().validate(self, self, id, obj):
-                    l.append(obj)
+                    fc_list.append(obj)
             except zExceptions_Unauthorized:  # Catch *all* Unauths!
                 pass
-        return l
+        return fc_list
 
     #
     #   webdav Resource method
@@ -241,7 +240,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
             if key[:10] == 'filter_by_':
                 filter[key[10:]] = value
         encoded = base64_encode(marshal.dumps(filter))
-        encoded = ''.join( encoded.split('\n') )
+        encoded = ''.join(encoded.split('\n'))
         return encoded
 
     @security.public
@@ -254,13 +253,13 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
             filter.update(marshal.loads(base64_decode(encoded)))
         return filter
 
-    def content_type( self ):
+    def content_type(self):
         """
             WebDAV needs this to do the Right Thing (TM).
         """
         return None
 
-    def PUT_factory( self, name, typ, body ):
+    def PUT_factory(self, name, typ, body):
         """ Factory for PUT requests to objects which do not yet exist.
 
         Used by NullResource.PUT.
@@ -276,11 +275,11 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         if typeObjectName is None:
             return None
 
-        self.invokeFactory( typeObjectName, name )
+        self.invokeFactory(typeObjectName, name)
 
         # invokeFactory does too much, so the object has to be removed again
-        obj = aq_base( self._getOb( name ) )
-        self._delObject( name )
+        obj = aq_base(self._getOb(name))
+        self._delObject(name)
         return obj
 
     @security.protected(AddPortalContent)
@@ -291,10 +290,11 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         myType = ttool.getTypeInfo(self)
 
         if myType is not None:
-            if not myType.allowType( type_name ):
+            if not myType.allowType(type_name):
                 raise ValueError('Disallowed subobject type: %s' % type_name)
 
-        return ttool.constructContent(type_name, self, id, RESPONSE, *args, **kw)
+        return ttool.constructContent(type_name, self, id, RESPONSE,
+                                      *args, **kw)
 
     @security.protected(AddPortalContent)
     def checkIdAvailable(self, id):
@@ -305,11 +305,11 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         else:
             return True
 
-    def MKCOL_handler(self,id,REQUEST=None,RESPONSE=None):
+    def MKCOL_handler(self, id, REQUEST=None, RESPONSE=None):
         """
             Handle WebDAV MKCOL.
         """
-        self.manage_addFolder( id=id, title='' )
+        self.manage_addFolder(id=id, title='')
 
     def _checkId(self, id, allow_dup=0):
         PortalFolderBase.inheritedAttribute('_checkId')(self, id, allow_dup)
@@ -343,10 +343,9 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
             if ob is not None:
                 # If the portal root has a non-contentish object by this name,
                 # don't allow an override.
-                if (hasattr(ob, id) and
-                    id not in ob.contentIds() and
-                    # Allow root doted prefixed object name overrides
-                    not id.startswith('.')):
+                if hasattr(ob, id) and \
+                   id not in ob.contentIds() and \
+                   not id.startswith('.'):
                     raise BadRequest('The id "%s" is reserved.' % id)
             # Don't allow ids used by Method Aliases.
             ti = self.getTypeInfo()
@@ -384,17 +383,19 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
                         if not sm.validate(None, parent, None, object):
                             raise AccessControl_Unauthorized(object.getId())
 
-                        if validate_src == 2: # moving
+                        if validate_src == 2:  # moving
                             if not sm.checkPermission(DeleteObjects, parent):
                                 raise AccessControl_Unauthorized('Delete not '
                                                                  'allowed.')
                 else:
-                    raise AccessControl_Unauthorized('You do not possess the '
+                    raise AccessControl_Unauthorized(
+                            'You do not possess the '
                             '%r permission in the context of the container '
                             'into which you are pasting, thus you are not '
                             'able to perform this operation.' % mt_permission)
             else:
-                raise AccessControl_Unauthorized('The object %r does not '
+                raise AccessControl_Unauthorized(
+                        'The object %r does not '
                         'support this operation.' % object.getId())
         else:
             # Call OFS' _verifyObjectPaste if necessary
@@ -412,23 +413,19 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
                 myType = ttool.getTypeInfo(self)
 
                 if myType is not None and not myType.allowType(type_name):
-                    raise ValueError('Disallowed subobject type: %s'
-                                        % type_name)
+                    raise ValueError('Disallowed subobject type: %s' %
+                                     type_name)
 
                 # Check for workflow guards
                 objType = ttool.getTypeInfo(type_name)
-                if ( objType is not None and
-                     not objType._checkWorkflowAllowed(self) ):
+                if objType is not None and \
+                   not objType._checkWorkflowAllowed(self):
                     raise ValueError('Pasting not allowed in this workflow')
 
-    security.setPermissionDefault(AddPortalContent, ('Owner','Manager'))
+    security.setPermissionDefault(AddPortalContent, ('Owner', 'Manager'))
 
     @security.protected(AddPortalFolders)
-    def manage_addFolder( self
-                        , id
-                        , title=''
-                        , REQUEST=None
-                        ):
+    def manage_addFolder(self, id, title='', REQUEST=None):
         """ Add a new folder-like object with id *id*.
 
         IF present, use the parent object's 'mkdir' alias; otherwise, just add
@@ -440,10 +437,10 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
             # call it
             getattr(self, method_id)(id=id)
         else:
-            self.invokeFactory( type_name='Folder', id=id )
+            self.invokeFactory(type_name='Folder', id=id)
 
-        ob = self._getOb( id )
-        ob.setTitle( title )
+        ob = self._getOb(id)
+        ob.setTitle(title)
         try:
             ob.reindexObject()
         except AttributeError:
@@ -451,6 +448,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
 
         if REQUEST is not None:
             return self.manage_main(self, REQUEST, update_menu=1)
+
 
 InitializeClass(PortalFolderBase)
 
@@ -464,8 +462,8 @@ class PortalFolder(OrderSupport, PortalFolderBase):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( OrderSupport.manage_options +
-                       PortalFolderBase.manage_options[1:] )
+    manage_options = (OrderSupport.manage_options +
+                      PortalFolderBase.manage_options[1:])
 
     @security.protected(AddPortalFolders)
     def manage_addPortalFolder(self, id, title='', REQUEST=None):
@@ -474,14 +472,16 @@ class PortalFolder(OrderSupport, PortalFolderBase):
         ob = PortalFolder(id, title)
         self._setObject(id, ob, suppress_events=True)
         if REQUEST is not None:
-            return self.folder_contents( # XXX: ick!
+            return self.folder_contents(  # XXX: ick!
                 self, REQUEST, portal_status_message="Folder added")
+
 
 InitializeClass(PortalFolder)
 
 PortalFolderFactory = Factory(PortalFolder)
 
-manage_addPortalFolder = get_unbound_function(PortalFolder.manage_addPortalFolder)
+manage_addPortalFolder = get_unbound_function(
+                            PortalFolder.manage_addPortalFolder)
 
 
 class ContentFilter:
@@ -491,80 +491,70 @@ class ContentFilter:
 
     MARKER = []
     filterSubject = []
-    def __init__( self
-                , Title=MARKER
-                , Creator=MARKER
-                , Subject=MARKER
-                , Description=MARKER
-                , created=MARKER
-                , created_usage='range:min'
-                , modified=MARKER
-                , modified_usage='range:min'
-                , Type=MARKER
-                , portal_type=MARKER
-                , **Ignored
-                ):
+
+    def __init__(self, Title=MARKER, Creator=MARKER, Subject=MARKER,
+                 Description=MARKER, created=MARKER, created_usage='range:min',
+                 modified=MARKER, modified_usage='range:min', Type=MARKER,
+                 portal_type=MARKER, **Ignored):
 
         self.predicates = []
         self.description = []
 
         if Title is not self.MARKER:
-            self.predicates.append( lambda x, pat=re.compile( Title ):
-                                      pat.search( x.Title() ) )
-            self.description.append( 'Title: %s' % Title )
+            self.predicates.append(lambda x, pat=re.compile(Title):
+                                   pat.search(x.Title()))
+            self.description.append('Title: %s' % Title)
 
         if Creator and Creator is not self.MARKER:
-            self.predicates.append( lambda x, creator=Creator:
-                                    creator in x.listCreators() )
-            self.description.append( 'Creator: %s' % Creator )
+            self.predicates.append(lambda x, creator=Creator:
+                                   creator in x.listCreators())
+            self.description.append('Creator: %s' % Creator)
 
         if Subject and Subject is not self.MARKER:
             self.filterSubject = Subject
-            self.predicates.append( self.hasSubject )
-            self.description.append( 'Subject: %s' % ', '.join(Subject) )
+            self.predicates.append(self.hasSubject)
+            self.description.append('Subject: %s' % ', '.join(Subject))
 
         if Description is not self.MARKER:
-            self.predicates.append( lambda x, pat=re.compile( Description ):
-                                      pat.search( x.Description() ) )
-            self.description.append( 'Description: %s' % Description )
+            self.predicates.append(lambda x, pat=re.compile(Description):
+                                   pat.search(x.Description()))
+            self.description.append('Description: %s' % Description)
 
         if created is not self.MARKER:
             if created_usage == 'range:min':
-                self.predicates.append( lambda x, cd=created:
-                                          cd <= x.created() )
-                self.description.append( 'Created since: %s' % created )
+                self.predicates.append(lambda x, cd=created:
+                                       cd <= x.created())
+                self.description.append('Created since: %s' % created)
             if created_usage == 'range:max':
-                self.predicates.append( lambda x, cd=created:
-                                          cd >= x.created() )
-                self.description.append( 'Created before: %s' % created )
+                self.predicates.append(lambda x, cd=created:
+                                       cd >= x.created())
+                self.description.append('Created before: %s' % created)
 
         if modified is not self.MARKER:
             if modified_usage == 'range:min':
-                self.predicates.append( lambda x, md=modified:
-                                          md <= x.modified() )
-                self.description.append( 'Modified since: %s' % modified )
+                self.predicates.append(lambda x, md=modified:
+                                       md <= x.modified())
+                self.description.append('Modified since: %s' % modified)
             if modified_usage == 'range:max':
-                self.predicates.append( lambda x, md=modified:
-                                          md >= x.modified() )
-                self.description.append( 'Modified before: %s' % modified )
+                self.predicates.append(lambda x, md=modified:
+                                       md >= x.modified())
+                self.description.append('Modified before: %s' % modified)
 
         if Type:
             if isinstance(Type, six.string_types):
                 Type = [Type]
-            self.predicates.append( lambda x, Type=Type:
-                                      x.Type() in Type )
-            self.description.append( 'Type: %s' % ', '.join(Type) )
+            self.predicates.append(lambda x, Type=Type: x.Type() in Type)
+            self.description.append('Type: %s' % ', '.join(Type))
 
         if portal_type and portal_type is not self.MARKER:
             if isinstance(portal_type, six.string_types):
                 portal_type = [portal_type]
-            self.predicates.append( lambda x, pt=portal_type:
-                                    hasattr(aq_base(x), 'getPortalTypeName')
-                                    and x.getPortalTypeName() in pt )
-            self.description.append( 'Portal Type: %s'
-                                     % ', '.join(portal_type) )
+            self.predicates.append(lambda x, pt=portal_type:
+                                   hasattr(aq_base(x), 'getPortalTypeName')
+                                   and x.getPortalTypeName() in pt)
+            self.description.append('Portal Type: %s' % ', '.join(portal_type))
 
-    def hasSubject( self, obj ):
+    def hasSubject(self, obj):
         """
         Converts Subject string into a List for content filter view.
         """
@@ -573,12 +563,12 @@ class ContentFilter:
                 return 1
         return 0
 
-    def __call__( self, content ):
+    def __call__(self, content):
 
         for predicate in self.predicates:
 
             try:
-                if not predicate( content ):
+                if not predicate(content):
                     return 0
             except (AttributeError, KeyError, IndexError, ValueError):
                 # predicates are *not* allowed to throw exceptions
@@ -586,7 +576,7 @@ class ContentFilter:
 
         return 1
 
-    def __str__( self ):
+    def __str__(self):
         """
             Return a stringified description of the filter.
         """

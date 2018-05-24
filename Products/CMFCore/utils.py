@@ -46,6 +46,7 @@ from OFS.misc_ import Misc_ as MiscImage
 from OFS.ObjectManager import UNIQUE
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
+import Products
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import ComponentLookupError
@@ -57,7 +58,7 @@ from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.interfaces import ICachingPolicyManager
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
-
+ProductsPath = [abspath(ppath) for ppath in Products.__path__]
 security = ModuleSecurityInfo('Products.CMFCore.utils')
 
 _globals = globals()
@@ -71,21 +72,24 @@ _marker = []  # Create a new marker object.
 
 _tool_interface_registry = {}
 
+
 @security.private
 def registerToolInterface(tool_id, tool_interface):
     """ Register a tool ID for an interface
 
     This method can go away when getToolByName is going away
     """
-    global  _tool_interface_registry
+    global _tool_interface_registry
     _tool_interface_registry[tool_id] = tool_interface
+
 
 @security.private
 def getToolInterface(tool_id):
     """ Get the interface registered for a tool ID
     """
-    global  _tool_interface_registry
+    global _tool_interface_registry
     return _tool_interface_registry.get(tool_id, None)
+
 
 @security.public
 def getToolByName(obj, name, default=_marker):
@@ -125,6 +129,7 @@ def getToolByName(obj, name, default=_marker):
             raise AttributeError(name)
         return tool
 
+
 @security.public
 def getUtilityByInterfaceName(dotted_name, default=_marker):
     """ Get a tool by its fully-qualified dotted interface path
@@ -146,6 +151,7 @@ def getUtilityByInterfaceName(dotted_name, default=_marker):
             raise
         return default
 
+
 @security.public
 def cookString(text):
 
@@ -158,6 +164,7 @@ def cookString(text):
     rgx = re.compile(r'(^_|[^a-zA-Z0-9-_~\,\.])')
     cooked = re.sub(rgx, "", text).lower()
     return cooked
+
 
 @security.public
 def tuplize(valueName, value):
@@ -174,6 +181,7 @@ def tuplize(valueName, value):
         return tuple(value.split())
     raise ValueError("%s of unsupported type" % valueName)
 
+
 #
 #   Security utilities, callable only from unrestricted code.
 #
@@ -182,11 +190,13 @@ def tuplize(valueName, value):
 def _getAuthenticatedUser(self):
     return getSecurityManager().getUser()
 
+
 @security.private
 def _checkPermission(permission, obj):
     if not isinstance(permission, six.string_types):
         permission = permission.decode()
     return getSecurityManager().checkPermission(permission, obj)
+
 
 # If Zope ever provides a call to getRolesInContext() through
 # the SecurityManager API, the method below needs to be updated.
@@ -205,6 +215,7 @@ def _limitGrantedRoles(roles, context, special_roles=()):
     for role in roles:
         if role not in special_roles and role not in user_roles:
             raise AccessControl_Unauthorized('Too many roles specified.')
+
 
 @security.private
 def _mergedLocalRoles(object):
@@ -235,6 +246,7 @@ def _mergedLocalRoles(object):
 
     return deepcopy(merged)
 
+
 @security.private
 def _ac_inherited_permissions(ob, all=0):
     # Get all permissions not defined in ourself that are inherited
@@ -249,11 +261,12 @@ def _ac_inherited_permissions(ob, all=0):
         if hasattr(ob, '_subobject_permissions'):
             for p in ob._subobject_permissions():
                 pname = p[0]
-                if not pname in d:
+                if pname not in d:
                     d[pname] = 1
                     r.append(p)
         r = list(perms) + r
     return r
+
 
 @security.private
 def _modifyPermissionMappings(ob, map):
@@ -310,6 +323,8 @@ class FakeExecutableObject:
 # Parse a string of etags from an If-None-Match header
 # Code follows ZPublisher.HTTPRequest.parse_cookie
 parse_etags_lock = allocate_lock()
+
+
 def parse_etags(text,
                 result=None,
                 # quoted etags (assumed separated by whitespace + a comma)
@@ -329,13 +344,13 @@ def parse_etags(text,
         m = etagre_quote.match(text)
         if m:
             # Match quoted etag (spec-observing client)
-            l = len(m.group(1))
+            tl = len(m.group(1))
             value = m.group(2)
         else:
             # Match non-quoted etag (lazy client)
             m = etagre_noquote.match(text)
             if m:
-                l = len(m.group(1))
+                tl = len(m.group(1))
                 value = m.group(2)
             else:
                 return result
@@ -344,7 +359,8 @@ def parse_etags(text,
 
     if value:
         result.append(value)
-    return parse_etags(*(text[l:], result))
+    return parse_etags(*(text[tl:], result))
+
 
 def _checkConditionalGET(obj, extra_context):
     """A conditional GET is done using one or both of the request
@@ -411,7 +427,7 @@ def _checkConditionalGET(obj, extra_context):
         # of the way they parse it).
         try:
             if_modified_since = int(DateTime(if_modified_since).timeTime())
-        except:
+        except Exception:
             if_modified_since = None
 
     client_etags = None
@@ -423,14 +439,14 @@ def _checkConditionalGET(obj, extra_context):
         return False
 
     if if_modified_since:
-        if (not content_mod_time or
-            mod_time_secs < 0 or
-            mod_time_secs > if_modified_since):
+        if not content_mod_time or \
+           mod_time_secs < 0 or \
+           mod_time_secs > if_modified_since:
             return False
 
     if client_etags:
-        if (not content_etag or
-            (content_etag not in client_etags and '*' not in client_etags)):
+        if not content_etag or \
+           (content_etag not in client_etags and '*' not in client_etags):
             return False
     else:
         # If we generate an ETag, don't validate the conditional GET unless
@@ -449,6 +465,7 @@ def _checkConditionalGET(obj, extra_context):
     delattr(REQUEST, SUBTEMPLATE)
 
     return True
+
 
 @security.private
 def _setCacheHeaders(obj, extra_context):
@@ -483,6 +500,7 @@ def _setCacheHeaders(obj, extra_context):
             RESPONSE.setHeader('X-Cache-Headers-Set-By',
                                'CachingPolicyManager: %s' %
                                '/'.join(manager.getPhysicalPath()))
+
 
 class _ViewEmulator(Implicit):
     """Auxiliary class used to adapt FSFile and FSImage
@@ -543,6 +561,7 @@ class SimpleItemWithProperties(PropertyManager, SimpleItem):
         form = PropertyManager.manage_propertiesForm.__of__(self)
         return form(self, REQUEST, *args, **my_kw)
 
+
 InitializeClass(SimpleItemWithProperties)
 
 
@@ -586,9 +605,11 @@ class ToolInit:
             tool.__factory_meta_type__ = self.meta_type
             tool.icon = 'misc_/%s/%s' % (self.product_name, icon)
 
+
 InitializeClass(ToolInit)
 
 addInstanceForm = HTMLFile('dtml/addInstance', globals())
+
 
 def manage_addToolForm(self, REQUEST):
 
@@ -606,6 +627,7 @@ def manage_addToolForm(self, REQUEST):
                            factory_icon=toolinit.icon,
                            factory_types_list=tl,
                            factory_need_id=0)
+
 
 def manage_addTool(self, type, REQUEST=None):
 
@@ -661,7 +683,9 @@ class ContentInit:
         for ct in self.content_types:
             ct.__factory_meta_type__ = self.meta_type
 
+
 InitializeClass(ContentInit)
+
 
 def manage_addContentForm(self, REQUEST):
     """ Show the add content type form.
@@ -678,6 +702,7 @@ def manage_addContentForm(self, REQUEST):
                            factory_types_list=tl,
                            factory_need_id=1)
 
+
 def manage_addContent(self, id, type, REQUEST=None):
     """ Add the content type specified by name.
     """
@@ -693,6 +718,7 @@ def manage_addContent(self, id, type, REQUEST=None):
     self._setObject(id, obj)
     if REQUEST is not None:
         return self.manage_main(self, REQUEST)
+
 
 def registerIcon(klass, iconspec, _prefix=None):
 
@@ -712,10 +738,12 @@ def registerIcon(klass, iconspec, _prefix=None):
         setattr(misc_images, pid, MiscImage(pid, {}))
     getattr(misc_images, pid)[name] = icon
 
+
 #
 #   Metadata Keyword splitter utilities
 #
 KEYSPLITRE = re.compile(r'[,;]')
+
 
 @security.public
 def keywordsplitter(headers, names=('Subject', 'Keywords',),
@@ -726,13 +754,15 @@ def keywordsplitter(headers, names=('Subject', 'Keywords',),
     for head in names:
         keylist = splitter(headers.get(head, ''))
         keylist = [x.strip() for x in keylist]
-        out.extend([ key for key in keylist if key ])
+        out.extend([key for key in keylist if key])
     return out
+
 
 #
 #   Metadata Contributors splitter utilities
 #
 CONTRIBSPLITRE = re.compile(r';')
+
 
 @security.public
 def contributorsplitter(headers, names=('Contributors',),
@@ -740,6 +770,7 @@ def contributorsplitter(headers, names=('Contributors',),
     """ Split contributors out of headers, keyed on names.  Returns list.
     """
     return keywordsplitter(headers, names, splitter)
+
 
 #
 #   Directory-handling utilities
@@ -750,8 +781,6 @@ def normalize(p):
     # paths under *nix, the second to normalize to '/'
     return os_path.normpath(p.replace('\\', '/')).replace('\\', '/')
 
-import Products
-ProductsPath = [ abspath(ppath) for ppath in Products.__path__ ]
 
 @security.private
 def getContainingPackage(module):
@@ -765,6 +794,7 @@ def getContainingPackage(module):
 
     raise ValueError('Unable to find package for module %s' % module)
 
+
 @security.private
 def getPackageLocation(module):
     """ Return the filesystem location of a module.
@@ -775,10 +805,12 @@ def getPackageLocation(module):
     package = getContainingPackage(module)
     return package_home({'__name__': package})
 
+
 @security.private
 def getPackageName(globals_):
     module = globals_['__name__']
     return getContainingPackage(module)
+
 
 def _OldCacheHeaders(obj):
     # Old-style checking of modified headers
@@ -810,9 +842,10 @@ def _OldCacheHeaders(obj):
                 RESPONSE.setStatus(304)
                 return True
 
-    #Last-Modified will get stomped on by a cache policy if there is
-    #one set....
+    # Last-Modified will get stomped on by a cache policy if there is
+    # one set....
     RESPONSE.setHeader('Last-Modified', rfc1123_date(last_mod))
+
 
 def _FSCacheHeaders(obj):
     # Old-style setting of modified headers for FS-based objects
@@ -846,8 +879,8 @@ def _FSCacheHeaders(obj):
                 RESPONSE.setStatus(304)
                 return True
 
-    #Last-Modified will get stomped on by a cache policy if there is
-    #one set....
+    # Last-Modified will get stomped on by a cache policy if there is
+    # one set....
     RESPONSE.setHeader('Last-Modified', rfc1123_date(last_mod))
 
 

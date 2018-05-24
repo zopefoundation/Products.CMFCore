@@ -40,19 +40,11 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
         interfaces/DublinCore.py.
     """
 
-    manage_options = ( ( { 'label'  : 'Dublin Core'
-                         , 'action' : 'manage_metadata'
-                         }
-                       , { 'label'  : 'Edit'
-                         , 'action' : 'manage_edit'
-                         }
-                       , { 'label'  : 'View'
-                         , 'action' : 'view'
-                         }
-                       )
-                     + CMFCatalogAware.manage_options
-                     + SimpleItem.manage_options
-                     )
+    manage_options = (({'label': 'Dublin Core', 'action': 'manage_metadata'},
+                       {'label': 'Edit', 'action': 'manage_edit'},
+                       {'label': 'View', 'action': 'view'})
+                      + CMFCatalogAware.manage_options
+                      + SimpleItem.manage_options)
 
     security = ClassSecurityInfo()
 
@@ -87,14 +79,15 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
         """
         ti = self.getTypeInfo()
         method_id = ti and ti.queryMethodID('(Default)', context=self)
-        if method_id and method_id!='(Default)':
+        if method_id and method_id != '(Default)':
             method = getattr(self, method_id)
             if getattr(aq_base(method), 'isDocTemp', 0):
                 return method(self, self.REQUEST, self.REQUEST['RESPONSE'])
             else:
                 return method()
         else:
-            raise NotFound( 'Cannot find default view for "%s"' %
-                            '/'.join( self.getPhysicalPath() ) )
+            raise NotFound('Cannot find default view for "%s"' %
+                           '/'.join(self.getPhysicalPath()))
+
 
 InitializeClass(PortalContent)

@@ -58,7 +58,6 @@ class SiteStructureExporterTests(unittest.TestCase):
 
     def _setUpAdapters(self):
         from zope.component import provideAdapter
-        #from OFS.Image import File
 
         from Products.GenericSetup.interfaces import IFilesystemExporter
         from Products.GenericSetup.interfaces import IFilesystemImporter
@@ -67,14 +66,9 @@ class SiteStructureExporterTests(unittest.TestCase):
         from Products.CMFCore.interfaces import IFolderish
 
         from Products.CMFCore.exportimport.content import \
-             StructureFolderWalkingAdapter
-        from Products.GenericSetup.content import \
-             CSVAwareFileAdapter
-        from Products.GenericSetup.content import \
-             INIAwareFileAdapter
-
-        #from Products.CMFCore.exportimport.content import \
-        #        OFSFileAdapter
+            StructureFolderWalkingAdapter
+        from Products.GenericSetup.content import CSVAwareFileAdapter
+        from Products.GenericSetup.content import INIAwareFileAdapter
 
         provideAdapter(StructureFolderWalkingAdapter,
                        (IFolderish,),
@@ -243,14 +237,10 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(content_type, 'text/plain')
         parser = self._get_config_parser(text)
 
-        self.assertEqual(
-            safe_bytes(parser.get('DEFAULT', 'title')),
-            ITEMS_TITLE.encode('utf8'),
-        )
-        self.assertEqual(
-            safe_bytes(parser.get('DEFAULT', 'description')),
-            ITEMS_DESCRIPTION.encode('utf8'),
-        )
+        self.assertEqual(safe_bytes(parser.get('DEFAULT', 'title')),
+                         ITEMS_TITLE.encode('utf8'))
+        self.assertEqual(safe_bytes(parser.get('DEFAULT', 'description')),
+                         ITEMS_DESCRIPTION.encode('utf8'),)
 
     def test_export_site_with_exportable_simple_items(self):
         self._setUpAdapters()
@@ -303,13 +293,15 @@ class SiteStructureExporterTests(unittest.TestCase):
         wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
         wftool.foo_workflow.state_var = "state"
         wftool.setDefaultChain('foo_workflow')
-        wftool.setChainForPortalTypes((TEST_INI_AWARE,), 'foo_workflow', verify=False)
+        wftool.setChainForPortalTypes((TEST_INI_AWARE,),
+                                      'foo_workflow', verify=False)
 
         site.title = 'AAA'
         site.description = 'DESCRIPTION'
         for id in ITEM_IDS:
             site._setObject(id, _makeINIAware(id))
-            wftool.setStatusOf("foo_workflow", site[id], {"state":"published"})
+            wftool.setStatusOf("foo_workflow", site[id],
+                               {"state": "published"})
 
         context = DummyExportContext(site)
         exporter = self._getExporter()
@@ -327,7 +319,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             self.assertEqual(objects[index][1], "foo_workflow")
             self.assertEqual(objects[index][2], "published")
 
-    def test_export_site_with_exportable_simple_items_unicode_default_charset(self):
+    def test_export_site_exportable_simple_items_unicode_default_charset(self):
         self._setUpAdapters()
         ITEM_IDS = ('foo', 'bar', 'baz')
 
@@ -369,14 +361,10 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(content_type, 'text/plain')
         parser = self._get_config_parser(text)
 
-        self.assertEqual(
-            safe_bytes(parser.get('DEFAULT', 'title')),
-            ITEMS_TITLE.encode('utf8'),
-        )
-        self.assertEqual(
-            safe_bytes(parser.get('DEFAULT', 'description')),
-            ITEMS_DESCRIPTION.encode('utf8'),
-        )
+        self.assertEqual(safe_bytes(parser.get('DEFAULT', 'title')),
+                         ITEMS_TITLE.encode('utf8'))
+        self.assertEqual(safe_bytes(parser.get('DEFAULT', 'description')),
+                         ITEMS_DESCRIPTION.encode('utf8'))
 
     def test_export_site_with_exportable_simple_items_unicode_latin1(self):
         self._setUpAdapters()
@@ -421,14 +409,11 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(content_type, 'text/plain')
         parser = self._get_config_parser(text)
 
-        self.assertEqual(
-            safe_bytes(parser.get('DEFAULT', 'title'), 'latin1'),
-            ITEMS_TITLE.encode('latin1'),
-        )
-        self.assertEqual(
-            safe_bytes(parser.get('DEFAULT', 'description'), 'latin1'),
-            ITEMS_DESCRIPTION.encode('latin1'),
-        )
+        self.assertEqual(safe_bytes(parser.get('DEFAULT', 'title'), 'latin1'),
+                         ITEMS_TITLE.encode('latin1'))
+        self.assertEqual(safe_bytes(parser.get('DEFAULT', 'description'),
+                                    'latin1'),
+                         ITEMS_DESCRIPTION.encode('latin1'))
 
     def test_export_site_with_subfolders(self):
         self._setUpAdapters()
@@ -503,7 +488,9 @@ class SiteStructureExporterTests(unittest.TestCase):
         filename, text, content_type = context._wrote[-1]
         self.assertEqual(filename, 'structure/foo/.properties')
         self.assertEqual(content_type, 'text/plain')
-        self.assertEqual(text, KNOWN_DAV % (folder.title, folder.description, folder.body))
+        self.assertEqual(text,
+                         KNOWN_DAV % (folder.title, folder.description,
+                                      folder.body))
 
     def test_export_site_with_csvaware(self):
         self._setUpAdapters()
@@ -534,10 +521,9 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         parser = self._get_config_parser(text)
 
-        self.assertEqual(parser.get('DEFAULT', 'Title'),
-                                    site.title)
+        self.assertEqual(parser.get('DEFAULT', 'Title'), site.title)
         self.assertEqual(parser.get('DEFAULT', 'Description'),
-                                    site.description)
+                         site.description)
 
         filename, text, content_type = context._wrote[2]
         self.assertEqual(filename, 'structure/aware.csv')
@@ -590,7 +576,7 @@ class SiteStructureExporterTests(unittest.TestCase):
                 _PROPERTIES_TEMPLATE % id)
 
         _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_FOLDER)
-                                        for id in FOLDER_IDS])
+                                   for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
         context._files['structure/.properties'] = (
@@ -615,10 +601,10 @@ class SiteStructureExporterTests(unittest.TestCase):
         for id in FOLDER_IDS:
             context._files['structure/%s/.objects' % id] = ''
             context._files['structure/%s/.properties' % id] = (
-                KNOWN_DAV % ("Title", "Description", "Body") )
+                KNOWN_DAV % ("Title", "Description", "Body"))
 
         _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
-                                        for id in FOLDER_IDS])
+                                  for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
         context._files['structure/.properties'] = (
@@ -628,7 +614,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         importer(context)
         content = site.contentValues()
         self.assertEqual(len(content), len(FOLDER_IDS))
-        self.assertEqual(content[0]._was_put_as_read, KNOWN_DAV % ("Title", "Description", "Body"))
+        self.assertEqual(content[0]._was_put_as_read,
+                         KNOWN_DAV % ("Title", "Description", "Body"))
 
     def test_import_site_with_dav_aware_folder_with_generic_file_data(self):
         from Products.GenericSetup.tests.test_content \
@@ -643,10 +630,10 @@ class SiteStructureExporterTests(unittest.TestCase):
         for id in FOLDER_IDS:
             context._files['structure/%s/.objects' % id] = ''
             context._files['structure/%s/.properties' % id] = (
-                _PROPERTIES_TEMPLATE % ("Sub Folder Title", ) )
+                _PROPERTIES_TEMPLATE % ("Sub Folder Title",))
 
         _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
-                                        for id in FOLDER_IDS])
+                                   for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
         context._files['structure/.properties'] = (
@@ -672,8 +659,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
         importer = self._getImporter()
         importer(context)
 
@@ -693,7 +679,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
         wftool.foo_workflow.state_var = "state"
         wftool.setDefaultChain('foo_workflow')
-        wftool.setChainForPortalTypes((TEST_INI_AWARE,), 'foo_workflow', verify=False)
+        wftool.setChainForPortalTypes((TEST_INI_AWARE,),
+                                      'foo_workflow', verify=False)
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
@@ -704,15 +691,13 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
         importer = self._getImporter()
         importer(context)
 
         for item_id in ITEM_IDS:
-            self.assertEqual(wftool.getStatusOf("foo_workflow", site[item_id])['state'], "draft")
-
-
+            wf = wftool.getStatusOf("foo_workflow", site[item_id])
+            self.assertEqual(wf['state'], "draft")
 
     def test_import_site_with_subitems_and_blanklines_dotobjects(self):
         self._setUpAdapters()
@@ -729,8 +714,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
         importer = self._getImporter()
         importer(context)
 
@@ -753,8 +737,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
 
         importer = self._getImporter()
         importer(context)
@@ -800,8 +783,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
 
         importer = self._getImporter()
         importer(context)
@@ -826,8 +808,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
         context._files['structure/.preserve'] = '*'
 
         importer = self._getImporter()
@@ -856,8 +837,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
         context._files['structure/.preserve'] = 'b*'
 
         importer = self._getImporter()
@@ -887,8 +867,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             id = ITEM_IDS[index]
             context._files[
                     'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy',
-                                                           )
+                                                            'xyzzy')
         context._files['structure/.preserve'] = 'foo'
         context._files['structure/.delete'] = 'baz'
 
@@ -933,6 +912,7 @@ one,two,three
 four,five,six
 """
 
+
 def _makeCSVAware(id):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
@@ -965,6 +945,7 @@ KNOWN_INI = """\
 title = %s
 description = %s
 """
+
 
 def _makeINIAware(id):
     from OFS.SimpleItem import SimpleItem
@@ -1005,6 +986,7 @@ Description: %s
 %s
 """
 
+
 def _makeDAVAware(id):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
@@ -1035,7 +1017,10 @@ def _makeDAVAware(id):
 
     return aware
 
+
 TEST_DAV_FOLDER = 'Test DAV Folder'
+
+
 def _makeDAVAwareFolder(id):
     from Products.CMFCore.PortalFolder import PortalFolder
     from zope.interface import implementer
@@ -1066,6 +1051,7 @@ def _makeDAVAwareFolder(id):
 
 TEST_CONTENT = 'Test Content'
 
+
 def _makeItem(self):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
@@ -1085,6 +1071,7 @@ def _makeItem(self):
 
 
 TEST_FOLDER = 'Test Folder'
+
 
 def _makeFolder(id, site_folder=False):
     from Products.CMFCore.PortalFolder import PortalFolder

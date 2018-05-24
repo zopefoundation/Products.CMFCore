@@ -46,6 +46,7 @@ from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import UniqueObject
 
+
 def modifiedOptions():
     # Remove the existing "Properties" option and add our own.
     rval = []
@@ -53,8 +54,7 @@ def modifiedOptions():
         label = o.get('label', None)
         if label != 'Properties':
             rval.append(o)
-    rval[1:1] = [{'label':'Properties',
-                  'action':'manage_propertiesForm'}]
+    rval[1:1] = [{'label': 'Properties', 'action': 'manage_propertiesForm'}]
     return tuple(rval)
 
 
@@ -74,11 +74,9 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( modifiedOptions() +
-                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     ,
-                     ) + ActionProviderBase.manage_options
-                     )
+    manage_options = (modifiedOptions() +
+                      ({'label': 'Overview', 'action': 'manage_overview'},) +
+                      ActionProviderBase.manage_options)
 
     def __init__(self):
         self.selections = PersistentMapping()
@@ -94,7 +92,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainSkinsTool', _dtmldir )
+    manage_overview = DTMLFile('explainSkinsTool', _dtmldir)
 
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
     manage_propertiesForm = DTMLFile('dtml/skinProps', globals())
@@ -111,7 +109,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
 
     security.declareProtected(ManagePortal, 'manage_compareResults')
     manage_compareResults = DTMLFile('compareResults', _dtmldir,
-                                 management_view='Compare')
+                                     management_view='Compare')
 
     @security.protected(ManagePortal)
     def manage_skinLayers(self, chosen=(), add_skin=0, del_skin=0,
@@ -144,15 +142,16 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
             sels[str(skinname)] = skinpath
 
         if REQUEST is not None:
-            return self.manage_propertiesForm(
-                self, REQUEST, management_view='Properties', manage_tabs_message='Skins changed.')
-
+            msg = 'Skins changed.'
+            return self.manage_propertiesForm(self, REQUEST,
+                                              management_view='Properties',
+                                              manage_tabs_message=msg)
 
     @security.protected(ManagePortal)
     def isFirstInSkin(self, template_path, skin=None):
         """
-        Is the specified template the one that would get returned from the current
-        skin?
+        Is the specified template the one that would get returned
+        from the current skin?
         """
         if skin is None or skin == 'None':
             skin = self.getDefaultSkin()
@@ -189,11 +188,13 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         self.allow_any = allow_any and 1 or 0
         self.cookie_persistence = cookie_persistence and 1 or 0
         if REQUEST is not None:
-            return self.manage_propertiesForm(
-                self, REQUEST, management_view='Properties', manage_tabs_message='Properties changed.')
+            msg = 'Properties changed.'
+            return self.manage_propertiesForm(self, REQUEST,
+                                              management_view='Properties',
+                                              manage_tabs_message=msg)
 
     @security.private
-    def PUT_factory( self, name, typ, body ):
+    def PUT_factory(self, name, typ, body):
         """
             Dispatcher for PUT requests to non-existent IDs.  Returns
             an object of the appropriate type (or None, if we don't
@@ -202,27 +203,22 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         major, minor = typ.split('/', 1)
 
         if major == 'image':
-            return Image( id=name
-                        , title=''
-                        , file=''
-                        , content_type=typ
-                        )
+            return Image(id=name, title='', file='', content_type=typ)
 
         if major == 'text':
 
             if minor == 'x-python':
-                return PythonScript( id=name )
+                return PythonScript(id=name)
 
             if minor in ('html', 'xml'):
-                return ZopePageTemplate( name )
+                return ZopePageTemplate(name)
 
-            return DTMLMethod( __name__=name )
+            return DTMLMethod(__name__=name)
 
         return None
 
     # Make the PUT_factory replaceable
     PUT_factory__replaceable__ = REPLACEABLE
-
 
     @security.private
     def testSkinPath(self, p):
@@ -319,12 +315,9 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                         resp.setCookie(self.request_varname, mskin,
                                        path=portal_path)
                     else:
-                        expires = ( DateTime( 'GMT' ) + 365 ).rfc822()
-                        resp.setCookie( self.request_varname
-                                      , mskin
-                                      , path=portal_path
-                                      , expires=expires
-                                      )
+                        expires = (DateTime('GMT') + 365).rfc822()
+                        resp.setCookie(self.request_varname, mskin,
+                                       path=portal_path, expires=expires)
                     # Ensure updateSkinCookie() doesn't try again
                     # within this request.
                     req.cookies[self.request_varname] = mskin
@@ -378,15 +371,11 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
             item_one = self.unrestrictedTraverse(item_two_path)
             item_two = self.unrestrictedTraverse(item_one_path)
 
-        res =  unified_diff( item_one.read().splitlines()
-                           , item_two.read().splitlines()
-                           , item_one_path
-                           , item_two_path
-                           , ''
-                           , ''
-                           , lineterm=""
-                           )
+        res = unified_diff(item_one.read().splitlines(),
+                           item_two.read().splitlines(),
+                           item_one_path, item_two_path, '', '', lineterm="")
         return res
+
 
 InitializeClass(SkinsTool)
 registerToolInterface('portal_skins', ISkinsTool)

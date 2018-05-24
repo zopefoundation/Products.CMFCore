@@ -41,9 +41,9 @@ class DummyObject(Implicit):
     Comes with getIconURL and restrictedTraverse
     methods.
     """
-    def __init__(self, id='dummy',**kw):
+    def __init__(self, id='dummy', **kw):
         self._id = id
-        self.__dict__.update( kw )
+        self.__dict__.update(kw)
 
     def __str__(self):
         return self._id
@@ -60,7 +60,7 @@ class DummyObject(Implicit):
         path_elements.reverse()
         while path_elements:
             path_element = path_elements.pop()
-            parent = getattr(parent, path_element) 
+            parent = getattr(parent, path_element)
 
         return parent
 
@@ -81,7 +81,7 @@ class DummyType(DummyObject):
     def __init__(self, id='Dummy Content', title='Dummy Content', actions=()):
         """ To fake out some actions, pass in a sequence of tuples where the
         first element represents the ID or alias of the action and the
-        second element is the path to the object to be invoked, such as 
+        second element is the path to the object to be invoked, such as
         a page template.
         """
 
@@ -112,7 +112,7 @@ class DummyType(DummyObject):
 
 
 @implementer(IContentish)
-class DummyContent( PortalContent, Item ):
+class DummyContent(PortalContent, Item):
     """
     A Dummy piece of PortalContent
     """
@@ -122,16 +122,16 @@ class DummyContent( PortalContent, Item ):
     url = 'foo_url'
     after_add_called = before_delete_called = 0
 
-    def __init__( self, id='dummy', *args, **kw ):
+    def __init__(self, id='dummy', *args, **kw):
         self.id = id
         self._args = args
         self._kw = {}
-        self._kw.update( kw )
+        self._kw.update(kw)
 
         self.reset()
-        self.catalog = kw.get('catalog',0)
-        self.url = kw.get('url',None)
-        self.view_id = kw.get('view_id',None)
+        self.catalog = kw.get('catalog', 0)
+        self.url = kw.get('url', None)
+        self.view_id = kw.get('view_id', None)
 
     def manage_afterAdd(self, item, container):
         self.after_add_called = 1
@@ -142,38 +142,38 @@ class DummyContent( PortalContent, Item ):
     def absolute_url(self):
         return self.url
 
-    def reset( self ):
+    def reset(self):
         self.after_add_called = self.before_delete_called = 0
 
     # Make sure normal Database export/import stuff doesn't trip us up.
     def _getCopy(self, container):
-        return DummyContent( self.id, catalog=self.catalog )
+        return DummyContent(self.id, catalog=self.catalog)
 
-    def _safe_get(self,attr):
+    def _safe_get(self, attr):
         if self.catalog:
-            return getattr(self,attr,'')
+            return getattr(self, attr, '')
         else:
-            return getattr(self,attr)
+            return getattr(self, attr)
 
-    def Title( self ):
+    def Title(self):
         return self.title
 
     def listCreators(self):
         return self._safe_get('creators')
 
-    def Subject( self ):
+    def Subject(self):
         return self._safe_get('subject')
 
-    def Description( self ):
+    def Description(self):
         return self._safe_get('description')
 
-    def created( self ):
+    def created(self):
         return self._safe_get('created_date')
 
-    def modified( self ):
+    def modified(self):
         return self._safe_get('modified_date')
 
-    def Type( self ):
+    def Type(self):
         return 'Dummy Content Title'
 
     def __call__(self):
@@ -187,6 +187,7 @@ class DummyContent( PortalContent, Item ):
             else:
                 return template()
 
+
 DummyFactory = Factory(DummyContent)
 
 
@@ -195,22 +196,22 @@ class DummyFactoryDispatcher:
     """
     Dummy Product Factory Dispatcher
     """
-    def __init__( self, folder ):
+    def __init__(self, folder):
         self._folder = folder
 
     def getId(self):
         return 'DummyFactoryDispatcher'
 
-    def addFoo( self, id, *args, **kw ):
+    def addFoo(self, id, *args, **kw):
         if getattr(self._folder, '_prefix', None):
-            id = '%s_%s' % ( self._folder._prefix, id )
+            id = '%s_%s' % (self._folder._prefix, id)
         foo = DummyContent(id, *args, **kw)
         self._folder._setObject(id, foo, suppress_events=True)
         if getattr(self._folder, '_prefix', None):
             return id
 
-    __roles__ = ( 'FooAdder', )
-    __allow_access_to_unprotected_subobjects__ = { 'addFoo' : 1 }
+    __roles__ = ('FooAdder',)
+    __allow_access_to_unprotected_subobjects__ = {'addFoo': 1}
 
 
 @implementer(IObjectManager)
@@ -219,7 +220,7 @@ class DummyFolder(DummyObject):
     """Dummy Container for testing.
     """
 
-    def __init__( self, id='dummy', fake_product=0, prefix='' ):
+    def __init__(self, id='dummy', fake_product=0, prefix=''):
         self._prefix = prefix
         self._id = id
 
@@ -233,7 +234,7 @@ class DummyFolder(DummyObject):
     def _delOb(self, id):
         delattr(self, id)
 
-    def _getOb( self, id ):
+    def _getOb(self, id):
         return getattr(self, id)
 
     def _setObject(self, id, object, suppress_events=False):
@@ -259,7 +260,7 @@ class DummyFolder(DummyObject):
 
     def getPhysicalPath(self):
         p = aq_parent(aq_inner(self))
-        path = (self._id, )
+        path = (self._id,)
         if p is not None:
             path = p.getPhysicalPath() + path
         return path
@@ -279,6 +280,7 @@ class DummyFolder(DummyObject):
     def getTypeInfo(self):
         return self.portal_types.getTypeInfo(self)  # Can return None.
 
+
 @implementer(ISiteRoot)
 class DummySite(DummyFolder):
     """ A dummy portal folder.
@@ -288,7 +290,7 @@ class DummySite(DummyFolder):
     _path = 'bar'
 
     def absolute_url(self, relative=0):
-        return '/'.join( (self._domain, self._path, self._id) )
+        return '/'.join((self._domain, self._path, self._id))
 
     def getPhysicalPath(self):
         return ('', self._path, self._id)
@@ -319,9 +321,9 @@ class DummyUserFolder(Implicit):
     id = 'acl_users'
 
     def __init__(self):
-        setattr( self, 'user_foo', DummyUser(id='user_foo') )
-        setattr( self, 'user_bar', DummyUser(id='user_bar') )
-        setattr( self, 'all_powerful_Oz', OmnipotentUser() )
+        setattr(self, 'user_foo', DummyUser(id='user_foo'))
+        setattr(self, 'user_bar', DummyUser(id='user_bar'))
+        setattr(self, 'all_powerful_Oz', OmnipotentUser())
 
     def getUsers(self):
         pass
@@ -337,7 +339,7 @@ class DummyUserFolder(Implicit):
             delattr(self, user_id)
 
 
-class DummyTool(Implicit,ActionProviderBase):
+class DummyTool(Implicit, ActionProviderBase):
     """
     This is a Dummy Tool that behaves as a
     a MemberShipTool, a URLTool and an
@@ -399,7 +401,7 @@ class DummyCachingManager:
         return (
              ('foo', 'Foo'), ('bar', 'Bar'),
              ('test_path', '/'.join(content.getPhysicalPath())),
-             )
+            )
 
     def getModTimeAndETag(self, content, view_method, keywords, time=None):
         return (None, None, False)
@@ -408,7 +410,8 @@ class DummyCachingManager:
         return ('baz',)
 
 
-FAKE_ETAG = None # '--FAKE ETAG--'
+FAKE_ETAG = None  # '--FAKE ETAG--'
+
 
 class DummyCachingManagerWithPolicy(DummyCachingManager):
 
@@ -419,7 +422,7 @@ class DummyCachingManagerWithPolicy(DummyCachingManager):
     def getHTTPCachingHeaders(self, content, view_name, keywords, time=None):
         # if the object has a modified method, add it as last-modified
         if hasattr(content, 'modified'):
-            headers = ( ('Last-modified', rfc1123_date(content.modified()) ), )
+            headers = (('Last-modified', rfc1123_date(content.modified())),)
         return headers
 
     def getModTimeAndETag(self, content, view_method, keywords, time=None):

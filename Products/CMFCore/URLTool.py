@@ -46,13 +46,9 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
 
-    manage_options = ( ActionProviderBase.manage_options
-                     + ( {'label':'Overview',
-                          'action':'manage_overview'}
-                       ,
-                       )
-                     + SimpleItem.manage_options
-                     )
+    manage_options = (ActionProviderBase.manage_options
+                      + ({'label': 'Overview', 'action': 'manage_overview'},)
+                      + SimpleItem.manage_options)
 
     #
     #   ZMI methods
@@ -63,13 +59,13 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
     #
     #   'portal_url' interface methods
     #
-    security.declarePublic('__call__')
+    @security.public
     def __call__(self, relative=0, *args, **kw):
         """ Get by default the absolute URL of the portal.
         """
         return self.getPortalObject().absolute_url(relative=relative)
 
-    security.declarePublic('getPortalObject')
+    @security.public
     def getPortalObject(self):
         """ Get the portal object itself.
         """
@@ -80,28 +76,29 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
             portal_obj = aq_parent(aq_inner(self))
         return portal_obj.__of__(request_container)
 
-    security.declarePublic('getRelativeContentPath')
+    @security.public
     def getRelativeContentPath(self, content):
         """ Get the path for an object, relative to the portal root.
         """
-        portal_path_length = len( self.getPortalObject().getPhysicalPath() )
+        portal_path_length = len(self.getPortalObject().getPhysicalPath())
         content_path = content.getPhysicalPath()
         return content_path[portal_path_length:]
 
-    security.declarePublic('getRelativeContentURL')
+    @security.public
     def getRelativeContentURL(self, content):
         """ Get the URL for an object, relative to the portal root.
         """
-        return '/'.join( self.getRelativeContentPath(content) )
+        return '/'.join(self.getRelativeContentPath(content))
 
     security.declarePublic('getRelativeUrl')
     getRelativeUrl = getRelativeContentURL
 
-    security.declarePublic('getPortalPath')
+    @security.public
     def getPortalPath(self):
         """ Get the portal object's URL without the server URL component.
         """
-        return '/'.join( self.getPortalObject().getPhysicalPath() )
+        return '/'.join(self.getPortalObject().getPhysicalPath())
+
 
 InitializeClass(URLTool)
 registerToolInterface('portal_url', IURLTool)

@@ -45,13 +45,8 @@ from Products.CMFCore.utils import registerToolInterface
 # This is lame :(
 # This listing is used to decide whether to wrap an object inside a "fake view"
 # for the OFS.Cache caching. If it is a view type, no fake view wrap is needed.
-VIEW_METATYPES = (
-    'Page Template',
-    'DTML Method',
-    'DTML Document',
-    'Filesystem DTML Method',
-    'Filesystem Page Template',
-    )
+VIEW_METATYPES = ('Page Template', 'DTML Method', 'DTML Document',
+                  'Filesystem DTML Method', 'Filesystem Page Template')
 
 
 def createCPContext(content, view_method, keywords, time=None):
@@ -117,6 +112,7 @@ class CPMCache(Cache):
             ob = _ViewEmulator().__of__(ob)
 
         return _setCacheHeaders(ob, extra_context={})
+
 
 InitializeClass(CPMCache)
 
@@ -388,7 +384,7 @@ class CachingPolicy:
 
             if self.getLastModified():
                 mtime = self._mtime_func(expr_context)
-                if type(mtime) is type(''):
+                if isinstance(mtime, str):
                     mtime = DateTime(mtime)
                 if mtime is not None:
                     mtime_str = rfc1123_date(mtime.timeTime())
@@ -458,7 +454,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
 
     id = 'caching_policy_manager'
     meta_type = 'CMF Caching Policy Manager'
-    _isCacheManager = 1 # Dead chicken. Yum.
+    _isCacheManager = 1  # Dead chicken. Yum.
 
     security = ClassSecurityInfo()
 
@@ -482,29 +478,29 @@ class CachingPolicyManager(SimpleItem, CacheManager):
     def listPolicies(self):
         """List '(id, (policy, typeObjectName))' tuples for all policies.
         """
-        return tuple([ (id, self._policies[id]) for id in self._policy_ids ])
+        return tuple([(id, self._policies[id]) for id in self._policy_ids])
 
     @security.protected(ManagePortal)
     def addPolicy(self,
                   policy_id,
-                  predicate, # TALES expr (def. 'python:1')
-                  mtime_func, # TALES expr (def. 'object/modified')
-                  max_age_secs, # integer, seconds (def. 0)
-                  no_cache, # boolean (def. 0)
-                  no_store, # boolean (def. 0)
-                  must_revalidate, # boolean (def. 0)
-                  vary, # string value
-                  etag_func, # TALES expr (def. '')
+                  predicate,  # TALES expr (def. 'python:1')
+                  mtime_func,  # TALES expr (def. 'object/modified')
+                  max_age_secs,  # integer, seconds (def. 0)
+                  no_cache,  # boolean (def. 0)
+                  no_store,  # boolean (def. 0)
+                  must_revalidate,  # boolean (def. 0)
+                  vary,  # string value
+                  etag_func,  # TALES expr (def. '')
                   REQUEST=None,
-                  s_max_age_secs=None, # integer, seconds (def. None)
-                  proxy_revalidate=0, # boolean (def. 0)
-                  public=0, # boolean (def. 0)
-                  private=0, # boolean (def. 0)
-                  no_transform=0, # boolean (def. 0)
-                  enable_304s=0, # boolean (def. 0)
-                  last_modified=1, # boolean (def. 1)
-                  pre_check=None, # integer, default None
-                  post_check=None): # integer, default None
+                  s_max_age_secs=None,  # integer, seconds (def. None)
+                  proxy_revalidate=0,  # boolean (def. 0)
+                  public=0,  # boolean (def. 0)
+                  private=0,  # boolean (def. 0)
+                  no_transform=0,  # boolean (def. 0)
+                  enable_304s=0,  # boolean (def. 0)
+                  last_modified=1,  # boolean (def. 1)
+                  pre_check=None,  # integer, default None
+                  post_check=None):  # integer, default None
         """
             Add a caching policy.
         """
@@ -555,24 +551,24 @@ class CachingPolicyManager(SimpleItem, CacheManager):
     @security.protected(ManagePortal)
     def updatePolicy(self,
                      policy_id,
-                     predicate, # TALES expr (def. 'python:1')
-                     mtime_func, # TALES expr (def. 'object/modified')
-                     max_age_secs, # integer, seconds (def. 0)
-                     no_cache, # boolean (def. 0)
-                     no_store, # boolean (def. 0)
-                     must_revalidate, # boolean (def. 0)
-                     vary, # string value
-                     etag_func, # TALES expr (def. '')
+                     predicate,  # TALES expr (def. 'python:1')
+                     mtime_func,  # TALES expr (def. 'object/modified')
+                     max_age_secs,  # integer, seconds (def. 0)
+                     no_cache,  # boolean (def. 0)
+                     no_store,  # boolean (def. 0)
+                     must_revalidate,  # boolean (def. 0)
+                     vary,  # string value
+                     etag_func,  # TALES expr (def. '')
                      REQUEST=None,
-                     s_max_age_secs=None, # integer, seconds (def. 0)
-                     proxy_revalidate=0, # boolean (def. 0)
-                     public=0, # boolean (def. 0)
-                     private=0, # boolean (def. 0)
-                     no_transform=0, # boolean (def. 0)
-                     enable_304s=0, # boolean (def. 0)
-                     last_modified=1, # boolean (def. 1)
-                     pre_check=0, # integer, default=None
-                     post_check=0): # integer, default=None
+                     s_max_age_secs=None,  # integer, seconds (def. 0)
+                     proxy_revalidate=0,  # boolean (def. 0)
+                     public=0,  # boolean (def. 0)
+                     private=0,  # boolean (def. 0)
+                     no_transform=0,  # boolean (def. 0)
+                     enable_304s=0,  # boolean (def. 0)
+                     last_modified=1,  # boolean (def. 1)
+                     pre_check=0,  # integer, default=None
+                     post_check=0):  # integer, default=None
         """
             Update a caching policy.
         """
@@ -661,9 +657,8 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         """
         self._removePolicy(policy_id)
         if REQUEST is not None:
-            REQUEST['RESPONSE'].redirect(self.absolute_url()
-                                      + '/manage_cachingPolicies'
-                                      + '?manage_tabs_message=Policy+removed.')
+            pth = '/manage_cachingPolicies?manage_tabs_message=Policy+removed.'
+            REQUEST['RESPONSE'].redirect('%s%s' % (self.absolute_url(), pth))
 
     #
     #   Policy manipulation methods.
@@ -825,7 +820,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
             if policy.getEnable304s() and policy.testPredicate(context):
 
                 last_modified = policy._mtime_func(context)
-                if type(last_modified) is type(''):
+                if isinstance(last_modified, str):
                     last_modified = DateTime(last_modified)
 
                 content_etag = None
@@ -850,6 +845,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
             cache = self._cache
 
         return cache
+
 
 InitializeClass(CachingPolicyManager)
 registerToolInterface('caching_policy_manager', ICachingPolicyManager)
@@ -886,6 +882,5 @@ def manage_addCachingPolicyManager(self, REQUEST=None):
     self._setObject(id, mgr)
 
     if REQUEST is not None:
-        REQUEST['RESPONSE'].redirect(self.absolute_url()
-                        + '/manage_main'
-                        + '?manage_tabs_message=Caching+Policy+Manager+added.')
+        pth = '/manage_main?manage_tabs_message=Caching+Policy+Manager+added.'
+        REQUEST['RESPONSE'].redirect('%s%s' % (self.absolute_url(), pth))

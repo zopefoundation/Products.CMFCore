@@ -49,9 +49,7 @@ _CPM_BODY = b"""\
 """
 
 
-class CachingPolicyNodeAdapterTests(NodeAdapterTestCase,
-                                    unittest.TestCase,
-                                   ):
+class CachingPolicyNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -69,14 +67,13 @@ class CachingPolicyNodeAdapterTests(NodeAdapterTestCase,
 
 
 class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase,
-                                          unittest.TestCase,
-                                         ):
+                                          unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.cachingpolicymgr \
-                import CachingPolicyManagerXMLAdapter
+        from Products.CMFCore.exportimport.cachingpolicymgr import \
+            CachingPolicyManagerXMLAdapter
 
         return CachingPolicyManagerXMLAdapter
 
@@ -126,25 +123,24 @@ class _CachingPolicyManagerSetup(BaseRegistryTests):
         getSiteManager().registerUtility(cpm, ICachingPolicyManager)
 
         if with_policy:
-            cpm.addPolicy(policy_id=self.POLICY_ID
-                         , predicate=self.PREDICATE
-                         , mtime_func=self.MTIME_FUNC
-                         , max_age_secs=self.MAX_AGE_SECS
-                         , no_cache=True
-                         , no_store=True
-                         , must_revalidate=True
-                         , vary=self.VARY
-                         , etag_func=self.ETAG_FUNC
-                         , s_max_age_secs=self.S_MAX_AGE_SECS
-                         , proxy_revalidate=True
-                         , public=True
-                         , private=True
-                         , no_transform=True
-                         , enable_304s=True
-                         , last_modified=False
-                         , pre_check=self.PRE_CHECK
-                         , post_check=self.POST_CHECK
-                         )
+            cpm.addPolicy(policy_id=self.POLICY_ID,
+                          predicate=self.PREDICATE,
+                          mtime_func=self.MTIME_FUNC,
+                          max_age_secs=self.MAX_AGE_SECS,
+                          no_cache=True,
+                          no_store=True,
+                          must_revalidate=True,
+                          vary=self.VARY,
+                          etag_func=self.ETAG_FUNC,
+                          s_max_age_secs=self.S_MAX_AGE_SECS,
+                          proxy_revalidate=True,
+                          public=True,
+                          private=True,
+                          no_transform=True,
+                          enable_304s=True,
+                          last_modified=False,
+                          pre_check=self.PRE_CHECK,
+                          post_check=self.POST_CHECK)
 
         return site, cpm
 

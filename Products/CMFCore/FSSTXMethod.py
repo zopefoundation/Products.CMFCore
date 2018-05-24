@@ -75,15 +75,15 @@ COOKED TEXT HERE
 </html>
 """
 
+
 class FSSTXMethod(FSObject):
     """ A chunk of StructuredText, rendered as a skin method of a CMF site.
     """
     meta_type = 'Filesystem STX Method'
-    _owner = None # unowned
+    _owner = None  # unowned
 
-    manage_options=({'label' : 'Customize','action' : 'manage_main'},
-                    {'label' : 'View','action' : ''},
-                   )
+    manage_options = ({'label': 'Customize', 'action': 'manage_main'},
+                      {'label': 'View', 'action': ''})
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -110,7 +110,7 @@ class FSSTXMethod(FSObject):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r') # not 'rb', as this is a text file!
+        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
         try:
             data = file.read()
         finally:
@@ -143,15 +143,16 @@ class FSSTXMethod(FSObject):
 
     _default_DTML_template = DTML_HTML(_DEFAULT_TEMPLATE_DTML)
     _default_ZPT_template = ZopePageTemplate('stxmethod_view',
-                                             _DEFAULT_TEMPLATE_ZPT, 'text/html')
+                                             _DEFAULT_TEMPLATE_ZPT,
+                                             'text/html')
 
-    def __call__( self, REQUEST={}, RESPONSE=None, **kw ):
+    def __call__(self, REQUEST={}, RESPONSE=None, **kw):
         """ Return our rendered StructuredText.
         """
         self._updateFromFS()
 
         if RESPONSE is not None:
-            RESPONSE.setHeader( 'Content-Type', 'text/html' )
+            RESPONSE.setHeader('Content-Type', 'text/html')
 
         view = _ViewEmulator(self.getId()).__of__(self)
         if _checkConditionalGET(view, extra_context={}):
@@ -179,7 +180,6 @@ class FSSTXMethod(FSObject):
         template = getattr(self, 'stxmethod_view', default_template)
 
         if getattr(template, 'isDocTemp', 0):
-            #posargs = (self, REQUEST, RESPONSE)
             posargs = (self, REQUEST)
         else:
             posargs = ()
@@ -200,10 +200,11 @@ class FSSTXMethod(FSObject):
         return self.raw
 
     @security.protected(ViewManagementScreens)
-    def document_src( self ):
+    def document_src(self):
         """ Fetch our source for rendering in the ZMI.
         """
         return self.raw
+
 
 InitializeClass(FSSTXMethod)
 

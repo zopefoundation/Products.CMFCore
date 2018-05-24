@@ -51,12 +51,12 @@ ignore = ('CVS', '.svn')
 # Ignore suspected backups and hidden files
 ignore_re = re.compile(r'\.|(.*~$)|#')
 
+
 # and special names.
 def _filtered_listdir(path, ignore):
-    return [ name
-             for name
-             in os.listdir(path)
-             if name not in ignore and not ignore_re.match(name) ]
+    return [name for name in os.listdir(path)
+            if name not in ignore and not ignore_re.match(name)]
+
 
 class _walker:
     def __init__(self, ignore):
@@ -65,13 +65,11 @@ class _walker:
 
     def __call__(self, dirlist, dirname, names):
         # filter names inplace, so filtered directories don't get visited
-        names[:] = [ name
-                     for name
-                     in names
-                     if name not in self.ignore and not ignore_re.match(name) ]
+        names[:] = [name for name in names
+                    if name not in self.ignore and not ignore_re.match(name)]
         # append with stat info
-        results = [ (name, os.stat(os.path.join(dirname,name)).st_mtime)
-                    for name in names ]
+        results = [(name, os.stat(os.path.join(dirname, name)).st_mtime)
+                   for name in names]
         dirlist.extend(results)
 
 
@@ -82,6 +80,7 @@ def _generateKey(package, subdir):
     simply appending to the key.
     """
     return ':'.join((package, subdir.replace('\\', '/')))
+
 
 def _findProductForPath(path, subdir=None):
     # like minimalpath, but raises an error if path is not inside a product
@@ -94,7 +93,7 @@ def _findProductForPath(path, subdir=None):
             if subdir:
                 subdir = '/'.join((parts[1], subdir))
                 if subdir.startswith('/'):
-                    subdir=subdir[1:]
+                    subdir = subdir[1:]
             else:
                 subdir = parts[1]
             return ('Products.' + parts[0], subdir)
@@ -106,7 +105,7 @@ class DirectoryInformation:
     data = None
     use_dir_mtime = True
     _v_last_read = 0
-    _v_last_filelist = [] # Only used on Win32
+    _v_last_filelist = []  # Only used on Win32
 
     def __init__(self, filepath, reg_key, ignore=ignore):
         self._filepath = filepath
@@ -145,7 +144,7 @@ class DirectoryInformation:
         """
         types = {}
         try:
-            f = open( os.path.join(self._filepath, '.objects'), 'rt' )
+            f = open(os.path.join(self._filepath, '.objects'), 'rt')
         except IOError:
             pass
         else:
@@ -174,7 +173,7 @@ class DirectoryInformation:
                 # changes
                 os.path.walk(self._filepath, self._walker, filelist)
                 filelist.sort()
-        except:
+        except Exception:
             logger.exception("Error checking for directory modification")
 
         if mtime != self._v_last_read or filelist != self._v_last_filelist:
@@ -190,7 +189,7 @@ class DirectoryInformation:
         if self.data is None or changed:
             try:
                 self.data, self.objects = self.prepareContents(registry)
-            except:
+            except Exception:
                 logger.exception("Error during prepareContents")
                 self.data = {}
                 self.objects = ()
@@ -224,10 +223,8 @@ class DirectoryInformation:
                         t = DirectoryView
                     metadata = FSMetadata(entry_filepath)
                     metadata.read()
-                    ob = t( entry
-                          , entry_reg_key
-                          , properties=metadata.getProperties()
-                          )
+                    ob = t(entry, entry_reg_key,
+                           properties=metadata.getProperties())
                     ob_id = ob.getId()
                     data[ob_id] = ob
                     objects.append({'id': ob_id, 'meta_type': ob.meta_type})
@@ -261,20 +258,19 @@ class DirectoryInformation:
                     try:
                         ob = t(name, entry_filepath, fullname=entry,
                                properties=metadata.getProperties())
-                    except:
+                    except Exception:
                         import sys
                         import traceback
                         typ, val, tb = sys.exc_info()
                         try:
                             logger.exception("prepareContents")
 
-                            exc_lines = traceback.format_exception( typ,
-                                                                    val,
-                                                                    tb )
-                            ob = BadFile( name,
-                                          entry_filepath,
-                                          exc_str='\r\n'.join(exc_lines),
-                                          fullname=entry )
+                            exc_lines = traceback.format_exception(typ, val,
+                                                                   tb)
+                            ob = BadFile(name,
+                                         entry_filepath,
+                                         exc_str='\r\n'.join(exc_lines),
+                                         fullname=entry)
                         finally:
                             tb = None   # Avoid leaking frame!
 
@@ -284,7 +280,7 @@ class DirectoryInformation:
                         for name in permissions.keys():
                             acquire, roles = permissions[name]
                             try:
-                                ob.manage_permission(name,roles,acquire)
+                                ob.manage_permission(name, roles, acquire)
                             except ValueError:
                                 logger.exception("Error setting permissions")
 
@@ -292,7 +288,7 @@ class DirectoryInformation:
                     if hasattr(ob, '_proxy_roles'):
                         try:
                             ob._proxy_roles = tuple(metadata.getProxyRoles())
-                        except:
+                        except Exception:
                             logger.exception("Error setting proxy role")
 
                     ob_id = ob.getId()
@@ -368,8 +364,8 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
         base = getattr(subob, 'aq_base', subob)
         if getattr(base, 'isPrincipiaFolderish', 0):
 
-            if adding_meta_type is not None and hasattr(
-                base, 'filtered_meta_types'):
+            if adding_meta_type is not None and \
+               hasattr(base, 'filtered_meta_types'):
                 # Include only if the user is allowed to
                 # add the given meta type in this location.
                 meta_types = subob.filtered_meta_types()
@@ -421,7 +417,7 @@ class DirectoryView(Persistent):
             # reg_key. This is expected behaviour, so do not warn about it.
             if reg_key:
                 warn('DirectoryView %s refers to a non-existing path %r' %
-                      (self.id, reg_key), UserWarning)
+                     (self.id, reg_key), UserWarning)
             data = {}
             objects = ()
         else:
@@ -432,6 +428,7 @@ class DirectoryView(Persistent):
 
     def getId(self):
         return self.id
+
 
 InitializeClass(DirectoryView)
 
@@ -465,7 +462,7 @@ class DirectoryViewSurrogate(Folder):
         delattr(d['_real'], name)
 
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
-    manage_propertiesForm = DTMLFile( 'dirview_properties', _dtmldir )
+    manage_propertiesForm = DTMLFile('dirview_properties', _dtmldir)
 
     @security.protected(ManagePortal)
     def manage_properties(self, reg_key, REQUEST=None):
@@ -473,8 +470,8 @@ class DirectoryViewSurrogate(Folder):
         """
         self.__dict__['_real']._dirpath = reg_key
         if REQUEST is not None:
-            REQUEST['RESPONSE'].redirect( '%s/manage_propertiesForm'
-                                        % self.absolute_url() )
+            REQUEST['RESPONSE'].redirect('%s/manage_propertiesForm' %
+                                         self.absolute_url())
 
     @security.protected(ACI)
     def getCustomizableObject(self):
@@ -500,14 +497,16 @@ class DirectoryViewSurrogate(Folder):
     def getDirPath(self):
         return self.__dict__['_real']._dirpath
 
-    security.declarePublic('getId')
+    @security.public
     def getId(self):
         return self.id
+
 
 InitializeClass(DirectoryViewSurrogate)
 
 
 manage_addDirectoryViewForm = HTMLFile('dtml/addFSDirView', globals())
+
 
 def createDirectoryView(parent, reg_key, id=None):
     """ Add either a DirectoryView or a derivative object.
@@ -518,6 +517,7 @@ def createDirectoryView(parent, reg_key, id=None):
         id = str(id)
     ob = DirectoryView(id, reg_key)
     parent._setObject(id, ob)
+
 
 def addDirectoryViews(ob, name, _prefix):
     """ Add a directory view for every subdirectory of the given directory.
@@ -535,12 +535,14 @@ def addDirectoryViews(ob, name, _prefix):
         entry_reg_key = '/'.join((reg_key, entry))
         createDirectoryView(ob, entry_reg_key, entry)
 
+
 def manage_addDirectoryView(self, reg_key, id=None, REQUEST=None):
     """ Add either a DirectoryView or a derivative object.
     """
     createDirectoryView(self, reg_key, id)
     if REQUEST is not None:
         return self.manage_main(self, REQUEST)
+
 
 def manage_listAvailableDirectories(*args):
     """ List registered directories.

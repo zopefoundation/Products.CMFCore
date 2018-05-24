@@ -106,8 +106,10 @@ class QueueTests(CleanUp, TestCase):
         class CaptainHook(object):
             def __init__(self):
                 self.hooked = 0
+
             def __call__(self):
                 self.hooked += 1
+
         hook = CaptainHook()
         queue = self.queue
         queue.setHook(hook)
@@ -126,7 +128,9 @@ class QueueTests(CleanUp, TestCase):
         self.assertEqual(queue.getState(), [(INDEX, 'foo', None, None)])
         state = queue.getState()
         queue.reindex('bar')
-        self.assertEqual(queue.getState(), [(INDEX, 'foo', None, None), (REINDEX, 'bar', None, 1)])
+        self.assertEqual(queue.getState(),
+                         [(INDEX, 'foo', None, None),
+                          (REINDEX, 'bar', None, 1)])
         queue.setState(state)
         self.assertEqual(queue.getState(), [(INDEX, 'foo', None, None)])
         self.assertEqual(queue.process(), 1)
@@ -139,7 +143,8 @@ class QueueTests(CleanUp, TestCase):
         self.assertEqual(queue.process(), 1)    # also do the processing...
         self.assertEqual(queue.getState(), [])
         self.assertEqual(proc.getState(), [(INDEX, 'foo', [])])
-        self.assertEqual(proc.state, 'started') # the real queue won't update the state...
+        # the real queue won't update the state...
+        self.assertEqual(proc.state, 'started')
         queue.commit()
         self.assertEqual(proc.state, 'finished')
 
@@ -185,7 +190,9 @@ class QueueTests(CleanUp, TestCase):
 
     def testCustomQueueOptimization(self):
         def optimize(self):
-            self.setState([op for op in self.getState() if not op[0] == UNINDEX])
+            self.setState([op for op in self.getState() if not
+                           op[0] == UNINDEX])
+
         queue = self.queue
         queue.index('foo')
         queue.reindex('foo')
@@ -203,14 +210,10 @@ class QueueTests(CleanUp, TestCase):
             queue.unindex('foo')
             queue.index('foo', 'bar')
             queue.optimize(queue)
-            self.assertEqual(
-                queue.getState(),
-                [
-                    (INDEX, 'foo', None, None),
-                    (REINDEX, 'foo', None, 1),
-                    (INDEX, 'foo', 'bar', None)
-                ]
-            )
+            self.assertEqual(queue.getState(),
+                             [(INDEX, 'foo', None, None),
+                              (REINDEX, 'foo', None, 1),
+                              (INDEX, 'foo', 'bar', None)])
         finally:
             queue.optimize = orig_optimize
 
@@ -261,23 +264,29 @@ class QueueTests(CleanUp, TestCase):
     def testOptimizeQueueWithAttributes(self):
         queue = self.queue
 
-        queue.setState([(REINDEX, 'A', None, 1), (REINDEX, 'A', ('a', 'b'), 1)])
+        queue.setState([(REINDEX, 'A', None, 1),
+                        (REINDEX, 'A', ('a', 'b'), 1)])
         queue.optimize()
         self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
 
-        queue.setState([(REINDEX, 'A', ('a', 'b'), 1), (REINDEX, 'A', None, 1)])
+        queue.setState([(REINDEX, 'A', ('a', 'b'), 1),
+                        (REINDEX, 'A', None, 1)])
         queue.optimize()
         self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
 
-        queue.setState([(REINDEX, 'A', ('a', 'b'), 1), (REINDEX, 'A', ('b', 'c'), 1)])
+        queue.setState([(REINDEX, 'A', ('a', 'b'), 1),
+                        (REINDEX, 'A', ('b', 'c'), 1)])
         queue.optimize()
-        self.assertEqual(queue.getState(), [(REINDEX, 'A', ['a', 'b', 'c'], 1)])
+        self.assertEqual(queue.getState(),
+                         [(REINDEX, 'A', ['a', 'b', 'c'], 1)])
 
         queue.setState([(INDEX, 'A', None, None), (REINDEX, 'A', None, 1)])
         queue.optimize()
         self.assertEqual(queue.getState(), [(INDEX, 'A', [], 1)])
 
-        queue.setState([(REINDEX, 'A', ('a', 'b'), 1), (UNINDEX, 'A', None, None), (INDEX, 'A', None, 1)])
+        queue.setState([(REINDEX, 'A', ('a', 'b'), 1),
+                        (UNINDEX, 'A', None, None),
+                        (INDEX, 'A', None, 1)])
         queue.optimize()
         self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
 
@@ -287,17 +296,21 @@ class QueueTests(CleanUp, TestCase):
         queue.setState([(INDEX, 'C', None, 1), (UNINDEX, 'B', None, None)])
         queue.optimize()
         self.assertEqual(queue.getState(),
-            [(UNINDEX, 'B', [], None), (INDEX, 'C', [], 1)])
+                         [(UNINDEX, 'B', [], None), (INDEX, 'C', [], 1)])
 
         queue.setState([(REINDEX, 'A', None, 1), (UNINDEX, 'B', None, None)])
         queue.optimize()
         self.assertEqual(queue.getState(),
-            [(UNINDEX, 'B', [], None), (REINDEX, 'A', [], 1)])
+                         [(UNINDEX, 'B', [], None), (REINDEX, 'A', [], 1)])
 
-        queue.setState([(REINDEX, 'A', None, 1), (UNINDEX, 'B', None, None), (INDEX, 'C', None, 1)])
+        queue.setState([(REINDEX, 'A', None, 1),
+                        (UNINDEX, 'B', None, None),
+                        (INDEX, 'C', None, 1)])
         queue.optimize()
         self.assertEqual(queue.getState(),
-            [(UNINDEX, 'B', [], None), (REINDEX, 'A', [], 1), (INDEX, 'C', [], 1)])
+                         [(UNINDEX, 'B', [], None),
+                         (REINDEX, 'A', [], 1),
+                         (INDEX, 'C', [], 1)])
 
 
 class QueueThreadTests(TestCase):
@@ -305,7 +318,8 @@ class QueueThreadTests(TestCase):
 
     def setUp(self):
         self.me = getQueue()
-        self.assertTrue(IIndexQueue.providedBy(self.me), 'non-queued indexer found')
+        self.assertTrue(IIndexQueue.providedBy(self.me),
+                        'non-queued indexer found')
 
     def tearDown(self):
         self.me.clear()
@@ -313,9 +327,11 @@ class QueueThreadTests(TestCase):
     def testLocalQueues(self):
         me = self.me                    # get the queued indexer...
         other = []
-        def runner():                   # and a callable for the thread to run...
+
+        def runner():                   # a callable for the thread to run...
             me.reindex('bar')
             other[:] = me.getState()
+
         thread = Thread(target=runner)  # another thread is created...
         thread.start()                  # and started...
         while thread.isAlive():
@@ -330,14 +346,18 @@ class QueueThreadTests(TestCase):
     def testQueuesOnTwoThreads(self):
         me = self.me                    # get the queued indexer...
         first = []
+
         def runner1():                  # and callables for the first...
             me.index('foo')
             first[:] = me.getState()
+
         thread1 = Thread(target=runner1)
         second = []
+
         def runner2():                  # and second thread
             me.index('bar')
             second[:] = me.getState()
+
         thread2 = Thread(target=runner2)
         self.assertEqual(first, [])     # clean table before we start...
         self.assertEqual(second, [])
@@ -361,23 +381,21 @@ class QueueThreadTests(TestCase):
         me.unindex('f00')               # let something happening again...
         self.assertEqual(first, [(INDEX, 'foo', None, None)])
         self.assertEqual(second, [(INDEX, 'bar', None, None)])
-        self.assertEqual(
-            me.getState(),
-            [
-                (UNINDEX, 'f00', None, None),
-                (UNINDEX, 'f00', None, None)
-            ]
-        )
+        self.assertEqual(me.getState(),
+                         [(UNINDEX, 'f00', None, None),
+                          (UNINDEX, 'f00', None, None)])
 
     def testManyThreads(self):
         me = self.me                    # get the queued indexer...
         queues = {}                     # container for local queues
+
         def makeRunner(name, idx):
             def runner():
                 for n in range(idx):    # index idx times
                     me.index(name)
                 queues[currentThread()] = me.queue
             return runner
+
         threads = []
         for idx in range(99):
             threads.append(Thread(target=makeRunner('t%d' % idx, idx)))
@@ -398,7 +416,7 @@ class QueueTransactionManagerTests(TestCase):
     def setUp(self):
         self.queue = MockQueueProcessor()
         self.tman = QueueTM(self.queue)
-        self.queue.hook = self.tman.register    # set up the transaction manager hook
+        self.queue.hook = self.tman.register    # transaction manager hook
 
     def testFlushQueueOnCommit(self):
         self.queue.index('foo')
@@ -420,7 +438,9 @@ class QueueTransactionManagerTests(TestCase):
         self.queue.reindex('bar')
         commit()
         self.assertEqual(self.queue.getState(), [])
-        self.assertEqual(self.queue.processed, [(INDEX, 'foo', None), (REINDEX, 'bar', None)])
+        self.assertEqual(self.queue.processed,
+                         [(INDEX, 'foo', None),
+                          (REINDEX, 'bar', None)])
         self.assertEqual(self.queue.state, 'finished')
 
     def testRollbackSavePoint(self):
@@ -440,6 +460,7 @@ class FakeFolder(Implicit):
     def getPhysicalPath(self):
         return ('portal',)
 
+
 class UnindexWrapperTests(TestCase):
 
     def setUp(self):
@@ -456,7 +477,7 @@ class UnindexWrapperTests(TestCase):
 
         self.assertTrue(unwrapped.getPhysicalPath()[-1], 'testcontent')
         self.assertEqual(unwrapped.getPhysicalPath(),
-                          wrapped.getPhysicalPath())
+                         wrapped.getPhysicalPath())
         self.assertEqual(hash(unwrapped), hash(wrapped))
         self.assertEqual(unwrapped.Title(), wrapped.Title())
 
@@ -465,6 +486,6 @@ class UnindexWrapperTests(TestCase):
         unwrapped.id = 'test2'
         self.assertTrue(unwrapped.getPhysicalPath()[-1], 'test2')
         self.assertNotEqual(unwrapped.getPhysicalPath(),
-                             wrapped.getPhysicalPath())
+                            wrapped.getPhysicalPath())
         self.assertEqual(hash(unwrapped), hash(wrapped))
         self.assertEqual(unwrapped.Title(), wrapped.Title())
