@@ -154,7 +154,7 @@ class MembershipTool(UniqueObject, Folder):
                 u = mdtool.wrapUser(u)
             except ConflictError:
                 raise
-            except:
+            except Exception:
                 logger.exception("Error during wrapUser")
         return u
 
@@ -400,7 +400,7 @@ class MembershipTool(UniqueObject, Folder):
         list rather than the entire list at once.
         '''
         user_folder = self.acl_users
-        return [ x.getId() for x in user_folder.getUsers() ]
+        return [x.getId() for x in user_folder.getUsers()]
 
     @security.protected(ManageUsers)
     def listMembers(self):
@@ -427,8 +427,8 @@ class MembershipTool(UniqueObject, Folder):
             if 'Manager' not in member_roles:
                 local_roles.remove('Manager')
         else:
-            local_roles = [ role for role in member_roles
-                            if role not in ('Member', 'Authenticated') ]
+            local_roles = [role for role in member_roles
+                           if role not in ('Member', 'Authenticated')]
         return tuple(sorted(local_roles))
 
     @security.protected(View)
@@ -437,8 +437,8 @@ class MembershipTool(UniqueObject, Folder):
                       REQUEST=None):
         """ Add local roles on an item.
         """
-        if (_checkPermission(ChangeLocalRoles, obj)
-            and member_role in self.getCandidateLocalRoles(obj)):
+        if _checkPermission(ChangeLocalRoles, obj) and \
+           member_role in self.getCandidateLocalRoles(obj):
             for member_id in member_ids:
                 roles = list(obj.get_local_roles_for_userid(userid=member_id))
 
@@ -499,10 +499,11 @@ class MembershipTool(UniqueObject, Folder):
                 acl_users.userFolderDelUsers(member_ids)
             except (AttributeError, NotImplementedError):
                 raise NotImplementedError('The underlying User Folder '
-                                         'doesn\'t support deleting members.')
+                                          'doesn\'t support deleting members.')
         else:
             raise AccessControl_Unauthorized('You need the \'Manage users\' '
-                                 'permission for the underlying User Folder.')
+                                             'permission for the underlying '
+                                             'User Folder.')
 
         # Delete member data in portal_memberdata.
         mdtool = queryUtility(IMemberDataTool)
@@ -537,6 +538,7 @@ class MembershipTool(UniqueObject, Folder):
         doesn't have the View permission on the folder.
         """
         return None
+
 
 InitializeClass(MembershipTool)
 registerToolInterface('portal_membership', IMembershipTool)
@@ -578,5 +580,6 @@ class _BBBHomeFolderFactory(HomeFolderFactoryBase):
         item.manage_permission(AccessContentsInformation,
                                ['Owner', 'Manager', 'Reviewer'], 0)
         return item
+
 
 BBBHomeFolderFactory = _BBBHomeFolderFactory()

@@ -54,7 +54,7 @@ class FSFile(FSObject):
     manage_main = DTMLFile('custfile', _dtmldir)
 
     def __init__(self, id, filepath, fullname=None, properties=None):
-        id = fullname or id # Use the whole filename.
+        id = fullname or id  # Use the whole filename.
         FSObject.__init__(self, id, filepath, fullname, properties)
 
     def _createZODBClone(self):
@@ -83,7 +83,7 @@ class FSFile(FSObject):
             if (enc is None
                 and (content_type.startswith('text/') or
                      content_type.startswith('application/'))
-                and body.startswith(codecs.BOM_UTF8)):
+                    and body.startswith(codecs.BOM_UTF8)):
                 content_type += '; charset=utf-8'
 
         return content_type
@@ -100,7 +100,7 @@ class FSFile(FSObject):
         if reparse or self.content_type == 'unknown/unknown':
             try:
                 mtime = os.stat(self._filepath).st_mtime
-            except:
+            except Exception:
                 mtime = 0.0
             if mtime != self._file_mod_time or mtime == 0.0:
                 self.ZCacheable_invalidate()
@@ -108,7 +108,7 @@ class FSFile(FSObject):
             self.content_type = self._get_content_type(file, data, self.id)
         return data
 
-    #### The following is mainly taken from OFS/File.py ###
+    # The following is mainly taken from OFS/File.py
 
     def __str__(self):
         self._updateFromFS()
@@ -145,9 +145,9 @@ class FSFile(FSObject):
         data_len = len(data)
         RESPONSE.setHeader('Content-Length', data_len)
 
-        #There are 2 Cache Managers which can be in play....
-        #need to decide which to use to determine where the cache headers
-        #are decided on.
+        # There are 2 Cache Managers which can be in play....
+        # need to decide which to use to determine where the cache headers
+        # are decided on.
         if self.ZCacheable_getManager() is not None:
             self.ZCacheable_set(None)
         else:
@@ -169,6 +169,7 @@ class FSFile(FSObject):
 
     security.declareProtected(FTPAccess, 'manage_FTPget')
     manage_FTPget = index_html
+
 
 InitializeClass(FSFile)
 

@@ -112,7 +112,7 @@ class TypesToolFunctionalTests(SecurityTest):
         # Seems we get NullResource if the method couldn't be traverse to
         # so we check for that. If we've got it, something is b0rked.
         for factype in tool.all_meta_types():
-            if not ITypeInformation in factype['interfaces']:
+            if ITypeInformation not in factype['interfaces']:
                 continue
             meta_types[factype['name']] = 1
             act = tool.unrestrictedTraverse(factype['action'])
@@ -230,8 +230,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
         from Products.CMFCore.PortalFolder import PortalFolder
-        from Products.CMFCore.TypesTool \
-                import ScriptableTypeInformation as STI
+        from Products.CMFCore.TypesTool import ScriptableTypeInformation as STI
         from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
         from Products.CMFCore.tests.base.tidata import STI_SCRIPT
         from Products.PythonScripts.PythonScript import PythonScript
@@ -360,20 +359,20 @@ class TypeInfoTests(object):
         actions = ti.listActions()
         self.assertTrue(actions)
 
-        ids = [ x.getId() for x in actions ]
+        ids = [x.getId() for x in actions]
         self.assertTrue('view' in ids)
         self.assertTrue('edit' in ids)
         self.assertTrue('objectproperties' in ids)
         self.assertTrue('slot' in ids)
 
-        names = [ x.Title() for x in actions ]
+        names = [x.Title() for x in actions]
         self.assertTrue('View' in names)
         self.assertTrue('Edit' in names)
         self.assertTrue('Object Properties' in names)
         self.assertFalse('slot' in names)
         self.assertTrue('Slot' in names)
 
-        visible = [ x.getId() for x in actions if x.getVisibility() ]
+        visible = [x.getId() for x in actions if x.getVisibility()]
         self.assertTrue('view' in visible)
         self.assertTrue('edit' in visible)
         self.assertTrue('objectproperties' in visible)

@@ -192,7 +192,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
         wf_ids = self.getWorkflowIds()
         for wf_id in wf_ids:
-            if not wf_id in did:
+            if wf_id not in did:
                 wf = self.getWorkflowById(wf_id)
                 if wf is not None:
                     a = wf.listGlobalActions(info)
@@ -379,7 +379,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             if chain == '(Default)':
                 chain = None
             else:
-                chain = [ wf.strip() for wf in chain.split(',') if wf.strip() ]
+                chain = [wf.strip() for wf in chain.split(',') if wf.strip()]
 
         if chain is None:
             for type_id in pt_names:
@@ -387,7 +387,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                     del cbt[type_id]
             return
 
-        ti_ids = [ t.getId() for t in self._listTypeInfo() ]
+        ti_ids = [t.getId() for t in self._listTypeInfo()]
 
         for type_id in pt_names:
             if verify and not (type_id in ti_ids):
@@ -447,8 +447,9 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         portal = aq_parent(aq_inner(self))
         count = self._recursiveUpdateRoleMappings(portal, wfs)
         if REQUEST is not None:
+            msg = '%d object(s) updated.' % count
             return self.manage_selectWorkflows(REQUEST,
-                           manage_tabs_message='%d object(s) updated.' % count)
+                                               manage_tabs_message=msg)
         else:
             return count
 
@@ -523,7 +524,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         except ObjectMoved as ex:
             res = ex.getResult()
             ob = ex.getNewObject()
-        except:
+        except Exception:
             exc = sys.exc_info()
             try:
                 for w in wfs:
@@ -603,6 +604,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         # Reindex security of subobjects.
         if hasattr(aq_base(ob), 'reindexObjectSecurity'):
             ob.reindexObjectSecurity()
+
 
 InitializeClass(WorkflowTool)
 registerToolInterface('portal_workflow', IWorkflowTool)

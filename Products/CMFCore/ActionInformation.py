@@ -37,7 +37,7 @@ from Products.CMFCore.interfaces import IURLTool
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import _checkPermission
 
-_unchanged = [] # marker
+_unchanged = []  # marker
 
 
 @implementer(IActionCategory)
@@ -63,6 +63,7 @@ class ActionCategory(IFAwareObjectManager, OrderedFolder):
                 actions.append(obj)
 
         return tuple(actions)
+
 
 InitializeClass(ActionCategory)
 
@@ -161,6 +162,7 @@ class Action(PropertyManager, SimpleItem):
 
         return (lazy_map, lazy_keys)
 
+
 InitializeClass(Action)
 
 
@@ -210,10 +212,10 @@ class ActionInfo(UserDict):
 
     def __eq__(self, other):
         # this is expensive, use it with care
-        [ self.__getitem__(key) for key in self._lazy_keys[:] ]
+        [self.__getitem__(key) for key in self._lazy_keys[:]]
 
         if isinstance(other, self.__class__):
-            [ other[key] for key in other._lazy_keys ]
+            [other[key] for key in other._lazy_keys]
             return self.data == other.data
         elif isinstance(other, UserDict):
             return self.data == other.data
@@ -413,8 +415,8 @@ class ActionInformation(SimpleItem):
         action = self._getActionObject()
         expr = action and action.text or ''
         if expr and isinstance(expr, six.string_types):
-            if (not expr.startswith('string:')
-                and not expr.startswith('python:')):
+            if not expr.startswith('string:') and \
+               not expr.startswith('python:'):
                 expr = 'string:${object_url}/%s' % expr
                 self.action = Expression(expr)
         return expr
@@ -422,8 +424,8 @@ class ActionInformation(SimpleItem):
     @security.private
     def setActionExpression(self, action):
         if action and isinstance(action, six.string_types):
-            if (not action.startswith('string:')
-                and not action.startswith('python:')):
+            if not action.startswith('string:') and \
+               not action.startswith('python:'):
                 action = 'string:${object_url}/%s' % action
             action = Expression(action)
         self.action = action
@@ -441,8 +443,8 @@ class ActionInformation(SimpleItem):
         icon_expr = self._getIconExpressionObject()
         expr = icon_expr and icon_expr.text or ''
         if expr and isinstance(expr, six.string_types):
-            if (not expr.startswith('string:')
-                and not expr.startswith('python:')):
+            if not expr.startswith('string:') and \
+               not expr.startswith('python:'):
                 expr = 'string:${object_url}/%s' % expr
                 self.icon_expr = Expression(expr)
         return expr
@@ -450,8 +452,8 @@ class ActionInformation(SimpleItem):
     @security.private
     def setIconExpression(self, icon_expr):
         if icon_expr and isinstance(icon_expr, six.string_types):
-            if (not icon_expr.startswith('string:')
-                and not icon_expr.startswith('python:')):
+            if not icon_expr.startswith('string:') and \
+               not icon_expr.startswith('python:'):
                 icon_expr = 'string:${object_url}/%s' % icon_expr
             icon_expr = Expression(icon_expr)
         self.icon_expr = icon_expr
@@ -492,12 +494,12 @@ class ActionInformation(SimpleItem):
     def getMapping(self):
         """ Get a mapping of this object's data.
         """
+        cond = getattr(self, 'condition', None) and self.condition.text or ''
         return {'id': self.id,
                 'title': self.title or self.id,
                 'description': self.description,
                 'category': self.category or 'object',
-                'condition': getattr(self, 'condition', None)
-                             and self.condition.text or '',
+                'condition': cond,
                 'permissions': self.permissions,
                 'visible': bool(self.visible),
                 'action': self.getActionExpression(),
@@ -543,6 +545,7 @@ class ActionInformation(SimpleItem):
 
         return (lazy_map, lazy_keys)
 
+
 InitializeClass(ActionInformation)
 
 
@@ -576,7 +579,7 @@ def getOAI(context, object=None):
 
 class oai(object):
 
-    #Provided for backward compatibility
+    # Provided for backward compatibility
     # Provides information that may be needed when constructing the list of
     # available actions.
     __allow_access_to_unprotected_subobjects__ = 1

@@ -32,13 +32,14 @@ logger = logging.getLogger('CMFCore.Skinnable')
 
 _MARKER = object()  # Create a new marker object.
 
-SKINDATA = {} # mapping thread-id -> (skinobj, skinname, ignore, resolve)
+SKINDATA = {}  # mapping thread-id -> (skinobj, skinname, ignore, resolve)
 
 
 class SkinDataCleanup:
     """Cleanup at the end of the request."""
     def __init__(self, tid):
         self.tid = tid
+
     def __del__(self):
         tid = self.tid
         # Be extra careful in __del__
@@ -64,7 +65,7 @@ class SkinnableObjectManager(ObjectManager):
             sd = SKINDATA.get(get_ident())
             if sd is not None:
                 ob, _skinname, ignore, resolve = sd
-                if not name in ignore:
+                if name not in ignore:
                     if name in resolve:
                         return resolve[name]
                     subob = getattr(ob, name, _MARKER)
@@ -161,7 +162,7 @@ class SkinnableObjectManager(ObjectManager):
             self.changeSkin(skinname, REQUEST)
         except ConflictError:
             raise
-        except:
+        except Exception:
             # This shouldn't happen, even if the requested skin
             # does not exist.
             logger.exception("Unable to setupCurrentSkin()")
@@ -191,5 +192,6 @@ class SkinnableObjectManager(ObjectManager):
                 if sd is not None:
                     SKINDATA[tid] = sd
         return superCheckId(self, id, allow_dup)
+
 
 InitializeClass(SkinnableObjectManager)

@@ -131,8 +131,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                             charset = encodingFromXMLPreamble(data)
 
                         else:
-                            raise ValueError('Unsupported content_type: %s'
-                                                % self.content_type)
+                            raise ValueError('Unsupported content_type: %s' %
+                                             self.content_type)
 
                     if charset is not None:
                         preferred.insert(0, charset)
@@ -158,7 +158,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         self._updateFromFS()
         return FSPageTemplate.inheritedAttribute('read')(self)
 
-    ### The following is mainly taken from ZopePageTemplate.py ###
+    # The following is mainly taken from ZopePageTemplate.py
 
     expand = 0
 
@@ -209,13 +209,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         # Read file first to get a correct content_type default value.
         self._updateFromFS()
 
-        if not 'args' in kw:
+        if 'args' not in kw:
             kw['args'] = args
         bound_names['options'] = kw
 
         try:
             response = self.REQUEST.RESPONSE
-            if not 'content-type' in response.headers:
+            if 'content-type' not in response.headers:
                 response.setHeader('content-type', self.content_type)
         except AttributeError:
             pass
@@ -263,7 +263,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     getSize = get_size
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = get_unbound_function(ZopePageTemplate.PrincipiaSearchSource)
+    PrincipiaSearchSource = get_unbound_function(
+                                ZopePageTemplate.PrincipiaSearchSource)
 
     security.declareProtected(ViewManagementScreens, 'document_src')
     document_src = get_unbound_function(ZopePageTemplate.document_src)
@@ -271,6 +272,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     pt_getContext = get_unbound_function(ZopePageTemplate.pt_getContext)
 
     source_dot_xml = Src()
+
 
 setattr(FSPageTemplate, 'source.xml', FSPageTemplate.source_dot_xml)
 setattr(FSPageTemplate, 'source.html', FSPageTemplate.source_dot_xml)

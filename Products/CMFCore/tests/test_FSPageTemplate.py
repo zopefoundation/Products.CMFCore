@@ -14,11 +14,9 @@
 """ Unit tests for FSPageTemplate module.
 """
 
+from os.path import join as path_join
 import unittest
 from Testing import ZopeTestCase
-ZopeTestCase.installProduct('PageTemplates', 1)
-
-from os.path import join as path_join
 
 from Acquisition import aq_base
 from OFS.Folder import Folder
@@ -34,6 +32,8 @@ from Products.CMFCore.tests.base.dummy import DummyCachingManager
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import TransactionalTest
+
+ZopeTestCase.installProduct('PageTemplates', 1)
 
 
 class FSPTMaker(FSDVTest):
@@ -126,7 +126,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = self._makeOne('testPTbad', 'testPTbad.pt')
         script = script.__of__(self.app)
 
-        try: # can't use assertRaises, because different types raised.
+        try:  # can't use assertRaises, because different types raised.
             script()
         except (Undefined, KeyError):
             pass
@@ -147,8 +147,9 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
 
     def test_pt_properties(self):
         script = self._makeOne('testPT', 'testPT.pt')
-        self.assertEqual(script.pt_source_file(), 'file:%s'
-                               % path_join(self.skin_path_name, 'testPT.pt'))
+        self.assertEqual(script.pt_source_file(),
+                         'file:%s' % path_join(self.skin_path_name,
+                                               'testPT.pt'))
 
     def test_foreign_line_endings(self):
         # Lead the various line ending files and get their output

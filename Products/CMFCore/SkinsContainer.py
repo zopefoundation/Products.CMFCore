@@ -52,7 +52,7 @@ class SkinsContainer:
         """
         baseself = aq_base(self)
         skinob = None
-        parts = list( path.split(',') )
+        parts = list(path.split(','))
         parts.reverse()
         for part_path in parts:
             partob = baseself
@@ -93,4 +93,5 @@ class SkinsContainer:
             return None
         return self.getSkinByPath(path)
 
-InitializeClass( SkinsContainer )
+
+InitializeClass(SkinsContainer)

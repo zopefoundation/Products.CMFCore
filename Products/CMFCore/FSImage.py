@@ -48,7 +48,7 @@ class FSImage(FSObject):
     width = ''
     _data = None
 
-    manage_options = ({'label':'Customize', 'action':'manage_main'},)
+    manage_options = ({'label': 'Customize', 'action': 'manage_main'},)
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
@@ -57,7 +57,7 @@ class FSImage(FSObject):
     manage_main = DTMLFile('custimage', _dtmldir)
 
     def __init__(self, id, filepath, fullname=None, properties=None):
-        id = fullname or id # Use the whole filename.
+        id = fullname or id  # Use the whole filename.
         FSObject.__init__(self, id, filepath, fullname, properties)
 
     def _createZODBClone(self):
@@ -75,7 +75,7 @@ class FSImage(FSObject):
         if reparse or self.content_type == 'unknown/unknown':
             try:
                 mtime = os.stat(self._filepath).st_mtime
-            except:
+            except Exception:
                 mtime = 0.0
             if mtime != self._file_mod_time or mtime == 0.0:
                 self.ZCacheable_invalidate()
@@ -86,11 +86,12 @@ class FSImage(FSObject):
             self.height = height
         return data
 
-    #### The following is mainly taken from OFS/Image.py ###
+    # The following is mainly taken from OFS/Image.py
 
     __str__ = get_unbound_function(Image.__str__)
 
     _image_tag = get_unbound_function(Image.tag)
+
     @security.protected(View)
     def tag(self, *args, **kw):
         # Hook into an opportunity to reload metadata.
@@ -125,9 +126,9 @@ class FSImage(FSObject):
         data_len = len(data)
         RESPONSE.setHeader('Content-Length', data_len)
 
-        #There are 2 Cache Managers which can be in play....
-        #need to decide which to use to determine where the cache headers
-        #are decided on.
+        # There are 2 Cache Managers which can be in play....
+        # need to decide which to use to determine where the cache headers
+        # are decided on.
         if self.ZCacheable_getManager() is not None:
             self.ZCacheable_set(None)
         else:
@@ -160,6 +161,7 @@ class FSImage(FSObject):
 
     security.declareProtected(FTPAccess, 'manage_FTPget')
     manage_FTPget = index_html
+
 
 InitializeClass(FSImage)
 

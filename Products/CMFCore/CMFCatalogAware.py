@@ -126,6 +126,7 @@ class CatalogAware(Base):
             if s is None:
                 ob._p_deactivate()
 
+
 InitializeClass(CatalogAware)
 
 
@@ -192,6 +193,7 @@ class WorkflowAware(Base):
         if wtool is not None:
             wtool.notifyCreated(self)
 
+
 InitializeClass(WorkflowAware)
 
 
@@ -250,6 +252,7 @@ class OpaqueItemManager(Base):
         """
         return [t[1] for t in self.opaqueItems()]
 
+
 InitializeClass(OpaqueItemManager)
 
 
@@ -284,6 +287,7 @@ def handleContentishEvent(ob, event):
         if hasattr(aq_base(ob), 'addCreator'):
             ob.addCreator()
 
+
 def handleDynamicTypeCopiedEvent(ob, event):
     """ Event subscriber for (IDynamicType, IObjectCopiedEvent) events.
     """
@@ -295,9 +299,10 @@ def handleDynamicTypeCopiedEvent(ob, event):
 
     current_user_id = current_user.getId()
     if current_user_id is not None:
-        local_role_holders = [ x[0] for x in ob.get_local_roles() ]
+        local_role_holders = [x[0] for x in ob.get_local_roles()]
         ob.manage_delLocalRoles(local_role_holders)
         ob.manage_setLocalRoles(current_user_id, ['Owner'])
+
 
 def dispatchToOpaqueItems(ob, event):
     """Dispatch an event to opaque sub-items of a given object.
@@ -305,9 +310,10 @@ def dispatchToOpaqueItems(ob, event):
     for opaque in ob.opaqueValues():
         s = getattr(opaque, '_p_changed', 0)
         for ignored in subscribers((opaque, event), None):
-            pass # They do work in the adapter fetch
+            pass  # They do work in the adapter fetch
         if s is None:
             opaque._p_deactivate()
+
 
 def handleOpaqueItemEvent(ob, event):
     """ Event subscriber for (ICallableOpaqueItemEvents, IObjectEvent) events.

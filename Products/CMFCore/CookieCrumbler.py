@@ -95,7 +95,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
 
     auth_cookie = '__ac'
     name_cookie = '__ac_name'
-    pw_cookie = '__ac_password' # not used as cookie, just as request key
+    pw_cookie = '__ac_password'  # not used as cookie, just as request key
     persist_cookie = '__ac_persistent'
     local_cookie_path = False
     cache_header_value = 'private'
@@ -107,19 +107,19 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         # they are, even to log them.
         try:
             del req.other[name]
-        except:
+        except Exception:
             pass
         try:
             del req.form[name]
-        except:
+        except Exception:
             pass
         try:
             del req.cookies[name]
-        except:
+        except Exception:
             pass
         try:
             del req.environ[name]
-        except:
+        except Exception:
             pass
 
     @security.public
@@ -177,9 +177,9 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         cookie login is disabled for this request, raises
         CookieCrumblerDisabled.
         """
-        if (not isinstance(req, HTTPRequest)
-            or not req['REQUEST_METHOD'] in ('HEAD', 'GET', 'PUT', 'POST')
-            or 'WEBDAV_SOURCE_PORT' in req.environ):
+        if not isinstance(req, HTTPRequest) or  \
+           req['REQUEST_METHOD'] not in ('HEAD', 'GET', 'PUT', 'POST') or \
+           'WEBDAV_SOURCE_PORT' in req.environ:
             raise CookieCrumblerDisabled
 
         # attempt may contain information about an earlier attempt to
@@ -231,7 +231,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                             base64.decodestring(ac)
                         else:
                             base64.decodebytes(ac.encode())
-                    except:
+                    except Exception:
                         # Not a valid auth header.
                         pass
                     else:
@@ -272,11 +272,11 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         Updates cookie credentials if user details are changed.
         """
         if request is None:
-            request = getRequest() # BBB for Membershiptool
+            request = getRequest()  # BBB for Membershiptool
         reponse = request['RESPONSE']
         ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
         method = self.getCookieMethod('setAuthCookie',
-                                       self.defaultSetAuthCookie)
+                                      self.defaultSetAuthCookie)
         method(reponse, self.auth_cookie, quote(ac))
 
     @security.public
@@ -286,11 +286,11 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         """
         target = None
         if response is None:
-            response = getRequest()['RESPONSE'] # BBB for App.Management
+            response = getRequest()['RESPONSE']  # BBB for App.Management
             atool = getUtility(IActionsTool)
             target = atool.getActionInfo('user/logout')['url']
         method = self.getCookieMethod('expireAuthCookie',
-                                       self.defaultExpireAuthCookie)
+                                      self.defaultExpireAuthCookie)
         method(response, cookie_name=self.auth_cookie)
         # BBB for App.Management
         if target is not None:
@@ -304,6 +304,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             if p['id'] == id:
                 return p.get('label', id)
         return id
+
 
 InitializeClass(CookieCrumbler)
 registerToolInterface('cookie_authentication', ICookieCrumbler)
@@ -330,6 +331,7 @@ def handleCookieCrumblerEvent(ob, event):
 
 manage_addCCForm = HTMLFile('dtml/addCC', globals())
 manage_addCCForm.__name__ = 'addCC'
+
 
 def manage_addCC(dispatcher, id, REQUEST=None):
     ' '

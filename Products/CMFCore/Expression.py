@@ -55,6 +55,7 @@ class Expression(Persistent):
             raise res
         return res
 
+
 InitializeClass(Expression)
 
 
@@ -64,7 +65,7 @@ def getExprContext(context, object=None):
         cache = request.get('_ec_cache', None)
         if cache is None:
             request['_ec_cache'] = cache = {}
-        ec = cache.get( id(object), None )
+        ec = cache.get(id(object), None)
     else:
         ec = None
     if ec is None:
@@ -88,7 +89,7 @@ def getExprContext(context, object=None):
                     folder = aq_parent(aq_inner(folder))
         ec = createExprContext(folder, portal, object)
         if request:
-            cache[ id(object) ] = ec
+            cache[id(object)] = ec
     return ec
 
 

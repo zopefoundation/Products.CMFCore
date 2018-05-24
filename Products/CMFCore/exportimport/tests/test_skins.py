@@ -13,11 +13,9 @@
 """Skins tool xml adapter and setup handler unit tests.
 """
 
+import os
 import unittest
 from Testing import ZopeTestCase
-ZopeTestCase.installProduct('CMFCore', 1)
-
-import os
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
@@ -31,6 +29,8 @@ from Products.GenericSetup.tests.common import DummyImportContext
 
 from Products.CMFCore.interfaces import ISkinsTool
 from Products.CMFCore.testing import ExportImportZCMLLayer
+
+ZopeTestCase.installProduct('CMFCore', 1)
 
 _TESTS_PATH = os.path.split(__file__)[0]
 
@@ -234,8 +234,7 @@ class _DVRegistrySetup:
 
 class DirectoryViewAdapterTests(_DVRegistrySetup,
                                 NodeAdapterTestCase,
-                                unittest.TestCase,
-                               ):
+                                unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -261,8 +260,7 @@ class DirectoryViewAdapterTests(_DVRegistrySetup,
 
 class SkinsToolXMLAdapterTests(_DVRegistrySetup,
                                BodyAdapterTestCase,
-                               unittest.TestCase,
-                              ):
+                               unittest.TestCase):
 
     layer = ExportImportZCMLLayer
 
@@ -275,8 +273,9 @@ class SkinsToolXMLAdapterTests(_DVRegistrySetup,
         from Products.CMFCore.DirectoryView import DirectoryView
 
         obj._setObject('foo_directoryview',
-                       DirectoryView('foo_directoryview',
-                                   'Products.CMFCore.exportimport.tests:one'))
+                       DirectoryView(
+                            'foo_directoryview',
+                            'Products.CMFCore.exportimport.tests:one'))
         obj.addSkinSelection('foo_path', 'one')
 
     def _verifyImport(self, obj):
@@ -299,9 +298,10 @@ class _SkinsSetup(_DVRegistrySetup, BaseRegistryTests):
         from Products.CMFCore.DirectoryView import DirectoryView
 
         site = DummySite()
-        fsdvs = [ (id, DirectoryView(id,
-                               'Products.CMFCore.exportimport.tests:%s' % id))
-                  for id in ids ]
+        fsdvs = [(id,
+                  DirectoryView(id,
+                                'Products.CMFCore.exportimport.tests:%s' % id))
+                 for id in ids]
         stool = DummySkinsTool(selections, fsdvs).__of__(site)
         getSiteManager().registerUtility(stool, ISkinsTool)
 
@@ -552,7 +552,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skin_paths), 2)
         self.assertEqual(skin_paths[0], ('basic', 'three,one,four'))
         self.assertEqual(skin_paths[1],
-                          ('fancy', 'three,two,one,four'))
+                         ('fancy', 'three,two,one,four'))
         self.assertEqual(len(skins_tool.objectItems()), 4)
 
     def test_fragment4_removal(self):

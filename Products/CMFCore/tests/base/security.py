@@ -29,15 +29,8 @@ class PermissiveSecurityPolicy:
     #
     #   Standard SecurityPolicy interface
     #
-    def validate( self
-                , accessed=None
-                , container=None
-                , name=None
-                , value=None
-                , context=None
-                , roles=None
-                , *args
-                , **kw):
+    def validate(self, accessed=None, container=None, name=None, value=None,
+                 context=None, roles=None, *args, **kw):
         if name and name.startswith('hidden'):
             return False
         else:
@@ -71,7 +64,7 @@ class _BaseUser(Implicit):
     def allowed(self, object, object_roles=None):
         if object_roles is None or 'Anonymous' in object_roles:
             return True
-        return any( r in self._roles for r in object_roles )
+        return any(r in self._roles for r in object_roles)
 
     def _check_context(self, object):
         return True

@@ -15,7 +15,6 @@
 
 import unittest
 from Testing import ZopeTestCase
-ZopeTestCase.installProduct('ZCTextIndex', 1)
 
 from OFS.Folder import Folder
 from Products.ZCTextIndex.Lexicon import CaseNormalizer
@@ -31,6 +30,8 @@ from Products.GenericSetup.tests.common import DummyImportContext
 from Products.CMFCore.CatalogTool import CatalogTool
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.testing import ExportImportZCMLLayer
+
+ZopeTestCase.installProduct('ZCTextIndex', 1)
 
 _EMPTY_EXPORT = """\
 <?xml version="1.0"?>

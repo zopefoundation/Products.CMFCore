@@ -75,7 +75,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r') # not 'rb', as this is a text file!
+        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
         try:
             data = file.read()
         finally:
@@ -96,9 +96,9 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
             self._updateFromFS()
         return HTML.read_raw(self)
 
-    #### The following is mainly taken from OFS/DTMLMethod.py ###
+    # The following is mainly taken from OFS/DTMLMethod.py
 
-    index_html = None # Prevent accidental acquisition
+    index_html = None  # Prevent accidental acquisition
 
     # Documents masquerade as functions:
     __code__ = DTMLMethod.__code__
@@ -196,13 +196,15 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
         manage_FTPget = get_unbound_function(DTMLMethod.manage_FTPget)
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = get_unbound_function(DTMLMethod.PrincipiaSearchSource)
+    PrincipiaSearchSource = get_unbound_function(
+                                DTMLMethod.PrincipiaSearchSource)
 
     security.declareProtected(ViewManagementScreens, 'document_src')
     document_src = get_unbound_function(DTMLMethod.document_src)
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
     manage_haveProxy = get_unbound_function(DTMLMethod.manage_haveProxy)
+
 
 InitializeClass(FSDTMLMethod)
 

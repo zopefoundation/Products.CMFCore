@@ -100,15 +100,15 @@ class FSFileTests(TransactionalTest, FSDVTest):
         file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
 
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time + 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time + 3600)
 
         data = file.index_html(self.REQUEST, self.RESPONSE)
 
         self.assertEqual(data, '')
         # test that we don't supply a content-length
         self.assertEqual(self.RESPONSE.getHeader('Content-Length'.lower()),
-                                                  None)
+                         None)
         self.assertEqual(self.RESPONSE.getStatus(), 304)
 
     def test_index_html_without_304(self):
@@ -118,8 +118,8 @@ class FSFileTests(TransactionalTest, FSDVTest):
         file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
 
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time - 3600)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time - 3600)
 
         data = file.index_html(self.REQUEST, self.RESPONSE)
 
@@ -135,11 +135,10 @@ class FSFileTests(TransactionalTest, FSDVTest):
 
         mod_time = os.stat(path).st_mtime
 
-        self.REQUEST.environ['IF_MODIFIED_SINCE'
-                            ] = '%s;' % rfc1123_date(mod_time)
+        self.REQUEST.environ['IF_MODIFIED_SINCE'] = '%s;' % \
+            rfc1123_date(mod_time)
 
-        self.REQUEST.environ['IF_NONE_MATCH'
-                            ] = '%s;' % FAKE_ETAG
+        self.REQUEST.environ['IF_NONE_MATCH'] = '%s;' % FAKE_ETAG
 
         data = file.index_html(self.REQUEST, self.RESPONSE)
         self.assertEqual(len(data), 0)

@@ -133,7 +133,7 @@ class IndexableObjectWrapper(object):
     @property
     def portal_type(self):
         """ Return portal_type or an empty string if portal_type is None.
- 
+
         Products.ZCatalog 3 indexes can no longer handle None values.
         """
         ob = self.__ob
@@ -186,7 +186,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # Convert query to modern syntax
         for k in 'effective', 'expires':
             kusage = k + '_usage'
-            if not kusage in kw:
+            if kusage not in kw:
                 continue
             usage = kw[kusage]
             if not usage.startswith('range:'):
@@ -232,7 +232,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                         hi = now
                     if lo is not None and hi < lo:
                         return ()
-                else: # 'expires':
+                else:  # 'expires':
                     if lo is None or lo < now:
                         lo = now
                     if hi is not None and hi < lo:
@@ -298,7 +298,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         else:
             self._indexObject(object)
 
-    security.declarePrivate('unindexObject')
+    @security.private
     def unindexObject(self, object):
         if not CATALOG_OPTIMIZATION_DISABLED:
             obj = filterTemporaryItems(object, checkId=False)
@@ -308,7 +308,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         else:
             self._unindexObject(object)
 
-    security.declarePrivate('reindexObject')
+    @security.private
     def reindexObject(self, object, idxs=[], update_metadata=1, uid=None):
         # `CMFCatalogAware.reindexObject` also updates the modification date
         # of the object for the "reindex all" case.  unfortunately, some other
@@ -330,7 +330,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                 uid=uid
             )
 
-    security.declarePrivate('_indexObject')
+    @security.private
     def _indexObject(self, object):
         """Add to catalog.
         """
@@ -364,6 +364,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             valid_indexes = self._catalog.indexes.keys()
             idxs = [i for i in idxs if i in valid_indexes]
         self.catalog_object(object, uid, idxs, update_metadata)
+
 
 InitializeClass(CatalogTool)
 registerToolInterface('portal_catalog', ICatalogTool)

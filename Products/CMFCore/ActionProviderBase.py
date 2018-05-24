@@ -38,17 +38,11 @@ class ActionProviderBase:
     """
 
     security = ClassSecurityInfo()
-
     _actions = ()
+    _actions_form = DTMLFile('editToolsActions', _dtmldir)
 
-    _actions_form = DTMLFile( 'editToolsActions', _dtmldir )
-
-    manage_options = ( { 'label'  : 'Actions'
-                       , 'action' : 'manage_editActionsForm'
-                       , 'help'   : ('CMFCore', 'Actions.stx')
-                       }
-                     ,
-                     )
+    manage_options = ({'label': 'Actions', 'action': 'manage_editActionsForm',
+                       'help': ('CMFCore', 'Actions.stx')},)
 
     #
     #   ActionProvider interface
@@ -95,7 +89,7 @@ class ActionProviderBase:
         #
         ec = self._getExprContext(object)
         actions = self.listActions(object=object)
-        actions = [ ActionInfo(action, ec) for action in actions ]
+        actions = [ActionInfo(action, ec) for action in actions]
 
         if action_chain:
             filtered_actions = []
@@ -149,7 +143,7 @@ class ActionProviderBase:
     #   ZMI methods
     #
     @security.protected(ManagePortal)
-    def manage_editActionsForm( self, REQUEST, manage_tabs_message=None ):
+    def manage_editActionsForm(self, REQUEST, manage_tabs_message=None):
 
         """ Show the 'Actions' management tab.
         """
@@ -162,27 +156,14 @@ class ActionProviderBase:
 
         # possible_permissions is in AccessControl.Role.RoleManager.
         pp = self.possible_permissions()
-        return self._actions_form( self
-                                 , REQUEST
-                                 , actions=actions
-                                 , possible_permissions=pp
-                                 , management_view='Actions'
-                                 , manage_tabs_message=manage_tabs_message
-                                 )
+        return self._actions_form(self, REQUEST, actions=actions,
+                                  possible_permissions=pp,
+                                  management_view='Actions',
+                                  manage_tabs_message=manage_tabs_message)
 
     @security.protected(ManagePortal)
-    def addAction( self
-                 , id
-                 , name
-                 , action
-                 , condition
-                 , permission
-                 , category
-                 , visible=1
-                 , icon_expr=''
-                 , link_target=''
-                 , REQUEST=None
-                 ):
+    def addAction(self, id, name, action, condition, permission, category,
+                  visible=1, icon_expr='', link_target='', REQUEST=None):
         """ Add an action to our list.
         """
         if not name:
@@ -196,26 +177,24 @@ class ActionProviderBase:
 
         new_actions = self._cloneActions()
 
-        new_action = ActionInformation( id=str(id)
-                                      , title=str(name)
-                                      , category=str(category)
-                                      , condition=condition
-                                      , permissions=permission
-                                      , visible=bool(visible)
-                                      , action=action
-                                      , icon_expr=icon_expr
-                                      , link_target=link_target
-                                      )
+        new_action = ActionInformation(id=str(id), title=str(name),
+                                       category=str(category),
+                                       condition=condition,
+                                       permissions=permission,
+                                       visible=bool(visible),
+                                       action=action,
+                                       icon_expr=icon_expr,
+                                       link_target=link_target)
 
-        new_actions.append( new_action )
-        self._actions = tuple( new_actions )
+        new_actions.append(new_action)
+        self._actions = tuple(new_actions)
 
         if REQUEST is not None:
             return self.manage_editActionsForm(
                 REQUEST, manage_tabs_message='Added.')
 
     @security.protected(ManagePortal)
-    def changeActions( self, properties=None, REQUEST=None ):
+    def changeActions(self, properties=None, REQUEST=None):
 
         """ Update our list of actions.
         """
@@ -224,42 +203,43 @@ class ActionProviderBase:
 
         actions = []
 
-        for index in range( len( self._actions ) ):
-            actions.append( self._extractAction( properties, index ) )
+        for index in range(len(self._actions)):
+            actions.append(self._extractAction(properties, index))
 
-        self._actions = tuple( actions )
+        self._actions = tuple(actions)
 
         if REQUEST is not None:
-            return self.manage_editActionsForm(REQUEST, manage_tabs_message=
-                                               'Actions changed.')
+            msg = 'Actions changed.'
+            return self.manage_editActionsForm(REQUEST,
+                                               manage_tabs_message=msg)
 
     @security.protected(ManagePortal)
-    def deleteActions( self, selections=(), REQUEST=None ):
+    def deleteActions(self, selections=(), REQUEST=None):
 
         """ Delete actions indicated by indexes in 'selections'.
         """
-        sels = list( map( int, selections ) )  # Convert to a list of integers.
+        sels = list(map(int, selections))  # Convert to a list of integers.
 
         old_actions = self._cloneActions()
         new_actions = []
 
-        for index in range( len( old_actions ) ):
+        for index in range(len(old_actions)):
             if index not in sels:
-                new_actions.append( old_actions[ index ] )
+                new_actions.append(old_actions[index])
 
-        self._actions = tuple( new_actions )
+        self._actions = tuple(new_actions)
 
         if REQUEST is not None:
-            return self.manage_editActionsForm(
-                REQUEST, manage_tabs_message=(
-                'Deleted %d action(s).' % len(sels)))
+            msg = 'Deleted %d action(s).' % len(sels)
+            return self.manage_editActionsForm(REQUEST,
+                                               manage_tabs_message=msg)
 
     @security.protected(ManagePortal)
-    def moveUpActions( self, selections=(), REQUEST=None ):
+    def moveUpActions(self, selections=(), REQUEST=None):
 
         """ Move the specified actions up one slot in our list.
         """
-        sels = sorted( map( int, selections ) )  # Convert to list of ints
+        sels = sorted(map(int, selections))  # Convert to list of ints
 
         new_actions = self._cloneActions()
 
@@ -273,19 +253,19 @@ class ActionProviderBase:
             new_actions[idx2] = new_actions[idx]
             new_actions[idx] = a
 
-        self._actions = tuple( new_actions )
+        self._actions = tuple(new_actions)
 
         if REQUEST is not None:
-            return self.manage_editActionsForm(
-                REQUEST, manage_tabs_message=(
-                'Moved up %d action(s).' % len(sels)))
+            msg = 'Moved up %d action(s).' % len(sels)
+            return self.manage_editActionsForm(REQUEST,
+                                               manage_tabs_message=msg)
 
     @security.protected(ManagePortal)
-    def moveDownActions( self, selections=(), REQUEST=None ):
+    def moveDownActions(self, selections=(), REQUEST=None):
 
         """ Move the specified actions down one slot in our list.
         """
-        sels = sorted(list( map( int, selections ) ))  # Convert to list of ints
+        sels = sorted(list(map(int, selections)))  # Convert to list of ints
         sels.reverse()
 
         new_actions = self._cloneActions()
@@ -300,37 +280,37 @@ class ActionProviderBase:
             new_actions[idx2] = new_actions[idx]
             new_actions[idx] = a
 
-        self._actions = tuple( new_actions )
+        self._actions = tuple(new_actions)
 
         if REQUEST is not None:
-            return self.manage_editActionsForm(
-                REQUEST, manage_tabs_message=(
-                'Moved down %d action(s).' % len(sels)))
+            msg = 'Moved down %d action(s).' % len(sels)
+            return self.manage_editActionsForm(REQUEST,
+                                               manage_tabs_message=msg)
 
     #
     #   Helper methods
     #
     @security.private
-    def _cloneActions( self ):
+    def _cloneActions(self):
 
         """ Return a list of actions, cloned from our current list.
         """
-        return [x.clone() for x in list( self._actions )]
+        return [x.clone() for x in list(self._actions)]
 
     @security.private
-    def _extractAction( self, properties, index ):
+    def _extractAction(self, properties, index):
 
         """ Extract an ActionInformation from the funky form properties.
         """
-        id          = str( properties.get( 'id_%d'          % index, '' ) )
-        title       = str( properties.get( 'name_%d'        % index, '' ) )
-        action      = str( properties.get( 'action_%d'      % index, '' ) )
-        icon_expr   = str( properties.get( 'icon_expr_%d'   % index, '' ) )
-        condition   = str( properties.get( 'condition_%d'   % index, '' ) )
-        category    = str( properties.get( 'category_%d'    % index, '' ))
-        visible     = bool( properties.get('visible_%d'     % index, False) )
-        permissions =      properties.get( 'permission_%d'  % index, () )
-        link_target = str( properties.get( 'link_target_%d' % index, '' ) )
+        id = str(properties.get('id_%d' % index, ''))
+        title = str(properties.get('name_%d' % index, ''))
+        action = str(properties.get('action_%d' % index, ''))
+        icon_expr = str(properties.get('icon_expr_%d' % index, ''))
+        condition = str(properties.get('condition_%d' % index, ''))
+        category = str(properties.get('category_%d' % index, ''))
+        visible = bool(properties.get('visible_%d' % index, False))
+        permissions = properties.get('permission_%d' % index, ())
+        link_target = str(properties.get('link_target_%d' % index, ''))
 
         if not title:
             raise ValueError('A title is required.')
@@ -339,23 +319,21 @@ class ActionProviderBase:
             category = 'object'
 
         if isinstance(permissions, six.string_types):
-            permissions = ( permissions, )
+            permissions = (permissions,)
 
-        return ActionInformation( id=id
-                                , title=title
-                                , action=action
-                                , condition=condition
-                                , permissions=permissions
-                                , category=category
-                                , visible=visible
-                                , icon_expr=icon_expr
-                                , link_target=link_target
-                                )
+        return ActionInformation(id=id, title=title, action=action,
+                                 condition=condition,
+                                 permissions=permissions,
+                                 category=category,
+                                 visible=visible,
+                                 icon_expr=icon_expr,
+                                 link_target=link_target)
 
     def _getOAI(self, object):
         return getOAI(self, object)
 
     def _getExprContext(self, object):
         return getExprContext(self, object)
+
 
 InitializeClass(ActionProviderBase)

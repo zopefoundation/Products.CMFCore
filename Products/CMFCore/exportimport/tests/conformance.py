@@ -13,6 +13,7 @@
 """ Mix-in classes for testing interface conformance.
 """
 
+
 class ConformsToISimpleItem:
 
     def test_conforms_to_Five_ISimpleItem(self):
@@ -20,6 +21,7 @@ class ConformsToISimpleItem:
         from Products.Five.interfaces import ISimpleItem
 
         verifyClass(ISimpleItem, self._getTargetClass())
+
 
 class ConformsToIINIAware:
 
@@ -29,6 +31,7 @@ class ConformsToIINIAware:
 
         verifyClass(IINIAware, self._getTargetClass())
 
+
 class ConformsToICSVAware:
 
     def test_conforms_to_ICSVAware(self):
@@ -36,6 +39,7 @@ class ConformsToICSVAware:
         from Products.CMFCore.interfaces import ICSVAware
 
         verifyClass(ICSVAware, self._getTargetClass())
+
 
 class ConformsToIFilesystemExporter:
     """ Mix-in for test cases whose target class implements IFilesystemExporter.
@@ -45,6 +49,7 @@ class ConformsToIFilesystemExporter:
         from Products.CMFCore.interfaces import IFilesystemExporter
 
         verifyClass(IFilesystemExporter, self._getTargetClass())
+
 
 class ConformsToIFilesystemImporter:
     """ Mix-in for test cases whose target class implements IFilesystemImporter.

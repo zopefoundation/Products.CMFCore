@@ -68,7 +68,6 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     """ Base class for information about a content type.
     """
 
-
     manage_options = (
         SimpleItemWithProperties.manage_options[:1] +
         ({'label': 'Aliases', 'action': 'manage_aliases'},) +
@@ -135,8 +134,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
 
         kw = kw.copy()  # Get a modifiable dict.
 
-        if (not 'content_meta_type' in kw
-            and 'meta_type' in kw):
+        if 'content_meta_type' not in kw and 'meta_type' in kw:
             kw['content_meta_type'] = kw['meta_type']
 
         if 'content_icon' in kw or 'icon' in kw:
@@ -262,7 +260,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             if ti is None or ti.globalAllow():
                 return 1
 
-        #If a type is enabled to filter and no content_types are allowed
+        # If a type is enabled to filter and no content_types are allowed
         if not self.allowed_content_types:
             return 0
 
@@ -423,6 +421,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             return False
         return self.isConstructionAllowed(container)
 
+
 InitializeClass(TypeInformation)
 
 
@@ -572,6 +571,7 @@ class FactoryTypeInformation(TypeInformation):
 
         return obj
 
+
 InitializeClass(FactoryTypeInformation)
 
 
@@ -638,7 +638,7 @@ allowedTypes = [
     'Python Method',
     'DTML Method',
     'External Method',
-    ]
+   ]
 
 
 @implementer(ITypesTool)
@@ -678,8 +678,8 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         # have an interface we can use in _product_interfaces
         import Products
         all = TypesTool.inheritedAttribute('all_meta_types')(self)
-        others = [ mt for mt in Products.meta_types
-                   if mt['name'] in allowedTypes ]
+        others = [mt for mt in Products.meta_types
+                  if mt['name'] in allowedTypes]
         return tuple(all) + tuple(others)
 
     #
@@ -831,8 +831,8 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             if type_info is not None:
                 actions.extend(type_info.listActions(info, object))
 
-        add_actions = [ ti for ti in self.objectValues()
-                        if IAction.providedBy(ti) ]
+        add_actions = [ti for ti in self.objectValues()
+                       if IAction.providedBy(ti)]
         actions.extend(add_actions)
 
         return actions
@@ -848,6 +848,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
                 _dict[k] = 1
         rval = sorted(_dict.keys())
         return rval
+
 
 InitializeClass(TypesTool)
 registerToolInterface('portal_types', ITypesTool)

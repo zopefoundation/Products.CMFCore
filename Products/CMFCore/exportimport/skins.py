@@ -110,7 +110,7 @@ class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
         for k, v in self.context.getSkinPaths():
             node = self._doc.createElement('skin-path')
             node.setAttribute('name', k)
-            for layer in [ l.strip() for l in v.split(',') if l.strip() ]:
+            for layer in [l.strip() for l in v.split(',') if l.strip()]:
                 child = self._doc.createElement('layer')
                 child.setAttribute('name', layer)
                 node.appendChild(child)
@@ -166,7 +166,7 @@ class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
             skinnable.setupCurrentSkin(request)
 
     def _updatePath(self, path, node):
-        path = [ name.strip() for name in path.split(',') if name.strip() ]
+        path = [name.strip() for name in path.split(',') if name.strip()]
 
         for child in node.childNodes:
             if child.nodeName != 'layer':
@@ -204,7 +204,6 @@ class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
 
         return str(','.join(path))
 
-
     def _removeSkin(self, skin_name=None):
         """
         Remove a skin from the skinstool
@@ -225,6 +224,7 @@ def importSkinsTool(context):
         return
 
     importObjects(tool, '', context)
+
 
 def exportSkinsTool(context):
     """Export skins tool FSDVs and skin paths as an XML file.

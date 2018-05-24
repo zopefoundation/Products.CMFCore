@@ -65,9 +65,9 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         )
     email = ''
     fullname = ''
-    last_login_time = DateTime('1970/01/01 00:00:00 UTC') # epoch
+    last_login_time = DateTime('1970/01/01 00:00:00 UTC')  # epoch
     listed = False
-    login_time = DateTime('1970/01/01 00:00:00 UTC') # epoch
+    login_time = DateTime('1970/01/01 00:00:00 UTC')  # epoch
     portal_skin = ''
 
     security = ClassSecurityInfo()
@@ -210,6 +210,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         else:
             return 0
 
+
 InitializeClass(MemberDataTool)
 registerToolInterface('portal_memberdata', IMemberDataTool)
 
@@ -276,7 +277,7 @@ class MemberAdapter(object):
         tool = self._tool
         for id in tool.propertyIds():
             if id in mapping:
-                if not id in self._md.__class__.__dict__:
+                if id not in self._md.__class__.__dict__:
                     value = mapping[id]
                     if isinstance(value, str):
                         proptype = tool.getPropertyType(id) or 'string'
@@ -376,5 +377,6 @@ class MemberAdapter(object):
 
     # There are other parts of the interface but they are
     # deprecated for use with CMF applications.
+
 
 InitializeClass(MemberAdapter)

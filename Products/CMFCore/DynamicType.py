@@ -52,19 +52,19 @@ class DynamicType:
     #
     #   'IDynamicType' interface methods
     #
-    security.declarePublic('getPortalTypeName')
+    @security.public
     def getPortalTypeName(self):
         """ Get the portal type name that can be passed to portal_types.
         """
         pt = self.portal_type
-        if callable( pt ):
+        if callable(pt):
             pt = pt()
         return pt
 
     # deprecated alias
     _getPortalTypeName = getPortalTypeName
 
-    security.declarePublic('getTypeInfo')
+    @security.public
     def getTypeInfo(self):
         """ Get the TypeInformation object specified by the portal type.
         """
@@ -73,7 +73,7 @@ class DynamicType:
             return None
         return tool.getTypeInfo(self)  # Can return None.
 
-    security.declarePublic('getActionInfo')
+    @security.public
     def getActionInfo(self, action_chain, check_visibility=0,
                       check_condition=0):
         """ Get an Action info mapping specified by a chain of actions.
@@ -87,7 +87,7 @@ class DynamicType:
                         action_chain, '/'.join(self.getPhysicalPath()))
             raise ValueError(msg)
 
-    security.declarePublic('getIconURL')
+    @security.public
     def getIconURL(self):
         """ Get the absolute URL of the icon for the object.
         """
@@ -108,7 +108,7 @@ class DynamicType:
     #
     #   'IItem' interface method
     #
-    security.declarePublic('icon')
+    @security.public
     def icon(self, relative_to_portal=0):
         """
         Using this method allows the content class
@@ -154,8 +154,8 @@ class DynamicType:
         # default view
         if key == '(Default)':
             viewname = queryDefaultViewName(self, REQUEST)
-            if (viewname and
-                queryMultiAdapter((self, REQUEST), name=viewname) is not None):
+            if viewname and \
+               queryMultiAdapter((self, REQUEST), name=viewname) is not None:
                 stack.append(viewname)
                 REQUEST._hacked_path = 1
                 return
@@ -168,5 +168,6 @@ class DynamicType:
             if method_id != '(Default)':
                 stack.append(method_id)
             REQUEST._hacked_path = 1
+
 
 InitializeClass(DynamicType)

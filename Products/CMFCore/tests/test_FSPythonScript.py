@@ -13,28 +13,28 @@
 """ Unit tests for FSPythonScript module.
 """
 
-import unittest
-from Testing import ZopeTestCase
-ZopeTestCase.installProduct('PythonScripts', 1)
-
 import os
 import warnings
 from os.path import join
 from six.moves._thread import start_new_thread
 from sys import exc_info
 from time import sleep
+import unittest
 
 from Acquisition import aq_base
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 from Products.StandardCacheManagers import RAMCacheManager
+from Testing import ZopeTestCase
 from zope.testing.cleanup import cleanUp
 
 from Products.CMFCore.FSMetadata import FSMetadata
 from Products.CMFCore.FSPythonScript import FSPythonScript
 from Products.CMFCore.tests.base.testcase import FSDVTest
 from Products.CMFCore.tests.base.testcase import SecurityTest
+
+ZopeTestCase.installProduct('PythonScripts', 1)
 
 
 class FSPSMaker(FSDVTest):
@@ -78,7 +78,7 @@ class FSPythonScriptTests(FSPSMaker):
             def call_script(script=script, res=res):
                 try:
                     res.append(script())
-                except:
+                except Exception:
                     res.append('%s: %s' % exc_info()[:2])
 
             start_new_thread(call_script, ())
@@ -92,7 +92,8 @@ class FSPythonScriptTests(FSPSMaker):
         container = Folder('container_for_execution')
         for fformat in ('unix', 'dos', 'mac'):
             container._setObject(fformat,
-                self._makeOne(fformat, 'test_%s.py' % fformat))
+                                 self._makeOne(fformat,
+                                               'test_%s.py' % fformat))
             script = getattr(container, fformat)
             self.assertEqual(script(), fformat)
 
@@ -201,6 +202,7 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
                 self.assertFalse(rop_info['selected'] == '')
             else:
                 self.assertTrue(rop_info['selected'] == '')
+
 
 _ORIGINAL_TEXT = """\
 ## Script (Python) "cps"

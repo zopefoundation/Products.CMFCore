@@ -21,13 +21,14 @@ from Products.CMFCore.interfaces import IActionWillBeInvokedEvent
 from Products.CMFCore.interfaces import IActionRaisedExceptionEvent
 from Products.CMFCore.interfaces import IActionSucceededEvent
 
-class WorkflowException( Exception ):
+
+class WorkflowException(Exception):
 
     """ Exception while invoking workflow.
     """
-    
 
-class ObjectDeleted( Exception ):
+
+class ObjectDeleted(Exception):
 
     """ Raise to tell the workflow tool that the object has been deleted.
 
@@ -40,7 +41,7 @@ class ObjectDeleted( Exception ):
         return self._r
 
 
-class ObjectMoved( Exception ):
+class ObjectMoved(Exception):
 
     """ Raise to tell the workflow tool that the object has moved.
 
@@ -56,33 +57,35 @@ class ObjectMoved( Exception ):
     def getNewObject(self):
         return self._ob
 
+
 # Events
 
 @implementer(IWorkflowActionEvent)
 class WorkflowActionEvent(ObjectEvent):
-    
+
     def __init__(self, object, workflow, action):
         ObjectEvent.__init__(self, object)
         self.workflow = workflow
         self.action = action
-    
+
+
 @implementer(IActionWillBeInvokedEvent)
 class ActionWillBeInvokedEvent(WorkflowActionEvent):
     pass
 
-            
+
 @implementer(IActionRaisedExceptionEvent)
 class ActionRaisedExceptionEvent(WorkflowActionEvent):
     pass
-    
+
     def __init__(self, object, workflow, action, exc):
         WorkflowActionEvent.__init__(self, object, workflow, action)
         self.exc = exc
-    
+
+
 @implementer(IActionSucceededEvent)
 class ActionSucceededEvent(WorkflowActionEvent):
-    
+
     def __init__(self, object, workflow, action, result):
         WorkflowActionEvent.__init__(self, object, workflow, action)
         self.result = result
-

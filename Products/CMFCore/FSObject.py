@@ -67,18 +67,18 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
                 self.ZCacheable_setManagerId(cache)
 
         self.id = id
-        self.__name__ = id # __name__ is used in traceback reporting
+        self.__name__ = id  # __name__ is used in traceback reporting
         self._filepath = filepath
 
         try:
             self._file_mod_time = os.stat(filepath).st_mtime
-        except:
+        except Exception:
             pass
         self._readFile(0)
 
     @security.protected(ViewManagementScreens)
-    def manage_doCustomize(self, folder_path, RESPONSE=None, \
-                           root=None, obj=None):
+    def manage_doCustomize(self, folder_path, RESPONSE=None, root=None,
+                           obj=None):
         """Makes a ZODB Based clone with the same data.
 
         Calls _createZODBClone for the actual work.
@@ -138,8 +138,8 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             folder._setObject(id, obj)
 
             if RESPONSE is not None:
-                RESPONSE.redirect('%s/%s/manage_main' % (
-                folder.absolute_url(), id))
+                RESPONSE.redirect('%s/%s/manage_main' % (folder.absolute_url(),
+                                                         id))
 
         if RESPONSE is not None:
             RESPONSE.redirect('%s/%s/manage_main' % (
@@ -165,7 +165,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         if not parsed or getConfiguration().debug_mode:
             try:
                 mtime = os.stat(self._filepath).st_mtime
-            except:
+            except Exception:
                 mtime = 0.0
             if not parsed or mtime != self._file_mod_time:
                 self._readFile(1)
@@ -200,6 +200,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         self._updateFromFS()
         return self._filepath
 
+
 InitializeClass(FSObject)
 
 
@@ -233,7 +234,7 @@ class BadFile(FSObject):
 
     def __init__(self, id, filepath, exc_str='', fullname=None,
                  properties=None):
-        id = fullname or id # Use the whole filename.
+        id = fullname or id  # Use the whole filename.
         self.exc_str = exc_str
         self.file_contents = ''
         FSObject.__init__(self, id, filepath, fullname, properties)
@@ -258,8 +259,8 @@ class BadFile(FSObject):
                 data = self.file_contents = file.read()
             finally:
                 file.close()
-        except:  # No errors of any sort may propagate
-            data = self.file_contents = None #give up
+        except Exception:  # No errors of any sort may propagate
+            data = self.file_contents = None  # give up
         return data
 
     @security.public
@@ -276,5 +277,6 @@ class BadFile(FSObject):
             the file.
         """
         return self.exc_str
+
 
 InitializeClass(BadFile)

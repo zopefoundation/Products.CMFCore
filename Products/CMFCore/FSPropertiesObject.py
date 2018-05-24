@@ -35,7 +35,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
 
     meta_type = 'Filesystem Properties Object'
 
-    manage_options = ({'label':'Customize', 'action':'manage_main'},)
+    manage_options = ({'label': 'Customize', 'action': 'manage_main'},)
 
     security = ClassSecurityInfo()
 
@@ -52,16 +52,16 @@ class FSPropertiesObject(FSObject, PropertyManager):
     security.declarePrivate('manage_changePropertyTypes')
 
     @security.protected(ViewManagementScreens)
-    def manage_doCustomize(self, folder_path, RESPONSE=None, \
-                           root=None, obj=None):
+    def manage_doCustomize(self, folder_path, RESPONSE=None, root=None,
+                           obj=None):
         """Makes a ZODB Based clone with the same data.
 
         Calls _createZODBClone for the actual work.
         """
         # Overridden here to provide a different redirect target.
 
-        FSObject.manage_doCustomize(self, folder_path, RESPONSE, \
-                                    root=root, obj=obj)
+        FSObject.manage_doCustomize(self, folder_path, RESPONSE, root=root,
+                                    obj=obj)
 
         if RESPONSE is not None:
             if folder_path == '.':
@@ -92,7 +92,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r') # not 'rb', as this is a text file!
+        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
         try:
             lines = file.readlines()
         finally:
@@ -111,7 +111,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
 
             try:
                 propname, proptv = line.split(':', 1)
-                #XXX multi-line properties?
+                # XXX multi-line properties?
                 proptype, propvstr = proptv.split('=', 1)
                 propname = propname.strip()
                 proptype = proptype.strip()
@@ -121,12 +121,12 @@ class FSPropertiesObject(FSObject, PropertyManager):
                 # Should be safe since we're loading from
                 # the filesystem.
                 setattr(self, propname, propvalue)
-                map.append({'id':propname,
-                            'type':proptype,
-                            'mode':'',
-                            'default_value':propvalue,
+                map.append({'id': propname,
+                            'type': proptype,
+                            'mode': '',
+                            'default_value': propvalue,
                             })
-            except:
+            except Exception:
                 raise ValueError('Error processing line %s of %s:\n%s'
                                  % (lino, self._filepath, line))
         self._properties = tuple(map)
@@ -137,6 +137,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
             self = ImplicitAcquisitionWrapper(self, parent)
             self._updateFromFS()
             return self
+
 
 InitializeClass(FSPropertiesObject)
 

@@ -41,16 +41,14 @@ class UndoTool(UniqueObject, SimpleItem):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( SimpleItem.manage_options
-                     + ({'label': 'Overview',
-                         'action': 'manage_overview'},)
-                     )
+    manage_options = (SimpleItem.manage_options
+                      + ({'label': 'Overview', 'action': 'manage_overview'},))
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
-    manage_overview = DTMLFile( 'explainUndoTool', _dtmldir )
+    manage_overview = DTMLFile('explainUndoTool', _dtmldir)
 
     #
     #   'IUndoTool' interface methods
@@ -76,10 +74,10 @@ class UndoTool(UniqueObject, SimpleItem):
                 lambda record, user_id=user_id:
                 record['user_name'].split()[-1] == user_id,
                 transactions
-                ))
+               ))
         return transactions
 
-    security.declarePublic('undo')
+    @security.public
     def undo(self, object, transaction_info):
         """
             Undo the list of transactions passed in 'transaction_info',
@@ -90,19 +88,20 @@ class UndoTool(UniqueObject, SimpleItem):
 
         xids = {}  # set of allowed transaction IDs
 
-        allowed = self.listUndoableTransactionsFor( object )
+        allowed = self.listUndoableTransactionsFor(object)
 
         for xid in [x['id'] for x in allowed]:
             xids[xid] = 1
 
-        if type( transaction_info ) == type( '' ):
-            transaction_info = [ transaction_info ]
+        if isinstance(transaction_info, str):
+            transaction_info = [transaction_info]
 
         for tinfo in transaction_info:
-            if not xids.get( tinfo, None ):
+            if not xids.get(tinfo, None):
                 raise AccessControl_Unauthorized
 
         object.manage_undo_transactions(transaction_info)
+
 
 InitializeClass(UndoTool)
 registerToolInterface('portal_undo', IUndoTool)
