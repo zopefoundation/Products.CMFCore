@@ -37,7 +37,4 @@
       handler=".CMFCatalogAware.handleOpaqueItemEvent"
       />
 
-  <subscriber
-      handler=".zmi.load_assets" />
-
 </configure>

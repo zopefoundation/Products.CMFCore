@@ -22,7 +22,7 @@ Products.CMFCore Changelog
   [dataflake]
 
 - Add icons for Bootstrap ZMI.
-  [icemac]
+  [icemac, dwt]
 
 
 2.4.0b2 (2017-05-05)

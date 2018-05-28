@@ -45,7 +45,6 @@ setup(name='Products.%s' % NAME,
       setup_requires=['eggtestinfo',
                      ],
       install_requires=[
-          'cmf.icons',
           'setuptools',
           'Zope2 >= 4.0a3',
           'docutils',
