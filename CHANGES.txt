@@ -40,6 +40,9 @@ Products.CMFCore Changelog
 - Update Products.MailHost dependency to 4.0
   [dataflake]
 
+- Add icons for Bootstrap ZMI.
+  [icemac, dwt]
+
 
 2.4.0b2 (2017-05-05)
 --------------------
