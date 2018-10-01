@@ -68,7 +68,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         SimpleItem.manage_options)
 
     meta_type = 'Cookie Crumbler'
-    zmi_icon = 'fab fa-creative-commons'
+    zmi_icon = 'fa fa-cookie-bite'
 
     security = ClassSecurityInfo()
     security.declareProtected(ModifyCookieCrumblers, 'manage_editProperties')

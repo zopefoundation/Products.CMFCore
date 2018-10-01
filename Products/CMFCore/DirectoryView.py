@@ -440,6 +440,7 @@ class DirectoryViewSurrogate(Folder):
     """
 
     meta_type = 'Filesystem Directory View'
+    zmi_icon = 'far fa-folder-open'
     all_meta_types = ()
 
     security = ClassSecurityInfo()
