@@ -196,8 +196,8 @@ class StructureFolderWalkingAdapter(object):
             return
 
         dialect = 'excel'
-        object_stream = StringIO(objects)
-        wf_stream = StringIO(workflow_states)
+        object_stream = StringIO(native_string(objects))
+        wf_stream = StringIO(native_string(workflow_states))
 
         object_rowiter = reader(object_stream, dialect)
         ours = [_f for _f in tuple(object_rowiter) if _f]
@@ -206,6 +206,8 @@ class StructureFolderWalkingAdapter(object):
         prior = set(context.contentIds())
 
         preserve = import_context.readDataFile('.preserve', subdir)
+        preserve = native_string(preserve)
+
         if not preserve:
             preserve = set()
         else:
@@ -217,7 +219,7 @@ class StructureFolderWalkingAdapter(object):
             delete = set()
         else:
             deletable = prior.difference(our_ids)
-            delete = set(_globtest(delete, deletable))
+            delete = set(_globtest(native_string(delete), deletable))
 
         # if it's in our_ids and NOT in preserve, or if it's not in
         # our_ids but IS in delete, we're gonna delete it
@@ -278,6 +280,7 @@ class StructureFolderWalkingAdapter(object):
         subdir = '%s/%s' % (subdir, id)
         properties = import_context.readDataFile('.properties',
                                                  subdir)
+        properties = native_string(properties)
         tool = getUtility(ITypesTool)
 
         try:
@@ -314,3 +317,11 @@ class StructureFolderWalkingAdapter(object):
             content.setDescription(description)
 
         return content
+
+
+def native_string(value):
+    if six.PY2 and isinstance(value, six.text_type):
+        value = value.encode('utf8')
+    if not six.PY2 and isinstance(value, six.binary_type):
+        value = value.decode('utf8')
+    return value
