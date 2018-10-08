@@ -161,6 +161,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     # The following is mainly taken from ZopePageTemplate.py
 
     expand = 0
+    output_encoding = 'utf-8'
 
     __defaults__ = None
     __code__ = ZopePageTemplate.__code__
