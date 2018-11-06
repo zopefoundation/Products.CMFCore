@@ -990,7 +990,7 @@ class PortalFolderCopySupportTests(SecurityTest):
             else:
                 self.fail("Paste failed; no pattern:\n%s" % e)
 
-        except zExceptions_Unauthorized as e:
+        except zExceptions_Unauthorized:
             pass
         else:
             self.fail("Paste allowed unexpectedly.")

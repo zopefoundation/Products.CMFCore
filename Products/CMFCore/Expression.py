@@ -23,7 +23,7 @@ from Persistence import Persistent
 from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from zope.component import getUtility
-from zope.component.interfaces import ComponentLookupError
+from zope.interface.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
 
 from Products.CMFCore.interfaces import IMembershipTool

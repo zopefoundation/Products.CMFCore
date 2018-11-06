@@ -9,6 +9,10 @@ Products.CMFCore Changelog
 
 - full PEP-8 compliance
 
+- Add support for Python 3.7.
+
+- Add support for `Zope >= 4.0b6`, thus requiring at least this version.
+
 
 2.4.0b4 (2018-05-17)
 --------------------

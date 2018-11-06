@@ -1,15 +1,21 @@
 language: python
-sudo: false
-dist: trusty
 python:
     - "2.7"
     - "3.5"
     - "3.6"
+matrix:
+    include:
+        - python: "3.7"
+          dist: xenial
+          sudo: true
 install:
-    - python bootstrap.py
-    - bin/buildout
+    - pip install -U pip setuptools
+    - pip install -U zc.buildout coverage coveralls
+    - buildout
 script:
-    - bin/test -v
+    - coverage run bin/test -v
+after_success:
+    - coveralls
 notifications:
     email: false
 cache:
