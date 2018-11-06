@@ -9,14 +9,15 @@
 .installed.cfg
 .mr.developer.cfg
 .tox/
+_build
 bin
 build
-_build
 coverage.xml
 develop-eggs
 dist
 downloads
 eggs
+flake8
 htmlcov
 local.cfg
 parts
