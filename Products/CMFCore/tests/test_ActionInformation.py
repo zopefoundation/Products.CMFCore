@@ -104,12 +104,20 @@ class ActionTests(unittest.TestCase):
         def _footer(*args, **kw):
             return 'HEADER'
 
+        def _main(*args, **kw):
+            return 'MAIN'
+
         container = SimpleItem()
 
         container.REQUEST = request = DummyRequest()
         request.set('manage_page_header', _header)
         request.set('manage_page_footer', _footer)
+        request.set('manage_main', _main)
+        request.set('RESPONSE', None)
         request.set('BASEPATH1', '/one/two')
+        request.set('URL', '/one/two/manage_propertiesForm')
+        request.set('URL0', '/one')
+        request.set('URL1', '/one/two')
         setattr(request, 'URL1', '/one/two')
         request._steps = ['one', 'two']
 
@@ -119,7 +127,7 @@ class ActionTests(unittest.TestCase):
         a = self._makeOne('extensible').__of__(container)
         form_html = a.manage_propertiesForm(request)
 
-        self.assertTrue('value=" Add "' in form_html)
+        self.assertIn('value="Add"', form_html)
 
     def test_clearExprObjects(self):
         """When a *_expr property is set, a *_expr_object attribute is
