@@ -19,7 +19,7 @@ from Acquisition import aq_get
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
-from zope.component.interfaces import ComponentLookupError
+from zope.interface.interfaces import ComponentLookupError
 from zope.interface import implementer
 from zope.publisher.defaultview import queryDefaultViewName
 

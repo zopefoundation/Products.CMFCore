@@ -49,7 +49,7 @@ from OFS.SimpleItem import SimpleItem
 import Products
 from zope.component import getUtility
 from zope.component import queryUtility
-from zope.component.interfaces import ComponentLookupError
+from zope.interface.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 
