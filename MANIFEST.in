@@ -1,8 +1,22 @@
 include *.txt
 include *.rst
 
-recursive-include Products *
-recursive-include docs *
+exclude MANIFEST.in
 
-global-exclude *.pyc
-global-exclude *.pyo
+recursive-include Products *.dtml
+recursive-include Products *.gif
+recursive-include Products *.js
+recursive-include Products *.metadata
+recursive-include Products *.props
+recursive-include Products *.pt
+recursive-include Products *.py
+recursive-include Products *.rst
+recursive-include Products *.stx
+recursive-include Products *.swf
+recursive-include Products *.txt
+recursive-include Products *.zcml
+recursive-include Products *.zpt
+recursive-include Products *.zsql
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs Makefile
