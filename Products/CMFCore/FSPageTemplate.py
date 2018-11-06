@@ -41,7 +41,8 @@ from Products.CMFCore.utils import _dtmldir
 from Products.CMFCore.utils import _setCacheHeaders
 
 
-xml_detect_re = re.compile(b'^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
+xml_detect_re = re.compile(
+    br'^\s*<\?xml\s+(?:[^>]*?encoding=["\']([^"\'>]+))?')
 charset_re = re.compile(r'charset.*?=.*?(?P<charset>[\w\-]*)',
                         re.I | re.M | re.S)
 _marker = object()
