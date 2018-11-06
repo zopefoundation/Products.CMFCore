@@ -15,8 +15,8 @@ def _package_doc(name):
 
 _boundary = '\n' + ('-' * 60) + '\n\n'
 README = _boundary.join([
-    _package_doc('README.txt'),
-    _package_doc('CHANGES.txt'),
+    _package_doc('README.rst'),
+    _package_doc('CHANGES.rst'),
 ])
 
 setup(name='Products.%s' % NAME,
