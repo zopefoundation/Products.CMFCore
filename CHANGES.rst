@@ -1,6 +1,12 @@
 Products.CMFCore Changelog
 ==========================
 
+2.4.0b6 (unreleased)
+--------------------
+
+- Nothing changed yet.
+
+
 2.4.0b5 (2018-11-07)
 --------------------
 
