@@ -13,6 +13,9 @@ Products.CMFCore Changelog
 
 - Add support for `Zope >= 4.0b6`, thus requiring at least this version.
 
+- Fix content export in py3 when readDataFile returns bytes.
+  [pbauer]
+
 
 2.4.0b4 (2018-05-17)
 --------------------
