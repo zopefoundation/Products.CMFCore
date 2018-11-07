@@ -1,8 +1,8 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.0 (unreleased)
-------------------
+2.4.0b5 (2018-11-07)
+--------------------
 
 - Fix ``notifyModified`` called on a wrong object.
   [mamico]
