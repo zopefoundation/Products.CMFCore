@@ -4,10 +4,8 @@ Products.CMFCore Changelog
 2.4.0 (unreleased)
 ------------------
 
-- Fix notifyModified called on a wrong object.
+- Fix ``notifyModified`` called on a wrong object.
   [mamico]
-
-- full PEP-8 compliance
 
 - Add support for Python 3.7.
 
@@ -20,14 +18,14 @@ Products.CMFCore Changelog
 - Add support for Python 3.5 and 3.6.
   [ale-rt]
 
-- sortKey for a DataManager must be text to be sortable.
+- `sortKey` for a DataManager must be text to be sortable.
   [pbauer]
 
 
 2.4.0b3 (2018-03-16)
 --------------------
 
-- remove dependency on ``five.globalrequest``, its functionality
+- Remove dependency on ``five.globalrequest``, its functionality
   is provided by ``zope.globalrequest``.
 
 - Do not autogenerate `string:${portal_url}/`, when no input for
@@ -51,16 +49,16 @@ Products.CMFCore Changelog
 2.4.0b2 (2017-05-05)
 --------------------
 
-- factored support for FSZSQL methods out into a setup extra.
+- Factored support for FSZSQL methods out into a setup extra.
   If you need support for Filesystem ZSQL methods, install the
   egg specifying the ``zsql`` extra.
   [dataflake]
 
-- use zope.interface.implementer decorator instead of
-  zope.interface.implements
+- Use ``zope.interface.implementer`` decorator instead of
+  ``zope.interface.implements``
   [dataflake]
 
-- use security declaration decorator notation where possible
+- Use security declaration decorator notation where possible.
   [dataflake]
 
 - Improve the new indexing object wrapping for unindexing by using a
