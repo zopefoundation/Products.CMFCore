@@ -17,6 +17,7 @@ from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from OFS.SimpleItem import SimpleItem
+from OFS.bbb import HAS_ZSERVER
 from zope.interface import implementer
 
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
@@ -50,10 +51,11 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
 
     security.declareObjectProtected(View)
 
-    # The security for FTP methods aren't set up by default in our
-    # superclasses...  :(
-    security.declareProtected(FTPAccess, 'manage_FTPstat')
-    security.declareProtected(FTPAccess, 'manage_FTPlist')
+    if HAS_ZSERVER:
+        # The security for FTP methods aren't set up by default in our
+        # superclasses...  :(
+        security.declareProtected(FTPAccess, 'manage_FTPstat')
+        security.declareProtected(FTPAccess, 'manage_FTPlist')
 
     def failIfLocked(self):
         """ Check if isLocked via webDav.

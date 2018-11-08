@@ -4,7 +4,8 @@ Products.CMFCore Changelog
 2.4.0b6 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- Prevent warnings on Zope start about permissions for not existing methods.
+  (`#53 <https://github.com/zopefoundation/Products.CMFCore/pull/53>`_)
 
 
 2.4.0b5 (2018-11-07)
