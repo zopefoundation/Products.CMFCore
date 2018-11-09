@@ -3,19 +3,19 @@
 
   <subscriber
       for=".interfaces.ICachingPolicyManager
-           zope.component.interfaces.IObjectEvent"
+           zope.interface.interfaces.IObjectEvent"
       handler=".CachingPolicyManager.handleCachingPolicyManagerEvent"
       />
 
   <subscriber
       for=".interfaces.ICookieCrumbler
-           zope.component.interfaces.IObjectEvent"
+           zope.interface.interfaces.IObjectEvent"
       handler=".CookieCrumbler.handleCookieCrumblerEvent"
       />
 
   <subscriber
       for=".interfaces.IContentish
-           zope.component.interfaces.IObjectEvent"
+           zope.interface.interfaces.IObjectEvent"
       handler=".CMFCatalogAware.handleContentishEvent"
       />
 
@@ -27,13 +27,13 @@
 
   <subscriber
       for=".interfaces.IOpaqueItemManager
-           zope.component.interfaces.IObjectEvent"
+           zope.interface.interfaces.IObjectEvent"
       handler=".CMFCatalogAware.dispatchToOpaqueItems"
       />
 
   <subscriber
       for=".interfaces.ICallableOpaqueItemEvents
-           zope.component.interfaces.IObjectEvent"
+           zope.interface.interfaces.IObjectEvent"
       handler=".CMFCatalogAware.handleOpaqueItemEvent"
       />
 

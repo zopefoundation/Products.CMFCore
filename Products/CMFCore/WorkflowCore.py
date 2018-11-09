@@ -14,7 +14,7 @@
 """
 
 from zope.interface import implementer
-from zope.component.interfaces import ObjectEvent
+from zope.interface.interfaces import ObjectEvent
 
 from Products.CMFCore.interfaces import IWorkflowActionEvent
 from Products.CMFCore.interfaces import IActionWillBeInvokedEvent
