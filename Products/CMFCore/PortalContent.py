@@ -17,7 +17,6 @@ from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from OFS.SimpleItem import SimpleItem
-from OFS.bbb import HAS_ZSERVER
 from zope.interface import implementer
 
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
