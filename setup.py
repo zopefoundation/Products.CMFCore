@@ -62,6 +62,7 @@ setup(name='Products.%s' % NAME,
           'Products.StandardCacheManagers',
           'Products.ZCTextIndex',
           'six',
+          'zope.interface >= 3.8',
           ],
       tests_require=[
           'zope.testing >= 3.7.0',

@@ -7,6 +7,8 @@ Products.CMFCore Changelog
 - Prevent warnings on Zope start about permissions for not existing methods.
   (`#53 <https://github.com/zopefoundation/Products.CMFCore/pull/53>`_)
 
+- Fix deprecation warnings occurring during test runs.
+
 
 2.4.0b5 (2018-11-07)
 --------------------

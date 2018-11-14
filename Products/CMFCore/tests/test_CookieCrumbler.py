@@ -52,7 +52,7 @@ class CookieCrumblerTests(unittest.TestCase):
 
     def setUp(self):
         from zope.component import provideHandler
-        from zope.component.interfaces import IObjectEvent
+        from zope.interface.interfaces import IObjectEvent
         from Products.CMFCore.interfaces import ICookieCrumbler
         from Products.CMFCore.CookieCrumbler import handleCookieCrumblerEvent
 
