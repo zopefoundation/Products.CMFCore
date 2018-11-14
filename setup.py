@@ -52,7 +52,7 @@ setup(name='Products.%s' % NAME,
       ],
       install_requires=[
           'setuptools',
-          'Zope >= 4.0b8',
+          'Zope >= 4.0b8.dev0',
           'docutils',
           'five.localsitemanager',
           'Products.BTreeFolder2',
