@@ -4,7 +4,7 @@ Products.CMFCore Changelog
 2.4.0b6 (unreleased)
 --------------------
 
-- Check for `__self__` as well as `im_self` for Python 3 compatibility
+- Change `im_self` to `__self__`
   [vangheem]
 
 - Fix deprecation warnings occurring during test runs.
