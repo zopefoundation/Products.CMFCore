@@ -242,6 +242,10 @@ def _mergedLocalRoles(object):
             object = object.im_self
             object = getattr(object, 'aq_inner', object)
             continue
+        if hasattr(object, '__self__'):
+            object = object.__self__
+            object = getattr(object, 'aq_inner', object)
+            continue
         break
 
     return deepcopy(merged)
