@@ -60,7 +60,7 @@ setup(name='Products.%s' % NAME,
           'Products.MailHost >= 4.0',
           'Products.PythonScripts',
           'Products.StandardCacheManagers',
-          'Products.ZCTextIndex',
+          'Products.ZCatalog',  # Products.ZCTextIndex lives there now
           'six',
           'zope.interface >= 3.8',
           ],
