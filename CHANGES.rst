@@ -7,6 +7,9 @@ Products.CMFCore Changelog
 - Change `im_self` to `__self__`
   [vangheem]
 
+- Prevent warnings on Zope start about permissions for not existing methods.
+  (`#53 <https://github.com/zopefoundation/Products.CMFCore/pull/53>`_)
+
 - Fix deprecation warnings occurring during test runs.
 
 

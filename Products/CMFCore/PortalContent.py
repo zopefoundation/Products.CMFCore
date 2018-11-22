@@ -24,7 +24,6 @@ from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.exceptions import NotFound
 from Products.CMFCore.exceptions import ResourceLockedError
 from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.permissions import FTPAccess
 from Products.CMFCore.permissions import View
 from Products.CMFCore.utils import Message as _
 
@@ -49,11 +48,6 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     security = ClassSecurityInfo()
 
     security.declareObjectProtected(View)
-
-    # The security for FTP methods aren't set up by default in our
-    # superclasses...  :(
-    security.declareProtected(FTPAccess, 'manage_FTPstat')
-    security.declareProtected(FTPAccess, 'manage_FTPlist')
 
     def failIfLocked(self):
         """ Check if isLocked via webDav.
