@@ -55,6 +55,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
     id = 'portal_memberdata'
     meta_type = 'CMF Member Data Tool'
+    zmi_icon = 'fas fa-database'
     _properties = (
         {'id': 'email', 'type': 'string', 'mode': 'w'},
         {'id': 'portal_skin', 'type': 'string', 'mode': 'w'},

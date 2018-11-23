@@ -533,6 +533,7 @@ class UniqueObject(ImmutableId):
 
     """ Base class for objects which cannot be "overridden" / shadowed.
     """
+    zmi_icon = 'fas fa-wrench'
     def _getUNIQUE(self):
         return UNIQUE
 

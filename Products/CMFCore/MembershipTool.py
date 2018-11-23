@@ -74,6 +74,7 @@ class MembershipTool(UniqueObject, Folder):
 
     id = 'portal_membership'
     meta_type = 'CMF Membership Tool'
+    zmi_icon = 'fa fa-users'
     memberareaCreationFlag = 1
     _HOME_FOLDER_FACTORY_NAME = 'cmf.folder.home.bbb1'
 
