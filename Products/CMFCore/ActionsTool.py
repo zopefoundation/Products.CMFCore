@@ -44,6 +44,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
 
     id = 'portal_actions'
     meta_type = 'CMF Actions Tool'
+    zmi_icon = 'fas fa-project-diagram'
     _product_interfaces = (IActionCategory,)
     action_providers = ('portal_types', 'portal_workflow', 'portal_actions')
 

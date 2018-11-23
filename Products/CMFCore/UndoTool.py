@@ -38,6 +38,7 @@ class UndoTool(UniqueObject, SimpleItem):
 
     id = 'portal_undo'
     meta_type = 'CMF Undo Tool'
+    zmi_icon = 'fas fa-undo'
 
     security = ClassSecurityInfo()
 

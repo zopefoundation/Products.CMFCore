@@ -42,6 +42,7 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
 
     id = 'portal_url'
     meta_type = 'CMF URL Tool'
+    zmi_icon = 'fas fa-compass'
 
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)

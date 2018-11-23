@@ -148,6 +148,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
 
     id = 'portal_catalog'
     meta_type = 'CMF Catalog'
+    zmi_icon = 'fas fa-search'
 
     security = ClassSecurityInfo()
 

@@ -124,6 +124,7 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
 
     id = 'portal_discussion'
     meta_type = 'Oldstyle CMF Discussion Tool'
+    zmi_icon = 'far fa-comments'
     # This tool is used to find the discussion for a given content object.
 
     security = ClassSecurityInfo()

@@ -454,6 +454,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
 
     id = 'caching_policy_manager'
     meta_type = 'CMF Caching Policy Manager'
+    zmi_icon = 'fa fa-rocket'
     _isCacheManager = 1  # Dead chicken. Yum.
 
     security = ClassSecurityInfo()
