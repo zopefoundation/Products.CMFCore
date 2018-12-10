@@ -7,6 +7,9 @@ Products.CMFCore Changelog
 - Change `im_self` to `__self__`
   [vangheem]
 
+- removed support for testing using ``'python setup.py test``
+  (`#51 <https://github.com/zopefoundation/Products.CMFCore/issues/51>_`)
+
 - Add more ZMI icons for the Zope 4 ZMI
   (`#47 <https://github.com/zopefoundation/Products.CMFCore/issues/47>`_)
 

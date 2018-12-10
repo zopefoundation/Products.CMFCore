@@ -47,9 +47,6 @@ setup(name='Products.%s' % NAME,
       include_package_data=True,
       namespace_packages=['Products'],
       zip_safe=False,
-      setup_requires=[
-          'eggtestinfo',
-      ],
       install_requires=[
           'setuptools',
           'Zope >= 4.0b8.dev0',
@@ -64,20 +61,12 @@ setup(name='Products.%s' % NAME,
           'six',
           'zope.interface >= 3.8',
           ],
-      tests_require=[
-          'zope.testing >= 3.7.0',
-          'Products.StandardCacheManagers',
-          ],
       extras_require={
           'test': ['Products.StandardCacheManagers'],
           'zsql': ['Products.ZSQLMethods >= 3.0.0b1'],
           },
-      test_loader='zope.testing.testrunner.eggsupport:SkipLayers',
-      test_suite='Products.%s' % NAME,
       entry_points="""
       [zope2.initialize]
       Products.%s = Products.%s:initialize
-      [distutils.commands]
-      ftest = zope.testing.testrunner.eggsupport:ftest
       """ % (NAME, NAME),
       )
