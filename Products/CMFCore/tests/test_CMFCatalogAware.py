@@ -176,9 +176,9 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
 
     def test_reindexObjectSecurity(self):
         foo = self.site.foo
-        self.site.foo.bar = TheClass('bar')
+        self.site.foo['bar'] = TheClass('bar')
         bar = self.site.foo.bar
-        self.site.foo.hop = TheClass('hop')
+        self.site.foo['hop'] = TheClass('hop')
         hop = self.site.foo.hop
         cat = self.ctool
         cat.setObs([foo, bar, hop])
@@ -192,35 +192,6 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         self.assertFalse(foo.notified)
         self.assertFalse(bar.notified)
         self.assertFalse(hop.notified)
-
-    def test_reindexObjectSecurity_missing_raise(self):
-        # Exception raised for missing object (Zope 2.8 brains)
-        foo = self.site.foo
-        missing = TheClass('missing').__of__(foo)
-        missing.GETOBJECT_RAISES = True
-        cat = self.ctool
-        try:
-            self._catch_log_errors()
-            cat.setObs([foo, missing])
-        finally:
-            self._ignore_log_errors()
-        self.assertRaises(NotFound, foo.reindexObjectSecurity)
-        self.assertFalse(self.logged)  # no logging due to raise
-
-    def test_reindexObjectSecurity_missing_noraise(self):
-        # Raising disabled
-        self._catch_log_errors(subsystem='CMFCore.CMFCatalogAware')
-        foo = self.site.foo
-        missing = TheClass('missing').__of__(foo)
-        missing.GETOBJECT_RAISES = False
-        cat = self.ctool
-        cat.setObs([foo, missing])
-        foo.reindexObjectSecurity()
-        self.assertEqual(cat.log,
-                         ["reindex /site/foo %s" % str(CMF_SECURITY_INDEXES)])
-        self.assertFalse(foo.notified)
-        self.assertFalse(missing.notified)
-        self.assertEqual(len(self.logged), 1)  # logging because no raise
 
     def test_catalog_tool(self):
         foo = self.site.foo

@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.4.0b6 (unreleased)
 --------------------
 
+- Backport plone/collective.indexing#17 to use the catalog queue
+  also when reindexing the object security
+  (`#58 <https://github.com/zopefoundation/Products.CMFCore/issues/58>_`)
+
 - removed support for testing using ``'python setup.py test``
   (`#51 <https://github.com/zopefoundation/Products.CMFCore/issues/51>_`)
 

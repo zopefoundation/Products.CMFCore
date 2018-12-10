@@ -95,36 +95,13 @@ class CatalogAware(Base):
     def reindexObjectSecurity(self, skip_self=False):
         """ Reindex security-related indexes on the object.
         """
-        catalog = self._getCatalogTool()
-        if catalog is None:
-            return
-        path = '/'.join(self.getPhysicalPath())
+        if not skip_self:
+            self.reindexObject(idxs=self._cmf_security_indexes)
 
-        # XXX if _getCatalogTool() is overriden we will have to change
-        # this method for the sub-objects.
-        for brain in catalog.unrestrictedSearchResults(path=path):
-            brain_path = brain.getPath()
-            if brain_path == path and skip_self:
-                continue
-            # Get the object
-            try:
-                ob = brain._unrestrictedGetObject()
-            except (AttributeError, KeyError):
-                # don't fail on catalog inconsistency
-                continue
-            if ob is None:
-                # BBB: Ignore old references to deleted objects.
-                # Can happen only when using
-                # catalog-getObject-raises off in Zope 2.8
-                logger.warning("reindexObjectSecurity: Cannot get %s from "
-                               "catalog", brain_path)
-                continue
-            # Recatalog with the same catalog uid.
-            s = getattr(ob, '_p_changed', 0)
-            catalog.reindexObject(ob, idxs=self._cmf_security_indexes,
-                                  update_metadata=0, uid=brain_path)
-            if s is None:
-                ob._p_deactivate()
+        def _reindex(obj, path):
+            obj.reindexObject(idxs=self._cmf_security_indexes)
+
+        self.ZopeFindAndApply(self, search_sub=True, apply_func=_reindex)
 
 
 InitializeClass(CatalogAware)
