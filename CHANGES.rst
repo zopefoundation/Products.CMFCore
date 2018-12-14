@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.0b6 (unreleased)
+2.4.0b6 (2018-12-14)
 --------------------
 
 - Change `im_self` to `__self__` for Python 3 compatibility.
