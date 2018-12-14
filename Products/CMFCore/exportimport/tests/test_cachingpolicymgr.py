@@ -43,8 +43,8 @@ _CPM_BODY = b"""\
     last_modified="True" max_age_secs="600" mtime_func="object/modified"
     must_revalidate="False" no_cache="False" no_store="False"
     no_transform="False"
-    predicate="python:object.getPortalTypeName() == 'Foo'" private="False"
-    proxy_revalidate="False" public="False" vary=""/>
+    predicate="python:object.getPortalTypeName() == &#x27;Foo&#x27;"
+    private="False" proxy_revalidate="False" public="False" vary=""/>
 </object>
 """
 

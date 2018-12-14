@@ -20,6 +20,8 @@ Products.CMFCore Changelog
 
 - Fix deprecation warnings occurring during test runs.
 
+- Update tests to `Products.GenericSetup >= 2.0b5`.
+
 
 2.4.0b5 (2018-11-07)
 --------------------
