@@ -210,7 +210,8 @@ class CoreUtilsSecurityTests(SecurityTest):
     def test_mergedLocalRolesManipulation(self):
         # The _mergedLocalRoles function used to return references to
         # actual local role settings and it was possible to manipulate them
-        # by changing the return value. http://www.zope.org/Collectors/CMF/376
+        # by changing the return value.
+        # http://www.zope.org/Collectors/CMF/376 (FIXME: broken link)
         from Products.CMFCore.tests.base.dummy import DummyContent
         from Products.CMFCore.utils import _mergedLocalRoles
         obj = DummyContent()
@@ -222,6 +223,21 @@ class CoreUtilsSecurityTests(SecurityTest):
 
         # The values on the object itself should still the the same
         self.assertEqual(len(obj.get_local_roles_for_userid('dummyuser1')), 2)
+
+    def test_mergedLocalRolesOnFunctions(self):
+        from Products.CMFCore.utils import _mergedLocalRoles
+
+        class Dummy(object):
+            __ac_local_roles__ = {'a': 'b'}
+
+            def render(self):
+                pass
+
+        obj = Dummy()
+        self.assertDictEqual(
+            _mergedLocalRoles(obj.render),
+            {'a': 'b'},
+        )
 
     def test_FakeExecutableObject(self):
         from AccessControl import getSecurityManager

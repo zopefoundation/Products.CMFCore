@@ -4,8 +4,12 @@ Products.CMFCore Changelog
 2.4.0b6 (unreleased)
 --------------------
 
+- Change `im_self` to `__self__` for Python 3 compatibility
+  (`#54 <https://github.com/zopefoundation/Products.CMFCore/pull/54>`_)
+  [ale-rt, vangheem]
+
 - removed support for testing using ``'python setup.py test``
-  (`#51 <https://github.com/zopefoundation/Products.CMFCore/issues/51>_`)
+  (`#51 <https://github.com/zopefoundation/Products.CMFCore/issues/51>`_)
 
 - Add more ZMI icons for the Zope 4 ZMI
   (`#47 <https://github.com/zopefoundation/Products.CMFCore/issues/47>`_)
