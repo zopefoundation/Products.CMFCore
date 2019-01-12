@@ -119,10 +119,8 @@ class CatalogAware(Base):
                 logger.warning("reindexObjectSecurity: Cannot get %s from "
                                "catalog", brain_path)
                 continue
-            # Recatalog with the same catalog uid.
             s = getattr(ob, '_p_changed', 0)
-            catalog.reindexObject(ob, idxs=self._cmf_security_indexes,
-                                  update_metadata=0, uid=brain_path)
+            ob.reindexObject(idxs=self._cmf_security_indexes)
             if s is None:
                 ob._p_deactivate()
 
