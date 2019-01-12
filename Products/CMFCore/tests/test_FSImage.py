@@ -165,8 +165,8 @@ class FSImageTests(TransactionalTest, FSDVTest):
         obj.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
         self.assertTrue(len(headers) >= original_len + 3)
-        self.assertTrue('foo' in headers.keys())
-        self.assertTrue('bar' in headers.keys())
+        self.assertTrue('foo' in headers)
+        self.assertTrue('bar' in headers)
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_index_html_with_304_and_caching(self):
@@ -190,8 +190,8 @@ class FSImageTests(TransactionalTest, FSDVTest):
 
         headers = self.RESPONSE.headers
         self.assertTrue(len(headers) >= original_len + 3)
-        self.assertTrue('foo' in headers.keys())
-        self.assertTrue('bar' in headers.keys())
+        self.assertTrue('foo' in headers)
+        self.assertTrue('bar' in headers)
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_tag_with_acquired_clashing_attrs(self):

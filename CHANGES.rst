@@ -8,6 +8,10 @@ Products.CMFCore Changelog
   also when reindexing the object security
   (`#58 <https://github.com/zopefoundation/Products.CMFCore/issues/58>_`)
 
+- Code cleanup: avoid to call the ``keys`` method on dictionary
+  when not needed
+  [ale-rt]
+
 
 2.4.0b6 (2018-12-14)
 --------------------

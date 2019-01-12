@@ -277,7 +277,7 @@ class DirectoryInformation:
                     # FS-based security
                     permissions = metadata.getSecurity()
                     if permissions is not None:
-                        for name in permissions.keys():
+                        for name in permissions:
                             acquire, roles = permissions[name]
                             try:
                                 ob.manage_permission(name, roles, acquire)
@@ -347,7 +347,7 @@ class DirectoryRegistry:
         return self._directories.get(reg_key, None)
 
     def listDirectories(self):
-        dirs = sorted(self._directories.keys())
+        dirs = sorted(self._directories)
         return dirs
 
 

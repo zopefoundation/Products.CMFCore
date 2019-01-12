@@ -598,7 +598,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         if hasattr(aq_base(ob), 'reindexObject'):
             # XXX We only need the keys here, no need to compute values.
             mapping = self.getCatalogVariablesFor(ob) or {}
-            vars = mapping.keys()
+            vars = list(mapping)
             ob.reindexObject(idxs=vars)
 
         # Reindex security of subobjects.

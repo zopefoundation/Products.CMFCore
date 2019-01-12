@@ -227,7 +227,7 @@ class OpaqueItemManager(Base):
         # Loop over all attributes and add those to 'items'
         # implementing 'ICallableOpaqueItem'.
         self_base = aq_base(self)
-        for name in self_base.__dict__.keys():
+        for name in self_base.__dict__:
             obj = getattr(self, name)
             if ICallableOpaqueItem.providedBy(obj):
                 items.append((obj.getId(), obj))
