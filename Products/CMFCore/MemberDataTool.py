@@ -103,8 +103,8 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         mtool = getUtility(IMembershipTool)
         members = self._members
         user_list = mtool.listMemberIds()
-        member_list = members.keys()
-        member_count = len(members)
+        member_list = list(members)
+        member_count = len(member_list)
         orphan_count = 0
 
         for member in member_list:
@@ -130,7 +130,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         if search_param == 'username':
             search_param = 'id'
 
-        for user_id in self._members.keys():
+        for user_id in self._members:
             u = mtool.getMemberById(user_id)
 
             if u is not None:
@@ -160,7 +160,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
         mtool = getUtility(IMembershipTool)
 
-        for member_id in self._members.keys():
+        for member_id in self._members:
 
             user_wrapper = mtool.getMemberById(member_id)
 
@@ -182,7 +182,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         members = self._members
         user_list = mtool.listMemberIds()
 
-        for member_id in list(members.keys()):
+        for member_id in list(members):
             if member_id not in user_list:
                 del members[member_id]
 

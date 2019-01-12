@@ -4,7 +4,9 @@ Products.CMFCore Changelog
 2.4.0b7 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- Code cleanup: avoid to call the ``keys`` method on dictionary
+  when not needed
+  [ale-rt]
 
 
 2.4.0b6 (2018-12-14)

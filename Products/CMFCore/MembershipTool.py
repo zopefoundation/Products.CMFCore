@@ -144,7 +144,7 @@ class MembershipTool(UniqueObject, Folder):
 
         # Apply any role mapping if we have it
         if hasattr(self, 'role_map'):
-            for portal_role in self.role_map.keys():
+            for portal_role in self.role_map:
                 if (self.role_map.get(portal_role) in u.roles and
                         portal_role not in u.roles):
                     u.roles.append(portal_role)

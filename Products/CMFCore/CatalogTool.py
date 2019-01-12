@@ -118,7 +118,7 @@ class IndexableObjectWrapper(object):
                     allowed['user:' + user] = 1
         if 'Owner' in allowed:
             del allowed['Owner']
-        return list(allowed.keys())
+        return list(allowed)
 
     def cmf_uid(self):
         """
@@ -362,8 +362,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             uid = self.__url(object)
         if idxs != []:
             # Filter out invalid indexes.
-            valid_indexes = self._catalog.indexes.keys()
-            idxs = [i for i in idxs if i in valid_indexes]
+            idxs = [i for i in idxs if i in self._catalog.indexes]
         self.catalog_object(object, uid, idxs, update_metadata)
 
 

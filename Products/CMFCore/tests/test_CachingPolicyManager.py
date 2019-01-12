@@ -171,7 +171,7 @@ class CachingPolicyTests(unittest.TestCase):
 
     def test_kwPredicate(self):
         policy = self._makePolicy('kwPredicate',
-                                  predicate='python:"foo" in keywords.keys()')
+                                  predicate='python:"foo" in keywords')
         context = self._makeContext(foo=1)
         headers = policy.getHeaders(context)
 
@@ -181,7 +181,7 @@ class CachingPolicyTests(unittest.TestCase):
 
     def test_kwPredicateMiss(self):
         policy = self._makePolicy('kwPredicateMiss',
-                                  predicate='python:"foo" in keywords.keys()')
+                                  predicate='python:"foo" in keywords')
         context = self._makeContext(bar=1)
         headers = policy.getHeaders(context)
 
@@ -479,7 +479,7 @@ class CachingPolicyManagerTests(unittest.TestCase):
 
         for policy_id in policy_ids:
             mgr._addPolicy(policy_id,
-                           'python:"%s" in keywords.keys()' % policy_id,
+                           'python:"%s" in keywords' % policy_id,
                            None, 0, 0, 0, 0, '', '')
 
         ids = tuple([x[0] for x in mgr.listPolicies()])
@@ -500,7 +500,7 @@ class CachingPolicyManagerTests(unittest.TestCase):
 
         for policy_id, max_age_secs in policy_tuples:
             mgr._addPolicy(policy_id,
-                           'python:"%s" in keywords.keys()' % policy_id,
+                           'python:"%s" in keywords' % policy_id,
                            None, max_age_secs, 0, 0, 0, '', '')
 
         return mgr
@@ -894,7 +894,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         portal.content()
 
         # no headers should be added by the CPM if all is well
-        headers = [x.lower() for x in self.RESPONSE.headers.keys()]
+        headers = {x.lower() for x in self.RESPONSE.headers}
         self.assertFalse('x-cache-headers-set-by' in headers)
         self.assertFalse('vary' in headers)
 
@@ -935,7 +935,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         portal.content()
 
         # no headers should be added by the CPM if all is well
-        headers = [x.lower() for x in self.RESPONSE.headers.keys()]
+        headers = {x.lower() for x in self.RESPONSE.headers}
         self.assertFalse('x-cache-headers-set-by' in headers)
         self.assertFalse('vary' in headers)
 
@@ -980,7 +980,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         portal.doc1()
 
         # no headers should be added by the CPM if all is well
-        headers = [x.lower() for x in self.RESPONSE.headers.keys()]
+        headers = {x.lower() for x in self.RESPONSE.headers}
         self.assertFalse('x-cache-headers-set-by' in headers)
         self.assertFalse('vary' in headers)
 
@@ -1025,7 +1025,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         portal.doc1()
 
         # no headers should be added by the CPM if all is well
-        headers = [x.lower() for x in self.RESPONSE.headers.keys()]
+        headers = {x.lower() for x in self.RESPONSE.headers}
         self.assertFalse('x-cache-headers-set-by' in headers)
         self.assertFalse('vary' in headers)
 
@@ -1087,7 +1087,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         self.portal.doc1.dummy_view()
 
         # no headers should be added by the CPM if all is well
-        headers = [x.lower() for x in self.RESPONSE.headers.keys()]
+        headers = {x.lower() for x in self.RESPONSE.headers}
         self.assertFalse('x-cache-headers-set-by' in headers)
         self.assertFalse('vary' in headers)
 
@@ -1238,7 +1238,7 @@ class OFSCacheTests(TransactionalTest):
         self.portal.doc1()
 
         # no headers should be added by the CPM if all is well
-        headers = [x.lower() for x in self.RESPONSE.headers.keys()]
+        headers = {x.lower() for x in self.RESPONSE.headers}
         self.assertFalse('x-cache-headers-set-by' in headers)
         self.assertFalse('vary' in headers)
 
@@ -1252,7 +1252,7 @@ class OFSCacheTests(TransactionalTest):
         doc2()
 
         # no headers should be added by the CPM if all is well
-        headers = [x.lower() for x in self.RESPONSE.headers.keys()]
+        headers = {x.lower() for x in self.RESPONSE.headers}
         self.assertFalse('x-cache-headers-set-by' in headers)
         self.assertFalse('vary' in headers)
 
