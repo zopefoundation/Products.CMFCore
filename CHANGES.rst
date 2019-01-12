@@ -4,7 +4,9 @@ Products.CMFCore Changelog
 2.4.0b7 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- Backport plone/collective.indexing#16 to use the catalog queue
+  also when reindexing the object security
+  (`#58 <https://github.com/zopefoundation/Products.CMFCore/issues/58>_`)
 
 
 2.4.0b6 (2018-12-14)
