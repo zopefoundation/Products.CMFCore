@@ -113,8 +113,8 @@ class FSReSTMethodTests(TransactionalTest, FSReSTMaker):
         obj = obj.__of__(self.app)
         obj(self.REQUEST, self.RESPONSE)
         self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
-        self.assertTrue('foo' in self.RESPONSE.headers.keys())
-        self.assertTrue('bar' in self.RESPONSE.headers.keys())
+        self.assertTrue('foo' in self.RESPONSE.headers)
+        self.assertTrue('bar' in self.RESPONSE.headers)
 
     def test_ownership(self):
         script = self._makeOne('testReST', 'testReST.rst')

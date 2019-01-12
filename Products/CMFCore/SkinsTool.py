@@ -122,7 +122,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                 del sels[name]
 
         if REQUEST is not None:
-            for key in sels.keys():
+            for key in sels:
                 fname = 'skinpath_%s' % key
                 val = REQUEST[fname]
 
@@ -291,7 +291,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         """ Get the sorted list of available skin names.
         """
         sels = self._getSelections()
-        rval = sorted(sels.keys())
+        rval = sorted(sels)
         return rval
 
     @security.protected(View)

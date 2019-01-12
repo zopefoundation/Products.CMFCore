@@ -274,7 +274,7 @@ class WorkflowToolTests(unittest.TestCase):
 
         vars = tool.getCatalogVariablesFor(dummy)
         self.assertEqual(len(vars), 1)
-        self.assertTrue('dummy' in vars.keys())
+        self.assertTrue('dummy' in vars)
         self.assertTrue('a: dummy' in vars.values())
 
     def test_setChainForPortalTypes(self):
@@ -308,7 +308,7 @@ class WorkflowToolTests(unittest.TestCase):
 
         vars = tool.getCatalogVariablesFor(dummy)
         self.assertEqual(len(vars), 1)
-        self.assertTrue('dummy' in vars.keys())
+        self.assertTrue('dummy' in vars)
         self.assertTrue('a: dummy' in vars.values())
 
     def test_getInfoFor(self):

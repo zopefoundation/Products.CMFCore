@@ -178,7 +178,7 @@ class DirectoryViewFolderTests(FSDVTest):
         # This is nasty, but there is no way to unregister anything
         # right now...
         metatype_registry = DirectoryView._dirreg._meta_types
-        if 'FOLDER' in metatype_registry.keys():
+        if 'FOLDER' in metatype_registry:
             del metatype_registry['FOLDER']
         FSDVTest.tearDown(self)
 

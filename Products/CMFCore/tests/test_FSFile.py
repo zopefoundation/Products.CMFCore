@@ -175,8 +175,8 @@ class FSFileTests(TransactionalTest, FSDVTest):
         obj.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
         self.assertTrue(len(headers) >= original_len + 3)
-        self.assertTrue('foo' in headers.keys())
-        self.assertTrue('bar' in headers.keys())
+        self.assertTrue('foo' in headers)
+        self.assertTrue('bar' in headers)
         self.assertEqual(headers['test_path'], '/test_file')
 
     def test_forced_content_type(self):

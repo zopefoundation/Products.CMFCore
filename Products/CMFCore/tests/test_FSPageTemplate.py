@@ -142,8 +142,8 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         obj = obj.__of__(self.app)
         obj()
         self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
-        self.assertTrue('foo' in self.RESPONSE.headers.keys())
-        self.assertTrue('bar' in self.RESPONSE.headers.keys())
+        self.assertTrue('foo' in self.RESPONSE.headers)
+        self.assertTrue('bar' in self.RESPONSE.headers)
 
     def test_pt_properties(self):
         script = self._makeOne('testPT', 'testPT.pt')
