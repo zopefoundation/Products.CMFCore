@@ -154,7 +154,7 @@ class DummyTypesTool(SimpleItem):
         return [DummyTypeInfo('Dummy Content')]
 
     def getTypeInfo(self, ob):
-        if getattr(ob, 'meta_type', None) is 'Dummy':
+        if getattr(ob, 'meta_type', None) == 'Dummy':
             return DummyTypeInfo('Dummy Content')
         return None
 

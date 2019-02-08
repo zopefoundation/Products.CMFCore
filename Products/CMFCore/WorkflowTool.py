@@ -637,5 +637,5 @@ class DefaultWorkflowStatus(object):
 @implementer(IWorkflowHistory)
 @adapter(IWorkflowAware, IWorkflowDefinition)
 def default_workflow_history(context, workflow):
-        history = getattr(aq_base(context), 'workflow_history', {})
-        return history.get(workflow.getId(), ())
+    history = getattr(aq_base(context), 'workflow_history', {})
+    return history.get(workflow.getId(), ())
