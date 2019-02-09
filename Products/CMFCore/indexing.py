@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from warnings import warn
+
 from Acquisition import aq_base, aq_inner, aq_parent
 from logging import getLogger
 from Products.CMFCore.interfaces import IIndexQueue
@@ -63,13 +65,14 @@ class PortalCatalogProcessor(object):
     @staticmethod
     def get_dispatcher(obj, name):
         """ return named indexing method according on the used mixin class """
+        warn('get_dispatcher is deprecated and will be removed in version 2.5')
         catalog = getToolByName(obj, 'portal_catalog', None)
         if catalog is None:
             return
         attr = getattr(catalog, '_{0}'.format(name), None)
         if attr is None:
             return
-        return attr.im_func
+        return attr.__func__
 
 
 def getQueue():
