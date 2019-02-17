@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.4.0b7 (unreleased)
 --------------------
 
+- Specify supported Python versions using ``python_requires`` in setup.py
+
+- Added support for Python 3.8
+
 - Deprecated unused method ``PortalCatalogProcessor.get_dispatcher``
   (`#57 <https://github.com/zopefoundation/Products.CMFCore/issues/57>`_)
 

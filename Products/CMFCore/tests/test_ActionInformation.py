@@ -154,6 +154,9 @@ class ActionTests(unittest.TestCase):
 
 class DummyRequest:
 
+    charset = 'UTF-8'
+    URL = ''
+
     def __init__(self):
         self._data = {}
 
