@@ -800,4 +800,4 @@ Earlier releases
 
 For a complete list of changes before version 2.1.0-alpha, see the HISTORY.txt
 file on the CMF-2.1 branch:
-http://svn.zope.org/CMF/branches/2.1/HISTORY.txt?view=auto
+https://web.archive.org/web/20130123004606/http://svn.zope.org/CMF/branches/2.1/HISTORY.txt?view=auto
