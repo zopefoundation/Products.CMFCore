@@ -66,6 +66,7 @@ setup(name='Products.%s' % NAME,
       extras_require={
           'test': ['Products.StandardCacheManagers'],
           'zsql': ['Products.ZSQLMethods >= 3.0.0b1'],
+          'docs': ['Sphinx', 'repoze.sphinx.autointerface', 'pkginfo'],
           },
       entry_points="""
       [zope2.initialize]
