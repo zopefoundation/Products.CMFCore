@@ -1,3 +1,4 @@
+pkginfo
 repoze.sphinx.autointerface
 Zope >= 4.0b10
 AccessControl >= 4.0b6
