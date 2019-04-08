@@ -1,4 +1,3 @@
 repoze.sphinx.autointerface
+https://zopefoundation.github.io/Zope/releases/master/requirements-full.txt
 Products.CMFCore >= 2.4.0b6
-Persistence>=3.0a3
-RestrictedPython>=4.0a1
