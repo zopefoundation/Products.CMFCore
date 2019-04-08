@@ -99,27 +99,30 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
     def test_CharsetFromFSMetadata(self):
         # testPT3 is an UTF-16 encoded file (see its .metadatafile)
         # is respected
+        unencoded = u'123\xfc\xf6\xe4\xdf'
         script = self._makeOne('testPT3', 'testPT3.pt')
         script = script.__of__(self.app)
         script.charset = 'utf-16'
         data = script.read()
-        self.assertTrue(u'123üöäß' in data)
+        self.assertTrue(unencoded in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFrom2FSMetadata(self):
         # testPT4 is an UTF-8 encoded file (see its .metadatafile)
         # is respected
+        unencoded = u'123\xfc\xf6\xe4\xdf'
         script = self._makeOne('testPT4', 'testPT4.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.assertTrue(u'123üöäß' in data)
+        self.assertTrue(unencoded in data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFromContentTypeMetadata(self):
+        unencoded = u'123\xfc\xf6\xe4\xdf'
         script = self._makeOne('testPT5', 'testPT5.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.assertTrue(u'123üöäß' in data)
+        self.assertTrue(unencoded in data)
         self.assertEqual(script.content_type, 'text/html; charset=utf-16')
 
     def test_BadCall(self):
