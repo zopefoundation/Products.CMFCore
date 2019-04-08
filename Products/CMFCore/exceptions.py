@@ -16,9 +16,11 @@
 from AccessControl import ModuleSecurityInfo  # noqa
 from AccessControl import Unauthorized as AccessControl_Unauthorized
 from OFS.CopySupport import CopyError  # noqa
-from zExceptions import BadRequest  # noqa; noqa
 from zExceptions import NotFound  # noqa
 from zExceptions import Unauthorized as zExceptions_Unauthorized
+
+
+from zExceptions import BadRequest  # noqa; noqa
 
 
 try:

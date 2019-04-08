@@ -14,11 +14,12 @@
 """ FSReSTMethod: Filesystem methodish Structured Text document.
 """
 
+from docutils.core import publish_parts
+from docutils.writers.html4css1 import Writer
+
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
-from docutils.core import publish_parts
-from docutils.writers.html4css1 import Writer
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
 from .DirectoryView import registerFileExtension
