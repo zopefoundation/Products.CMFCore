@@ -1,2 +1,2 @@
-repoze.sphinx.interface
+repoze.sphinx.autointerface
 Products.CMFCore
