@@ -1,0 +1,2 @@
+repoze.sphinx.interface
+Products.CMFCore
