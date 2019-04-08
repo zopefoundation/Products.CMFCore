@@ -61,9 +61,10 @@ class CustomizedPythonScript(PythonScript):
                             'modified',
                             '',
                             '',
-                            lineterm="")
+                            lineterm='')
 
-    security.declareProtected(ViewManagementScreens, 'manage_showDiff')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'manage_showDiff')
     manage_showDiff = PageTemplateFile('www/cpsDiff.pt', globals())
 
     manage_options = (
@@ -91,12 +92,14 @@ class FSPythonScript(FSObject, Script):
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
 
-    security.declareProtected(ViewManagementScreens, 'manage_main')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'manage_main')
     manage_main = DTMLFile('custpy', _dtmldir)
 
-    security.declareProtected(View, 'index_html',)
+    security.declareProtected(View, 'index_html')  # NOQA: flake8: D001
     # Prevent the bindings from being edited TTW
-    security.declarePrivate('ZBindings_edit', 'ZBindingsHTML_editForm',
+    security.declarePrivate('ZBindings_edit',  # NOQA: flake8: D001
+                            'ZBindingsHTML_editForm',
                             'ZBindingsHTML_editAction')
 
     def _createZODBClone(self):
@@ -119,18 +122,19 @@ class FSPythonScript(FSObject, Script):
         pass
 
     def __render_with_namespace__(self, namespace):
-        '''Calls the script.'''
+        """Calls the script."""
         self._updateFromFS()
         return Script.__render_with_namespace__(self, namespace)
 
     def __call__(self, *args, **kw):
-        '''Calls the script.'''
+        """Calls the script."""
         self._updateFromFS()
         return Script.__call__(self, *args, **kw)
 
     _exec = get_unbound_function(PythonScript._exec)
 
-    security.declareProtected(ViewManagementScreens, 'getModTime')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'getModTime')
     # getModTime defined in FSObject
 
     def ZScriptHTML_tryParams(self):
@@ -157,14 +161,15 @@ class FSPythonScript(FSObject, Script):
 
     @security.protected(ViewManagementScreens)
     def PrincipiaSearchSource(self):
-        "Support for searching - the document's contents are searched."
-        return "%s\n%s" % (self._params, self._body)
+        """Support for searching - the document's contents are searched."""
+        return '%s\n%s' % (self._params, self._body)
 
     @security.protected(ViewManagementScreens)
     def params(self):
         return self._params
 
-    security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'manage_haveProxy')
     manage_haveProxy = get_unbound_function(PythonScript.manage_haveProxy)
 
     @security.protected(ViewManagementScreens)
@@ -182,11 +187,11 @@ class FSPythonScript(FSObject, Script):
         return self.read()
 
     def _write(self, text, compile):
-        '''
+        """
         Parses the source, storing the body, params, title, bindings,
         and source in self.  If compile is set, compiles the
         function.
-        '''
+        """
         ps = PythonScript(self.id)
         ps.write(text)
         if compile:

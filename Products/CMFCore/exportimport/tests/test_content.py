@@ -1,4 +1,3 @@
-# coding=utf-8
 ##############################################################################
 #
 # Copyright (c) 2005 Zope Foundation and Contributors.
@@ -239,7 +238,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(safe_bytes(parser.get('DEFAULT', 'title')),
                          ITEMS_TITLE.encode('utf8'))
         self.assertEqual(safe_bytes(parser.get('DEFAULT', 'description')),
-                         ITEMS_DESCRIPTION.encode('utf8'),)
+                         ITEMS_DESCRIPTION.encode('utf8'))
 
     def test_export_site_with_exportable_simple_items(self):
         self._setUpAdapters()
@@ -290,7 +289,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         site._setObject('portal_workflow', self._makeWorkflowTool())
         wftool = site.portal_workflow
         wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
-        wftool.foo_workflow.state_var = "state"
+        wftool.foo_workflow.state_var = 'state'
         wftool.setDefaultChain('foo_workflow')
         wftool.setChainForPortalTypes((TEST_INI_AWARE,),
                                       'foo_workflow', verify=False)
@@ -299,8 +298,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         site.description = 'DESCRIPTION'
         for id in ITEM_IDS:
             site._setObject(id, _makeINIAware(id))
-            wftool.setStatusOf("foo_workflow", site[id],
-                               {"state": "published"})
+            wftool.setStatusOf('foo_workflow', site[id],
+                               {'state': 'published'})
 
         context = DummyExportContext(site)
         exporter = self._getExporter()
@@ -315,8 +314,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(len(objects), 3)
         for index in range(len(ITEM_IDS)):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
-            self.assertEqual(objects[index][1], "foo_workflow")
-            self.assertEqual(objects[index][2], "published")
+            self.assertEqual(objects[index][1], 'foo_workflow')
+            self.assertEqual(objects[index][2], 'published')
 
     def test_export_site_exportable_simple_items_unicode_default_charset(self):
         self._setUpAdapters()
@@ -477,7 +476,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         folder = _makeDAVAwareFolder('foo')
         folder.title = 'foo'
         folder.description = 'xyzzy'
-        folder.body = "A content item"
+        folder.body = 'A content item'
         site._setObject('foo', folder)
 
         context = DummyExportContext(site)
@@ -600,7 +599,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         for id in FOLDER_IDS:
             context._files['structure/%s/.objects' % id] = ''
             context._files['structure/%s/.properties' % id] = (
-                KNOWN_DAV % ("Title", "Description", "Body"))
+                KNOWN_DAV % ('Title', 'Description', 'Body'))
 
         _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
                                   for id in FOLDER_IDS])
@@ -614,7 +613,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         content = site.contentValues()
         self.assertEqual(len(content), len(FOLDER_IDS))
         self.assertEqual(content[0]._was_put_as_read,
-                         KNOWN_DAV % ("Title", "Description", "Body"))
+                         KNOWN_DAV % ('Title', 'Description', 'Body'))
 
     def test_import_site_with_dav_aware_folder_with_generic_file_data(self):
         from Products.GenericSetup.tests.test_content \
@@ -629,7 +628,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         for id in FOLDER_IDS:
             context._files['structure/%s/.objects' % id] = ''
             context._files['structure/%s/.properties' % id] = (
-                _PROPERTIES_TEMPLATE % ("Sub Folder Title",))
+                _PROPERTIES_TEMPLATE % ('Sub Folder Title',))
 
         _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
                                    for id in FOLDER_IDS])
@@ -642,7 +641,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         importer(context)
         content = site.contentValues()
         self.assertEqual(len(content), len(FOLDER_IDS))
-        self.assertEqual(content[0].title, "Sub Folder Title")
+        self.assertEqual(content[0].title, 'Sub Folder Title')
 
     def test_import_site_with_subitems(self):
         self._setUpAdapters()
@@ -676,7 +675,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         site._setObject('portal_workflow', self._makeWorkflowTool())
         wftool = site.portal_workflow
         wftool._setObject('foo_workflow', DummyWorkflow('foo_workflow'))
-        wftool.foo_workflow.state_var = "state"
+        wftool.foo_workflow.state_var = 'state'
         wftool.setDefaultChain('foo_workflow')
         wftool.setChainForPortalTypes((TEST_INI_AWARE,),
                                       'foo_workflow', verify=False)
@@ -695,8 +694,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         importer(context)
 
         for item_id in ITEM_IDS:
-            wf = wftool.getStatusOf("foo_workflow", site[item_id])
-            self.assertEqual(wf['state'], "draft")
+            wf = wftool.getStatusOf('foo_workflow', site[item_id])
+            self.assertEqual(wf['state'], 'draft')
 
     def test_import_site_with_subitems_and_blanklines_dotobjects(self):
         self._setUpAdapters()

@@ -33,9 +33,6 @@ except ImportError:
     HAVE_ZSQL = False
 
 
-
-
-
 class FSZSQLMaker(FSDVTest):
 
     def _makeOne(self, id, filename):

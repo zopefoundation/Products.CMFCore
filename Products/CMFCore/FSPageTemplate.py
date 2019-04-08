@@ -63,11 +63,12 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
 
-    security.declareProtected(ViewManagementScreens, 'manage_main')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'manage_main')
     manage_main = DTMLFile('custpt', _dtmldir)
 
     # Declare security for unprotected PageTemplate methods.
-    security.declarePrivate('pt_edit', 'write')
+    security.declarePrivate('pt_edit', 'write')  # NOQA: flake8: D001
 
     def __init__(self, id, filepath, fullname=None, properties=None):
         FSObject.__init__(self, id, filepath, fullname, properties)
@@ -169,7 +170,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     __code__ = ZopePageTemplate.__code__
     _default_bindings = ZopePageTemplate._default_bindings
 
-    security.declareProtected(View, '__call__')
+    security.declareProtected(View, '__call__')  # NOQA: flake8: D001
 
     def pt_macros(self):
         # Tie in on an opportunity to auto-reload
@@ -186,8 +187,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                 return ''
 
         result = FSPageTemplate.inheritedAttribute('pt_render')(
-                                self, source, extra_context
-                                )
+                                self, source, extra_context)
         if not source:
             _setCacheHeaders(self, extra_context)
         return result
@@ -199,7 +199,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         """
         return 'file:%s' % self._filepath
 
-    security.declarePrivate('_ZPT_exec')
+    security.declarePrivate('_ZPT_exec')  # NOQA: flake8: D001
     _ZPT_exec = get_unbound_function(ZopePageTemplate._exec)
 
     @security.private
@@ -258,18 +258,21 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
     # Copy over more methods
     if bbb.HAS_ZSERVER:
-        security.declareProtected(FTPAccess, 'manage_FTPget')
+        security.declareProtected(FTPAccess,  # NOQA: flake8: D001
+                                  'manage_FTPget')
         manage_FTPget = get_unbound_function(ZopePageTemplate.manage_FTPget)
 
-    security.declareProtected(View, 'get_size')
+    security.declareProtected(View, 'get_size')  # NOQA: flake8: D001
     get_size = get_unbound_function(ZopePageTemplate.get_size)
     getSize = get_size
 
-    security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'PrincipiaSearchSource')
     PrincipiaSearchSource = get_unbound_function(
                                 ZopePageTemplate.PrincipiaSearchSource)
 
-    security.declareProtected(ViewManagementScreens, 'document_src')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'document_src')
     document_src = get_unbound_function(ZopePageTemplate.document_src)
 
     pt_getContext = get_unbound_function(ZopePageTemplate.pt_getContext)

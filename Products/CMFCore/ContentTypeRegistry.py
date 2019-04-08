@@ -118,7 +118,8 @@ class MajorMinorPredicate(SimpleItem):
         """
         return self.PREDICATE_TYPE
 
-    security.declareProtected(ManagePortal, 'predicateWidget')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'predicateWidget')
     predicateWidget = DTMLFile('majorMinorWidget', _dtmldir)
 
 
@@ -183,7 +184,8 @@ class ExtensionPredicate(SimpleItem):
         """
         return self.PREDICATE_TYPE
 
-    security.declareProtected(ManagePortal, 'predicateWidget')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'predicateWidget')
     predicateWidget = DTMLFile('extensionWidget', _dtmldir)
 
 
@@ -242,7 +244,8 @@ class MimeTypeRegexPredicate(SimpleItem):
         """
         return self.PREDICATE_TYPE
 
-    security.declareProtected(ManagePortal, 'predicateWidget')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'predicateWidget')
     predicateWidget = DTMLFile('patternWidget', _dtmldir)
 
 
@@ -304,7 +307,8 @@ class NameRegexPredicate(SimpleItem):
         """
         return self.PREDICATE_TYPE
 
-    security.declareProtected(ManagePortal, 'predicateWidget')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'predicateWidget')
     predicateWidget = DTMLFile('patternWidget', _dtmldir)
 
 
@@ -357,7 +361,8 @@ class ContentTypeRegistry(SimpleItem):
         """
         return [x[0] for x in _predicate_types]
 
-    security.declareProtected(ManagePortal, 'manage_predicates')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_predicates')
     manage_predicates = DTMLFile('registryPredList', _dtmldir)
 
     @security.protected(ManagePortal)
@@ -385,10 +390,10 @@ class ContentTypeRegistry(SimpleItem):
         predicate_ids = list(self.predicate_ids)
         ndx = predicate_ids.index(predicate_id)
         if ndx == 0:
-            msg = "Predicate+already+first."
+            msg = 'Predicate+already+first.'
         else:
             self.reorderPredicate(predicate_id, ndx - 1)
-            msg = "Predicate+moved."
+            msg = 'Predicate+moved.'
         REQUEST['RESPONSE'].redirect(self.absolute_url()
                                      + '/manage_predicates'
                                      + '?manage_tabs_message=%s' % msg)
@@ -400,10 +405,10 @@ class ContentTypeRegistry(SimpleItem):
         predicate_ids = list(self.predicate_ids)
         ndx = predicate_ids.index(predicate_id)
         if ndx == len(predicate_ids) - 1:
-            msg = "Predicate+already+last."
+            msg = 'Predicate+already+last.'
         else:
             self.reorderPredicate(predicate_id, ndx + 1)
-            msg = "Predicate+moved."
+            msg = 'Predicate+moved.'
         REQUEST['RESPONSE'].redirect(self.absolute_url()
                                      + '/manage_predicates'
                                      + '?manage_tabs_message=%s' % msg)
@@ -416,7 +421,8 @@ class ContentTypeRegistry(SimpleItem):
         pth = '/manage_predicates?manage_tabs_message=Predicate+removed.'
         REQUEST['RESPONSE'].redirect('%s%s' % (self.absolute_url(), pth))
 
-    security.declareProtected(ManagePortal, 'manage_testRegistry')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_testRegistry')
     manage_testRegistry = DTMLFile('registryTest', _dtmldir)
 
     @security.protected(ManagePortal)
@@ -465,7 +471,7 @@ class ContentTypeRegistry(SimpleItem):
             Add a predicate to this element of type 'typ' to the registry.
         """
         if predicate_id in self.predicate_ids:
-            raise ValueError("Existing predicate: %s" % predicate_id)
+            raise ValueError('Existing predicate: %s' % predicate_id)
 
         klass = None
         for key, value in _predicate_types:
@@ -473,7 +479,7 @@ class ContentTypeRegistry(SimpleItem):
                 klass = value
 
         if klass is None:
-            raise ValueError("Unknown predicate type: %s" % predicate_type)
+            raise ValueError('Unknown predicate type: %s' % predicate_type)
 
         self.predicates[predicate_id] = (klass(predicate_id), None)
         self.predicate_ids = self.predicate_ids + (predicate_id,)
@@ -484,7 +490,7 @@ class ContentTypeRegistry(SimpleItem):
             Update a predicate in this element.
         """
         if predicate_id not in self.predicate_ids:
-            raise ValueError("Unknown predicate: %s" % predicate_id)
+            raise ValueError('Unknown predicate: %s' % predicate_id)
 
         predObj = self.predicates[predicate_id][0]
         mapply(predObj.edit, (), predicate.__dict__)

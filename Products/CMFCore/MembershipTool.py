@@ -90,20 +90,22 @@ class MembershipTool(UniqueObject, Folder):
     #
     #   ZMI methods
     #
-    security.declareProtected(ManagePortal, 'manage_overview')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_overview')
     manage_overview = DTMLFile('explainMembershipTool', _dtmldir)
 
     #
     #   'portal_membership' interface methods
     #
-    security.declareProtected(ManagePortal, 'manage_mapRoles')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_mapRoles')
     manage_mapRoles = DTMLFile('membershipRolemapping', _dtmldir)
 
     @security.protected(SetOwnPassword)
     @postonly
     def setPassword(self, password, domains=None, REQUEST=None):
-        '''Allows the authenticated member to set his/her own password.
-        '''
+        """Allows the authenticated member to set his/her own password.
+        """
         if not self.isAnonymousUser():
             member = self.getAuthenticatedMember()
             rtool = queryUtility(IRegistrationTool)
@@ -117,10 +119,10 @@ class MembershipTool(UniqueObject, Folder):
 
     @security.public
     def getAuthenticatedMember(self):
-        '''
+        """
         Returns the currently authenticated member object
         or the Anonymous User.  Never returns None.
-        '''
+        """
         u = getSecurityManager().getUser()
         if u is None:
             u = nobody
@@ -158,7 +160,7 @@ class MembershipTool(UniqueObject, Folder):
             except ConflictError:
                 raise
             except Exception:
-                logger.exception("Error during wrapUser")
+                logger.exception('Error during wrapUser')
         return u
 
     @security.protected(ManagePortal)
@@ -290,7 +292,7 @@ class MembershipTool(UniqueObject, Folder):
         f.changeOwnership(member)
         return f
 
-    security.declarePublic('createMemberarea')
+    security.declarePublic('createMemberarea')  # NOQA: flake8: D001
     createMemberarea = createMemberArea
 
     @security.protected(ManageUsers)
@@ -309,9 +311,9 @@ class MembershipTool(UniqueObject, Folder):
 
     @security.public
     def isAnonymousUser(self):
-        '''
+        """
         Returns 1 if the user is not logged in.
-        '''
+        """
         u = getSecurityManager().getUser()
         if u is None or u.getUserName() == 'Anonymous User':
             return 1
@@ -319,10 +321,10 @@ class MembershipTool(UniqueObject, Folder):
 
     @security.public
     def checkPermission(self, permissionName, object, subobjectName=None):
-        '''
+        """
         Checks whether the current user has the given permission on
         the given object or subobject.
-        '''
+        """
         if subobjectName is not None:
             object = getattr(object, subobjectName)
         return _checkPermission(permissionName, object)
@@ -341,12 +343,12 @@ class MembershipTool(UniqueObject, Folder):
 
     @security.public
     def credentialsChanged(self, password, REQUEST=None):
-        '''
+        """
         Notifies the authentication mechanism that this user has changed
         passwords.  This can be used to update the authentication cookie.
         Note that this call should *not* cause any change at all to user
         databases.
-        '''
+        """
         if not self.isAnonymousUser():
             user = getSecurityManager().getUser()
             name = user.getUserName()
@@ -358,9 +360,9 @@ class MembershipTool(UniqueObject, Folder):
 
     @security.protected(ManageUsers)
     def getMemberById(self, id):
-        '''
+        """
         Returns the given member.
-        '''
+        """
         user = self._huntUser(id, self)
         if user is not None:
             user = self.wrapUser(user)
@@ -398,17 +400,17 @@ class MembershipTool(UniqueObject, Folder):
 
     @security.protected(ManageUsers)
     def listMemberIds(self):
-        '''Lists the ids of all members.  This may eventually be
+        """Lists the ids of all members.  This may eventually be
         replaced with a set of methods for querying pieces of the
         list rather than the entire list at once.
-        '''
+        """
         user_folder = self.acl_users
         return [x.getId() for x in user_folder.getUsers()]
 
     @security.protected(ManageUsers)
     def listMembers(self):
-        '''Gets the list of all members.
-        '''
+        """Gets the list of all members.
+        """
         return list(map(self.wrapUser, self.acl_users.getUsers()))
 
     @security.protected(ListPortalMembers)
@@ -474,9 +476,9 @@ class MembershipTool(UniqueObject, Folder):
 
     @security.private
     def addMember(self, id, password, roles, domains, properties=None):
-        '''Adds a new member to the user folder.  Security checks will have
+        """Adds a new member to the user folder.  Security checks will have
         already been performed.  Called by portal_registration.
-        '''
+        """
         self.acl_users._doAddUser(id, password, roles, domains)
 
         if properties is not None:

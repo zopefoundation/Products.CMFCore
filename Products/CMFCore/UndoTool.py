@@ -48,7 +48,8 @@ class UndoTool(UniqueObject, SimpleItem):
     #
     #   ZMI methods
     #
-    security.declareProtected(ManagePortal, 'manage_overview')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_overview')
     manage_overview = DTMLFile('explainUndoTool', _dtmldir)
 
     #
@@ -74,7 +75,7 @@ class UndoTool(UniqueObject, SimpleItem):
             transactions = tuple(filter(
                 lambda record, user_id=user_id:
                 record['user_name'].split()[-1] == user_id,
-                transactions
+                transactions,
                ))
         return transactions
 

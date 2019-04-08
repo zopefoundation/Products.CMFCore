@@ -73,9 +73,12 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     zmi_icon = 'fa fa-cookie-bite'
 
     security = ClassSecurityInfo()
-    security.declareProtected(ModifyCookieCrumblers, 'manage_editProperties')
-    security.declareProtected(ModifyCookieCrumblers, 'manage_changeProperties')
-    security.declareProtected(ViewManagementScreens, 'manage_propertiesForm')
+    security.declareProtected(ModifyCookieCrumblers,  # NOQA: flake8: D001
+                              'manage_editProperties')
+    security.declareProtected(ModifyCookieCrumblers,  # NOQA: flake8: D001
+                              'manage_changeProperties')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'manage_propertiesForm')
 
     # By default, anonymous users can view login/logout pages.
     _View_Permission = ('Anonymous',)
@@ -93,7 +96,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                    {'id': 'cache_header_value', 'type': 'string', 'mode': 'w',
                     'label': 'Cache-Control header value'},
                    {'id': 'log_username', 'type': 'boolean', 'mode': 'w',
-                    'label': 'Log cookie auth username to access log'}
+                    'label': 'Log cookie auth username to access log'},
                    )
 
     auth_cookie = '__ac'
@@ -205,8 +208,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                     ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
                 else:
                     ac = base64.encodebytes(
-                        ('%s:%s' % (name, pw)).encode()
-                    ).rstrip().decode()
+                        ('%s:%s' % (name, pw)).encode()).rstrip().decode()
                 self._setAuthHeader(ac, req, resp)
                 if req.get(self.persist_cookie, 0):
                     # Persist the user name (but not the pw or session)
@@ -250,7 +252,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         return attempt
 
     def __call__(self, container, req):
-        '''The __before_publishing_traverse__ hook.'''
+        """The __before_publishing_traverse__ hook."""
         resp = req['RESPONSE']
         try:
             attempt = self.modifyRequest(req, resp)
@@ -337,7 +339,7 @@ manage_addCCForm.__name__ = 'addCC'
 
 
 def manage_addCC(dispatcher, id, REQUEST=None):
-    ' '
+    """ """
     ob = CookieCrumbler()
     ob.id = id
     dispatcher._setObject(ob.getId(), ob)

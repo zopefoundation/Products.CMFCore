@@ -78,7 +78,7 @@ def registerDirectory(_context, name, directory=None, recursive=False,
     _context.action(
         discriminator=('registerDirectory', reg_key),
         callable=_dirreg.registerDirectoryByKey,
-        args=(filepath, reg_key, int(recursive), ignore)
+        args=(filepath, reg_key, int(recursive), ignore),
         )
 
 

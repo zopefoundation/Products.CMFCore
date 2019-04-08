@@ -768,7 +768,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertFalse(cfilter(dummy))
         dummy.subject = ('foo',)
         self.assertTrue(cfilter(dummy))
-        dummy.subject = ('foo', 'bar',)
+        dummy.subject = ('foo', 'bar')
         self.assertTrue(cfilter(dummy))
         desc = str(cfilter)
         lines = desc.split('; ')
@@ -788,7 +788,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertTrue(cfilter(dummy))
         dummy.subject = ('foo',)
         self.assertTrue(cfilter(dummy))
-        dummy.subject = ('foo', 'bar',)
+        dummy.subject = ('foo', 'bar')
         self.assertTrue(cfilter(dummy))
         desc = str(cfilter)
         lines = desc.split('; ')
@@ -988,12 +988,12 @@ class PortalFolderCopySupportTests(SecurityTest):
                 if pattern.search(str(e)) is None:
                     self.fail("Paste failed; didn't match pattern:\n%s" % e)
             else:
-                self.fail("Paste failed; no pattern:\n%s" % e)
+                self.fail('Paste failed; no pattern:\n%s' % e)
 
         except zExceptions_Unauthorized:
             pass
         else:
-            self.fail("Paste allowed unexpectedly.")
+            self.fail('Paste allowed unexpectedly.')
 
     def _initPolicyAndUser(self, a_lambda=None, v_lambda=None, c_lambda=None):
         def _promiscuous(*args, **kw):

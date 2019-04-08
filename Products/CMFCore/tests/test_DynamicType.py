@@ -48,7 +48,6 @@ except ImportError:  # BBB: zope.component had this before the ZTK
     from zope.component.interfaces import IDefaultViewName
 
 
-
 def defineDefaultViewName(name, for_=None):
     provideAdapter(name, (for_, IBrowserRequest), IDefaultViewName, '')
 

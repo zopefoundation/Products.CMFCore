@@ -1,15 +1,15 @@
-DOCTYPE = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" \
-"http://www.w3.org/TR/html4/loose.dtd">'''
+DOCTYPE = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" \
+"http://www.w3.org/TR/html4/loose.dtd">"""
 
-HTML_TEMPLATE = '''\
+HTML_TEMPLATE = """\
 <html><head>
  <title>%(title)s</title>
 </head>
 <body bgcolor="#efe843">%(body)s</body>
 </html>
-'''
+"""
 
-SIMPLE_HTML = '''\
+SIMPLE_HTML = """\
 <html>
  <head>
   <title>Title in tag</title>
@@ -23,9 +23,9 @@ SIMPLE_HTML = '''\
   <h1>Not a lot here</h1>
  </body>
 </html>
-'''
+"""
 
-BASIC_HTML = '''\
+BASIC_HTML = """\
 <html>
  <head>
   <title>Title in tag</title>
@@ -40,7 +40,7 @@ BASIC_HTML = '''\
   <h1>Not a lot here</h1>
  </body>
 </html>
-'''
+"""
 
 SIMPLE_XHTML = """\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -63,7 +63,7 @@ SIMPLE_XHTML = """\
 """
 
 # A document with an html-qualifying *portion*.
-FAUX_HTML_LEADING_TEXT = '''\
+FAUX_HTML_LEADING_TEXT = """\
 The following would look like HTML but for this leading text:
 
 <html>
@@ -80,9 +80,9 @@ The following would look like HTML but for this leading text:
   <h1>Not a lot here</h1>
  </body>
 </html>
-'''
+"""
 
-ENTITY_IN_TITLE = '''\
+ENTITY_IN_TITLE = """\
 <html>
  <head>
   <title>&Auuml;rger</title>
@@ -91,9 +91,9 @@ ENTITY_IN_TITLE = '''\
   <h2>Not a lot here either</h2>
  </bodY>
 </html>
-'''
+"""
 
-SIMPLE_STRUCTUREDTEXT = '''\
+SIMPLE_STRUCTUREDTEXT = """\
 Title: My Document
 Description: A document by me
 Contributors: foo@bar.com; baz@bam.net; no@yes.maybe
@@ -107,9 +107,9 @@ This is the header
    o A list item
 
    o And another thing...
-'''
+"""
 
-BASIC_STRUCTUREDTEXT = '''\
+BASIC_STRUCTUREDTEXT = """\
 Title: My Document
 Description: A document by me
 Contributors: foo@bar.com; baz@bam.net; no@yes.maybe
@@ -124,7 +124,7 @@ This is the header
    o A list item
 
    o And another thing...
-'''
+"""
 
 STX_WITH_HTML = """\
 Sometimes people do interesting things
@@ -174,7 +174,7 @@ Subject: open source; Zope; community
 http://www.zope.org
 """
 
-BASIC_ReST = '''\
+BASIC_ReST = """\
 Title: My Document
 Description: A document by me
 Contributors: foo@bar.com; baz@bam.net; no@yes.maybe
@@ -190,7 +190,7 @@ Body body body body body body body body.
 * A list item
 
 * And another thing...
-'''
+"""
 
 ReST_WITH_HTML = """\
 Sometimes people do interesting things

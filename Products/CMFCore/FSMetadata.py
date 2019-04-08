@@ -28,13 +28,12 @@ class CMFConfigParser(ConfigParser):
     solve a few minor niggles with the code """
     # adding in a space so that names can contain spaces
     OPTCRE = re.compile(
-        r'(?P<option>[]\-[ \w_.*,(){}]+)'      # a lot of stuff found by IvL
+        r'(?P<option>[]\-[ \w_.*,(){}]+)'     # noqa stuff found by IvL
         r'[ \t]*(?P<vi>[:=])[ \t]*'           # any number of space/tab,
                                               # followed by separator
                                               # (either : or =), followed
                                               # by any # space/tab
-        r'(?P<value>.*)$'                     # everything up to eol
-        )
+        r'(?P<value>.*)$')                    # everything up to eol
 
     def optionxform(self, optionstr):
         """
@@ -90,7 +89,7 @@ class FSMetadata:
             self._security = self._getSectionDict(cfg, 'security',
                                                   self._securityParser)
         except Exception:
-            logger.exception("Error parsing .metadata file")
+            logger.exception('Error parsing .metadata file')
 
         # to add in a new value such as proxy roles,
         # just add in the section, call it using getSectionDict
@@ -115,8 +114,8 @@ class FSMetadata:
         eg: 1:Manager or 0:Manager,Anonymous
         """
         if data.find(':') < 1:
-            raise ValueError("The security declaration of file " +
-                             "%r is in the wrong format" % self._filename)
+            raise ValueError('The security declaration of file ' +
+                             '%r is in the wrong format' % self._filename)
 
         acquire, roles = data.split(':')
         roles = [r.strip() for r in roles.split(',') if r.strip()]

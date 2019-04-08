@@ -164,7 +164,7 @@ def cookString(text):
     o Lowercase the ID.
     """
     rgx = re.compile(r'(^_|[^a-zA-Z0-9-_~\,\.])')
-    cooked = re.sub(rgx, "", text).lower()
+    cooked = re.sub(rgx, '', text).lower()
     return cooked
 
 
@@ -181,7 +181,7 @@ def tuplize(valueName, value):
         return tuple(value)
     if isinstance(value, six.string_types):
         return tuple(value.split())
-    raise ValueError("%s of unsupported type" % valueName)
+    raise ValueError('%s of unsupported type' % valueName)
 
 
 #
@@ -490,8 +490,7 @@ def _setCacheHeaders(obj, extra_context):
 
         view_name = obj.getId()
         headers = manager.getHTTPCachingHeaders(
-                          content, view_name, extra_context
-                          )
+                          content, view_name, extra_context)
         RESPONSE = REQUEST['RESPONSE']
         for key, value in headers:
             if key == 'ETag':
@@ -540,7 +539,7 @@ class UniqueObject(ImmutableId):
     def _getUNIQUE(self):
         return UNIQUE
 
-    __replaceable__ = property(_getUNIQUE,)
+    __replaceable__ = property(_getUNIQUE)
 
 
 class SimpleItemWithProperties(PropertyManager, SimpleItem):
@@ -553,9 +552,9 @@ class SimpleItemWithProperties(PropertyManager, SimpleItem):
         SimpleItem.manage_options)
 
     security = ClassSecurityInfo()
-    security.declarePrivate('manage_addProperty')
-    security.declarePrivate('manage_delProperties')
-    security.declarePrivate('manage_changePropertyTypes')
+    security.declarePrivate('manage_addProperty')  # NOQA: flake8: D001
+    security.declarePrivate('manage_delProperties')  # NOQA: flake8: D001
+    security.declarePrivate('manage_changePropertyTypes')  # NOQA: flake8: D001
 
     def manage_propertiesForm(self, REQUEST, *args, **kw):
         """ An override that makes the schema fixed.
@@ -585,7 +584,7 @@ class ToolInit:
         self.meta_type = meta_type
         self.tools = tools
         if product_name is not None:
-            warn("The product_name parameter of ToolInit is now ignored",
+            warn('The product_name parameter of ToolInit is now ignored',
                  DeprecationWarning, stacklevel=2)
         self.icon = icon
 
@@ -750,7 +749,7 @@ KEYSPLITRE = re.compile(r'[,;]')
 
 
 @security.public
-def keywordsplitter(headers, names=('Subject', 'Keywords',),
+def keywordsplitter(headers, names=('Subject', 'Keywords'),
                     splitter=KEYSPLITRE.split):
     """ Split keywords out of headers, keyed on names.  Returns list.
     """
@@ -909,5 +908,5 @@ def base64_decode(text):
     return base64.decodebytes(text)
 
 
-security.declarePublic('Message')
+security.declarePublic('Message')  # NOQA: flake8: D001
 Message = MessageFactory('cmf_default')

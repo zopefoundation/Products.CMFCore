@@ -545,7 +545,7 @@ class IDiscussionTool(IOldstyleDiscussionTool):
 
         o Otherwise, set the override to match 'allowDiscussion'.
 
-        o Permission:  PUblic XXX?  Should be ManageContent, or something.
+        o Permission:  PUblic ????  Should be ManageContent, or something.
         """
 
 
@@ -586,7 +586,7 @@ class IMemberDataTool(Interface):
 
         o The result is designed to be iterated over in a dtml-in
 
-        o XXX:  why a sequence?
+        o ???:  why a sequence?
 
         o Permission:  Private (Python-only)
         """
@@ -611,7 +611,7 @@ class IMemberDataTool(Interface):
         o 'attributes', if passed, controls the keys in the returned mappings;
           by default the returned keys are 'username' and 'email'.
 
-        o XXX:  that default is silly;  if it is truly needed, then it should
+        o ???:  that default is silly;  if it is truly needed, then it should
           be the default value of the 'attributes' argument.
 
         o Permission:  Private (Python only)
@@ -627,7 +627,7 @@ class IMemberDataTool(Interface):
         o Add the record late as possible to avoid side effect transactions
           and to reduce the necessary number of entries.
 
-        o XXX: these argument names are silly;  can we use more sensible
+        o ???: these argument names are silly;  can we use more sensible
           ones (i.e., does anyone actually depend on them)?
 
         o Permission:  Private (Python only)
@@ -742,12 +742,12 @@ class IMembershipTool(Interface):
         o Note that this call should *not* cause any change at all to user
           databases.
 
-        o XXX:  should be an event.
+        o ???:  should be an event.
 
-        o XXX:  should this be in scope for this tool?  Or should it be
+        o ???:  should this be in scope for this tool?  Or should it be
                 done by the view class for the password update view?
 
-        Permission:  Public # XXX?
+        Permission:  Public # ????
         """
 
     def getMembersFolder():
@@ -813,7 +813,7 @@ class IMembershipTool(Interface):
 
         o 'obj' is the object to which role assignments may be made.
 
-        o Permission:  Public # XXX?
+        o Permission:  Public # ????
         """
 
     def setLocalRoles(obj, member_ids, member_role, reindex=True):
@@ -831,7 +831,7 @@ class IMembershipTool(Interface):
         o Raise Unauthorized if the currently-authenticated member cannot
           assign 'member_role' on 'obj'.
 
-        o Permission:  Public # XXX?
+        o Permission:  Public # ????
         """
 
     def deleteLocalRoles(obj, member_ids, reindex=True, recursive=False):
@@ -915,7 +915,7 @@ class IMembershipTool(Interface):
     def setMemberareaCreationFlag():
         """ Toggle the policy flag for create a member areas at login.
 
-        o XXX:  Toggle is a weak semantic here;  shouldn't we be passing
+        o ???:  Toggle is a weak semantic here;  shouldn't we be passing
                 the value we want the flag to have?
 
         o Permission:  Manage portal
@@ -929,7 +929,7 @@ class IMembershipTool(Interface):
         o 'member_id', if passed, is the ID of the member whose folder is
           to be created;  if not passed, default to the authenticated member.
 
-        o Permission:  Public # XXX?
+        o Permission:  Public # ????
         """
 
     def deleteMemberArea(member_id):
@@ -1142,7 +1142,7 @@ class IRegistrationTool(Interface):
 
         o 'password' is the candidate password string.
 
-        o If 'confirm' is passed, XXX?
+        o If 'confirm' is passed, ????
 
         o Permission:  Public
         """
@@ -1209,7 +1209,7 @@ class IRegistrationTool(Interface):
 
         o Raise ValueError if user ID is not found.
 
-        o XXX: should probably *not* raise, in order to prevent cracking.
+        o ???: should probably *not* raise, in order to prevent cracking.
 
         o Permission:  Mail forgotten password
         """
@@ -1254,7 +1254,7 @@ class ISkinsContainer(Interface):
     def getSkinByPath(path, raise_exc=0):
         """ Return a skin at the given path.
 
-        o XXX:  what are we doing here?
+        o ???:  what are we doing here?
 
         o A skin path is a search path of layers of the format:
           'some/path, some/other/path, ...'.
@@ -1278,7 +1278,7 @@ class ISkinsTool(ISkinsContainer):
 
     """ An object that provides skins to a portal object.
 
-    O XXX:  This shouldn't derive from ISkinsContainer?
+    O ???:  This shouldn't derive from ISkinsContainer?
     """
 
     __module__ = 'Products.CMFCore.interfaces'
@@ -1541,7 +1541,7 @@ class ITypeInformation(Interface):
     def getMethodAliases():
         """ Return a mapping of method aliases for this type.
 
-        o XXX:  define keys and values of the mapping.
+        o ???:  define keys and values of the mapping.
 
         o Permission:  Manage portal
         """
@@ -1553,7 +1553,7 @@ class ITypeInformation(Interface):
 
         o 'aliases' is the mapping of aliases to be assigned.
 
-        o XXX:  define keys and values of the mapping.
+        o ???:  define keys and values of the mapping.
 
         o Permission:  Manage portal
         """
@@ -1563,7 +1563,7 @@ class ITypeInformation(Interface):
 
         o 'context', if passed, points to the object calling this method.
            It may be used to return dynamic values based on the caller.
-           XXX:  this is unclear
+           ???:  this is unclear
 
         o 'default' is returned if no such alias is defined.
 
@@ -1667,7 +1667,7 @@ class IUndoTool(Interface):
         o Return a list of "transaction info" objects, using the given
           parameters to batch the results.
 
-        o XXX:  this needs documentation / testing.
+        o ???:  this needs documentation / testing.
 
         o Permission:  Undo changes
         """

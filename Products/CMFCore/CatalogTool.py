@@ -54,7 +54,7 @@ from .utils import registerToolInterface
 
 CATALOG_OPTIMIZATION_DISABLED = os.environ.get(
     'CATALOG_OPTIMIZATION_DISABLED',
-    'false'
+    'false',
 )
 CATALOG_OPTIMIZATION_DISABLED = CATALOG_OPTIMIZATION_DISABLED.lower() in \
     ('true', 't', 'yes', 'y', '1')
@@ -163,7 +163,8 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
     #
     #   ZMI methods
     #
-    security.declareProtected(ManagePortal, 'manage_overview')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_overview')
     manage_overview = DTMLFile('explainCatalogTool', _dtmldir)
 
     #
@@ -191,7 +192,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                 continue
             usage = kw[kusage]
             if not usage.startswith('range:'):
-                raise ValueError("Incorrect usage %s" % repr(usage))
+                raise ValueError('Incorrect usage %s' % repr(usage))
             kw[k] = {'query': kw[k], 'range': usage[6:]}
             del kw[kusage]
 
@@ -328,7 +329,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
                 object,
                 idxs=idxs,
                 update_metadata=update_metadata,
-                uid=uid
+                uid=uid,
             )
 
     @security.private

@@ -39,17 +39,18 @@ class FSPropertiesObject(FSObject, PropertyManager):
 
     security = ClassSecurityInfo()
 
-    security.declareProtected(ViewManagementScreens, 'manage_main')
+    security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
+                              'manage_main')
     manage_main = DTMLFile('custprops', _dtmldir)
 
     # Declare all (inherited) mutating methods private.
-    security.declarePrivate('manage_addProperty')
-    security.declarePrivate('manage_editProperties')
-    security.declarePrivate('manage_delProperties')
-    security.declarePrivate('manage_changeProperties')
-    security.declarePrivate('manage_propertiesForm')
-    security.declarePrivate('manage_propertyTypeForm')
-    security.declarePrivate('manage_changePropertyTypes')
+    security.declarePrivate('manage_addProperty')  # NOQA: flake8: D001
+    security.declarePrivate('manage_editProperties')  # NOQA: flake8: D001
+    security.declarePrivate('manage_delProperties')  # NOQA: flake8: D001
+    security.declarePrivate('manage_changeProperties')  # NOQA: flake8: D001
+    security.declarePrivate('manage_propertiesForm')  # NOQA: flake8: D001
+    security.declarePrivate('manage_propertyTypeForm')  # NOQA: flake8: D001
+    security.declarePrivate('manage_changePropertyTypes')  # NOQA: flake8: D001
 
     @security.protected(ViewManagementScreens)
     def manage_doCustomize(self, folder_path, RESPONSE=None, root=None,
@@ -84,7 +85,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
             setattr(obj, p['id'], getattr(self, p['id']))
             map.append({'id': p['id'],
                         'type': p['type'],
-                        'mode': 'wd', })
+                        'mode': 'wd'})
         obj._properties = tuple(map)
 
         return obj
@@ -111,7 +112,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
 
             try:
                 propname, proptv = line.split(':', 1)
-                # XXX multi-line properties?
+                # ??? multi-line properties?
                 proptype, propvstr = proptv.split('=', 1)
                 propname = propname.strip()
                 proptype = proptype.strip()

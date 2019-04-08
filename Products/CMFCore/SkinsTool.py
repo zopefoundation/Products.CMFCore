@@ -91,23 +91,28 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     #
     #   ZMI methods
     #
-    security.declareProtected(ManagePortal, 'manage_overview')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_overview')
     manage_overview = DTMLFile('explainSkinsTool', _dtmldir)
 
-    security.declareProtected(ManagePortal, 'manage_propertiesForm')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_propertiesForm')
     manage_propertiesForm = DTMLFile('dtml/skinProps', globals())
 
     # the following two methods override those in FindSupport, to
     # support marking of objects used in specific skins
-    security.declareProtected(ManagePortal, 'manage_findResult')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_findResult')
     manage_findResult = DTMLFile('findResult', _dtmldir,
                                  management_view='Find')
 
-    security.declareProtected(ManagePortal, 'manage_findForm')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_findForm')
     manage_findForm = DTMLFile('findForm', _dtmldir,
                                management_view='Find')
 
-    security.declareProtected(ManagePortal, 'manage_compareResults')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_compareResults')
     manage_compareResults = DTMLFile('compareResults', _dtmldir,
                                      management_view='Compare')
 
@@ -160,11 +165,11 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
         skin_path = self.getSkinPath(skin)
         if not skin_path:
             return 0
-        parts = list(skin_path.split(","))
-        found = ""
+        parts = list(skin_path.split(','))
+        found = ''
         for part in parts:
             part = part.strip()
-            if part[0] == "_":
+            if part[0] == '_':
                 continue
             partob = getattr(self, part, None)
             if partob:
@@ -257,26 +262,26 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
     #
     @security.protected(AccessContentsInformation)
     def getAllowAny(self):
-        '''
+        """
         Used by the management UI.  Returns a flag indicating whether
         users are allowed to use arbitrary skin paths.
-        '''
+        """
         return self.allow_any
 
     @security.protected(AccessContentsInformation)
     def getCookiePersistence(self):
-        '''
+        """
         Used by the management UI.  Returns a flag indicating whether
         the skins cookie is persistent or not.
-        '''
+        """
         return self.cookie_persistence
 
     @security.protected(AccessContentsInformation)
     def getSkinPaths(self):
-        '''
+        """
         Used by the management UI.  Returns the list of skin name to
         skin path mappings as a sorted list of tuples.
-        '''
+        """
         sels = self._getSelections()
         rval = []
         for key, value in sorted(sels.items()):
@@ -337,9 +342,9 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
 
     @security.protected(ManagePortal)
     def addSkinSelection(self, skinname, skinpath, test=0, make_default=0):
-        '''
+        """
         Adds a skin selection.
-        '''
+        """
         sels = self._getSelections()
         skinpath = str(skinpath)
 
@@ -373,7 +378,7 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
 
         res = unified_diff(item_one.read().splitlines(),
                            item_two.read().splitlines(),
-                           item_one_path, item_two_path, '', '', lineterm="")
+                           item_one_path, item_two_path, '', '', lineterm='')
         return res
 
 

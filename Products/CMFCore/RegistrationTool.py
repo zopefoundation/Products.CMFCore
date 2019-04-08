@@ -45,7 +45,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
     id = 'portal_registration'
     meta_type = 'CMF Registration Tool'
     member_id_pattern = ''
-    default_member_id_pattern = "^[A-Za-z][A-Za-z0-9_]*$"
+    default_member_id_pattern = '^[A-Za-z][A-Za-z0-9_]*$'
     _ALLOWED_MEMBER_ID_PATTERN = re.compile(default_member_id_pattern)
 
     security = ClassSecurityInfo()
@@ -59,10 +59,12 @@ class RegistrationTool(UniqueObject, SimpleItem):
     #
     #   ZMI methods
     #
-    security.declareProtected(ManagePortal, 'manage_overview')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_overview')
     manage_overview = DTMLFile('explainRegistrationTool', _dtmldir)
 
-    security.declareProtected(ManagePortal, 'manage_configuration')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_configuration')
     manage_configuration = DTMLFile('configureRegistrationTool', _dtmldir)
 
     @security.protected(ManagePortal)
@@ -97,23 +99,23 @@ class RegistrationTool(UniqueObject, SimpleItem):
     #
     @security.public
     def isRegistrationAllowed(self, REQUEST):
-        '''Returns a boolean value indicating whether the user
+        """Returns a boolean value indicating whether the user
         is allowed to add a member to the portal.
-        '''
+        """
         return _checkPermission(AddPortalMember, self.aq_inner.aq_parent)
 
     @security.public
     def testPasswordValidity(self, password, confirm=None):
-        '''If the password is valid, returns None.  If not, returns
+        """If the password is valid, returns None.  If not, returns
         a string explaining why.
-        '''
+        """
         return None
 
     @security.public
     def testPropertiesValidity(self, new_properties, member=None):
-        '''If the properties are valid, returns None.  If not, returns
+        """If the properties are valid, returns None.  If not, returns
         a string explaining why.
-        '''
+        """
         return None
 
     @security.public
@@ -127,7 +129,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
     @security.protected(AddPortalMember)
     def addMember(self, id, password, roles=('Member',), domains='',
                   properties=None, REQUEST=None):
-        # XXX Do not make this a normal method comment. Doing so makes
+        # !!! Do not make this a normal method comment. Doing so makes
         # this method publishable
 
         # Creates a PortalMember and returns it. The properties argument
@@ -164,8 +166,8 @@ class RegistrationTool(UniqueObject, SimpleItem):
 
     @security.protected(AddPortalMember)
     def isMemberIdAllowed(self, id):
-        '''Returns 1 if the ID is not in use and is not reserved.
-        '''
+        """Returns 1 if the ID is not in use and is not reserved.
+        """
         if len(id) < 1 or id == 'Anonymous User':
             return 0
         if not self._ALLOWED_MEMBER_ID_PATTERN.match(id):
@@ -177,15 +179,15 @@ class RegistrationTool(UniqueObject, SimpleItem):
 
     @security.public
     def afterAdd(self, member, id, password, properties):
-        '''Called by portal_registration.addMember()
-        after a member has been added successfully.'''
+        """Called by portal_registration.addMember()
+        after a member has been added successfully."""
         pass
 
     @security.protected(MailForgottenPassword)
     def mailPassword(self, forgotten_userid, REQUEST):
-        '''Email a forgotten password to a member.  Raises an exception
+        """Email a forgotten password to a member.  Raises an exception
         if user ID is not found.
-        '''
+        """
         raise NotImplementedError
 
 

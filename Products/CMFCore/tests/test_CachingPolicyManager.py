@@ -616,7 +616,7 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
             user = user.__of__(uf)
         newSecurityManager(None, user)
         owner_auth = b'%s:%s' % (portal_owner, password)
-        self.auth_header = "Basic %s" % base64_encode(owner_auth)
+        self.auth_header = 'Basic %s' % base64_encode(owner_auth)
 
         self.portal._setObject('doc1', DummyContent('doc1'))
         self.portal._setObject('doc2', DummyContent('doc2'))
@@ -877,7 +877,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc1',
                       etag_func='',
-                      s_max_age_secs=100
+                      s_max_age_secs=100,
                       )
 
         content = DummyContent(id='content', view_id='output_page_1')
@@ -914,7 +914,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc1',
                       etag_func='',
-                      s_max_age_secs=100
+                      s_max_age_secs=100,
                       )
 
         content = DummyContent(id='content', view_id='output_page_3')
@@ -954,7 +954,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc1',
                       etag_func='',
-                      s_max_age_secs=100
+                      s_max_age_secs=100,
                       )
 
         doc1 = DummyContent(id='doc1', view_id='nested_view')
@@ -999,7 +999,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc1',
                       etag_func='',
-                      s_max_age_secs=100
+                      s_max_age_secs=100,
                       )
 
         doc1 = DummyContent(id='doc1', view_id='nested_view',
@@ -1064,7 +1064,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc2',
                       etag_func='',
-                      pre_check=1
+                      pre_check=1,
                       )
 
         # This policy only applies to doc3.
@@ -1077,7 +1077,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc3',
                       etag_func='',
-                      post_check=1
+                      post_check=1,
                       )
 
         # http://www.zope.org/Collectors/CMF/456
@@ -1126,7 +1126,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc1',
                       etag_func='',
-                      s_max_age_secs=100
+                      s_max_age_secs=100,
                       )
 
         # This policy only applies to doc2.
@@ -1139,7 +1139,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc2',
                       etag_func='',
-                      pre_check=1
+                      pre_check=1,
                       )
 
         # This policy only applies to doc3.
@@ -1152,7 +1152,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
                       must_revalidate=0,
                       vary='doc3',
                       etag_func='',
-                      post_check=1
+                      post_check=1,
                       )
 
         # http://www.zope.org/Collectors/CMF/456

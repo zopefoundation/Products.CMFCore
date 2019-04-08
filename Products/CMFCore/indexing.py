@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from logging import getLogger
 from threading import local
 from warnings import warn
@@ -48,8 +47,7 @@ class PortalCatalogProcessor(object):
             catalog._reindexObject(
                 obj,
                 idxs=attributes,
-                update_metadata=update_metadata
-            )
+                update_metadata=update_metadata)
 
     def unindex(self, obj):
         catalog = getToolByName(obj, 'portal_catalog', None)
@@ -177,10 +175,8 @@ class IndexQueue(local):
             func = getattr(obj, 'getPhysicalPath', None)
             if callable(func):
                 hash_id = hash_id, func()
-            op, dummy, attr, metadata = res.get(
-                hash_id,
-                (0, obj, iattr, imetadata)
-            )
+            op, dummy, attr, metadata = res.get(hash_id,
+                                                (0, obj, iattr, imetadata))
             # If we are going to delete an item that was added in this
             # transaction, ignore it
             if op == INDEX and iop == UNINDEX:
@@ -217,7 +213,7 @@ class IndexQueue(local):
         processed = 0
         for name, util in utilities:
             util.begin()
-        # TODO: must the queue be handled independently for each processor?
+        # ??? must the queue be handled independently for each processor?
         for op, obj, attributes, metadata in self.queue:
             for name, util in utilities:
                 if op == INDEX:

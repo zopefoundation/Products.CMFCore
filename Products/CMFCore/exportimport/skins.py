@@ -209,7 +209,7 @@ class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
         """
         skins = self.context.getSkinSelections()
         if skin_name in skins:
-            self.context.manage_skinLayers(chosen=[skin_name], del_skin=1,)
+            self.context.manage_skinLayers(chosen=[skin_name], del_skin=1)
 
 
 def importSkinsTool(context):

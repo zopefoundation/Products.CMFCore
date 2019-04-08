@@ -403,8 +403,8 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._EMPTY_EXPORT
         importSkinsTool(context)
 
-        self.assertEqual(skins_tool.default_skin, "default_skin")
-        self.assertEqual(skins_tool.request_varname, "request_varname")
+        self.assertEqual(skins_tool.default_skin, 'default_skin')
+        self.assertEqual(skins_tool.request_varname, 'request_varname')
         self.assertFalse(skins_tool.allow_any)
         self.assertFalse(skins_tool.cookie_persistence)
         self.assertTrue(site._skin_setup_called)
@@ -427,8 +427,8 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._EMPTY_EXPORT
         importSkinsTool(context)
 
-        self.assertEqual(skins_tool.default_skin, "default_skin")
-        self.assertEqual(skins_tool.request_varname, "request_varname")
+        self.assertEqual(skins_tool.default_skin, 'default_skin')
+        self.assertEqual(skins_tool.request_varname, 'request_varname')
         self.assertFalse(skins_tool.allow_any)
         self.assertFalse(skins_tool.cookie_persistence)
         self.assertTrue(site._skin_setup_called)
@@ -451,8 +451,8 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._EMPTY_EXPORT
         importSkinsTool(context)
 
-        self.assertEqual(skins_tool.default_skin, "default_skin")
-        self.assertEqual(skins_tool.request_varname, "request_varname")
+        self.assertEqual(skins_tool.default_skin, 'default_skin')
+        self.assertEqual(skins_tool.request_varname, 'request_varname')
         self.assertFalse(skins_tool.allow_any)
         self.assertFalse(skins_tool.cookie_persistence)
         self.assertTrue(site._skin_setup_called)
@@ -472,8 +472,8 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._NORMAL_EXPORT
         importSkinsTool(context)
 
-        self.assertEqual(skins_tool.default_skin, "basic")
-        self.assertEqual(skins_tool.request_varname, "skin_var")
+        self.assertEqual(skins_tool.default_skin, 'basic')
+        self.assertEqual(skins_tool.request_varname, 'skin_var')
         self.assertTrue(skins_tool.allow_any)
         self.assertTrue(skins_tool.cookie_persistence)
         self.assertTrue(site._skin_setup_called)
@@ -499,8 +499,8 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._FRAGMENT1_IMPORT
         importSkinsTool(context)
 
-        self.assertEqual(skins_tool.default_skin, "default_skin")
-        self.assertEqual(skins_tool.request_varname, "request_varname")
+        self.assertEqual(skins_tool.default_skin, 'default_skin')
+        self.assertEqual(skins_tool.request_varname, 'request_varname')
         self.assertFalse(skins_tool.allow_any)
         self.assertFalse(skins_tool.cookie_persistence)
         self.assertTrue(site._skin_setup_called)
@@ -513,8 +513,8 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._FRAGMENT2_IMPORT
         importSkinsTool(context)
 
-        self.assertEqual(skins_tool.default_skin, "default_skin")
-        self.assertEqual(skins_tool.request_varname, "request_varname")
+        self.assertEqual(skins_tool.default_skin, 'default_skin')
+        self.assertEqual(skins_tool.request_varname, 'request_varname')
         self.assertFalse(skins_tool.allow_any)
         self.assertFalse(skins_tool.cookie_persistence)
         self.assertTrue(site._skin_setup_called)
@@ -543,8 +543,8 @@ class importSkinsToolTests(_SkinsSetup):
         context._files['skins.xml'] = self._FRAGMENT3_IMPORT
         importSkinsTool(context)
 
-        self.assertEqual(skins_tool.default_skin, "default_skin")
-        self.assertEqual(skins_tool.request_varname, "request_varname")
+        self.assertEqual(skins_tool.default_skin, 'default_skin')
+        self.assertEqual(skins_tool.request_varname, 'request_varname')
         self.assertFalse(skins_tool.allow_any)
         self.assertFalse(skins_tool.cookie_persistence)
         self.assertTrue(site._skin_setup_called)

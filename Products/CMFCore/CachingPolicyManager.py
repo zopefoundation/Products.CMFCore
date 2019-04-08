@@ -473,7 +473,8 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         CacheManager.manage_options +
         SimpleItem.manage_options)
 
-    security.declareProtected(ManagePortal, 'manage_cachingPolicies')
+    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
+                              'manage_cachingPolicies')
     manage_cachingPolicies = DTMLFile('cachingPolicies', _dtmldir)
 
     @security.public
@@ -626,10 +627,10 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         policy_ids = list(self._policy_ids)
         ndx = policy_ids.index(policy_id)
         if ndx == 0:
-            msg = "Policy+already+first."
+            msg = 'Policy+already+first.'
         else:
             self._reorderPolicy(policy_id, ndx - 1)
-            msg = "Policy+moved."
+            msg = 'Policy+moved.'
         if REQUEST is not None:
             REQUEST['RESPONSE'].redirect(self.absolute_url()
                                          + '/manage_cachingPolicies'
@@ -643,10 +644,10 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         policy_ids = list(self._policy_ids)
         ndx = policy_ids.index(policy_id)
         if ndx == len(policy_ids) - 1:
-            msg = "Policy+already+last."
+            msg = 'Policy+already+last.'
         else:
             self._reorderPolicy(policy_id, ndx + 1)
-            msg = "Policy+moved."
+            msg = 'Policy+moved.'
         if REQUEST is not None:
             REQUEST['RESPONSE'].redirect(self.absolute_url()
                                          + '/manage_cachingPolicies'
@@ -691,10 +692,10 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         policy_id = str(policy_id).strip()
 
         if not policy_id:
-            raise ValueError("Policy ID is required!")
+            raise ValueError('Policy ID is required!')
 
         if policy_id in self._policy_ids:
-            raise KeyError("Policy %s already exists!" % policy_id)
+            raise KeyError('Policy %s already exists!' % policy_id)
 
         self._policies[policy_id] = CachingPolicy(policy_id,
                                                   predicate,
@@ -742,7 +743,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
             Update a policy in our registry.
         """
         if policy_id not in self._policy_ids:
-            raise KeyError("Policy %s does not exist!" % policy_id)
+            raise KeyError('Policy %s does not exist!' % policy_id)
 
         self._policies[policy_id] = CachingPolicy(policy_id,
                                                   predicate,
@@ -769,7 +770,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
             Reorder a policy in our registry.
         """
         if policy_id not in self._policy_ids:
-            raise KeyError("Policy %s does not exist!" % policy_id)
+            raise KeyError('Policy %s does not exist!' % policy_id)
 
         idlist = list(self._policy_ids)
         ndx = idlist.index(policy_id)
@@ -784,7 +785,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
             Remove a policy from our registry.
         """
         if policy_id not in self._policy_ids:
-            raise KeyError("Policy %s does not exist!" % policy_id)
+            raise KeyError('Policy %s does not exist!' % policy_id)
 
         del self._policies[policy_id]
         idlist = list(self._policy_ids)
