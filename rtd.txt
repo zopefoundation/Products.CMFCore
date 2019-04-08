@@ -1,2 +1,2 @@
 repoze.sphinx.autointerface
-Products.CMFCore
+Products.CMFCore >= 2.4.0b6
