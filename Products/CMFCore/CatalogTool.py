@@ -13,6 +13,8 @@
 """ Basic portal catalog.
 """
 
+import os
+
 from AccessControl.class_init import InitializeClass
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -27,14 +29,14 @@ from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.interface import implementer
 from zope.interface import providedBy
-from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
+from zope.interface.declarations import getObjectSpecification
 
+from .ActionProviderBase import ActionProviderBase
 from .indexing import filterTemporaryItems
 from .indexing import getQueue
 from .indexing import processQueue
-from .ActionProviderBase import ActionProviderBase
 from .interfaces import ICatalogTool
 from .interfaces import IContentish
 from .interfaces import IIndexableObject
@@ -43,13 +45,11 @@ from .interfaces import IWorkflowTool
 from .permissions import AccessInactivePortalContent
 from .permissions import ManagePortal
 from .permissions import View
+from .utils import UniqueObject
 from .utils import _checkPermission
 from .utils import _dtmldir
 from .utils import _mergedLocalRoles
 from .utils import registerToolInterface
-from .utils import UniqueObject
-
-import os
 
 
 CATALOG_OPTIMIZATION_DISABLED = os.environ.get(

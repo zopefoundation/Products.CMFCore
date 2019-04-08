@@ -14,7 +14,17 @@
 """
 
 import unittest
+from os.path import join
+
+from Acquisition import aq_base
 from Testing import ZopeTestCase
+from zope.testing.cleanup import cleanUp
+
+from ..FSMetadata import FSMetadata
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
+
+
 try:
     import Products.ZSQLMethods  # noqa
     ZopeTestCase.installProduct('ZSQLMethods', 1)
@@ -22,14 +32,8 @@ try:
 except ImportError:
     HAVE_ZSQL = False
 
-from os.path import join
 
-from Acquisition import aq_base
-from zope.testing.cleanup import cleanUp
 
-from ..FSMetadata import FSMetadata
-from .base.testcase import FSDVTest
-from .base.testcase import SecurityTest
 
 
 class FSZSQLMaker(FSDVTest):

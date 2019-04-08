@@ -13,9 +13,8 @@
 """ Unit tests for DirectoryView module.
 """
 
-import unittest
-
 import sys
+import unittest
 import warnings
 from os import mkdir
 from os import remove

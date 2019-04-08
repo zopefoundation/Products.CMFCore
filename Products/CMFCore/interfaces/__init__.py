@@ -14,5 +14,5 @@
 """
 
 from ._content import *  # noqa
-from ._tools import *  # noqa
 from ._events import *  # noqa
+from ._tools import *  # noqa

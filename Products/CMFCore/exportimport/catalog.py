@@ -13,10 +13,9 @@
 """Catalog tool setup handlers.
 """
 
-from zope.component import getSiteManager
-
 from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import importObjects
+from zope.component import getSiteManager
 
 from ..interfaces import ICatalogTool
 

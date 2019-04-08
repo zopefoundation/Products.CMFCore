@@ -14,6 +14,7 @@
 """
 
 from difflib import unified_diff
+
 from six import get_unbound_function
 
 from AccessControl.class_init import InitializeClass
@@ -31,6 +32,7 @@ from .permissions import FTPAccess
 from .permissions import View
 from .permissions import ViewManagementScreens
 from .utils import _dtmldir
+
 
 _marker = object()
 

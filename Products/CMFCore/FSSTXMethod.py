@@ -28,10 +28,11 @@ from .FSObject import FSObject
 from .permissions import FTPAccess
 from .permissions import View
 from .permissions import ViewManagementScreens
-from .utils import _dtmldir
 from .utils import _checkConditionalGET
+from .utils import _dtmldir
 from .utils import _setCacheHeaders
 from .utils import _ViewEmulator
+
 
 _STX_TEMPLATE = 'ZPT'  # or 'DTML'
 

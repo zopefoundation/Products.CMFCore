@@ -13,10 +13,9 @@
 """ Unit tests for FSReSTMethod module.
 """
 
-import unittest
-
 import os
 import re
+import unittest
 
 from Acquisition import aq_base
 from App.Common import rfc1123_date

@@ -20,6 +20,7 @@ from zope.interface import Interface
 # BBB: _tools is the old location of this interface
 from ._cookieCrumbler import ICookieCrumbler  # noqa
 
+
 _marker = object()
 
 

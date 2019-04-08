@@ -14,12 +14,13 @@
 """
 
 import os
+import unittest
 import warnings
 from os.path import join
-from six.moves._thread import start_new_thread
 from sys import exc_info
 from time import sleep
-import unittest
+
+from six.moves._thread import start_new_thread
 
 from Acquisition import aq_base
 from DateTime.DateTime import DateTime
@@ -33,6 +34,7 @@ from ..FSMetadata import FSMetadata
 from ..FSPythonScript import FSPythonScript
 from .base.testcase import FSDVTest
 from .base.testcase import SecurityTest
+
 
 ZopeTestCase.installProduct('PythonScripts', 1)
 

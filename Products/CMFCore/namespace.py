@@ -16,8 +16,8 @@
 from zope.component import adapts
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
-from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import implementer
 from zope.location.interfaces import LocationError
 from zope.traversing.interfaces import ITraversable
 

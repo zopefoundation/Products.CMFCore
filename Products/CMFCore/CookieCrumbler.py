@@ -14,8 +14,10 @@
 """
 
 import base64
+
 import six
-from six.moves.urllib.parse import quote, unquote
+from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import unquote
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permissions import view_management_screens
@@ -36,8 +38,8 @@ from ZPublisher.HTTPRequest import HTTPRequest
 
 from .interfaces import IActionsTool
 from .interfaces import ICookieCrumbler
-from .utils import registerToolInterface
 from .utils import UniqueObject
+from .utils import registerToolInterface
 
 
 # Constants.

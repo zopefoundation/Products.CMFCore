@@ -42,6 +42,7 @@ from .permissions import ManagePortal
 from .permissions import ModifyPortalContent
 from .utils import _dtmldir
 
+
 logger = logging.getLogger('CMFCore.CMFCatalogAware')
 
 

@@ -16,9 +16,9 @@
 from AccessControl.class_init import InitializeClass
 from five.localsitemanager.registry import PersistentComponents
 from Products.Five.component.interfaces import IObjectManagerSite
-from zope.interface.interfaces import ComponentLookupError
 from zope.event import notify
 from zope.interface import implementer
+from zope.interface.interfaces import ComponentLookupError
 from zope.traversing.interfaces import BeforeTraverseEvent
 
 from .interfaces import ISiteRoot

@@ -34,8 +34,8 @@ from .permissions import AccessContentsInformation
 from .permissions import ManagePortal
 from .permissions import ReplyToItem
 from .permissions import View
-from .utils import _dtmldir
 from .utils import UniqueObject
+from .utils import _dtmldir
 
 
 @implementer(IOldstyleDiscussable)

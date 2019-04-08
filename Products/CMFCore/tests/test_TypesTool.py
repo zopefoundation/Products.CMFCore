@@ -14,7 +14,6 @@
 """
 
 import unittest
-
 import warnings
 
 from AccessControl.Permission import Permission

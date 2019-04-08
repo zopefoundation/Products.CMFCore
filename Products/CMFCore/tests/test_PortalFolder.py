@@ -19,8 +19,8 @@ import transaction
 from AccessControl import SecurityManager
 from AccessControl import Unauthorized
 from AccessControl.SecurityManagement import newSecurityManager
-from Acquisition import aq_base
 from Acquisition import Implicit
+from Acquisition import aq_base
 from DateTime import DateTime
 from OFS.Image import manage_addFile
 from zope.component import getSiteManager
@@ -34,6 +34,9 @@ from ..interfaces import ITypesTool
 from ..interfaces import IWorkflowTool
 from ..testing import ConformsToFolder
 from ..testing import TraversingEventZCMLLayer
+from ..TypesTool import FactoryTypeInformation as FTI
+from ..TypesTool import TypesTool
+from ..WorkflowTool import WorkflowTool
 from .base.dummy import DummyContent
 from .base.dummy import DummyFactoryDispatcher
 from .base.dummy import DummySite
@@ -41,9 +44,6 @@ from .base.dummy import DummyUserFolder
 from .base.testcase import SecurityTest
 from .base.tidata import FTIDATA_CMF
 from .base.tidata import FTIDATA_DUMMY
-from ..TypesTool import FactoryTypeInformation as FTI
-from ..TypesTool import TypesTool
-from ..WorkflowTool import WorkflowTool
 
 
 def extra_meta_types():

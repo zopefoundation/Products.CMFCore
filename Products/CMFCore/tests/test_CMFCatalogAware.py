@@ -34,6 +34,7 @@ from .base.testcase import SecurityTest
 from .test_PortalFolder import _AllowedUser
 from .test_PortalFolder import _SensitiveSecurityPolicy
 
+
 CMF_SECURITY_INDEXES = CMFCatalogAware._cmf_security_indexes
 
 

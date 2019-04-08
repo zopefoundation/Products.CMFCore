@@ -14,8 +14,9 @@
 """Site properties xml adapter and setup handler unit tests.
 """
 
-import six
 import unittest
+
+import six
 
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
@@ -23,6 +24,7 @@ from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
 from ...testing import ExportImportZCMLLayer
+
 
 _PROPERTIES_BODY = b"""\
 <?xml version="1.0" encoding="iso-8859-1"?>

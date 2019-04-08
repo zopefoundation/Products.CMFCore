@@ -42,9 +42,9 @@ from .permissions import AccessContentsInformation
 from .permissions import ManagePortal
 from .permissions import View
 from .SkinsContainer import SkinsContainer
+from .utils import UniqueObject
 from .utils import _dtmldir
 from .utils import registerToolInterface
-from .utils import UniqueObject
 
 
 def modifiedOptions():

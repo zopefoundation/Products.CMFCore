@@ -14,13 +14,13 @@
 """ Unit tests for FSPageTemplate module.
 """
 
-from os.path import join as path_join
 import unittest
-from Testing import ZopeTestCase
+from os.path import join as path_join
 
 from Acquisition import aq_base
 from OFS.Folder import Folder
 from Products.StandardCacheManagers import RAMCacheManager
+from Testing import ZopeTestCase
 from zope.component import getSiteManager
 from zope.tales.tales import Undefined
 from zope.testing.cleanup import cleanUp
@@ -32,6 +32,7 @@ from .base.dummy import DummyCachingManager
 from .base.testcase import FSDVTest
 from .base.testcase import SecurityTest
 from .base.testcase import TransactionalTest
+
 
 ZopeTestCase.installProduct('PageTemplates', 1)
 

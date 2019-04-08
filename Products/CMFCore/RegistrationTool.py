@@ -13,8 +13,8 @@
 """ Basic user registration tool.
 """
 
-from random import choice
 import re
+from random import choice
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -28,12 +28,12 @@ from .interfaces import IRegistrationTool
 from .permissions import AddPortalMember
 from .permissions import MailForgottenPassword
 from .permissions import ManagePortal
+from .utils import Message as _
+from .utils import UniqueObject
 from .utils import _checkPermission
 from .utils import _dtmldir
 from .utils import _limitGrantedRoles
-from .utils import Message as _
 from .utils import registerToolInterface
-from .utils import UniqueObject
 
 
 @implementer(IRegistrationTool)

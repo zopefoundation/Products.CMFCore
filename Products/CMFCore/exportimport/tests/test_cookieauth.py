@@ -16,16 +16,16 @@
 import unittest
 
 from OFS.Folder import Folder
-from zope.component import getSiteManager
-
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
+from zope.component import getSiteManager
 
 from ...CookieCrumbler import CookieCrumbler
 from ...interfaces import ICookieCrumbler
 from ...testing import ExportImportZCMLLayer
+
 
 _COOKIECRUMBLER_BODY = b"""\
 <?xml version="1.0" encoding="utf-8"?>

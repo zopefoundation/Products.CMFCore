@@ -14,8 +14,9 @@
 """
 
 import logging
-import six
 from warnings import warn
+
+import six
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.requestmethod import postonly
@@ -54,11 +55,12 @@ from .permissions import ManageUsers
 from .permissions import SetOwnPassword
 from .permissions import View
 from .PortalFolder import PortalFolder
+from .utils import Message as _
+from .utils import UniqueObject
 from .utils import _checkPermission
 from .utils import _dtmldir
-from .utils import Message as _
 from .utils import registerToolInterface
-from .utils import UniqueObject
+
 
 logger = logging.getLogger('CMFCore.MembershipTool')
 

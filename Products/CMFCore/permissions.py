@@ -18,6 +18,7 @@ from AccessControl.Permission import addPermission
 from AccessControl.SecurityInfo import ModuleSecurityInfo
 from zope.deferredimport import deprecated
 
+
 deprecated("Please use addPermission from AccessControl.Permission.",
            setDefaultRoles='AccessControl.Permission:addPermission')
 

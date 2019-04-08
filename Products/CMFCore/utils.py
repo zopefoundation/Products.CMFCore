@@ -13,16 +13,18 @@
 """ Utility functions.
 """
 
-import re
 import base64
+import re
+import sys
 from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
-import six
-from six.moves._thread import allocate_lock
-import sys
 from warnings import warn
 
+import six
+from six.moves._thread import allocate_lock
+
+import Products
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
@@ -30,9 +32,9 @@ from AccessControl.Role import gather_permissions
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityInfo import ModuleSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
+from Acquisition import Implicit
 from Acquisition import aq_get
 from Acquisition import aq_parent
-from Acquisition import Implicit
 from Acquisition.interfaces import IAcquirer
 from App.Common import package_home
 from App.Common import rfc1123_date
@@ -41,21 +43,21 @@ from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
 from DateTime.interfaces import DateTimeError
 from ExtensionClass import Base
-from OFS.misc_ import misc_ as misc_images
 from OFS.misc_ import Misc_ as MiscImage
+from OFS.misc_ import misc_ as misc_images
 from OFS.ObjectManager import UNIQUE
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
-import Products
 from zope.component import getUtility
 from zope.component import queryUtility
-from zope.interface.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
+from zope.interface.interfaces import ComponentLookupError
 
 from .exceptions import AccessControl_Unauthorized
 from .exceptions import NotFound
 from .interfaces import ICachingPolicyManager
+
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 ProductsPath = [abspath(ppath) for ppath in Products.__path__]

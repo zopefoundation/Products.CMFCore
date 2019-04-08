@@ -13,24 +13,25 @@
 """Filesystem exporter / importer adapters.
 """
 
-from csv import reader
-from csv import writer
 import itertools
 import operator
+from csv import reader
+from csv import writer
+
 import six
 from six import StringIO
 from six.moves.configparser import ConfigParser
 
+from DateTime import DateTime
+from Products.GenericSetup.content import DAVAwareFileAdapter
+from Products.GenericSetup.content import _globtest
+from Products.GenericSetup.interfaces import IFilesystemExporter
+from Products.GenericSetup.interfaces import IFilesystemImporter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
 
 from ..interfaces import ITypesTool
-from DateTime import DateTime
-from Products.GenericSetup.interfaces import IFilesystemExporter
-from Products.GenericSetup.interfaces import IFilesystemImporter
-from Products.GenericSetup.content import DAVAwareFileAdapter
-from Products.GenericSetup.content import _globtest
 
 
 #

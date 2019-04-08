@@ -1,7 +1,8 @@
 """CookieCrumbler provides cookie based authenticaion
 """
 
-from zope.interface import Interface, Attribute
+from zope.interface import Attribute
+from zope.interface import Interface
 
 
 class ICookieCrumbler(Interface):

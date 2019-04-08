@@ -40,9 +40,10 @@ from .interfaces import IRegistrationTool
 from .permissions import ManagePortal
 from .permissions import SetOwnProperties
 from .permissions import ViewManagementScreens
+from .utils import UniqueObject
 from .utils import _dtmldir
 from .utils import registerToolInterface
-from .utils import UniqueObject
+
 
 _marker = []  # Create a new marker object.
 

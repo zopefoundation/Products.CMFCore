@@ -13,9 +13,10 @@
 """CookieCrumbler tests.
 """
 
+import unittest
+
 from six import StringIO
 from six.moves.urllib.parse import quote
-import unittest
 
 from zope.component import eventtesting
 from zope.interface.verify import verifyClass

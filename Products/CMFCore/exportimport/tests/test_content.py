@@ -15,19 +15,18 @@
 """
 
 import unittest
-
 from csv import reader
+
 from six import StringIO
 from six import binary_type
 from six.moves.configparser import ConfigParser
 
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
 from ...interfaces import ITypesTool
-from Products.GenericSetup.tests.common import DummyExportContext
-from Products.GenericSetup.tests.common import DummyImportContext
-
 from ...testing import DummyWorkflow
 from .test_workflow import DummyWorkflowTool
 

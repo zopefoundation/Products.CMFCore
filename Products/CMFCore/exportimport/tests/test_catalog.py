@@ -14,22 +14,22 @@
 """
 
 import unittest
-from Testing import ZopeTestCase
 
 from OFS.Folder import Folder
+from Products.GenericSetup.tests.common import BaseRegistryTests
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 from Products.ZCTextIndex.Lexicon import CaseNormalizer
 from Products.ZCTextIndex.Lexicon import Splitter
 from Products.ZCTextIndex.Lexicon import StopWordRemover
 from Products.ZCTextIndex.ZCTextIndex import PLexicon
+from Testing import ZopeTestCase
 from zope.component import getSiteManager
-
-from Products.GenericSetup.tests.common import BaseRegistryTests
-from Products.GenericSetup.tests.common import DummyExportContext
-from Products.GenericSetup.tests.common import DummyImportContext
 
 from ...CatalogTool import CatalogTool
 from ...interfaces import ICatalogTool
 from ...testing import ExportImportZCMLLayer
+
 
 ZopeTestCase.installProduct('ZCTextIndex', 1)
 

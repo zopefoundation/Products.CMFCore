@@ -14,8 +14,9 @@
 """
 
 import logging
-import six
 from warnings import warn
+
+import six
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -29,8 +30,8 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
-from zope.container.contained import notifyContainerModified
 from zope.container.contained import ObjectAddedEvent
+from zope.container.contained import notifyContainerModified
 from zope.event import notify
 from zope.globalrequest import getRequest
 from zope.i18nmessageid import Message
@@ -50,12 +51,13 @@ from .permissions import AccessContentsInformation
 from .permissions import AddPortalContent
 from .permissions import ManagePortal
 from .permissions import View
+from .utils import SimpleItemWithProperties
+from .utils import UniqueObject
 from .utils import _checkPermission
 from .utils import _dtmldir
 from .utils import _wwwdir
 from .utils import registerToolInterface
-from .utils import SimpleItemWithProperties
-from .utils import UniqueObject
+
 
 logger = logging.getLogger('CMFCore.TypesTool')
 

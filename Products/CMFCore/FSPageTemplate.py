@@ -14,6 +14,7 @@
 """
 
 import re
+
 import six
 from six import get_unbound_function
 
@@ -25,9 +26,9 @@ from OFS import bbb
 from Products.PageTemplates.PageTemplate import PageTemplate
 from Products.PageTemplates.utils import charsetFromMetaEquiv
 from Products.PageTemplates.utils import encodingFromXMLPreamble
-from Products.PageTemplates.ZopePageTemplate import preferred_encodings
 from Products.PageTemplates.ZopePageTemplate import Src
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+from Products.PageTemplates.ZopePageTemplate import preferred_encodings
 from Shared.DC.Scripts.Script import Script
 
 from .DirectoryView import registerFileExtension

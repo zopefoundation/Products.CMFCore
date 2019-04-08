@@ -16,18 +16,15 @@
 import unittest
 
 from OFS.Folder import Folder
-from Products.MailHost.interfaces import IMailHost
-
-from zope.component import getSiteManager
-
-from Zope2.App import zcml
-
-
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
+from Products.MailHost.interfaces import IMailHost
+from Zope2.App import zcml
+from zope.component import getSiteManager
 
 from ...testing import ExportImportZCMLLayer
+
 
 _DEFAULT_EXPORT = """\
 <?xml version="1.0"?>

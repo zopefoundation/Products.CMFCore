@@ -27,10 +27,10 @@ from .interfaces import IActionCategory
 from .interfaces import IActionProvider
 from .interfaces import IActionsTool
 from .permissions import ManagePortal
+from .utils import UniqueObject
 from .utils import _dtmldir
 from .utils import getToolByName
 from .utils import registerToolInterface
-from .utils import UniqueObject
 
 
 @implementer(IActionsTool)

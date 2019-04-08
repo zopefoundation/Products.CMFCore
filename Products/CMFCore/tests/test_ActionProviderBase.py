@@ -14,24 +14,20 @@
 """
 
 import unittest
-
 import warnings
 
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
+#   We have to import these here to make the "ugly sharing" test case go.
+from ..ActionInformation import ActionInformation
+from ..ActionProviderBase import ActionProviderBase
 from ..interfaces import IMembershipTool
 from ..interfaces import IURLTool
 from .base.dummy import DummySite
 from .base.dummy import DummyTool
 from .base.testcase import SecurityTest
-
-#
-#   We have to import these here to make the "ugly sharing" test case go.
-#
-from ..ActionProviderBase import ActionProviderBase
-from ..ActionInformation import ActionInformation
 
 
 class DummyProvider(ActionProviderBase, DummyTool):

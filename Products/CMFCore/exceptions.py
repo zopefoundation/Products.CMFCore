@@ -13,16 +13,18 @@
 """ CMFCore product exceptions.
 """
 
-from AccessControl import ModuleSecurityInfo
-from AccessControl import Unauthorized as AccessControl_Unauthorized  # noqa
+from AccessControl import ModuleSecurityInfo  # noqa
+from AccessControl import Unauthorized as AccessControl_Unauthorized
 from OFS.CopySupport import CopyError  # noqa
-from zExceptions import BadRequest  # noqa
+from zExceptions import BadRequest  # noqa; noqa
 from zExceptions import NotFound  # noqa
+from zExceptions import Unauthorized as zExceptions_Unauthorized
+
+
 try:
     from zExceptions import ResourceLockedError  # noqa
 except ImportError:
     from webdav.Lockable import ResourceLockedError  # noqa
-from zExceptions import Unauthorized as zExceptions_Unauthorized  # noqa
 
 
 security = ModuleSecurityInfo('Products.CMFCore.exceptions')

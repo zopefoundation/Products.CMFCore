@@ -17,6 +17,7 @@ the browser request.  Skins are stored in a fixed-name subobject.
 """
 
 import logging
+
 from six.moves._thread import get_ident
 
 from AccessControl.class_init import InitializeClass
@@ -27,6 +28,7 @@ from ZODB.POSException import ConflictError
 from zope.component import queryUtility
 
 from .interfaces import ISkinsTool
+
 
 logger = logging.getLogger('CMFCore.Skinnable')
 

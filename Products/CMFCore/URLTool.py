@@ -29,9 +29,9 @@ from .interfaces import ISiteRoot
 from .interfaces import IURLTool
 from .permissions import ManagePortal
 from .permissions import View
+from .utils import UniqueObject
 from .utils import _dtmldir
 from .utils import registerToolInterface
-from .utils import UniqueObject
 
 
 @implementer(IURLTool)

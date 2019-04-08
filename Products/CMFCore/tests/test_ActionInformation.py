@@ -21,8 +21,8 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from ..Expression import createExprContext
 from ..Expression import Expression
+from ..Expression import createExprContext
 from ..interfaces import IMembershipTool
 from ..testing import FunctionalZCMLLayer
 from .base.dummy import DummyContent

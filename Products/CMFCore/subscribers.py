@@ -26,11 +26,13 @@ To activate please use::
 instead of just the package name itself, re-run buildout and restart your
 Plone instance.
 """
-from .indexing import filterTemporaryItems
-from .indexing import getQueue
 from zope.container.contained import dispatchToSublocations
 from zope.event import notify
-from zope.lifecycleevent import ObjectModifiedEvent, Attributes
+from zope.lifecycleevent import Attributes
+from zope.lifecycleevent import ObjectModifiedEvent
+
+from .indexing import filterTemporaryItems
+from .indexing import getQueue
 
 
 def objectAdded(ev):

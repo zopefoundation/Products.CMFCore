@@ -13,13 +13,16 @@
 """ Basic workflow tool.
 """
 
-import six
 import sys
+
+import six
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from Acquisition import aq_base, aq_inner, aq_parent
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from App.special_dtml import DTMLFile
 from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
@@ -41,16 +44,17 @@ from .interfaces import IWorkflowHistory
 from .interfaces import IWorkflowStatus
 from .interfaces import IWorkflowTool
 from .permissions import ManagePortal
-from .utils import _dtmldir
 from .utils import Message as _
-from .utils import registerToolInterface
 from .utils import UniqueObject
+from .utils import _dtmldir
+from .utils import registerToolInterface
 from .WorkflowCore import ActionRaisedExceptionEvent
 from .WorkflowCore import ActionSucceededEvent
 from .WorkflowCore import ActionWillBeInvokedEvent
 from .WorkflowCore import ObjectDeleted
 from .WorkflowCore import ObjectMoved
 from .WorkflowCore import WorkflowException
+
 
 _marker = []  # Create a new marker object.
 

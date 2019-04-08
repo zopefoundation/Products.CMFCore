@@ -1,20 +1,23 @@
-import unittest
-from Testing import ZopeTestCase
-from Testing.ZopeTestCase.layer import ZopeLite
-
+import logging
 import sys
 import time
-import logging
-from os import chmod, curdir, mkdir, remove, stat, walk
+import unittest
+from os import chmod
+from os import curdir
+from os import mkdir
+from os import remove
 from os import rmdir
+from os import stat
+from os import walk
 from os.path import abspath
 from os.path import basename
 from os.path import dirname
 from os.path import join
 from shutil import copytree
-from shutil import rmtree
 from shutil import ignore_patterns
-from stat import S_IREAD, S_IWRITE
+from shutil import rmtree
+from stat import S_IREAD
+from stat import S_IWRITE
 from tempfile import mktemp
 
 import transaction
@@ -22,14 +25,16 @@ from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.SecurityManager import setSecurityPolicy
 from OFS.Folder import Folder
+from Testing import ZopeTestCase
+from Testing.ZopeTestCase.layer import ZopeLite
 from zope.component import getSiteManager
 
 from ...interfaces import ISkinsTool
+from ...utils import getPackageLocation
 from .dummy import DummyFolder
 from .security import AnonymousUser
 from .security import OmnipotentUser
 from .security import PermissiveSecurityPolicy
-from ...utils import getPackageLocation
 
 
 class LogInterceptor:

@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
+from logging import getLogger
+from threading import local
 from warnings import warn
 
-from Acquisition import aq_base, aq_inner, aq_parent
-from logging import getLogger
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+from transaction import get as getTransaction
+from transaction.interfaces import ISavepointDataManager
+from zope.component import getSiteManager
+from zope.interface import implementer
+from zope.proxy import ProxyBase
+from zope.proxy import non_overridable
+from zope.publisher.interfaces.browser import IBrowserRequest
+
 from .interfaces import IIndexQueue
 from .interfaces import IIndexQueueProcessor
 from .interfaces import InvalidQueueOperation
 from .interfaces import IPortalCatalogQueueProcessor
 from .utils import getToolByName
-from threading import local
-from transaction import get as getTransaction
-from transaction.interfaces import ISavepointDataManager
-from zope.component import getSiteManager
-from zope.interface import implementer
-from zope.proxy import non_overridable
-from zope.proxy import ProxyBase
-from zope.publisher.interfaces.browser import IBrowserRequest
 
 
 # constants for indexing operations

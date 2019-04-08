@@ -14,14 +14,15 @@
 """
 
 import logging
-import re
 import os
+import re
 from sys import platform
 from warnings import warn
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from Acquisition import aq_inner, aq_parent
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from App.config import getConfiguration
 from App.special_dtml import DTMLFile
 from App.special_dtml import HTMLFile
@@ -35,10 +36,11 @@ from .FSObject import BadFile
 from .interfaces import IDirectoryView
 from .permissions import AccessContentsInformation as ACI
 from .permissions import ManagePortal
-from .utils import _dtmldir
-from .utils import getPackageName
-from .utils import getPackageLocation
 from .utils import ProductsPath
+from .utils import _dtmldir
+from .utils import getPackageLocation
+from .utils import getPackageName
+
 
 logger = logging.getLogger('CMFCore.DirectoryView')
 

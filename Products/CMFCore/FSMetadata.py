@@ -14,10 +14,10 @@
 """
 
 import logging
-from os.path import exists
-from six.moves.configparser import ConfigParser
-
 import re
+from os.path import exists
+
+from six.moves.configparser import ConfigParser
 
 
 logger = logging.getLogger('CMFCore.FSMetadata')

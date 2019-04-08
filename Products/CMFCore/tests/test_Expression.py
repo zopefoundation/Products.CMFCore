@@ -19,8 +19,8 @@ from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
 from ..ActionInformation import ActionInformation
-from ..Expression import createExprContext
 from ..Expression import Expression
+from ..Expression import createExprContext
 from ..interfaces import IMembershipTool
 from .base.dummy import DummyContent
 from .base.dummy import DummyTool as DummyMembershipTool

@@ -19,11 +19,13 @@ from six import get_unbound_function
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from App.special_dtml import DTMLFile
 from App.special_dtml import HTML
+from App.special_dtml import DTMLFile
 from DocumentTemplate.security import RestrictedDTML
 from OFS import bbb
-from OFS.DTMLMethod import DTMLMethod, decapitate, guess_content_type
+from OFS.DTMLMethod import DTMLMethod
+from OFS.DTMLMethod import decapitate
+from OFS.DTMLMethod import guess_content_type
 from OFS.role import RoleManager
 
 from .DirectoryView import registerFileExtension
@@ -35,6 +37,7 @@ from .permissions import ViewManagementScreens
 from .utils import _checkConditionalGET
 from .utils import _dtmldir
 from .utils import _setCacheHeaders
+
 
 _marker = object()
 

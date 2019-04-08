@@ -16,6 +16,10 @@
 import unittest
 
 from OFS.Folder import Folder
+from Products.GenericSetup.testing import BodyAdapterTestCase
+from Products.GenericSetup.tests.common import BaseRegistryTests
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 from zope.component import getSiteManager
 
 from ...interfaces import ITypesTool
@@ -26,10 +30,7 @@ from ...testing import ExportImportZCMLLayer
 from ...TypesTool import FactoryTypeInformation
 from ...TypesTool import ScriptableTypeInformation
 from ...TypesTool import TypesTool
-from Products.GenericSetup.testing import BodyAdapterTestCase
-from Products.GenericSetup.tests.common import BaseRegistryTests
-from Products.GenericSetup.tests.common import DummyExportContext
-from Products.GenericSetup.tests.common import DummyImportContext
+
 
 _FTI_BODY = b"""\
 <?xml version="1.0" encoding="utf-8"?>

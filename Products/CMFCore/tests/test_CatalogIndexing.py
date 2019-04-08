@@ -1,24 +1,28 @@
 # -*- coding: utf-8 -*-
+from threading import Thread
+from threading import currentThread
+from time import sleep
+from unittest import TestCase
+
 from Acquisition import Implicit
-from ..indexing import getQueue
+from transaction import abort
+from transaction import commit
+from transaction import savepoint
+from zope.component import provideUtility
+from zope.interface import implementer
+from zope.testing.cleanup import CleanUp
+
 from ..indexing import INDEX
-from ..indexing import IndexQueue
-from ..indexing import QueueTM
 from ..indexing import REINDEX
 from ..indexing import UNINDEX
+from ..indexing import IndexQueue
+from ..indexing import QueueTM
+from ..indexing import getQueue
 from ..interfaces import IIndexing
 from ..interfaces import IIndexQueue
 from ..interfaces import IIndexQueueProcessor
 from .base.dummy import DummyContent
 from .base.dummy import DummyFolder
-from threading import currentThread
-from threading import Thread
-from time import sleep
-from transaction import savepoint, commit, abort
-from unittest import TestCase
-from zope.component import provideUtility
-from zope.interface import implementer
-from zope.testing.cleanup import CleanUp
 
 
 @implementer(IIndexing)

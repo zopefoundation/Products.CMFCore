@@ -13,8 +13,9 @@
 """ Implement a shared base for tools which provide actions.
 """
 
-import six
 from warnings import warn
+
+import six
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo

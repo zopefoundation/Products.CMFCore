@@ -13,9 +13,8 @@
 """ Unit tests for FSImage module.
 """
 
-import unittest
-
 import os
+import unittest
 from os.path import join as path_join
 
 from App.Common import rfc1123_date
@@ -23,9 +22,9 @@ from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
 from ..interfaces import ICachingPolicyManager
+from .base.dummy import FAKE_ETAG
 from .base.dummy import DummyCachingManager
 from .base.dummy import DummyCachingManagerWithPolicy
-from .base.dummy import FAKE_ETAG
 from .base.testcase import FSDVTest
 from .base.testcase import TransactionalTest
 

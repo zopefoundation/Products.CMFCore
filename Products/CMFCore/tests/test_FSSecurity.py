@@ -13,9 +13,8 @@
 """ Unit tests for security on FS* modules.
 """
 
-import unittest
-
 import logging
+import unittest
 from os import path
 
 from AccessControl.Permission import Permission

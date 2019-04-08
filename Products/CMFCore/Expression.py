@@ -20,11 +20,11 @@ from Acquisition import aq_get
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Persistence import Persistent
-from Products.PageTemplates.Expressions import getEngine
 from Products.PageTemplates.Expressions import SecureModuleImporter
+from Products.PageTemplates.Expressions import getEngine
 from zope.component import getUtility
-from zope.interface.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
+from zope.interface.interfaces import ComponentLookupError
 
 from .interfaces import IMembershipTool
 from .interfaces import IURLTool

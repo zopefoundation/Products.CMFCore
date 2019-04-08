@@ -14,7 +14,6 @@
 """
 
 import unittest
-
 import warnings
 
 from AccessControl.SecurityManagement import newSecurityManager
@@ -30,9 +29,9 @@ from ..interfaces import IMembershipTool
 from ..interfaces import ISiteRoot
 from ..interfaces import IURLTool
 from ..MembershipTool import MembershipTool
+from ..URLTool import URLTool
 from .base.security import OmnipotentUser
 from .base.testcase import SecurityTest
-from ..URLTool import URLTool
 
 
 class ActionsToolTests(unittest.TestCase):

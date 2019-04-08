@@ -25,10 +25,6 @@ from zope.interface.verify import verifyClass
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserView
-try:
-    from zope.publisher.interfaces import IDefaultViewName
-except ImportError:  # BBB: zope.component had this before the ZTK
-    from zope.component.interfaces import IDefaultViewName
 from zope.testing.cleanup import cleanUp
 from ZPublisher.HTTPRequest import HTTPRequest
 from ZPublisher.HTTPResponse import HTTPResponse
@@ -37,13 +33,20 @@ from ..DynamicType import DynamicType
 from ..interfaces import IMembershipTool
 from ..interfaces import ITypesTool
 from ..interfaces import IURLTool
+from ..TypesTool import FactoryTypeInformation as FTI
+from ..TypesTool import TypesTool
 from .base.dummy import DummyObject
 from .base.dummy import DummySite
 from .base.dummy import DummyTool
 from .base.testcase import SecurityTest
 from .base.tidata import FTIDATA_CMF
-from ..TypesTool import FactoryTypeInformation as FTI
-from ..TypesTool import TypesTool
+
+
+try:
+    from zope.publisher.interfaces import IDefaultViewName
+except ImportError:  # BBB: zope.component had this before the ZTK
+    from zope.component.interfaces import IDefaultViewName
+
 
 
 def defineDefaultViewName(name, for_=None):

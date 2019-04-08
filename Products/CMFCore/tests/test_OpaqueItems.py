@@ -14,6 +14,7 @@
 """
 
 import unittest
+
 import six
 
 from zope.component import getSiteManager
@@ -25,10 +26,9 @@ from ..interfaces import IContentish
 from ..interfaces import ITypesTool
 from ..PortalFolder import PortalFolder
 from ..testing import TraversingEventZCMLLayer
-from .base.dummy \
-    import DummyContent as OriginalDummyContent
-from .base.testcase import SecurityTest
 from ..TypesTool import TypesTool
+from .base.dummy import DummyContent as OriginalDummyContent
+from .base.testcase import SecurityTest
 
 
 # -------------------------------------------

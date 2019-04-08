@@ -13,9 +13,8 @@
 """ Unit tests for CachingPolicyManager module.
 """
 
-import unittest
-
 import os
+import unittest
 from os.path import join as path_join
 
 from AccessControl.SecurityManagement import newSecurityManager
@@ -32,13 +31,14 @@ from ..interfaces import IMembershipTool
 from ..interfaces import ITypesTool
 from ..testing import FunctionalZCMLLayer
 from ..testing import TraversingZCMLLayer
+from ..utils import base64_encode
 from .base.dummy import DummyContent
 from .base.dummy import DummySite
 from .base.dummy import DummyTool
 from .base.testcase import FSDVTest
 from .base.testcase import SecurityTest
 from .base.testcase import TransactionalTest
-from ..utils import base64_encode
+
 
 ACCLARK = DateTime('2001/01/01')
 portal_owner = b'portal_owner'

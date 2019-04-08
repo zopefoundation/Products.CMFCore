@@ -14,7 +14,6 @@
 """
 
 import unittest
-
 from os.path import join as path_join
 
 from Acquisition import aq_base

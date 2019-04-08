@@ -18,10 +18,10 @@ import os
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from Acquisition import Implicit
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Acquisition import Implicit
 from App.config import getConfiguration
 from App.special_dtml import HTML
 from DateTime.DateTime import DateTime

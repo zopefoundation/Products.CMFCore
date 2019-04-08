@@ -16,17 +16,17 @@
 import unittest
 
 from OFS.Folder import Folder
-from zope.component import getSiteManager
-
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
+from zope.component import getSiteManager
 
 from ...CachingPolicyManager import CachingPolicyManager
 from ...interfaces import ICachingPolicyManager
 from ...testing import ExportImportZCMLLayer
+
 
 _CP_XML = b"""\
 <caching-policy name="foo_policy" enable_304s="False" etag_func=""

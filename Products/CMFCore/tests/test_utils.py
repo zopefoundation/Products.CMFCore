@@ -18,8 +18,9 @@ import unittest
 from Acquisition import Implicit
 from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
-from .base.testcase import SecurityTest
 from Testing.makerequest import makerequest
+
+from .base.testcase import SecurityTest
 
 
 class CoreUtilsTests(unittest.TestCase):

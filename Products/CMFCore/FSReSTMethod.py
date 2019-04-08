@@ -14,12 +14,11 @@
 """ FSReSTMethod: Filesystem methodish Structured Text document.
 """
 
-from docutils.core import publish_parts
-from docutils.writers.html4css1 import Writer
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
+from docutils.core import publish_parts
+from docutils.writers.html4css1 import Writer
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
 from .DirectoryView import registerFileExtension
@@ -28,10 +27,11 @@ from .FSObject import FSObject
 from .permissions import FTPAccess
 from .permissions import View
 from .permissions import ViewManagementScreens
-from .utils import _dtmldir
 from .utils import _checkConditionalGET
+from .utils import _dtmldir
 from .utils import _setCacheHeaders
 from .utils import _ViewEmulator
+
 
 _DEFAULT_TEMPLATE_ZPT = """\
 <html metal:use-macro="context/main_template/macros/main">

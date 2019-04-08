@@ -15,6 +15,7 @@
 
 import codecs
 import os
+
 import six
 
 from AccessControl.class_init import InitializeClass

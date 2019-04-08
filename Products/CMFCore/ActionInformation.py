@@ -18,7 +18,9 @@ from six.moves import UserDict
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from Acquisition import aq_base, aq_inner, aq_parent
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 from OFS.PropertyManager import PropertyManager
@@ -36,6 +38,7 @@ from .interfaces import IMembershipTool
 from .interfaces import IURLTool
 from .permissions import View
 from .utils import _checkPermission
+
 
 _unchanged = []  # marker
 
