@@ -43,6 +43,12 @@ setup(name='Products.%s' % NAME,
       author="Zope Foundation and Contributors",
       author_email="zope-cmf@zope.org",
       url="https://github.com/zopefoundation/Products.CMFCore",
+      project_urls={
+          'Documentation': 'https://zope.readthedocs.io',
+          'Issue Tracker': ('https://github.com/zopefoundation/'
+                            'Products.CMFCore/issues'),
+          'Sources': 'https://github.com/zopefoundation/Products.CMFCore',
+      },
       license="ZPL 2.1",
       packages=find_packages(),
       include_package_data=True,

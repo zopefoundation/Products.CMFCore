@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.4.0b7 (unreleased)
 --------------------
 
+- Add ``project_urls`` with relevant links in ``setup.py``
+
 - Specify supported Python versions using ``python_requires`` in setup.py
 
 - Added support for Python 3.8
