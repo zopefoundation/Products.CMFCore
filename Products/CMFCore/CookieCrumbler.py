@@ -34,10 +34,10 @@ from zope.interface import implementer
 from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest
 
-from Products.CMFCore.interfaces import IActionsTool
-from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .interfaces import IActionsTool
+from .interfaces import ICookieCrumbler
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 
 # Constants.

@@ -31,16 +31,16 @@ from zope.component import getUtility
 from zope.container.interfaces import IObjectMovedEvent
 from zope.interface import implementer
 
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.interfaces import ICachingPolicy
-from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import View
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _setCacheHeaders
-from Products.CMFCore.utils import _ViewEmulator
-from Products.CMFCore.utils import registerToolInterface
+from .Expression import Expression
+from .interfaces import ICachingPolicy
+from .interfaces import ICachingPolicyManager
+from .interfaces import IMembershipTool
+from .permissions import ManagePortal
+from .permissions import View
+from .utils import _dtmldir
+from .utils import _setCacheHeaders
+from .utils import _ViewEmulator
+from .utils import registerToolInterface
 
 # This is lame :(
 # This listing is used to decide whether to wrap an object inside a "fake view"

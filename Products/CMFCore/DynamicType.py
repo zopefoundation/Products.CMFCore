@@ -23,10 +23,10 @@ from zope.interface.interfaces import ComponentLookupError
 from zope.interface import implementer
 from zope.publisher.defaultview import queryDefaultViewName
 
-from Products.CMFCore.Expression import getExprContext
-from Products.CMFCore.interfaces import IDynamicType
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IURLTool
+from .Expression import getExprContext
+from .interfaces import IDynamicType
+from .interfaces import ITypesTool
+from .interfaces import IURLTool
 
 
 @implementer(IDynamicType)

@@ -25,7 +25,7 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
 
-from Products.CMFCore.interfaces import ITypesTool
+from ..interfaces import ITypesTool
 from DateTime import DateTime
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter

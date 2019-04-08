@@ -21,14 +21,14 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
 from zope.interface import implementer
 
-from Products.CMFCore.ActionInformation import ActionInfo
-from Products.CMFCore.ActionInformation import ActionInformation
-from Products.CMFCore.ActionInformation import getOAI
-from Products.CMFCore.exceptions import AccessControl_Unauthorized
-from Products.CMFCore.Expression import getExprContext
-from Products.CMFCore.interfaces import IActionProvider
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import _dtmldir
+from .ActionInformation import ActionInfo
+from .ActionInformation import ActionInformation
+from .ActionInformation import getOAI
+from .exceptions import AccessControl_Unauthorized
+from .Expression import getExprContext
+from .interfaces import IActionProvider
+from .permissions import ManagePortal
+from .utils import _dtmldir
 
 
 @implementer(IActionProvider)

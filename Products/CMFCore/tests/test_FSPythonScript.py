@@ -29,10 +29,10 @@ from Products.StandardCacheManagers import RAMCacheManager
 from Testing import ZopeTestCase
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.FSPythonScript import FSPythonScript
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from ..FSMetadata import FSMetadata
+from ..FSPythonScript import FSPythonScript
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
 
 ZopeTestCase.installProduct('PythonScripts', 1)
 
@@ -110,7 +110,7 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         FSPSMaker.tearDown(self)
 
     def test_customize(self):
-        from Products.CMFCore.FSPythonScript import CustomizedPythonScript
+        from ..FSPythonScript import CustomizedPythonScript
 
         _stool, custom, _fsdir, fsPS = self._makeContext('test6', 'test6.py')
 
@@ -245,7 +245,7 @@ _DIFF_TEXT = """\
 class CustomizedPythonScriptTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.FSPythonScript import CustomizedPythonScript
+        from ..FSPythonScript import CustomizedPythonScript
         return CustomizedPythonScript
 
     def _makeOne(self, id, text):

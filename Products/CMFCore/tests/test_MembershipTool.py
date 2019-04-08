@@ -22,29 +22,29 @@ from zope.component.interfaces import IFactory
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.CMFBTreeFolder import CMFBTreeFolder
-from Products.CMFCore.interfaces import IMemberDataTool
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.MemberDataTool import MemberDataTool
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import View
-from Products.CMFCore.PortalFolder import PortalFolder
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyTool
-from Products.CMFCore.tests.base.dummy import DummyUserFolder
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from ..CMFBTreeFolder import CMFBTreeFolder
+from ..interfaces import IMemberDataTool
+from ..interfaces import ISiteRoot
+from ..interfaces import IWorkflowTool
+from ..MemberDataTool import MemberDataTool
+from ..permissions import AccessContentsInformation
+from ..permissions import View
+from ..PortalFolder import PortalFolder
+from .base.dummy import DummySite
+from .base.dummy import DummyTool
+from .base.dummy import DummyUserFolder
+from .base.testcase import SecurityTest
 
 
 class MembershipToolTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.MembershipTool import MembershipTool
+        from ..MembershipTool import MembershipTool
 
         return MembershipTool
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IMembershipTool
+        from ..interfaces import IMembershipTool
 
         verifyClass(IMembershipTool, self._getTargetClass())
 
@@ -52,7 +52,7 @@ class MembershipToolTests(unittest.TestCase):
 class MembershipToolSecurityTests(SecurityTest):
 
     def _getTargetClass(self):
-        from Products.CMFCore.MembershipTool import MembershipTool
+        from ..MembershipTool import MembershipTool
 
         return MembershipTool
 
@@ -148,7 +148,7 @@ class MembershipToolSecurityTests(SecurityTest):
 class MembershipToolMemberAreaTests(SecurityTest):
 
     def _getTargetClass(self):
-        from Products.CMFCore.MembershipTool import MembershipTool
+        from ..MembershipTool import MembershipTool
 
         return MembershipTool
 
@@ -164,7 +164,7 @@ class MembershipToolMemberAreaTests(SecurityTest):
         return site
 
     def setUp(self):
-        from Products.CMFCore.MembershipTool import BBBHomeFolderFactory
+        from ..MembershipTool import BBBHomeFolderFactory
 
         SecurityTest.setUp(self)
         sm = getSiteManager()

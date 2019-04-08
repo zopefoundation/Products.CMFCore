@@ -23,17 +23,17 @@ from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
 from zope.interface import implementer
 
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IRegistrationTool
-from Products.CMFCore.permissions import AddPortalMember
-from Products.CMFCore.permissions import MailForgottenPassword
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _limitGrantedRoles
-from Products.CMFCore.utils import Message as _
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .interfaces import IMembershipTool
+from .interfaces import IRegistrationTool
+from .permissions import AddPortalMember
+from .permissions import MailForgottenPassword
+from .permissions import ManagePortal
+from .utils import _checkPermission
+from .utils import _dtmldir
+from .utils import _limitGrantedRoles
+from .utils import Message as _
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 
 @implementer(IRegistrationTool)

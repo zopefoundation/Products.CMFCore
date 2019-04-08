@@ -24,8 +24,8 @@ from Products.GenericSetup.utils import importObjects
 from Products.GenericSetup.utils import NodeAdapterBase
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import ICachingPolicy
-from Products.CMFCore.interfaces import ICachingPolicyManager
+from ..interfaces import ICachingPolicy
+from ..interfaces import ICachingPolicyManager
 
 
 class CachingPolicyNodeAdapter(NodeAdapterBase):

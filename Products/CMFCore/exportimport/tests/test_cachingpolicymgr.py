@@ -24,9 +24,9 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
-from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...CachingPolicyManager import CachingPolicyManager
+from ...interfaces import ICachingPolicyManager
+from ...testing import ExportImportZCMLLayer
 
 _CP_XML = b"""\
 <caching-policy name="foo_policy" enable_304s="False" etag_func=""
@@ -54,13 +54,13 @@ class CachingPolicyNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.cachingpolicymgr \
+        from ..cachingpolicymgr \
                 import CachingPolicyNodeAdapter
 
         return CachingPolicyNodeAdapter
 
     def setUp(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicy
+        from ...CachingPolicyManager import CachingPolicy
 
         self._obj = CachingPolicy('foo_policy', max_age_secs=0)
         self._XML = _CP_XML
@@ -72,7 +72,7 @@ class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase,
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.cachingpolicymgr import \
+        from ..cachingpolicymgr import \
             CachingPolicyManagerXMLAdapter
 
         return CachingPolicyManagerXMLAdapter
@@ -150,7 +150,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from Products.CMFCore.exportimport.cachingpolicymgr \
+        from ..cachingpolicymgr \
                 import exportCachingPolicyManager
 
         site, _cpm = self._initSite(with_policy=False)
@@ -164,7 +164,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_policy(self):
-        from Products.CMFCore.exportimport.cachingpolicymgr \
+        from ..cachingpolicymgr \
                 import exportCachingPolicyManager
 
         site, _cpm = self._initSite(with_policy=True)
@@ -183,7 +183,7 @@ class importCachingPolicyManagerTests(_CachingPolicyManagerSetup):
     layer = ExportImportZCMLLayer
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.cachingpolicymgr \
+        from ..cachingpolicymgr \
                 import importCachingPolicyManager
 
         site, cpm = self._initSite(with_policy=False)

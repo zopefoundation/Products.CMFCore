@@ -25,17 +25,17 @@ from zope.component import getUtility
 from zope.component import queryUtility
 from zope.interface import implementer
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IOldstyleDiscussable
-from Products.CMFCore.interfaces import IOldstyleDiscussionTool
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import ReplyToItem
-from Products.CMFCore.permissions import View
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import UniqueObject
+from .ActionProviderBase import ActionProviderBase
+from .interfaces import ICatalogTool
+from .interfaces import IMembershipTool
+from .interfaces import IOldstyleDiscussable
+from .interfaces import IOldstyleDiscussionTool
+from .permissions import AccessContentsInformation
+from .permissions import ManagePortal
+from .permissions import ReplyToItem
+from .permissions import View
+from .utils import _dtmldir
+from .utils import UniqueObject
 
 
 @implementer(IOldstyleDiscussable)

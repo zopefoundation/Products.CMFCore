@@ -26,20 +26,20 @@ from zope.component import getSiteManager
 from zope.component.hooks import setHooks
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.tests.base.dummy import DummyCachingManager
-from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import TransactionalTest
+from ..FSMetadata import FSMetadata
+from ..interfaces import ICachingPolicyManager
+from .base.dummy import DummyCachingManager
+from .base.dummy import DummyCachingManagerWithPolicy
+from .base.dummy import DummyContent
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
+from .base.testcase import TransactionalTest
 
 
 class FSDTMLMaker(FSDVTest):
 
     def _makeOne(self, id, filename):
-        from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
+        from ..FSDTMLMethod import FSDTMLMethod
 
         path = path_join(self.skin_path_name, filename)
         metadata = FSMetadata(path)

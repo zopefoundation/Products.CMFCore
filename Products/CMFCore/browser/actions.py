@@ -18,8 +18,8 @@ from xml.dom.minidom import parseString
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 
-from Products.CMFCore.ActionInformation import Action
-from Products.CMFCore.ActionInformation import ActionCategory
+from ..ActionInformation import Action
+from ..ActionInformation import ActionCategory
 from Products.GenericSetup.browser.utils import AddWithPresettingsViewBase
 from Products.GenericSetup.interfaces import INode
 from Products.GenericSetup.interfaces import ISetupTool

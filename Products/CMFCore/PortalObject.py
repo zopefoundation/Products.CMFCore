@@ -21,15 +21,15 @@ from zope.event import notify
 from zope.interface import implementer
 from zope.traversing.interfaces import BeforeTraverseEvent
 
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.permissions import AddPortalMember
-from Products.CMFCore.permissions import MailForgottenPassword
-from Products.CMFCore.permissions import RequestReview
-from Products.CMFCore.permissions import ReviewPortalContent
-from Products.CMFCore.permissions import SetOwnPassword
-from Products.CMFCore.permissions import SetOwnProperties
-from Products.CMFCore.PortalFolder import PortalFolder
-from Products.CMFCore.Skinnable import SkinnableObjectManager
+from .interfaces import ISiteRoot
+from .permissions import AddPortalMember
+from .permissions import MailForgottenPassword
+from .permissions import RequestReview
+from .permissions import ReviewPortalContent
+from .permissions import SetOwnPassword
+from .permissions import SetOwnProperties
+from .PortalFolder import PortalFolder
+from .Skinnable import SkinnableObjectManager
 
 
 @implementer(ISiteRoot, IObjectManagerSite)

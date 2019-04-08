@@ -19,16 +19,16 @@ import six
 from zope.component import getSiteManager
 from zope.interface import implementer
 
-from Products.CMFCore.interfaces import ICallableOpaqueItem
-from Products.CMFCore.interfaces import ICallableOpaqueItemEvents
-from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.PortalFolder import PortalFolder
-from Products.CMFCore.testing import TraversingEventZCMLLayer
-from Products.CMFCore.tests.base.dummy \
+from ..interfaces import ICallableOpaqueItem
+from ..interfaces import ICallableOpaqueItemEvents
+from ..interfaces import IContentish
+from ..interfaces import ITypesTool
+from ..PortalFolder import PortalFolder
+from ..testing import TraversingEventZCMLLayer
+from .base.dummy \
     import DummyContent as OriginalDummyContent
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.TypesTool import TypesTool
+from .base.testcase import SecurityTest
+from ..TypesTool import TypesTool
 
 
 # -------------------------------------------

@@ -22,15 +22,15 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.exceptions import NotFound
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.testing import TraversingEventZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummyObject
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyTool
-from Products.CMFCore.tests.base.dummy import DummyUserFolder
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from ..exceptions import NotFound
+from ..interfaces import ITypesTool
+from ..testing import TraversingEventZCMLLayer
+from .base.dummy import DummyContent
+from .base.dummy import DummyObject
+from .base.dummy import DummySite
+from .base.dummy import DummyTool
+from .base.dummy import DummyUserFolder
+from .base.testcase import SecurityTest
 
 
 class PortalContentTests(unittest.TestCase):
@@ -39,9 +39,9 @@ class PortalContentTests(unittest.TestCase):
         cleanUp()
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IContentish
-        from Products.CMFCore.interfaces import IDynamicType
-        from Products.CMFCore.PortalContent import PortalContent
+        from ..interfaces import IContentish
+        from ..interfaces import IDynamicType
+        from ..PortalContent import PortalContent
 
         verifyClass(IContentish, PortalContent)
         verifyClass(IDynamicType, PortalContent)
@@ -93,7 +93,7 @@ class TestContentCopyPaste(SecurityTest):
         self.acl_users = self.site._setObject('acl_users', DummyUserFolder())
 
     def _initContent(self, folder, id):
-        from Products.CMFCore.PortalContent import PortalContent
+        from ..PortalContent import PortalContent
 
         c = PortalContent()
         c._setId(id)

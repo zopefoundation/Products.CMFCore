@@ -15,8 +15,8 @@
 
 import unittest
 
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.test_FSSecurity import MetadataChecker
+from .base.testcase import FSDVTest
+from .test_FSSecurity import MetadataChecker
 
 
 class FSMetadata(FSDVTest, MetadataChecker):

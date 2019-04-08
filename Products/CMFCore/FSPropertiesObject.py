@@ -22,11 +22,11 @@ from OFS.Folder import Folder
 from OFS.PropertyManager import PropertyManager
 from ZPublisher.Converters import get_converter
 
-from Products.CMFCore.DirectoryView import registerFileExtension
-from Products.CMFCore.DirectoryView import registerMetaType
-from Products.CMFCore.FSObject import FSObject
-from Products.CMFCore.permissions import ViewManagementScreens
-from Products.CMFCore.utils import _dtmldir
+from .DirectoryView import registerFileExtension
+from .DirectoryView import registerMetaType
+from .FSObject import FSObject
+from .permissions import ViewManagementScreens
+from .utils import _dtmldir
 
 
 class FSPropertiesObject(FSObject, PropertyManager):

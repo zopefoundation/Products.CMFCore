@@ -22,9 +22,9 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.exceptions import BadRequest
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.tests.base.security import DummyUser as BaseDummyUser
+from ..exceptions import BadRequest
+from ..interfaces import IMembershipTool
+from .base.security import DummyUser as BaseDummyUser
 
 
 class DummyUserFolder(Acquisition.Implicit):
@@ -59,7 +59,7 @@ class DummyUser(BaseDummyUser):
 class MemberDataToolTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.MemberDataTool import MemberDataTool
+        from ..MemberDataTool import MemberDataTool
 
         return MemberDataTool
 
@@ -70,7 +70,7 @@ class MemberDataToolTests(unittest.TestCase):
         cleanUp()
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IMemberDataTool
+        from ..interfaces import IMemberDataTool
 
         verifyClass(IMemberDataTool, self._getTargetClass())
 
@@ -95,7 +95,7 @@ class MemberDataToolTests(unittest.TestCase):
     def test_pruneMemberData(self):
         # This needs a tad more setup
         from OFS.Folder import Folder
-        from Products.CMFCore.MembershipTool import MembershipTool
+        from ..MembershipTool import MembershipTool
         folder = Folder('test')
         folder._setObject('portal_memberdata', self._makeOne())
         sm = getSiteManager()
@@ -126,7 +126,7 @@ class MemberDataToolTests(unittest.TestCase):
 class MemberAdapterTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.MemberDataTool import MemberAdapter
+        from ..MemberDataTool import MemberAdapter
 
         return MemberAdapter
 
@@ -135,8 +135,8 @@ class MemberAdapterTests(unittest.TestCase):
 
     def setUp(self):
         from OFS.Folder import Folder
-        from Products.CMFCore.MemberDataTool import MemberDataTool
-        from Products.CMFCore.MembershipTool import MembershipTool
+        from ..MemberDataTool import MemberDataTool
+        from ..MembershipTool import MembershipTool
 
         self.site = Folder('test')
         self.site._setObject('portal_memberdata', MemberDataTool())
@@ -149,8 +149,8 @@ class MemberAdapterTests(unittest.TestCase):
 
     def test_interfaces(self):
         from AccessControl.interfaces import IUser
-        from Products.CMFCore.interfaces import IMember
-        from Products.CMFCore.interfaces import IMemberData
+        from ..interfaces import IMember
+        from ..interfaces import IMemberData
 
         verifyClass(IMember, self._getTargetClass())
         verifyClass(IMemberData, self._getTargetClass())

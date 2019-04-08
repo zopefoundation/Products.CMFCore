@@ -22,23 +22,23 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.ActionInformation import Action
-from Products.CMFCore.ActionInformation import ActionCategory
-from Products.CMFCore.ActionInformation import ActionInformation
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.MembershipTool import MembershipTool
-from Products.CMFCore.tests.base.security import OmnipotentUser
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.URLTool import URLTool
+from ..ActionInformation import Action
+from ..ActionInformation import ActionCategory
+from ..ActionInformation import ActionInformation
+from ..Expression import Expression
+from ..interfaces import IMembershipTool
+from ..interfaces import ISiteRoot
+from ..interfaces import IURLTool
+from ..MembershipTool import MembershipTool
+from .base.security import OmnipotentUser
+from .base.testcase import SecurityTest
+from ..URLTool import URLTool
 
 
 class ActionsToolTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.ActionsTool import ActionsTool
+        from ..ActionsTool import ActionsTool
 
         return ActionsTool
 
@@ -46,8 +46,8 @@ class ActionsToolTests(unittest.TestCase):
         return self._getTargetClass()(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import IActionsTool
+        from ..interfaces import IActionProvider
+        from ..interfaces import IActionsTool
 
         verifyClass(IActionProvider, self._getTargetClass())
         verifyClass(IActionsTool, self._getTargetClass())
@@ -79,7 +79,7 @@ class ActionsToolTests(unittest.TestCase):
     def test_getActionObject_oldskool_action_deprecated(self):
         # We have to clear APB's __warningregistry__, or else we may not see
         # the warning we expect (i.e., if somebody else triggered it first).
-        from Products.CMFCore import ActionProviderBase
+        from .. import ActionProviderBase
         try:
             del ActionProviderBase.__warningregistry__
         except AttributeError:
@@ -117,7 +117,7 @@ class ActionsToolTests(unittest.TestCase):
 class ActionsToolSecurityTests(SecurityTest):
 
     def _getTargetClass(self):
-        from Products.CMFCore.ActionsTool import ActionsTool
+        from ..ActionsTool import ActionsTool
 
         return ActionsTool
 
@@ -125,7 +125,7 @@ class ActionsToolSecurityTests(SecurityTest):
         return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        from Products.CMFCore.interfaces import IActionsTool
+        from ..interfaces import IActionsTool
 
         SecurityTest.setUp(self)
         self.tool = self._makeOne()

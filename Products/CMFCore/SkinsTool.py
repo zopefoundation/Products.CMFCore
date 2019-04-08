@@ -31,20 +31,20 @@ from zope.component import getUtility
 from zope.globalrequest import getRequest
 from zope.interface import implementer
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.DirectoryView import base_ignore
-from Products.CMFCore.DirectoryView import ignore
-from Products.CMFCore.DirectoryView import ignore_re
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import ISkinsTool
-from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import View
-from Products.CMFCore.SkinsContainer import SkinsContainer
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .ActionProviderBase import ActionProviderBase
+from .DirectoryView import base_ignore
+from .DirectoryView import ignore
+from .DirectoryView import ignore_re
+from .interfaces import IMembershipTool
+from .interfaces import ISkinsTool
+from .interfaces import IURLTool
+from .permissions import AccessContentsInformation
+from .permissions import ManagePortal
+from .permissions import View
+from .SkinsContainer import SkinsContainer
+from .utils import _dtmldir
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 
 def modifiedOptions():

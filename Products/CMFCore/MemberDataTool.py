@@ -32,17 +32,17 @@ from zope.component import queryUtility
 from zope.interface import implementer
 from ZPublisher.Converters import type_converters
 
-from Products.CMFCore.exceptions import BadRequest
-from Products.CMFCore.interfaces import IMember
-from Products.CMFCore.interfaces import IMemberDataTool
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IRegistrationTool
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import SetOwnProperties
-from Products.CMFCore.permissions import ViewManagementScreens
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .exceptions import BadRequest
+from .interfaces import IMember
+from .interfaces import IMemberDataTool
+from .interfaces import IMembershipTool
+from .interfaces import IRegistrationTool
+from .permissions import ManagePortal
+from .permissions import SetOwnProperties
+from .permissions import ViewManagementScreens
+from .utils import _dtmldir
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 _marker = []  # Create a new marker object.
 

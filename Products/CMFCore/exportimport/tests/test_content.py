@@ -24,12 +24,12 @@ from six.moves.configparser import ConfigParser
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import ITypesTool
+from ...interfaces import ITypesTool
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.testing import DummyWorkflow
-from Products.CMFCore.exportimport.tests.test_workflow import DummyWorkflowTool
+from ...testing import DummyWorkflow
+from .test_workflow import DummyWorkflowTool
 
 
 def safe_bytes(value, encoding='utf8'):
@@ -41,11 +41,11 @@ def safe_bytes(value, encoding='utf8'):
 class SiteStructureExporterTests(unittest.TestCase):
 
     def _getExporter(self):
-        from Products.CMFCore.exportimport.content import exportSiteStructure
+        from ..content import exportSiteStructure
         return exportSiteStructure
 
     def _getImporter(self):
-        from Products.CMFCore.exportimport.content import importSiteStructure
+        from ..content import importSiteStructure
         return importSiteStructure
 
     def _makeSetupTool(self):
@@ -63,9 +63,9 @@ class SiteStructureExporterTests(unittest.TestCase):
         from Products.GenericSetup.interfaces import IFilesystemImporter
         from Products.GenericSetup.interfaces import ICSVAware
         from Products.GenericSetup.interfaces import IINIAware
-        from Products.CMFCore.interfaces import IFolderish
+        from ...interfaces import IFolderish
 
-        from Products.CMFCore.exportimport.content import \
+        from ..content import \
             StructureFolderWalkingAdapter
         from Products.GenericSetup.content import CSVAwareFileAdapter
         from Products.GenericSetup.content import INIAwareFileAdapter
@@ -916,7 +916,7 @@ four,five,six
 def _makeCSVAware(id):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
-    from Products.CMFCore.interfaces import IDynamicType
+    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import ICSVAware
 
     @implementer(IDynamicType, ICSVAware)
@@ -950,7 +950,7 @@ description = %s
 def _makeINIAware(id):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
-    from Products.CMFCore.interfaces import IDynamicType
+    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IINIAware
 
     @implementer(IDynamicType, IINIAware)
@@ -990,7 +990,7 @@ Description: %s
 def _makeDAVAware(id):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
-    from Products.CMFCore.interfaces import IDynamicType
+    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IDAVAware
 
     @implementer(IDynamicType, IDAVAware)
@@ -1022,9 +1022,9 @@ TEST_DAV_FOLDER = 'Test DAV Folder'
 
 
 def _makeDAVAwareFolder(id):
-    from Products.CMFCore.PortalFolder import PortalFolder
+    from ...PortalFolder import PortalFolder
     from zope.interface import implementer
-    from Products.CMFCore.interfaces import IDynamicType
+    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IDAVAware
 
     @implementer(IDynamicType, IDAVAware)
@@ -1055,7 +1055,7 @@ TEST_CONTENT = 'Test Content'
 def _makeItem(self):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
-    from Products.CMFCore.interfaces import IDynamicType
+    from ...interfaces import IDynamicType
 
     @implementer(IDynamicType)
     class _TestContent(SimpleItem):
@@ -1074,9 +1074,9 @@ TEST_FOLDER = 'Test Folder'
 
 
 def _makeFolder(id, site_folder=False):
-    from Products.CMFCore.PortalFolder import PortalFolder
-    from Products.CMFCore.TypesTool import TypesTool
-    from Products.CMFCore.tests.base.dummy import DummyType
+    from ...PortalFolder import PortalFolder
+    from ...TypesTool import TypesTool
+    from ...tests.base.dummy import DummyType
 
     class _TypeInfo(DummyType):
         def _getId(self):

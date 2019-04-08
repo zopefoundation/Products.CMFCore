@@ -21,7 +21,7 @@ from zope.component import eventtesting
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.utils import base64_encode
+from ..utils import base64_encode
 
 
 def makerequest(root, stdout, stdin=None):
@@ -44,7 +44,7 @@ def makerequest(root, stdout, stdin=None):
 class CookieCrumblerTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.CookieCrumbler import CookieCrumbler
+        from ..CookieCrumbler import CookieCrumbler
         return CookieCrumbler
 
     def _makeOne(self, *args, **kw):
@@ -53,8 +53,8 @@ class CookieCrumblerTests(unittest.TestCase):
     def setUp(self):
         from zope.component import provideHandler
         from zope.interface.interfaces import IObjectEvent
-        from Products.CMFCore.interfaces import ICookieCrumbler
-        from Products.CMFCore.CookieCrumbler import handleCookieCrumblerEvent
+        from ..interfaces import ICookieCrumbler
+        from ..CookieCrumbler import handleCookieCrumblerEvent
 
         self._finally = None
 
@@ -117,7 +117,7 @@ class CookieCrumblerTests(unittest.TestCase):
         return root, cc, req, credentials
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import ICookieCrumbler
+        from ..interfaces import ICookieCrumbler
 
         verifyClass(ICookieCrumbler, self._getTargetClass())
 

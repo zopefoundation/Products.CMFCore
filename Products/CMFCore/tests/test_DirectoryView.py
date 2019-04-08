@@ -24,10 +24,10 @@ from tempfile import mktemp
 
 from App.config import getConfiguration
 
-from Products.CMFCore.tests import _globals
-from Products.CMFCore.tests.base.dummy import DummyFolder
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import WritableFSDVTest
+from . import _globals
+from .base.dummy import DummyFolder
+from .base.testcase import FSDVTest
+from .base.testcase import WritableFSDVTest
 
 
 class DirectoryViewPathTests(unittest.TestCase):

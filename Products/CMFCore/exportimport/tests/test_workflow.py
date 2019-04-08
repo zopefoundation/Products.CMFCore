@@ -24,10 +24,10 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.testing import DummyWorkflow
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...interfaces import IConfigurableWorkflowTool
+from ...interfaces import IWorkflowTool
+from ...testing import DummyWorkflow
+from ...testing import ExportImportZCMLLayer
 
 _WORKFLOWTOOL_BODY = b"""\
 <?xml version="1.0" encoding="utf-8"?>
@@ -162,7 +162,7 @@ class WorkflowToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.workflow \
+        from ..workflow \
                 import WorkflowToolXMLAdapter
 
         return WorkflowToolXMLAdapter
@@ -173,7 +173,7 @@ class WorkflowToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         obj.setChainForPortalTypes(('Foo Type',), '', verify=False)
 
     def setUp(self):
-        from Products.CMFCore.WorkflowTool import WorkflowTool
+        from ...WorkflowTool import WorkflowTool
 
         self._obj = WorkflowTool()
         self._BODY = _WORKFLOWTOOL_BODY
@@ -193,7 +193,7 @@ class exportWorkflowToolTests(_WorkflowSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from Products.CMFCore.exportimport.workflow import exportWorkflowTool
+        from ..workflow import exportWorkflowTool
 
         site, _wtool = self._initSite()
         context = DummyExportContext(site)
@@ -206,7 +206,7 @@ class exportWorkflowToolTests(_WorkflowSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.workflow import exportWorkflowTool
+        from ..workflow import exportWorkflowTool
 
         WF_ID_NON = 'non_dcworkflow'
         WF_TITLE_NON = 'Non-DCWorkflow'
@@ -236,7 +236,7 @@ class importWorkflowToolTests(_WorkflowSetup):
     _FRAGMENT_IMPORT = _FRAGMENT_IMPORT
 
     def test_empty_default_purge(self):
-        from Products.CMFCore.exportimport.workflow import importWorkflowTool
+        from ..workflow import importWorkflowTool
 
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
@@ -261,7 +261,7 @@ class importWorkflowToolTests(_WorkflowSetup):
         self.assertEqual(len(wf_tool._chains_by_type), 0)
 
     def test_empty_explicit_purge(self):
-        from Products.CMFCore.exportimport.workflow import importWorkflowTool
+        from ..workflow import importWorkflowTool
 
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
@@ -286,7 +286,7 @@ class importWorkflowToolTests(_WorkflowSetup):
         self.assertEqual(len(wf_tool._chains_by_type), 0)
 
     def test_empty_skip_purge(self):
-        from Products.CMFCore.exportimport.workflow import importWorkflowTool
+        from ..workflow import importWorkflowTool
 
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
@@ -314,7 +314,7 @@ class importWorkflowToolTests(_WorkflowSetup):
                          (WF_ID_NON % 2,))
 
     def test_bindings_skip_purge(self):
-        from Products.CMFCore.exportimport.workflow import importWorkflowTool
+        from ..workflow import importWorkflowTool
 
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'
@@ -345,7 +345,7 @@ class importWorkflowToolTests(_WorkflowSetup):
                          (WF_ID_NON % 3,))
 
     def test_fragment_skip_purge(self):
-        from Products.CMFCore.exportimport.workflow import importWorkflowTool
+        from ..workflow import importWorkflowTool
 
         WF_ID_NON = 'non_dcworkflow_%s'
         WF_TITLE_NON = 'Non-DCWorkflow #%s'

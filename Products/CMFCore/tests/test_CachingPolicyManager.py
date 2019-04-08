@@ -26,19 +26,19 @@ from OFS.Cache import Cacheable
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 
-from Products.CMFCore.FSDTMLMethod import FSDTMLMethod
-from Products.CMFCore.FSPageTemplate import FSPageTemplate
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.testing import FunctionalZCMLLayer
-from Products.CMFCore.testing import TraversingZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyTool
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import TransactionalTest
-from Products.CMFCore.utils import base64_encode
+from ..FSDTMLMethod import FSDTMLMethod
+from ..FSPageTemplate import FSPageTemplate
+from ..interfaces import IMembershipTool
+from ..interfaces import ITypesTool
+from ..testing import FunctionalZCMLLayer
+from ..testing import TraversingZCMLLayer
+from .base.dummy import DummyContent
+from .base.dummy import DummySite
+from .base.dummy import DummyTool
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
+from .base.testcase import TransactionalTest
+from ..utils import base64_encode
 
 ACCLARK = DateTime('2001/01/01')
 portal_owner = b'portal_owner'
@@ -97,12 +97,12 @@ class CachingPolicyTests(unittest.TestCase):
     layer = TraversingZCMLLayer
 
     def _makePolicy(self, policy_id, **kw):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicy
+        from ..CachingPolicyManager import CachingPolicy
 
         return CachingPolicy(policy_id, **kw)
 
     def _makeContext(self, **kw):
-        from Products.CMFCore.CachingPolicyManager import createCPContext
+        from ..CachingPolicyManager import createCPContext
 
         return createCPContext(DummyContent2(self._epoch),
                                'foo_view', kw, self._epoch)
@@ -112,8 +112,8 @@ class CachingPolicyTests(unittest.TestCase):
         getSiteManager().registerUtility(DummyTool(), IMembershipTool)
 
     def test_interfaces(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicy
-        from Products.CMFCore.interfaces import ICachingPolicy
+        from ..CachingPolicyManager import CachingPolicy
+        from ..interfaces import ICachingPolicy
 
         verifyClass(ICachingPolicy, CachingPolicy)
 
@@ -390,7 +390,7 @@ class CachingPolicyManagerTests(unittest.TestCase):
     layer = TraversingZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+        from ..CachingPolicyManager import CachingPolicyManager
 
         return CachingPolicyManager
 
@@ -405,8 +405,8 @@ class CachingPolicyManagerTests(unittest.TestCase):
         self.assertTrue(abs(lhs - rhs) <= delta)
 
     def test_interfaces(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
-        from Products.CMFCore.interfaces import ICachingPolicyManager
+        from ..CachingPolicyManager import CachingPolicyManager
+        from ..interfaces import ICachingPolicyManager
 
         verifyClass(ICachingPolicyManager, CachingPolicyManager)
 
@@ -579,7 +579,7 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
     layer = TraversingZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+        from ..CachingPolicyManager import CachingPolicyManager
 
         return CachingPolicyManager
 
@@ -587,7 +587,7 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
         return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        from Products.CMFCore.interfaces import ICachingPolicyManager
+        from ..interfaces import ICachingPolicyManager
 
         SecurityTest.setUp(self)
         FSDVTest.setUp(self)
@@ -837,7 +837,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
     layer = TraversingZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+        from ..CachingPolicyManager import CachingPolicyManager
 
         return CachingPolicyManager
 
@@ -845,7 +845,7 @@ class NestedTemplateTests(TransactionalTest, FSObjMaker):
         return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        from Products.CMFCore.interfaces import ICachingPolicyManager
+        from ..interfaces import ICachingPolicyManager
 
         FSObjMaker.setUp(self)
         TransactionalTest.setUp(self)
@@ -1179,7 +1179,7 @@ class OFSCacheTests(TransactionalTest):
     layer = FunctionalZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+        from ..CachingPolicyManager import CachingPolicyManager
 
         return CachingPolicyManager
 
@@ -1187,7 +1187,7 @@ class OFSCacheTests(TransactionalTest):
         return self._getTargetClass()(*args, **kw)
 
     def setUp(self):
-        from Products.CMFCore.interfaces import ICachingPolicyManager
+        from ..interfaces import ICachingPolicyManager
 
         TransactionalTest.setUp(self)
 
@@ -1215,7 +1215,7 @@ class OFSCacheTests(TransactionalTest):
                       enable_304s=0)
 
     def tearDown(self):
-        from Products.CMFCore.interfaces import ICachingPolicyManager
+        from ..interfaces import ICachingPolicyManager
 
         sm = getSiteManager()
         sm.unregisterUtility(provided=ICachingPolicyManager)
@@ -1223,7 +1223,7 @@ class OFSCacheTests(TransactionalTest):
         TransactionalTest.tearDown(self)
 
     def test_empty(self):
-        from Products.CMFCore.CachingPolicyManager import CPMCache
+        from ..CachingPolicyManager import CPMCache
 
         cpm = self.portal.caching_policy_manager
         doc1 = self.portal.doc1

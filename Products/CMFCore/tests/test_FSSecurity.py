@@ -21,8 +21,8 @@ from os import path
 from AccessControl.Permission import Permission
 from App.config import getConfiguration
 
-from Products.CMFCore.tests.base.testcase import LogInterceptor
-from Products.CMFCore.tests.base.testcase import WritableFSDVTest
+from .base.testcase import LogInterceptor
+from .base.testcase import WritableFSDVTest
 
 
 class MetadataChecker(object):
@@ -73,7 +73,7 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
 
     def test_invalidPermissionNames(self):
         # Test for an invalid permission name
-        from Products.CMFCore.DirectoryView import _dirreg
+        from ..DirectoryView import _dirreg
 
         self._catch_log_errors(logging.ERROR,
                                subsystem='CMFCore.DirectoryView')
@@ -94,7 +94,7 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
 
     def test_invalidAcquireNames(self):
         # Test for an invalid spelling of acquire
-        from Products.CMFCore.DirectoryView import _dirreg
+        from ..DirectoryView import _dirreg
 
         self._catch_log_errors(logging.ERROR,
                                subsystem='CMFCore.FSMetadata')
@@ -117,7 +117,7 @@ class FSSecurityTests(WritableFSDVTest, MetadataChecker, LogInterceptor):
 class DebugModeTests(WritableFSDVTest, MetadataChecker):
 
     def setUp(self):
-        from Products.CMFCore.DirectoryView import _dirreg
+        from ..DirectoryView import _dirreg
 
         WritableFSDVTest.setUp(self)
         self._registerDirectory(self)

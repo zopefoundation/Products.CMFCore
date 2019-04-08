@@ -15,13 +15,13 @@
 
 import unittest
 
-from Products.CMFCore.testing import ConformsToFolder
+from ..testing import ConformsToFolder
 
 
 class CMFBTreeFolderTests(ConformsToFolder, unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.CMFBTreeFolder import CMFBTreeFolder
+        from ..CMFBTreeFolder import CMFBTreeFolder
 
         return CMFBTreeFolder
 

@@ -18,9 +18,9 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_base
 from zope.interface import implementer
 
-from Products.CMFCore.exceptions import SkinPathError
-from Products.CMFCore.interfaces import ISkinsContainer
-from Products.CMFCore.permissions import AccessContentsInformation
+from .exceptions import SkinPathError
+from .interfaces import ISkinsContainer
+from .permissions import AccessContentsInformation
 
 
 @implementer(ISkinsContainer)

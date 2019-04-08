@@ -21,7 +21,7 @@ from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import importObjects
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import IContentTypeRegistry
+from ..interfaces import IContentTypeRegistry
 
 
 class ContentTypeRegistryXMLAdapter(XMLAdapterBase):

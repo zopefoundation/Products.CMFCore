@@ -21,13 +21,13 @@ from zope.interface.verify import verifyClass
 class RegistrationToolTests(unittest.TestCase):
 
     def _makeOne(self):
-        from Products.CMFCore.RegistrationTool import RegistrationTool
+        from ..RegistrationTool import RegistrationTool
 
         return RegistrationTool()
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IRegistrationTool
-        from Products.CMFCore.RegistrationTool import RegistrationTool
+        from ..interfaces import IRegistrationTool
+        from ..RegistrationTool import RegistrationTool
 
         verifyClass(IRegistrationTool, RegistrationTool)
 

@@ -22,15 +22,15 @@ from OFS.ObjectManager import IFAwareObjectManager
 from OFS.OrderedFolder import OrderedFolder
 from zope.interface import implementer
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import IActionCategory
-from Products.CMFCore.interfaces import IActionProvider
-from Products.CMFCore.interfaces import IActionsTool
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .ActionProviderBase import ActionProviderBase
+from .interfaces import IActionCategory
+from .interfaces import IActionProvider
+from .interfaces import IActionsTool
+from .permissions import ManagePortal
+from .utils import _dtmldir
+from .utils import getToolByName
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 
 @implementer(IActionsTool)

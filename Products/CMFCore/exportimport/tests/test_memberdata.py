@@ -24,9 +24,9 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.interfaces import IMemberDataTool
-from Products.CMFCore.MemberDataTool import MemberDataTool
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...interfaces import IMemberDataTool
+from ...MemberDataTool import MemberDataTool
+from ...testing import ExportImportZCMLLayer
 
 _MEMBERDATATOOL_BODY = b"""\
 <?xml version="1.0" encoding="utf-8"?>
@@ -71,7 +71,7 @@ class MemberDataToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.memberdata \
+        from ..memberdata \
                 import MemberDataToolXMLAdapter
 
         return MemberDataToolXMLAdapter
@@ -105,7 +105,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from Products.CMFCore.exportimport.memberdata \
+        from ..memberdata \
                 import exportMemberDataTool
 
         site, _mdtool = self._initSite(use_changed=False)
@@ -119,7 +119,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
-        from Products.CMFCore.exportimport.memberdata \
+        from ..memberdata \
                 import exportMemberDataTool
 
         site, _mdtool = self._initSite(use_changed=True)
@@ -138,7 +138,7 @@ class importMemberDataToolTests(_MemberDataToolSetup):
     layer = ExportImportZCMLLayer
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.memberdata \
+        from ..memberdata \
                 import importMemberDataTool
 
         site, mdtool = self._initSite()

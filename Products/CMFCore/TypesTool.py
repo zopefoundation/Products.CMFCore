@@ -37,25 +37,25 @@ from zope.i18nmessageid import Message
 from zope.interface import implementer
 from zope.lifecycleevent import ObjectCreatedEvent
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.exceptions import AccessControl_Unauthorized
-from Products.CMFCore.exceptions import BadRequest
-from Products.CMFCore.exceptions import zExceptions_Unauthorized
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.interfaces import IAction
-from Products.CMFCore.interfaces import ITypeInformation
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import AddPortalContent
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import View
-from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _wwwdir
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import SimpleItemWithProperties
-from Products.CMFCore.utils import UniqueObject
+from .ActionProviderBase import ActionProviderBase
+from .exceptions import AccessControl_Unauthorized
+from .exceptions import BadRequest
+from .exceptions import zExceptions_Unauthorized
+from .Expression import Expression
+from .interfaces import IAction
+from .interfaces import ITypeInformation
+from .interfaces import ITypesTool
+from .interfaces import IWorkflowTool
+from .permissions import AccessContentsInformation
+from .permissions import AddPortalContent
+from .permissions import ManagePortal
+from .permissions import View
+from .utils import _checkPermission
+from .utils import _dtmldir
+from .utils import _wwwdir
+from .utils import registerToolInterface
+from .utils import SimpleItemWithProperties
+from .utils import UniqueObject
 
 logger = logging.getLogger('CMFCore.TypesTool')
 

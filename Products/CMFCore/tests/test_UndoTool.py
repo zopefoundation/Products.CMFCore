@@ -29,7 +29,7 @@ class DummyFolder(object):
 class UndoToolTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.UndoTool import UndoTool
+        from ..UndoTool import UndoTool
 
         return UndoTool
 
@@ -37,7 +37,7 @@ class UndoToolTests(unittest.TestCase):
         return self._getTargetClass()(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IUndoTool
+        from ..interfaces import IUndoTool
 
         verifyClass(IUndoTool, self._getTargetClass())
 

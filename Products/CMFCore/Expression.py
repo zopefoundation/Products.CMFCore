@@ -26,8 +26,8 @@ from zope.component import getUtility
 from zope.interface.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
 
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IURLTool
+from .interfaces import IMembershipTool
+from .interfaces import IURLTool
 
 
 class Expression(Persistent):

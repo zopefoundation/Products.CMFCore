@@ -22,7 +22,7 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...testing import ExportImportZCMLLayer
 
 _PROPERTIES_BODY = b"""\
 <?xml version="1.0" encoding="iso-8859-1"?>
@@ -62,7 +62,7 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import PropertiesXMLAdapter
 
         return PropertiesXMLAdapter
@@ -88,7 +88,7 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         self.assertEqual(obj.foo_boolean, False)
 
     def setUp(self):
-        from Products.CMFCore.PortalObject import PortalObjectBase
+        from ...PortalObject import PortalObjectBase
 
         self._obj = PortalObjectBase('foo_site')
         self._BODY = _PROPERTIES_BODY
@@ -97,7 +97,7 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
 class _SitePropertiesSetup(BaseRegistryTests):
 
     def _initSite(self, foo=2, bar=2):
-        from Products.CMFCore.PortalObject import PortalObjectBase
+        from ...PortalObject import PortalObjectBase
 
         self.app.site = PortalObjectBase('foo_site')
         site = self.app.site
@@ -122,7 +122,7 @@ class exportSitePropertiesTests(_SitePropertiesSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import exportSiteProperties
 
         site = self._initSite(0, 0)
@@ -136,7 +136,7 @@ class exportSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import exportSiteProperties
 
         site = self._initSite()
@@ -155,7 +155,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty_default_purge(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import importSiteProperties
 
         site = self._initSite()
@@ -173,7 +173,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(len(site.propertyIds()), 1)
 
     def test_empty_explicit_purge(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import importSiteProperties
 
         site = self._initSite()
@@ -191,7 +191,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(len(site.propertyIds()), 1)
 
     def test_empty_skip_purge(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import importSiteProperties
 
         site = self._initSite()
@@ -213,7 +213,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(site.getProperty('bar'), ('Bar',))
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import importSiteProperties
 
         site = self._initSite(0, 0)
@@ -236,9 +236,9 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
     layer = ExportImportZCMLLayer
 
     def test_nonascii_no_default_charset(self):
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
                 import exportSiteProperties
-        from Products.CMFCore.exportimport.properties \
+        from ..properties \
             import importSiteProperties
 
         NONASCII = u'B\xe4r'

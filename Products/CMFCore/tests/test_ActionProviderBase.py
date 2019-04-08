@@ -21,17 +21,17 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyTool
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from ..interfaces import IMembershipTool
+from ..interfaces import IURLTool
+from .base.dummy import DummySite
+from .base.dummy import DummyTool
+from .base.testcase import SecurityTest
 
 #
 #   We have to import these here to make the "ugly sharing" test case go.
 #
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.ActionInformation import ActionInformation
+from ..ActionProviderBase import ActionProviderBase
+from ..ActionInformation import ActionInformation
 
 
 class DummyProvider(ActionProviderBase, DummyTool):
@@ -80,7 +80,7 @@ class ActionProviderBaseTests(SecurityTest):
         return klass()
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IActionProvider
+        from ..interfaces import IActionProvider
 
         verifyClass(IActionProvider, ActionProviderBase)
 

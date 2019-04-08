@@ -24,20 +24,20 @@ from DateTime import DateTime
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.testing import TraversingZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyCachingManager
-from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import TransactionalTest
+from ..interfaces import ICachingPolicyManager
+from ..testing import TraversingZCMLLayer
+from .base.dummy import DummyCachingManager
+from .base.dummy import DummyCachingManagerWithPolicy
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
+from .base.testcase import TransactionalTest
 
 
 class FSSTXMaker(FSDVTest):
 
     def _makeOne(self, id, filename):
-        from Products.CMFCore.FSMetadata import FSMetadata
-        from Products.CMFCore.FSSTXMethod import FSSTXMethod
+        from ..FSMetadata import FSMetadata
+        from ..FSSTXMethod import FSSTXMethod
 
         path = os.path.join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
@@ -79,8 +79,8 @@ def _normalize_whitespace(text):
 class _TemplateSwitcher:
 
     def setUp(self):
-        import Products.CMFCore.FSSTXMethod
-        self._old_STX_TEMPLATE = Products.CMFCore.FSSTXMethod._STX_TEMPLATE
+        from .. import FSSTXMethod
+        self._old_STX_TEMPLATE = FSSTXMethod._STX_TEMPLATE
 
     def tearDown(self):
         self._setWhichTemplate(self._old_STX_TEMPLATE)
@@ -88,9 +88,9 @@ class _TemplateSwitcher:
         FSSTXMaker.tearDown(self)
 
     def _setWhichTemplate(self, which):
-        import Products.CMFCore.FSSTXMethod
+        from .. import FSSTXMethod
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-        Products.CMFCore.FSSTXMethod._STX_TEMPLATE = which
+        FSSTXMethod._STX_TEMPLATE = which
 
         if which == 'DTML':
             self.app.standard_html_header = (
@@ -226,7 +226,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
     def test_customize_with_DTML(self):
         from OFS.DTMLDocument import DTMLDocument
-        from Products.CMFCore.FSSTXMethod import _CUSTOMIZED_TEMPLATE_DTML
+        from ..FSSTXMethod import _CUSTOMIZED_TEMPLATE_DTML
 
         self._setWhichTemplate('DTML')
 
@@ -246,7 +246,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
     def test_customize_with_ZPT(self):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-        from Products.CMFCore.FSSTXMethod import _CUSTOMIZED_TEMPLATE_ZPT
+        from ..FSSTXMethod import _CUSTOMIZED_TEMPLATE_ZPT
 
         self._setWhichTemplate('ZPT')
         self.custom.all_meta_types = ZPT_META_TYPES

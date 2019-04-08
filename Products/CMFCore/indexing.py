@@ -3,11 +3,11 @@ from warnings import warn
 
 from Acquisition import aq_base, aq_inner, aq_parent
 from logging import getLogger
-from Products.CMFCore.interfaces import IIndexQueue
-from Products.CMFCore.interfaces import IIndexQueueProcessor
-from Products.CMFCore.interfaces import InvalidQueueOperation
-from Products.CMFCore.interfaces import IPortalCatalogQueueProcessor
-from Products.CMFCore.utils import getToolByName
+from .interfaces import IIndexQueue
+from .interfaces import IIndexQueueProcessor
+from .interfaces import InvalidQueueOperation
+from .interfaces import IPortalCatalogQueueProcessor
+from .utils import getToolByName
 from threading import local
 from transaction import get as getTransaction
 from transaction.interfaces import ISavepointDataManager

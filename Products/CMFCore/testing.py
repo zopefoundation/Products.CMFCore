@@ -25,7 +25,7 @@ from zope.publisher.interfaces.http import IHTTPRequest
 from zope.testing.cleanup import cleanUp
 from Zope2.App import zcml
 
-from Products.CMFCore.interfaces import IWorkflowDefinition
+from .interfaces import IWorkflowDefinition
 from Products.GenericSetup.utils import BodyAdapterBase
 
 
@@ -39,20 +39,20 @@ class ConformsToFolder:
         verifyClass(IWriteLock, self._getTargetClass())
 
     def test_conforms_to_IDynamicType(self):
-        from Products.CMFCore.interfaces import IDynamicType
+        from .interfaces import IDynamicType
         verifyClass(IDynamicType, self._getTargetClass())
 
     def test_conforms_to_IFolderish(self):
-        from Products.CMFCore.interfaces import IFolderish
+        from .interfaces import IFolderish
         verifyClass(IFolderish, self._getTargetClass())
 
     def test_conforms_to_IMutableDublinCore(self):
-        from Products.CMFCore.interfaces import IMutableMinimalDublinCore
+        from .interfaces import IMutableMinimalDublinCore
         verifyClass(IMutableMinimalDublinCore, self._getTargetClass())
 
     def test_folder_extra_interfaces(self):
         # in the long run this interface will become deprecated
-        from Products.CMFCore.interfaces import IOpaqueItemManager
+        from .interfaces import IOpaqueItemManager
 
         verifyClass(IOpaqueItemManager, self._getTargetClass())
 
@@ -60,11 +60,11 @@ class ConformsToFolder:
 class ConformsToContent:
 
     def test_content_interfaces(self):
-        from Products.CMFCore.interfaces import ICatalogableDublinCore
-        from Products.CMFCore.interfaces import IContentish
-        from Products.CMFCore.interfaces import IDublinCore
-        from Products.CMFCore.interfaces import IDynamicType
-        from Products.CMFCore.interfaces import IMutableDublinCore
+        from .interfaces import ICatalogableDublinCore
+        from .interfaces import IContentish
+        from .interfaces import IDublinCore
+        from .interfaces import IDynamicType
+        from .interfaces import IMutableDublinCore
         from Products.GenericSetup.interfaces import IDAVAware
 
         verifyClass(ICatalogableDublinCore, self._getTargetClass())
@@ -77,9 +77,9 @@ class ConformsToContent:
 
     def test_content_extra_interfaces(self):
         # in the long run these interfaces will become deprecated
-        from Products.CMFCore.interfaces import ICatalogAware
-        from Products.CMFCore.interfaces import IOpaqueItemManager
-        from Products.CMFCore.interfaces import IWorkflowAware
+        from .interfaces import ICatalogAware
+        from .interfaces import IOpaqueItemManager
+        from .interfaces import IWorkflowAware
 
         verifyClass(ICatalogAware, self._getTargetClass())
         verifyClass(IOpaqueItemManager, self._getTargetClass())

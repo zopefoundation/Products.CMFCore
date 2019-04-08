@@ -27,15 +27,15 @@ from os.path import join
 from Acquisition import aq_base
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from ..FSMetadata import FSMetadata
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
 
 
 class FSZSQLMaker(FSDVTest):
 
     def _makeOne(self, id, filename):
-        from Products.CMFCore.FSZSQLMethod import FSZSQLMethod
+        from ..FSZSQLMethod import FSZSQLMethod
         path = join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
         metadata.read()

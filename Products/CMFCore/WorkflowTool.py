@@ -32,25 +32,25 @@ from zope.component import queryUtility
 from zope.event import notify
 from zope.interface import implementer
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IWorkflowAware
-from Products.CMFCore.interfaces import IWorkflowDefinition
-from Products.CMFCore.interfaces import IWorkflowHistory
-from Products.CMFCore.interfaces import IWorkflowStatus
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import Message as _
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
-from Products.CMFCore.WorkflowCore import ActionRaisedExceptionEvent
-from Products.CMFCore.WorkflowCore import ActionSucceededEvent
-from Products.CMFCore.WorkflowCore import ActionWillBeInvokedEvent
-from Products.CMFCore.WorkflowCore import ObjectDeleted
-from Products.CMFCore.WorkflowCore import ObjectMoved
-from Products.CMFCore.WorkflowCore import WorkflowException
+from .ActionProviderBase import ActionProviderBase
+from .interfaces import IConfigurableWorkflowTool
+from .interfaces import ITypesTool
+from .interfaces import IWorkflowAware
+from .interfaces import IWorkflowDefinition
+from .interfaces import IWorkflowHistory
+from .interfaces import IWorkflowStatus
+from .interfaces import IWorkflowTool
+from .permissions import ManagePortal
+from .utils import _dtmldir
+from .utils import Message as _
+from .utils import registerToolInterface
+from .utils import UniqueObject
+from .WorkflowCore import ActionRaisedExceptionEvent
+from .WorkflowCore import ActionSucceededEvent
+from .WorkflowCore import ActionWillBeInvokedEvent
+from .WorkflowCore import ObjectDeleted
+from .WorkflowCore import ObjectMoved
+from .WorkflowCore import WorkflowException
 
 _marker = []  # Create a new marker object.
 

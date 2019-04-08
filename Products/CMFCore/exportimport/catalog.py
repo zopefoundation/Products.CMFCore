@@ -18,7 +18,7 @@ from zope.component import getSiteManager
 from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import importObjects
 
-from Products.CMFCore.interfaces import ICatalogTool
+from ..interfaces import ICatalogTool
 
 
 def importCatalogTool(context):

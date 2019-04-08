@@ -21,12 +21,12 @@ from OFS.OrderedFolder import OrderedFolder
 from zope.component import getSiteManager
 from zope.interface import implementer
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import IActionProvider
-from Products.CMFCore.interfaces import IActionsTool
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.testing import ExportImportZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummySite
+from ...ActionProviderBase import ActionProviderBase
+from ...interfaces import IActionProvider
+from ...interfaces import IActionsTool
+from ...interfaces import IMembershipTool
+from ...testing import ExportImportZCMLLayer
+from ...tests.base.dummy import DummySite
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
@@ -260,7 +260,7 @@ class ActionNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.actions import ActionNodeAdapter
+        from ..actions import ActionNodeAdapter
 
         return ActionNodeAdapter
 
@@ -286,7 +286,7 @@ class ActionNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
         self.assertEqual(obj.visible, True)
 
     def setUp(self):
-        from Products.CMFCore.ActionInformation import Action
+        from ...ActionInformation import Action
 
         self._obj = Action('foo_action')
         self._XML = _ACTION_XML
@@ -297,13 +297,13 @@ class ActionCategoryNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import ActionCategoryNodeAdapter
 
         return ActionCategoryNodeAdapter
 
     def _populate(self, obj):
-        from Products.CMFCore.ActionInformation import Action
+        from ...ActionInformation import Action
 
         obj._setObject('foo_action', Action('foo_action'))
 
@@ -312,7 +312,7 @@ class ActionCategoryNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
         self.assertEqual(obj.title, '')
 
     def setUp(self):
-        from Products.CMFCore.ActionInformation import ActionCategory
+        from ...ActionInformation import ActionCategory
 
         self._obj = ActionCategory('foo_category')
         self._XML = _ACTIONCATEGORY_XML
@@ -323,14 +323,14 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import ActionsToolXMLAdapter
 
         return ActionsToolXMLAdapter
 
     def _populate(self, obj):
-        from Products.CMFCore.ActionInformation import Action
-        from Products.CMFCore.ActionInformation import ActionCategory
+        from ...ActionInformation import Action
+        from ...ActionInformation import ActionCategory
 
         obj._setObject('foo_category', ActionCategory('foo_category'))
         obj.action_providers = ('portal_actions',)
@@ -344,7 +344,7 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         self.assertEqual(obj.action_providers[0], 'portal_actions')
 
     def setUp(self):
-        from Products.CMFCore.ActionsTool import ActionsTool
+        from ...ActionsTool import ActionsTool
 
         self._obj = ActionsTool('portal_actions')
         self._BODY = _ACTIONSTOOL_BODY
@@ -395,7 +395,7 @@ class exportActionProvidersTests(_ActionSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import exportActionProviders
 
         site, _atool = self._initSite(0, 0)
@@ -409,7 +409,7 @@ class exportActionProvidersTests(_ActionSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import exportActionProviders
 
         site, atool = self._initSite()
@@ -437,7 +437,7 @@ class importActionProvidersTests(_ActionSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty_default_purge(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import importActionProviders
 
         site, atool = self._initSite(2, 0)
@@ -456,7 +456,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(len(atool.objectIds()), 0)
 
     def test_empty_explicit_purge(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import importActionProviders
 
         site, atool = self._initSite(2, 0)
@@ -475,7 +475,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(len(atool.objectIds()), 0)
 
     def test_empty_skip_purge(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import importActionProviders
 
         site, atool = self._initSite(2, 0)
@@ -493,9 +493,9 @@ class importActionProvidersTests(_ActionSetup):
         self.assertTrue('portal_actions' in atool.listActionProviders())
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
             import exportActionProviders
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
             import importActionProviders
 
         site, atool = self._initSite(1, 1)
@@ -539,9 +539,9 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_i18n(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
             import exportActionProviders
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
             import importActionProviders
 
         site, atool = self._initSite(0, 0)
@@ -566,7 +566,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_insert_skip_purge(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import importActionProviders
 
         site, atool = self._initSite(0, 0)
@@ -590,7 +590,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(atool.dummy.baz.icon_expr, 'string:baz_icon.png')
 
     def test_remove_skip_purge(self):
-        from Products.CMFCore.exportimport.actions \
+        from ..actions \
                 import importActionProviders
 
         site, atool = self._initSite(2, 2)

@@ -23,14 +23,14 @@ from zope.interface import implementer
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import IActionRaisedExceptionEvent
-from Products.CMFCore.interfaces import IActionSucceededEvent
-from Products.CMFCore.interfaces import IActionWillBeInvokedEvent
-from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IWorkflowAware
-from Products.CMFCore.interfaces import IWorkflowDefinition
-from Products.CMFCore.testing import TraversingEventZCMLLayer
+from ..interfaces import IActionRaisedExceptionEvent
+from ..interfaces import IActionSucceededEvent
+from ..interfaces import IActionWillBeInvokedEvent
+from ..interfaces import IContentish
+from ..interfaces import ITypesTool
+from ..interfaces import IWorkflowAware
+from ..interfaces import IWorkflowDefinition
+from ..testing import TraversingEventZCMLLayer
 
 
 class Dummy(SimpleItem):
@@ -164,7 +164,7 @@ class WorkflowToolTests(unittest.TestCase):
     layer = TraversingEventZCMLLayer
 
     def _makeOne(self, workflow_ids=()):
-        from Products.CMFCore.WorkflowTool import WorkflowTool
+        from ..WorkflowTool import WorkflowTool
 
         tool = WorkflowTool()
 
@@ -193,17 +193,17 @@ class WorkflowToolTests(unittest.TestCase):
         cleanUp()
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-        from Products.CMFCore.interfaces import IWorkflowTool
-        from Products.CMFCore.WorkflowTool import WorkflowTool
+        from ..interfaces import IActionProvider
+        from ..interfaces import IConfigurableWorkflowTool
+        from ..interfaces import IWorkflowTool
+        from ..WorkflowTool import WorkflowTool
 
         verifyClass(IActionProvider, WorkflowTool)
         verifyClass(IConfigurableWorkflowTool, WorkflowTool)
         verifyClass(IWorkflowTool, WorkflowTool)
 
     def test_empty(self):
-        from Products.CMFCore.WorkflowTool import WorkflowException
+        from ..WorkflowTool import WorkflowException
 
         tool = self._makeOne()
 
@@ -215,7 +215,7 @@ class WorkflowToolTests(unittest.TestCase):
         self.assertRaises(WorkflowException, tool.doActionFor, None, 'hmm')
 
     def test_new_with_wf(self):
-        from Products.CMFCore.WorkflowTool import WorkflowException
+        from ..WorkflowTool import WorkflowException
 
         tool = self._makeWithTypes()
 

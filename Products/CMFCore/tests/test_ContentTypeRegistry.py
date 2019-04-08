@@ -21,13 +21,13 @@ from zope.interface.verify import verifyClass
 class MajorMinorPredicateTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ContentTypeRegistry import MajorMinorPredicate
+        from ..ContentTypeRegistry import MajorMinorPredicate
 
         return MajorMinorPredicate(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ContentTypeRegistry import MajorMinorPredicate
-        from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
+        from ..ContentTypeRegistry import MajorMinorPredicate
+        from ..interfaces import IContentTypeRegistryPredicate
 
         verifyClass(IContentTypeRegistryPredicate, MajorMinorPredicate)
 
@@ -67,13 +67,13 @@ class MajorMinorPredicateTests(unittest.TestCase):
 class ExtensionPredicateTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ContentTypeRegistry import ExtensionPredicate
+        from ..ContentTypeRegistry import ExtensionPredicate
 
         return ExtensionPredicate(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ContentTypeRegistry import ExtensionPredicate
-        from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
+        from ..ContentTypeRegistry import ExtensionPredicate
+        from ..interfaces import IContentTypeRegistryPredicate
 
         verifyClass(IContentTypeRegistryPredicate, ExtensionPredicate)
 
@@ -107,15 +107,15 @@ class ExtensionPredicateTests(unittest.TestCase):
 class MimeTypeRegexPredicateTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ContentTypeRegistry \
+        from ..ContentTypeRegistry \
                 import MimeTypeRegexPredicate
 
         return MimeTypeRegexPredicate(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ContentTypeRegistry \
+        from ..ContentTypeRegistry \
                 import MimeTypeRegexPredicate
-        from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
+        from ..interfaces import IContentTypeRegistryPredicate
 
         verifyClass(IContentTypeRegistryPredicate, MimeTypeRegexPredicate)
 
@@ -143,13 +143,13 @@ class MimeTypeRegexPredicateTests(unittest.TestCase):
 class NameRegexPredicateTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ContentTypeRegistry import NameRegexPredicate
+        from ..ContentTypeRegistry import NameRegexPredicate
 
         return NameRegexPredicate(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ContentTypeRegistry import NameRegexPredicate
-        from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
+        from ..ContentTypeRegistry import NameRegexPredicate
+        from ..interfaces import IContentTypeRegistryPredicate
 
         verifyClass(IContentTypeRegistryPredicate, NameRegexPredicate)
 
@@ -178,7 +178,7 @@ class NameRegexPredicateTests(unittest.TestCase):
 class ContentTypeRegistryTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
+        from ..ContentTypeRegistry import ContentTypeRegistry
 
         return ContentTypeRegistry(*args, **kw)
 
@@ -186,8 +186,8 @@ class ContentTypeRegistryTests(unittest.TestCase):
         self.reg = self._makeOne()
 
     def test_interfaces(self):
-        from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
-        from Products.CMFCore.interfaces import IContentTypeRegistry
+        from ..ContentTypeRegistry import ContentTypeRegistry
+        from ..interfaces import IContentTypeRegistry
 
         verifyClass(IContentTypeRegistry, ContentTypeRegistry)
 

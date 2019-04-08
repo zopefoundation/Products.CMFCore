@@ -16,10 +16,10 @@
 from zope.interface import implementer
 from zope.interface.interfaces import ObjectEvent
 
-from Products.CMFCore.interfaces import IWorkflowActionEvent
-from Products.CMFCore.interfaces import IActionWillBeInvokedEvent
-from Products.CMFCore.interfaces import IActionRaisedExceptionEvent
-from Products.CMFCore.interfaces import IActionSucceededEvent
+from .interfaces import IWorkflowActionEvent
+from .interfaces import IActionWillBeInvokedEvent
+from .interfaces import IActionRaisedExceptionEvent
+from .interfaces import IActionSucceededEvent
 
 
 class WorkflowException(Exception):

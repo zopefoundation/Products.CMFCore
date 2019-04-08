@@ -30,15 +30,15 @@ from OFS.ObjectManager import bad_id
 from Persistence import Persistent
 from zope.interface import implementer
 
-from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.FSObject import BadFile
-from Products.CMFCore.interfaces import IDirectoryView
-from Products.CMFCore.permissions import AccessContentsInformation as ACI
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import getPackageName
-from Products.CMFCore.utils import getPackageLocation
-from Products.CMFCore.utils import ProductsPath
+from .FSMetadata import FSMetadata
+from .FSObject import BadFile
+from .interfaces import IDirectoryView
+from .permissions import AccessContentsInformation as ACI
+from .permissions import ManagePortal
+from .utils import _dtmldir
+from .utils import getPackageName
+from .utils import getPackageLocation
+from .utils import ProductsPath
 
 logger = logging.getLogger('CMFCore.DirectoryView')
 

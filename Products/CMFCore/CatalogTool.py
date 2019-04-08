@@ -31,23 +31,23 @@ from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 
-from Products.CMFCore.indexing import filterTemporaryItems
-from Products.CMFCore.indexing import getQueue
-from Products.CMFCore.indexing import processQueue
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.interfaces import IIndexableObject
-from Products.CMFCore.interfaces import IIndexableObjectWrapper
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.permissions import AccessInactivePortalContent
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import View
-from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _mergedLocalRoles
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .indexing import filterTemporaryItems
+from .indexing import getQueue
+from .indexing import processQueue
+from .ActionProviderBase import ActionProviderBase
+from .interfaces import ICatalogTool
+from .interfaces import IContentish
+from .interfaces import IIndexableObject
+from .interfaces import IIndexableObjectWrapper
+from .interfaces import IWorkflowTool
+from .permissions import AccessInactivePortalContent
+from .permissions import ManagePortal
+from .permissions import View
+from .utils import _checkPermission
+from .utils import _dtmldir
+from .utils import _mergedLocalRoles
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 import os
 

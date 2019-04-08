@@ -29,26 +29,26 @@ from zope.component import queryUtility
 from zope.component.factory import Factory
 from zope.interface import implementer
 
-from Products.CMFCore.CMFCatalogAware import OpaqueItemManager
-from Products.CMFCore.DynamicType import DynamicType
-from Products.CMFCore.exceptions import AccessControl_Unauthorized
-from Products.CMFCore.exceptions import BadRequest
-from Products.CMFCore.exceptions import zExceptions_Unauthorized
-from Products.CMFCore.interfaces import IContentTypeRegistry
-from Products.CMFCore.interfaces import IFolderish
-from Products.CMFCore.interfaces import IMutableMinimalDublinCore
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.permissions import AddPortalContent
-from Products.CMFCore.permissions import AddPortalFolders
-from Products.CMFCore.permissions import DeleteObjects
-from Products.CMFCore.permissions import ListFolderContents
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import ManageProperties
-from Products.CMFCore.permissions import View
-from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import base64_decode
-from Products.CMFCore.utils import base64_encode
+from .CMFCatalogAware import OpaqueItemManager
+from .DynamicType import DynamicType
+from .exceptions import AccessControl_Unauthorized
+from .exceptions import BadRequest
+from .exceptions import zExceptions_Unauthorized
+from .interfaces import IContentTypeRegistry
+from .interfaces import IFolderish
+from .interfaces import IMutableMinimalDublinCore
+from .interfaces import ISiteRoot
+from .interfaces import ITypesTool
+from .permissions import AddPortalContent
+from .permissions import AddPortalFolders
+from .permissions import DeleteObjects
+from .permissions import ListFolderContents
+from .permissions import ManagePortal
+from .permissions import ManageProperties
+from .permissions import View
+from .utils import _checkPermission
+from .utils import base64_decode
+from .utils import base64_encode
 
 
 @implementer(IFolderish, IMutableMinimalDublinCore)

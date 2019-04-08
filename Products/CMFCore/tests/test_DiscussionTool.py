@@ -21,9 +21,9 @@ from zope.interface.verify import verifyClass
 class DiscussionToolTests(unittest.TestCase):
 
     def test_interfaces(self):
-        from Products.CMFCore.DiscussionTool import DiscussionTool
-        from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import IOldstyleDiscussionTool
+        from ..DiscussionTool import DiscussionTool
+        from ..interfaces import IActionProvider
+        from ..interfaces import IOldstyleDiscussionTool
 
         verifyClass(IActionProvider, DiscussionTool)
         verifyClass(IOldstyleDiscussionTool, DiscussionTool)
@@ -32,8 +32,8 @@ class DiscussionToolTests(unittest.TestCase):
 class OldDiscussableTests(unittest.TestCase):
 
     def test_interfaces(self):
-        from Products.CMFCore.DiscussionTool import OldDiscussable
-        from Products.CMFCore.interfaces import IOldstyleDiscussable
+        from ..DiscussionTool import OldDiscussable
+        from ..interfaces import IOldstyleDiscussable
 
         verifyClass(IOldstyleDiscussable, OldDiscussable)
 

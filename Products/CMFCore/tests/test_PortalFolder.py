@@ -28,22 +28,22 @@ from zope.component.interfaces import IFactory
 from zope.interface import implementer
 from zope.interface.verify import verifyClass
 
-from Products.CMFCore.exceptions import BadRequest
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.testing import ConformsToFolder
-from Products.CMFCore.testing import TraversingEventZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummyFactoryDispatcher
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyUserFolder
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
-from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
-from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
-from Products.CMFCore.TypesTool import TypesTool
-from Products.CMFCore.WorkflowTool import WorkflowTool
+from ..exceptions import BadRequest
+from ..interfaces import ICatalogTool
+from ..interfaces import ITypesTool
+from ..interfaces import IWorkflowTool
+from ..testing import ConformsToFolder
+from ..testing import TraversingEventZCMLLayer
+from .base.dummy import DummyContent
+from .base.dummy import DummyFactoryDispatcher
+from .base.dummy import DummySite
+from .base.dummy import DummyUserFolder
+from .base.testcase import SecurityTest
+from .base.tidata import FTIDATA_CMF
+from .base.tidata import FTIDATA_DUMMY
+from ..TypesTool import FactoryTypeInformation as FTI
+from ..TypesTool import TypesTool
+from ..WorkflowTool import WorkflowTool
 
 
 def extra_meta_types():
@@ -89,12 +89,12 @@ class PortalFolderFactoryTests(SecurityTest):
     _PORTAL_TYPE = 'Test Folder'
 
     def _getTargetObject(self):
-        from Products.CMFCore.PortalFolder import PortalFolderFactory
+        from ..PortalFolder import PortalFolderFactory
 
         return PortalFolderFactory
 
     def setUp(self):
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.app)
@@ -145,7 +145,7 @@ class PortalFolderFactoryTests(SecurityTest):
 class PortalFolderTests(ConformsToFolder, unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         return PortalFolder
 
@@ -160,7 +160,7 @@ class PortalFolderSecurityTests(SecurityTest):
     layer = TraversingEventZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         return PortalFolder
 
@@ -296,7 +296,7 @@ class PortalFolderSecurityTests(SecurityTest):
         #   is not being uncatalogued.  Try creating a subfolder with
         #   content object, and test.
         #
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -325,8 +325,8 @@ class PortalFolderSecurityTests(SecurityTest):
         #
         #   Does MKDIR/MKCOL intercept work?
         #
-        from Products.CMFCore.PortalFolder import PortalFolder
-        from Products.CMFCore.PortalFolder import PortalFolderFactory
+        from ..PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolderFactory
 
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -535,7 +535,7 @@ class PortalFolderMoveTests(SecurityTest):
         self.site = self.app.site
 
     def _makeOne(self, id, *args, **kw):
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         return self.site._setObject(id, PortalFolder(id, *args, **kw))
 
@@ -543,7 +543,7 @@ class PortalFolderMoveTests(SecurityTest):
         #
         #   Does the catalog stay synched when folders are moved?
         #
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         acl_users = self.site._setObject('acl_users', DummyUserFolder())
         newSecurityManager(None, acl_users.all_powerful_Oz)
@@ -656,7 +656,7 @@ class ContentFilterTests(unittest.TestCase):
         self.dummy = DummyContent('Dummy')
 
     def test_empty(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter()
         dummy = self.dummy
@@ -666,7 +666,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertFalse(lines)
 
     def test_Type(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter(Type='foo')
         dummy = self.dummy
@@ -689,7 +689,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertEqual(lines[0], 'Type: Dummy Content Title, something else')
 
     def test_portal_type(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter(portal_type='some_pt')
         dummy = self.dummy
@@ -708,7 +708,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertEqual(lines[0], 'Portal Type: some_pt')
 
     def test_Title(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter(Title='foo')
         dummy = self.dummy
@@ -725,7 +725,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertEqual(lines[0], 'Title: foo')
 
     def test_Creator(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter(Creator='moe')
         dummy = self.dummy
@@ -742,7 +742,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertEqual(lines[0], 'Creator: moe')
 
     def test_Description(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter(Description='funny')
         dummy = self.dummy
@@ -759,7 +759,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertEqual(lines[0], 'Description: funny')
 
     def test_Subject(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter(Subject=('foo',))
         dummy = self.dummy
@@ -777,7 +777,7 @@ class ContentFilterTests(unittest.TestCase):
 
     def test_Subject2(self):
         # Now test with mutli-valued
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         cfilter = ContentFilter(Subject=('foo', 'bar'))
         dummy = self.dummy
@@ -796,7 +796,7 @@ class ContentFilterTests(unittest.TestCase):
         self.assertEqual(lines[0], 'Subject: foo, bar')
 
     def test_created(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
@@ -817,7 +817,7 @@ class ContentFilterTests(unittest.TestCase):
                          'Created since: 2001/01/01 00:00:00 %s' % tz)
 
     def test_created2(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
@@ -839,7 +839,7 @@ class ContentFilterTests(unittest.TestCase):
                          'Created before: 2001/01/01 00:00:00 %s' % tz)
 
     def test_modified(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
@@ -860,7 +860,7 @@ class ContentFilterTests(unittest.TestCase):
                          'Modified since: 2001/01/01 00:00:00 %s' % tz)
 
     def test_modified2(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
@@ -881,7 +881,7 @@ class ContentFilterTests(unittest.TestCase):
                          'Modified before: 2001/01/01 00:00:00 %s' % tz)
 
     def test_mixed(self):
-        from Products.CMFCore.PortalFolder import ContentFilter
+        from ..PortalFolder import ContentFilter
 
         creation_date = DateTime('2001/01/01')
         tz = creation_date.timezone()
@@ -958,7 +958,7 @@ class PortalFolderCopySupportTests(SecurityTest):
     layer = TraversingEventZCMLLayer
 
     def _initFolders(self):
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         self.app._setObject('folder1', PortalFolder('folder1'))
         self.app._setObject('folder2', PortalFolder('folder2'))
@@ -974,7 +974,7 @@ class PortalFolderCopySupportTests(SecurityTest):
     def _assertCopyErrorUnauth(self, callable, *args, **kw):
         import re
         from OFS.CopySupport import CopyError
-        from Products.CMFCore.exceptions import zExceptions_Unauthorized
+        from ..exceptions import zExceptions_Unauthorized
 
         ce_regex = kw.get('ce_regex')
         if ce_regex is not None:
@@ -1127,7 +1127,7 @@ class PortalFolderCopySupportTests(SecurityTest):
 
     def test_move_cant_delete_source(self):
         from AccessControl.Permissions import delete_objects as DeleteObjects
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         folder1, folder2 = self._initFolders()
         folder1.manage_permission(DeleteObjects, roles=(), acquire=0)
@@ -1149,7 +1149,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         #   Test from CMF Collector #216 (Plone #2186), for the case
         #   in which the item being pasted does not allow adding such
         #   objects to containers which do not explicitly grant access.
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         RESTRICTED_TYPE = 'Restricted Item'
         UNRESTRICTED_TYPE = 'Unrestricted Container'
@@ -1186,7 +1186,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         #   Test from CMF Collector #216 (Plone #2186), for the case
         #   in which the item being pasted *does8 allow adding such
         #   objects to containers which *do* explicitly grant access.
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         RESTRICTED_TYPE = 'Restricted Item'
         UNRESTRICTED_TYPE = 'Unrestricted Container'
@@ -1225,7 +1225,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         #   Test from CMF Collector #216 (Plone #2186), for the case
         #   in which the container does not allow adding items of the
         #   type being pasted.
-        from Products.CMFCore.PortalFolder import PortalFolder
+        from ..PortalFolder import PortalFolder
 
         RESTRICTED_TYPE = 'Restricted Container'
         UNRESTRICTED_TYPE = 'Unrestricted Item'

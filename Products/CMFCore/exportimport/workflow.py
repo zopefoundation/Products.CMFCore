@@ -23,8 +23,8 @@ from Products.GenericSetup.utils import ObjectManagerHelpers
 from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import IConfigurableWorkflowTool
-from Products.CMFCore.interfaces import IWorkflowTool
+from ..interfaces import IConfigurableWorkflowTool
+from ..interfaces import IWorkflowTool
 
 
 class WorkflowToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers,

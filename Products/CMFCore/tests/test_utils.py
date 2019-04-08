@@ -18,32 +18,32 @@ import unittest
 from Acquisition import Implicit
 from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from .base.testcase import SecurityTest
 from Testing.makerequest import makerequest
 
 
 class CoreUtilsTests(unittest.TestCase):
 
     def test_normalize(self):
-        from Products.CMFCore.utils import normalize
+        from ..utils import normalize
 
         self.assertEqual(normalize('foo/bar'), 'foo/bar')
         self.assertEqual(normalize('foo\\bar'), 'foo/bar')
 
     def test_keywordsplitter_empty(self):
-        from Products.CMFCore.utils import keywordsplitter
+        from ..utils import keywordsplitter
 
         for x in ['', ' ', ',', ',,', ';', ';;']:
             self.assertEqual(keywordsplitter({'Keywords': x}), [])
 
     def test_keywordsplitter_single(self):
-        from Products.CMFCore.utils import keywordsplitter
+        from ..utils import keywordsplitter
 
         for x in ['foo', ' foo ', 'foo,', 'foo ,,', 'foo;', 'foo ;;']:
             self.assertEqual(keywordsplitter({'Keywords': x}), ['foo'])
 
     def test_keywordsplitter_multi(self):
-        from Products.CMFCore.utils import keywordsplitter
+        from ..utils import keywordsplitter
 
         for x in ['foo, bar, baz', 'foo, bar , baz', 'foo, bar,, baz',
                   'foo; bar; baz']:
@@ -51,33 +51,33 @@ class CoreUtilsTests(unittest.TestCase):
                              ['foo', 'bar', 'baz'])
 
     def test_contributorsplitter_emtpy(self):
-        from Products.CMFCore.utils import contributorsplitter
+        from ..utils import contributorsplitter
 
         for x in ['', ' ', ';', ';;']:
             self.assertEqual(contributorsplitter({'Contributors': x}), [])
 
     def test_contributorsplitter_single(self):
-        from Products.CMFCore.utils import contributorsplitter
+        from ..utils import contributorsplitter
 
         for x in ['foo', ' foo ', 'foo;', 'foo ;;']:
             self.assertEqual(contributorsplitter({'Contributors': x}), ['foo'])
 
     def test_contributorsplitter_multi(self):
-        from Products.CMFCore.utils import contributorsplitter
+        from ..utils import contributorsplitter
 
         for x in ['foo; bar; baz', 'foo; bar ; baz', 'foo; bar;; baz']:
             self.assertEqual(contributorsplitter({'Contributors': x}),
                              ['foo', 'bar', 'baz'])
 
     def test_getPackageName(self):
-        from Products.CMFCore.utils import getPackageName
-        from Products.CMFCore.utils import _globals
+        from ..utils import getPackageName
+        from ..utils import _globals
 
         self.assertEqual(getPackageName(globals()), 'Products.CMFCore.tests')
         self.assertEqual(getPackageName(_globals), 'Products.CMFCore')
 
     def test_getContainingPackage(self):
-        from Products.CMFCore.utils import getContainingPackage
+        from ..utils import getContainingPackage
 
         self.assertEqual(getContainingPackage('Products.CMFCore.exceptions'),
                          'Products.CMFCore')
@@ -87,7 +87,7 @@ class CoreUtilsTests(unittest.TestCase):
                          'zope.interface')
 
     def test_ImmutableId(self):
-        from Products.CMFCore.utils import ImmutableId
+        from ..utils import ImmutableId
 
         class Foo(ImmutableId):
             def getId(self):
@@ -98,7 +98,7 @@ class CoreUtilsTests(unittest.TestCase):
         self.assertRaises(ValueError, foo._setId, 'bar')
 
     def test__OldCacheHeaders(self):
-        from Products.CMFCore.utils import _OldCacheHeaders
+        from ..utils import _OldCacheHeaders
 
         _FILE_MOD_TIME = 1000000000
         _FILE_RFC_DATE = rfc1123_date(_FILE_MOD_TIME)
@@ -128,7 +128,7 @@ class CoreUtilsTests(unittest.TestCase):
                          _FILE_RFC_DATE)
 
     def test__FSCacheHeaders(self):
-        from Products.CMFCore.utils import _FSCacheHeaders
+        from ..utils import _FSCacheHeaders
 
         _FILE_MOD_TIME = 1000000000
         _FILE_RFC_DATE = rfc1123_date(_FILE_MOD_TIME)
@@ -161,9 +161,9 @@ class CoreUtilsSecurityTests(SecurityTest):
 
     def _makeSite(self):
         from OFS.owner import Owned
-        from Products.CMFCore.tests.base.dummy import DummySite
-        from Products.CMFCore.tests.base.dummy import DummyUserFolder
-        from Products.CMFCore.tests.base.dummy import DummyObject
+        from .base.dummy import DummySite
+        from .base.dummy import DummyUserFolder
+        from .base.dummy import DummyObject
 
         class _DummyObject(Owned, DummyObject):
             pass
@@ -181,7 +181,7 @@ class CoreUtilsSecurityTests(SecurityTest):
         from AccessControl.Permission import Permission
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
-        from Products.CMFCore.utils import _checkPermission
+        from ..utils import _checkPermission
 
         setSecurityPolicy(ZopeSecurityPolicy())
         site = self._makeSite()
@@ -212,8 +212,8 @@ class CoreUtilsSecurityTests(SecurityTest):
         # actual local role settings and it was possible to manipulate them
         # by changing the return value.
         # http://www.zope.org/Collectors/CMF/376 (FIXME: broken link)
-        from Products.CMFCore.tests.base.dummy import DummyContent
-        from Products.CMFCore.utils import _mergedLocalRoles
+        from .base.dummy import DummyContent
+        from ..utils import _mergedLocalRoles
         obj = DummyContent()
         obj.manage_addLocalRoles('dummyuser1', ['Manager', 'Owner'])
         self.assertEqual(len(obj.get_local_roles_for_userid('dummyuser1')), 2)
@@ -225,7 +225,7 @@ class CoreUtilsSecurityTests(SecurityTest):
         self.assertEqual(len(obj.get_local_roles_for_userid('dummyuser1')), 2)
 
     def test_mergedLocalRolesOnFunctions(self):
-        from Products.CMFCore.utils import _mergedLocalRoles
+        from ..utils import _mergedLocalRoles
 
         class Dummy(object):
             __ac_local_roles__ = {'a': 'b'}
@@ -245,7 +245,7 @@ class CoreUtilsSecurityTests(SecurityTest):
         from AccessControl.Permission import Permission
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
-        from Products.CMFCore.utils import FakeExecutableObject
+        from ..utils import FakeExecutableObject
 
         setSecurityPolicy(ZopeSecurityPolicy())
         site = self._makeSite()

@@ -26,12 +26,12 @@ from zope.component import getUtility
 from zope.interface import implementer
 from ZPublisher.mapply import mapply
 
-from Products.CMFCore.interfaces import IContentTypeRegistry
-from Products.CMFCore.interfaces import IContentTypeRegistryPredicate
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import registerToolInterface
+from .interfaces import IContentTypeRegistry
+from .interfaces import IContentTypeRegistryPredicate
+from .interfaces import ITypesTool
+from .permissions import ManagePortal
+from .utils import _dtmldir
+from .utils import registerToolInterface
 
 
 @implementer(IContentTypeRegistryPredicate)

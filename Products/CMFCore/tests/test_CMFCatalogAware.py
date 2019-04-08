@@ -22,17 +22,17 @@ from OFS.SimpleItem import SimpleItem
 from zope.component import getSiteManager
 from zope.interface import implementer
 
-from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
-from Products.CMFCore.exceptions import NotFound
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.testing import EventZCMLLayer
-from Products.CMFCore.testing import TraversingZCMLLayer
-from Products.CMFCore.tests.base.testcase import LogInterceptor
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.test_PortalFolder import _AllowedUser
-from Products.CMFCore.tests.test_PortalFolder import _SensitiveSecurityPolicy
+from ..CMFCatalogAware import CMFCatalogAware
+from ..exceptions import NotFound
+from ..interfaces import ICatalogTool
+from ..interfaces import IContentish
+from ..interfaces import IWorkflowTool
+from ..testing import EventZCMLLayer
+from ..testing import TraversingZCMLLayer
+from .base.testcase import LogInterceptor
+from .base.testcase import SecurityTest
+from .test_PortalFolder import _AllowedUser
+from .test_PortalFolder import _SensitiveSecurityPolicy
 
 CMF_SECURITY_INDEXES = CMFCatalogAware._cmf_security_indexes
 

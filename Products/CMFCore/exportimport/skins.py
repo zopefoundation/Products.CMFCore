@@ -25,8 +25,8 @@ from Products.GenericSetup.utils import NodeAdapterBase
 from Products.GenericSetup.utils import ObjectManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import IDirectoryView
-from Products.CMFCore.interfaces import ISkinsTool
+from ..interfaces import IDirectoryView
+from ..interfaces import ISkinsTool
 
 
 class DirectoryViewNodeAdapter(NodeAdapterBase):

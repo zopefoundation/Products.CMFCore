@@ -23,8 +23,8 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.interfaces import IContentTypeRegistry
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...interfaces import IContentTypeRegistry
+from ...testing import ExportImportZCMLLayer
 
 _TEST_PREDICATES = (
  ('plain_text', 'major_minor', ('text', 'plain,javascript'), 'File'),
@@ -79,7 +79,7 @@ class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase,
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.contenttyperegistry \
+        from ..contenttyperegistry \
                 import ContentTypeRegistryXMLAdapter
 
         return ContentTypeRegistryXMLAdapter
@@ -99,7 +99,7 @@ class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase,
         obj.assignTypeName('foobar_predicate', 'Foobar Type')
 
     def setUp(self):
-        from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
+        from ...ContentTypeRegistry import ContentTypeRegistry
 
         self._obj = ContentTypeRegistry()
         self._BODY = _CTR_BODY
@@ -162,7 +162,7 @@ class _ContentTypeRegistrySetup(BaseRegistryTests):
        NAME_REGEX)
 
     def _initSite(self, mit_predikat=False):
-        from Products.CMFCore.ContentTypeRegistry import ContentTypeRegistry
+        from ...ContentTypeRegistry import ContentTypeRegistry
 
         site = Folder(id='site').__of__(self.app)
         ctr = ContentTypeRegistry()
@@ -184,7 +184,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from Products.CMFCore.exportimport.contenttyperegistry \
+        from ..contenttyperegistry \
                 import exportContentTypeRegistry
 
         site, _ctr = self._initSite(mit_predikat=False)
@@ -198,7 +198,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_policy(self):
-        from Products.CMFCore.exportimport.contenttyperegistry \
+        from ..contenttyperegistry \
                 import exportContentTypeRegistry
 
         site, _ctr = self._initSite(mit_predikat=True)
@@ -220,7 +220,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
     _FRAGMENT2_IMPORT = _FRAGMENT2_IMPORT
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.contenttyperegistry \
+        from ..contenttyperegistry \
                 import importContentTypeRegistry
 
         site, ctr = self._initSite(mit_predikat=False)
@@ -254,7 +254,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
         self.assertEqual(predicate.pattern.pattern, self.NAME_REGEX)
 
     def test_fragment1_skip_purge(self):
-        from Products.CMFCore.exportimport.contenttyperegistry \
+        from ..contenttyperegistry \
                 import importContentTypeRegistry
 
         site, ctr = self._initSite(mit_predikat=True)
@@ -271,7 +271,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
                                              'images', 'plain_text'))
 
     def test_fragment2_skip_purge(self):
-        from Products.CMFCore.exportimport.contenttyperegistry \
+        from ..contenttyperegistry \
                 import importContentTypeRegistry
 
         site, ctr = self._initSite(mit_predikat=True)

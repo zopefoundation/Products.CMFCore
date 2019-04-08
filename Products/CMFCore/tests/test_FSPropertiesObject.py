@@ -18,8 +18,8 @@ import unittest
 from Acquisition import aq_base
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
 
 
 class FSPOTests(SecurityTest, FSDVTest):
@@ -34,7 +34,7 @@ class FSPOTests(SecurityTest, FSDVTest):
         FSDVTest.tearDown(self)
 
     def _getTargetClass(self):
-        from Products.CMFCore.FSPropertiesObject import FSPropertiesObject
+        from ..FSPropertiesObject import FSPropertiesObject
 
         return FSPropertiesObject
 

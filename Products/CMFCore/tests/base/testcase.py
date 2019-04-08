@@ -24,12 +24,12 @@ from AccessControl.SecurityManager import setSecurityPolicy
 from OFS.Folder import Folder
 from zope.component import getSiteManager
 
-from Products.CMFCore.interfaces import ISkinsTool
-from Products.CMFCore.tests.base.dummy import DummyFolder
-from Products.CMFCore.tests.base.security import AnonymousUser
-from Products.CMFCore.tests.base.security import OmnipotentUser
-from Products.CMFCore.tests.base.security import PermissiveSecurityPolicy
-from Products.CMFCore.utils import getPackageLocation
+from ...interfaces import ISkinsTool
+from .dummy import DummyFolder
+from .security import AnonymousUser
+from .security import OmnipotentUser
+from .security import PermissiveSecurityPolicy
+from ...utils import getPackageLocation
 
 
 class LogInterceptor:
@@ -122,10 +122,10 @@ class FSDVTest(unittest.TestCase):
     _layername = 'fake_skin'
 
     def _registerDirectory(self, obj=None, ignore=None):
-        from Products.CMFCore.DirectoryView import _dirreg
-        from Products.CMFCore.DirectoryView import createDirectoryView
+        from ...DirectoryView import _dirreg
+        from ...DirectoryView import createDirectoryView
         if ignore is None:
-            from Products.CMFCore.DirectoryView import ignore
+            from ...DirectoryView import ignore
         filepath = join(self.tempname, self._skinname)
         subpath = basename(self.tempname)
         if subpath != 'tests':

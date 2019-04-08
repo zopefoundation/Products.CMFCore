@@ -25,11 +25,11 @@ from Products.GenericSetup.utils import ObjectManagerHelpers
 from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import IAction
-from Products.CMFCore.interfaces import IActionCategory
-from Products.CMFCore.interfaces import IActionProvider
-from Products.CMFCore.interfaces import IActionsTool
-from Products.CMFCore.utils import getToolByName
+from ..interfaces import IAction
+from ..interfaces import IActionCategory
+from ..interfaces import IActionProvider
+from ..interfaces import IActionsTool
+from ..utils import getToolByName
 
 
 class ActionCategoryNodeAdapter(NodeAdapterBase, ObjectManagerHelpers,

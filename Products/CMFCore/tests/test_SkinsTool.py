@@ -19,14 +19,14 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.tests.base.testcase import RequestTest
+from .base.testcase import RequestTest
 
 
 class SkinsContainerTests(unittest.TestCase):
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import ISkinsContainer
-        from Products.CMFCore.SkinsContainer import SkinsContainer
+        from ..interfaces import ISkinsContainer
+        from ..SkinsContainer import SkinsContainer
 
         verifyClass(ISkinsContainer, SkinsContainer)
 
@@ -34,15 +34,15 @@ class SkinsContainerTests(unittest.TestCase):
 class SkinsToolTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.SkinsTool import SkinsTool
+        from ..SkinsTool import SkinsTool
 
         return SkinsTool(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import ISkinsContainer
-        from Products.CMFCore.interfaces import ISkinsTool
-        from Products.CMFCore.SkinsTool import SkinsTool
+        from ..interfaces import IActionProvider
+        from ..interfaces import ISkinsContainer
+        from ..interfaces import ISkinsTool
+        from ..SkinsTool import SkinsTool
 
         verifyClass(IActionProvider, SkinsTool)
         verifyClass(ISkinsContainer, SkinsTool)
@@ -71,7 +71,7 @@ class SkinsToolTests(unittest.TestCase):
 class SkinnableTests(RequestTest):
 
     def _makeOne(self):
-        from Products.CMFCore.Skinnable import SkinnableObjectManager
+        from ..Skinnable import SkinnableObjectManager
 
         class TestSkinnableObjectManager(SkinnableObjectManager):
 
@@ -82,13 +82,13 @@ class SkinnableTests(RequestTest):
         return TestSkinnableObjectManager()
 
     def tearDown(self):
-        from Products.CMFCore.Skinnable import SKINDATA
+        from ..Skinnable import SKINDATA
         SKINDATA.clear()
         cleanUp()
 
     def test_getCurrentSkinName(self):
-        from Products.CMFCore.interfaces import ISkinsTool
-        from Products.CMFCore.SkinsTool import SkinsTool
+        from ..interfaces import ISkinsTool
+        from ..SkinsTool import SkinsTool
 
         som = self._makeOne()
 
@@ -109,8 +109,8 @@ class SkinnableTests(RequestTest):
         self.assertTrue(som.getCurrentSkinName() == 'skinB')
 
     def test_getSkinNameFromRequest(self):
-        from Products.CMFCore.interfaces import ISkinsTool
-        from Products.CMFCore.SkinsTool import SkinsTool
+        from ..interfaces import ISkinsTool
+        from ..SkinsTool import SkinsTool
         som = self._makeOne()
 
         stool = SkinsTool()

@@ -18,14 +18,14 @@ import unittest
 from OFS.Folder import Folder
 from zope.component import getSiteManager
 
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import ModifyPortalContent
-from Products.CMFCore.permissions import View
-from Products.CMFCore.testing import ExportImportZCMLLayer
-from Products.CMFCore.TypesTool import FactoryTypeInformation
-from Products.CMFCore.TypesTool import ScriptableTypeInformation
-from Products.CMFCore.TypesTool import TypesTool
+from ...interfaces import ITypesTool
+from ...permissions import AccessContentsInformation
+from ...permissions import ModifyPortalContent
+from ...permissions import View
+from ...testing import ExportImportZCMLLayer
+from ...TypesTool import FactoryTypeInformation
+from ...TypesTool import ScriptableTypeInformation
+from ...TypesTool import TypesTool
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
@@ -371,7 +371,7 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.typeinfo \
+        from ..typeinfo \
                 import TypeInformationXMLAdapter
 
         return TypeInformationXMLAdapter
@@ -412,7 +412,7 @@ class TypesToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.typeinfo \
+        from ..typeinfo \
                 import TypesToolXMLAdapter
 
         return TypesToolXMLAdapter
@@ -451,7 +451,7 @@ class exportTypesToolTests(_TypeInfoSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from Products.CMFCore.exportimport.typeinfo import exportTypesTool
+        from ..typeinfo import exportTypesTool
 
         site = self._initSite()
         context = DummyExportContext(site)
@@ -464,7 +464,7 @@ class exportTypesToolTests(_TypeInfoSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.typeinfo import exportTypesTool
+        from ..typeinfo import exportTypesTool
 
         site, _ttool = self._initSite(1)
         context = DummyExportContext(site)
@@ -487,7 +487,7 @@ class exportTypesToolTests(_TypeInfoSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_filenames(self):
-        from Products.CMFCore.exportimport.typeinfo import exportTypesTool
+        from ..typeinfo import exportTypesTool
 
         site, _ttool = self._initSite(2)
         context = DummyExportContext(site)
@@ -518,7 +518,7 @@ class importTypesToolTests(_TypeInfoSetup):
     _EXTENDED_TOOL_EXPORT = _EXTENDED_TOOL_EXPORT
 
     def test_empty_default_purge(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite(1)
 
@@ -531,7 +531,7 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertEqual(len(tool.objectIds()), 0)
 
     def test_empty_explicit_purge(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite(1)
 
@@ -544,7 +544,7 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertEqual(len(tool.objectIds()), 0)
 
     def test_empty_skip_purge(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite(1)
 
@@ -557,7 +557,7 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertEqual(len(tool.objectIds()), 2)
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite()
 
@@ -574,7 +574,7 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertTrue('bar' in tool.objectIds())
 
     def test_with_filenames(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite()
 
@@ -591,7 +591,7 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertTrue('bar object' in tool.objectIds())
 
     def test_migration(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite()
 
@@ -612,7 +612,7 @@ class importTypesToolTests(_TypeInfoSetup):
         self.assertEqual(tool.baz.icon_expr, '')
 
     def test_normal_update(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite()
 
@@ -643,7 +643,7 @@ class importTypesToolTests(_TypeInfoSetup):
                           'spam': 'eggs'})
 
     def test_action_remove(self):
-        from Products.CMFCore.exportimport.typeinfo import importTypesTool
+        from ..typeinfo import importTypesTool
 
         site, tool = self._initSite()
 

@@ -33,17 +33,17 @@ from zope.testing.cleanup import cleanUp
 from ZPublisher.HTTPRequest import HTTPRequest
 from ZPublisher.HTTPResponse import HTTPResponse
 
-from Products.CMFCore.DynamicType import DynamicType
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.tests.base.dummy import DummyObject
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyTool
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.tidata import FTIDATA_CMF
-from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
-from Products.CMFCore.TypesTool import TypesTool
+from ..DynamicType import DynamicType
+from ..interfaces import IMembershipTool
+from ..interfaces import ITypesTool
+from ..interfaces import IURLTool
+from .base.dummy import DummyObject
+from .base.dummy import DummySite
+from .base.dummy import DummyTool
+from .base.testcase import SecurityTest
+from .base.tidata import FTIDATA_CMF
+from ..TypesTool import FactoryTypeInformation as FTI
+from ..TypesTool import TypesTool
 
 
 def defineDefaultViewName(name, for_=None):
@@ -69,7 +69,7 @@ class DummyView(BrowserView):
 class DynamicTypeTests(unittest.TestCase):
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IDynamicType
+        from ..interfaces import IDynamicType
 
         verifyClass(IDynamicType, DynamicType)
 

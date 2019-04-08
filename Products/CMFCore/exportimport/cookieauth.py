@@ -22,7 +22,7 @@ from Products.GenericSetup.utils import importObjects
 from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import ICookieCrumbler
+from ..interfaces import ICookieCrumbler
 
 
 class CookieCrumblerXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):

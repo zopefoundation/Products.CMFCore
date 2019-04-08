@@ -24,13 +24,13 @@ from DateTime import DateTime
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.testing import TraversingZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyCachingManager
-from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import TransactionalTest
+from ..interfaces import ICachingPolicyManager
+from ..testing import TraversingZCMLLayer
+from .base.dummy import DummyCachingManager
+from .base.dummy import DummyCachingManagerWithPolicy
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
+from .base.testcase import TransactionalTest
 
 
 class FSReSTMaker(FSDVTest):
@@ -43,8 +43,8 @@ class FSReSTMaker(FSDVTest):
         self.app._setOb('main_template', main)
 
     def _makeOne(self, id, filename):
-        from Products.CMFCore.FSMetadata import FSMetadata
-        from Products.CMFCore.FSReSTMethod import FSReSTMethod
+        from ..FSMetadata import FSMetadata
+        from ..FSReSTMethod import FSReSTMethod
 
         path = os.path.join(self.skin_path_name, filename)
         metadata = FSMetadata(path)
@@ -164,7 +164,7 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
     def test_customize(self):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-        from Products.CMFCore.FSReSTMethod import _CUSTOMIZED_TEMPLATE_ZPT
+        from ..FSReSTMethod import _CUSTOMIZED_TEMPLATE_ZPT
 
         self.custom.all_meta_types = ZPT_META_TYPES
 

@@ -23,11 +23,11 @@ from zope.globalrequest import setRequest
 from zope.interface import implementer
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from ..interfaces import IContentish
+from ..interfaces import IWorkflowTool
+from .base.dummy import DummyContent
+from .base.dummy import DummySite
+from .base.testcase import SecurityTest
 
 
 installProduct('PluginIndexes')
@@ -50,12 +50,12 @@ class FakeWorkflowTool(Implicit):
 class IndexableObjectWrapperTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from Products.CMFCore.CatalogTool import IndexableObjectWrapper
+        from ..CatalogTool import IndexableObjectWrapper
 
         return IndexableObjectWrapper
 
     def _makeOne(self, vars, obj):
-        from Products.CMFCore.interfaces import ICatalogTool
+        from ..interfaces import ICatalogTool
 
         @implementer(ICatalogTool)
         class FakeCatalog(Implicit):
@@ -73,7 +73,7 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
     def test_interfaces(self):
         from zope.interface.verify import verifyClass
-        from Products.CMFCore.interfaces import IIndexableObjectWrapper
+        from ..interfaces import IIndexableObjectWrapper
 
         verifyClass(IIndexableObjectWrapper, self._getTargetClass())
 
@@ -104,8 +104,8 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         self.assertEqual(w.baz, 2)
 
     def test_provided(self):
-        from Products.CMFCore.interfaces import IIndexableObjectWrapper
-        from Products.CMFCore.interfaces import IIndexableObject
+        from ..interfaces import IIndexableObjectWrapper
+        from ..interfaces import IIndexableObject
 
         obj = self._makeContent()
         w = self._makeOne({}, obj)
@@ -115,7 +115,7 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
     def test_adapts(self):
         from zope.component import adaptedBy
-        from Products.CMFCore.interfaces import ICatalogTool
+        from ..interfaces import ICatalogTool
 
         w = self._getTargetClass()
         adapts = adaptedBy(w)
@@ -132,7 +132,7 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 class CatalogToolTests(SecurityTest):
 
     def _getTargetClass(self):
-        from Products.CMFCore.CatalogTool import CatalogTool
+        from ..CatalogTool import CatalogTool
 
         return CatalogTool
 
@@ -140,7 +140,7 @@ class CatalogToolTests(SecurityTest):
         return self._getTargetClass()(*args, **kw)
 
     def _makeContent(self, *args, **kw):
-        from Products.CMFCore.interfaces import IIndexableObject
+        from ..interfaces import IIndexableObject
 
         @implementer(IIndexableObject)
         class CatalogDummyContent(DummyContent):
@@ -153,8 +153,8 @@ class CatalogToolTests(SecurityTest):
 
     def test_interfaces(self):
         from zope.interface.verify import verifyClass
-        from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import ICatalogTool
+        from ..interfaces import IActionProvider
+        from ..interfaces import ICatalogTool
         from Products.ZCatalog.interfaces import IZCatalog
 
         verifyClass(IActionProvider, self._getTargetClass())
@@ -163,13 +163,13 @@ class CatalogToolTests(SecurityTest):
 
     def loginWithRoles(self, *roles):
         from AccessControl.SecurityManagement import newSecurityManager
-        from Products.CMFCore.tests.base.security import UserWithRoles
+        from .base.security import UserWithRoles
         user = UserWithRoles(*roles).__of__(self.app)
         newSecurityManager(None, user)
 
     def loginManager(self):
         from AccessControl.SecurityManagement import newSecurityManager
-        from Products.CMFCore.tests.base.security import OmnipotentUser
+        from .base.security import OmnipotentUser
         user = OmnipotentUser().__of__(self.app)
         newSecurityManager(None, user)
 
@@ -563,8 +563,8 @@ class CatalogToolTests(SecurityTest):
     def test_wrapping3(self):
         # DummyContent does not implement IIndexableObject
         # wrapper registered - should look this up
-        from Products.CMFCore.interfaces import ICatalogTool
-        from Products.CMFCore.interfaces import IIndexableObject
+        from ..interfaces import ICatalogTool
+        from ..interfaces import IIndexableObject
 
         def FakeWrapper(object, catalog):
             return object

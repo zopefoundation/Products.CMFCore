@@ -31,16 +31,16 @@ from zope.interface import implementer
 from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
-from Products.CMFCore.interfaces import ICallableOpaqueItem
-from Products.CMFCore.interfaces import ICatalogAware
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.interfaces import IOpaqueItemManager
-from Products.CMFCore.interfaces import IWorkflowAware
-from Products.CMFCore.interfaces import IWorkflowTool
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import ModifyPortalContent
-from Products.CMFCore.utils import _dtmldir
+from .interfaces import ICallableOpaqueItem
+from .interfaces import ICatalogAware
+from .interfaces import ICatalogTool
+from .interfaces import IOpaqueItemManager
+from .interfaces import IWorkflowAware
+from .interfaces import IWorkflowTool
+from .permissions import AccessContentsInformation
+from .permissions import ManagePortal
+from .permissions import ModifyPortalContent
+from .utils import _dtmldir
 
 logger = logging.getLogger('CMFCore.CMFCatalogAware')
 

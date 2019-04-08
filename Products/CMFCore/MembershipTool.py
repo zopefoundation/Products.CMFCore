@@ -38,27 +38,27 @@ from zope.interface import implementedBy
 from zope.interface import implementer
 from ZPublisher.BaseRequest import RequestContainer
 
-from Products.CMFCore.exceptions import AccessControl_Unauthorized
-from Products.CMFCore.exceptions import BadRequest
-from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.interfaces import IMemberDataTool
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IRegistrationTool
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.interfaces import ITypesTool
-from Products.CMFCore.permissions import AccessContentsInformation
-from Products.CMFCore.permissions import ChangeLocalRoles
-from Products.CMFCore.permissions import ListPortalMembers
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import ManageUsers
-from Products.CMFCore.permissions import SetOwnPassword
-from Products.CMFCore.permissions import View
-from Products.CMFCore.PortalFolder import PortalFolder
-from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import Message as _
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .exceptions import AccessControl_Unauthorized
+from .exceptions import BadRequest
+from .interfaces import ICookieCrumbler
+from .interfaces import IMemberDataTool
+from .interfaces import IMembershipTool
+from .interfaces import IRegistrationTool
+from .interfaces import ISiteRoot
+from .interfaces import ITypesTool
+from .permissions import AccessContentsInformation
+from .permissions import ChangeLocalRoles
+from .permissions import ListPortalMembers
+from .permissions import ManagePortal
+from .permissions import ManageUsers
+from .permissions import SetOwnPassword
+from .permissions import View
+from .PortalFolder import PortalFolder
+from .utils import _checkPermission
+from .utils import _dtmldir
+from .utils import Message as _
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 logger = logging.getLogger('CMFCore.MembershipTool')
 

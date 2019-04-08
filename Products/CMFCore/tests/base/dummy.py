@@ -26,13 +26,13 @@ from zope.container.contained import ObjectRemovedEvent
 from zope.event import notify
 from zope.interface import implementer
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import IContentish
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.interfaces import ITypeInformation
-from Products.CMFCore.PortalContent import PortalContent
-from Products.CMFCore.tests.base.security import DummyUser
-from Products.CMFCore.tests.base.security import OmnipotentUser
+from ...ActionProviderBase import ActionProviderBase
+from ...interfaces import IContentish
+from ...interfaces import ISiteRoot
+from ...interfaces import ITypeInformation
+from ...PortalContent import PortalContent
+from ..base.security import DummyUser
+from ..base.security import OmnipotentUser
 
 
 class DummyObject(Implicit):

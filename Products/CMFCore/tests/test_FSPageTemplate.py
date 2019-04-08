@@ -25,13 +25,13 @@ from zope.component import getSiteManager
 from zope.tales.tales import Undefined
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.FSMetadata import FSMetadata
-from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.testing import TraversingZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyCachingManager
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import TransactionalTest
+from ..FSMetadata import FSMetadata
+from ..interfaces import ICachingPolicyManager
+from ..testing import TraversingZCMLLayer
+from .base.dummy import DummyCachingManager
+from .base.testcase import FSDVTest
+from .base.testcase import SecurityTest
+from .base.testcase import TransactionalTest
 
 ZopeTestCase.installProduct('PageTemplates', 1)
 
@@ -39,7 +39,7 @@ ZopeTestCase.installProduct('PageTemplates', 1)
 class FSPTMaker(FSDVTest):
 
     def _makeOne(self, id, filename):
-        from Products.CMFCore.FSPageTemplate import FSPageTemplate
+        from ..FSPageTemplate import FSPageTemplate
 
         path = path_join(self.skin_path_name, filename)
         metadata = FSMetadata(path)

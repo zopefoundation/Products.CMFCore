@@ -18,13 +18,13 @@ import unittest
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.ActionInformation import ActionInformation
-from Products.CMFCore.Expression import createExprContext
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummyTool as DummyMembershipTool
-from Products.CMFCore.tests.base.testcase import SecurityTest
+from ..ActionInformation import ActionInformation
+from ..Expression import createExprContext
+from ..Expression import Expression
+from ..interfaces import IMembershipTool
+from .base.dummy import DummyContent
+from .base.dummy import DummyTool as DummyMembershipTool
+from .base.testcase import SecurityTest
 
 
 class ExpressionTests(SecurityTest):

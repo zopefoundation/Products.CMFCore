@@ -20,14 +20,14 @@ from App.special_dtml import DTMLFile
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implementer
 
-from Products.CMFCore.exceptions import AccessControl_Unauthorized
-from Products.CMFCore.interfaces import IUndoTool
-from Products.CMFCore.permissions import ListUndoableChanges
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import _checkPermission
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .exceptions import AccessControl_Unauthorized
+from .interfaces import IUndoTool
+from .permissions import ListUndoableChanges
+from .permissions import ManagePortal
+from .utils import _checkPermission
+from .utils import _dtmldir
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 
 @implementer(IUndoTool)

@@ -27,9 +27,9 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.CatalogTool import CatalogTool
-from Products.CMFCore.interfaces import ICatalogTool
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...CatalogTool import CatalogTool
+from ...interfaces import ICatalogTool
+from ...testing import ExportImportZCMLLayer
 
 ZopeTestCase.installProduct('ZCTextIndex', 1)
 
@@ -108,7 +108,7 @@ class exportCatalogToolTests(_CatalogToolSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from Products.CMFCore.exportimport.catalog import exportCatalogTool
+        from ..catalog import exportCatalogTool
 
         site, _ctool = self._initSite(0)
         context = DummyExportContext(site)
@@ -121,7 +121,7 @@ class exportCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.catalog import exportCatalogTool
+        from ..catalog import exportCatalogTool
 
         site, _ctool = self._initSite(2)
         context = DummyExportContext(site)
@@ -139,7 +139,7 @@ class importCatalogToolTests(_CatalogToolSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty_purge(self):
-        from Products.CMFCore.exportimport.catalog import importCatalogTool
+        from ..catalog import importCatalogTool
 
         site, ctool = self._initSite(2)
 
@@ -156,7 +156,7 @@ class importCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(len(ctool.schema()), 0)
 
     def test_empty_update(self):
-        from Products.CMFCore.exportimport.catalog import importCatalogTool
+        from ..catalog import importCatalogTool
 
         site, ctool = self._initSite(2)
 
@@ -173,8 +173,8 @@ class importCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(len(ctool.schema()), 1)
 
     def test_normal_purge(self):
-        from Products.CMFCore.exportimport.catalog import exportCatalogTool
-        from Products.CMFCore.exportimport.catalog import importCatalogTool
+        from ..catalog import exportCatalogTool
+        from ..catalog import importCatalogTool
 
         site, ctool = self._initSite(2)
 
@@ -201,7 +201,7 @@ class importCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal_update(self):
-        from Products.CMFCore.exportimport.catalog import importCatalogTool
+        from ..catalog import importCatalogTool
 
         site, ctool = self._initSite(2)
 

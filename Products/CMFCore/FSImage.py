@@ -22,17 +22,17 @@ from App.special_dtml import DTMLFile
 from OFS.Image import getImageInfo
 from OFS.Image import Image
 
-from Products.CMFCore.DirectoryView import registerFileExtension
-from Products.CMFCore.DirectoryView import registerMetaType
-from Products.CMFCore.FSObject import FSObject
-from Products.CMFCore.permissions import FTPAccess
-from Products.CMFCore.permissions import View
-from Products.CMFCore.permissions import ViewManagementScreens
-from Products.CMFCore.utils import _checkConditionalGET
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _FSCacheHeaders
-from Products.CMFCore.utils import _setCacheHeaders
-from Products.CMFCore.utils import _ViewEmulator
+from .DirectoryView import registerFileExtension
+from .DirectoryView import registerMetaType
+from .FSObject import FSObject
+from .permissions import FTPAccess
+from .permissions import View
+from .permissions import ViewManagementScreens
+from .utils import _checkConditionalGET
+from .utils import _dtmldir
+from .utils import _FSCacheHeaders
+from .utils import _setCacheHeaders
+from .utils import _ViewEmulator
 
 
 class FSImage(FSObject):

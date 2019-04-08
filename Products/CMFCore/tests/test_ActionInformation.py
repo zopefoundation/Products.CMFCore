@@ -21,32 +21,32 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.Expression import createExprContext
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.testing import FunctionalZCMLLayer
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyTool as DummyMembershipTool
-from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.tests.base.testcase import TransactionalTest
+from ..Expression import createExprContext
+from ..Expression import Expression
+from ..interfaces import IMembershipTool
+from ..testing import FunctionalZCMLLayer
+from .base.dummy import DummyContent
+from .base.dummy import DummySite
+from .base.dummy import DummyTool as DummyMembershipTool
+from .base.testcase import SecurityTest
+from .base.testcase import TransactionalTest
 
 
 class ActionCategoryTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ActionInformation import ActionCategory
+        from ..ActionInformation import ActionCategory
 
         return ActionCategory(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ActionInformation import ActionCategory
-        from Products.CMFCore.interfaces import IActionCategory
+        from ..ActionInformation import ActionCategory
+        from ..interfaces import IActionCategory
 
         verifyClass(IActionCategory, ActionCategory)
 
     def test_listActions(self):
-        from Products.CMFCore.ActionInformation import Action
+        from ..ActionInformation import Action
 
         ac = self._makeOne('foo')
         self.assertEqual(ac.listActions(), ())
@@ -59,13 +59,13 @@ class ActionCategoryTests(unittest.TestCase):
 class ActionTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ActionInformation import Action
+        from ..ActionInformation import Action
 
         return Action(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ActionInformation import Action
-        from Products.CMFCore.interfaces import IAction
+        from ..ActionInformation import Action
+        from ..interfaces import IAction
 
         verifyClass(IAction, Action)
 
@@ -176,18 +176,18 @@ class DummyRequest:
 class ActionInfoTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ActionInformation import ActionInfo
+        from ..ActionInformation import ActionInfo
 
         return ActionInfo(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ActionInformation import ActionInfo
-        from Products.CMFCore.interfaces import IActionInfo
+        from ..ActionInformation import ActionInfo
+        from ..interfaces import IActionInfo
 
         verifyClass(IActionInfo, ActionInfo)
 
     def test_create_from_Action(self):
-        from Products.CMFCore.ActionInformation import Action
+        from ..ActionInformation import Action
 
         WANTED = {'allowed': True, 'available': True, 'category': '',
                   'description': '', 'icon': '', 'id': 'foo', 'title': '',
@@ -208,7 +208,7 @@ class ActionInfoTests(unittest.TestCase):
         self.assertEqual(ai, WANTED)
 
     def test_create_from_ActionInformation(self):
-        from Products.CMFCore.ActionInformation import ActionInformation
+        from ..ActionInformation import ActionInformation
 
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
                   'description': '', 'id': 'foo', 'title': 'foo', 'url': '',
@@ -262,7 +262,7 @@ class ActionInfoSecurityTests(SecurityTest):
         SecurityTest.tearDown(self)
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ActionInformation import ActionInfo
+        from ..ActionInformation import ActionInfo
 
         return ActionInfo(*args, **kw)
 
@@ -384,13 +384,13 @@ class ActionInformationTests(TransactionalTest):
         TransactionalTest.tearDown(self)
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.ActionInformation import ActionInformation
+        from ..ActionInformation import ActionInformation
 
         return ActionInformation(*args, **kw)
 
     def test_interfaces(self):
-        from Products.CMFCore.ActionInformation import ActionInformation
-        from Products.CMFCore.interfaces import IAction
+        from ..ActionInformation import ActionInformation
+        from ..interfaces import IAction
 
         verifyClass(IAction, ActionInformation)
 

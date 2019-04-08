@@ -23,9 +23,9 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.CookieCrumbler import CookieCrumbler
-from Products.CMFCore.interfaces import ICookieCrumbler
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...CookieCrumbler import CookieCrumbler
+from ...interfaces import ICookieCrumbler
+from ...testing import ExportImportZCMLLayer
 
 _COOKIECRUMBLER_BODY = b"""\
 <?xml version="1.0" encoding="utf-8"?>
@@ -88,7 +88,7 @@ class CookieCrumblerXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.cookieauth \
+        from ..cookieauth \
                 import CookieCrumblerXMLAdapter
 
         return CookieCrumblerXMLAdapter
@@ -122,7 +122,7 @@ class exportCookieCrumblerTests(_CookieCrumblerSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from Products.CMFCore.exportimport.cookieauth \
+        from ..cookieauth \
                 import exportCookieCrumbler
 
         site, _cc = self._initSite(use_changed=False)
@@ -136,7 +136,7 @@ class exportCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
-        from Products.CMFCore.exportimport.cookieauth \
+        from ..cookieauth \
                 import exportCookieCrumbler
 
         site, _cc = self._initSite(use_changed=True)
@@ -155,7 +155,7 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
     layer = ExportImportZCMLLayer
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.cookieauth \
+        from ..cookieauth \
                 import importCookieCrumbler
 
         site, cc = self._initSite()
@@ -173,7 +173,7 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual(cc.local_cookie_path, 1)
 
     def test_migration(self):
-        from Products.CMFCore.exportimport.cookieauth \
+        from ..cookieauth \
                 import importCookieCrumbler
 
         site, cc = self._initSite()

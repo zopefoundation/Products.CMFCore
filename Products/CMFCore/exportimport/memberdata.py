@@ -22,7 +22,7 @@ from Products.GenericSetup.utils import importObjects
 from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import IMemberDataTool
+from ..interfaces import IMemberDataTool
 
 
 class MemberDataToolXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):

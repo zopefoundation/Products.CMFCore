@@ -21,7 +21,7 @@ from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import ISiteRoot
+from ..interfaces import ISiteRoot
 
 _FILENAME = 'properties.xml'
 

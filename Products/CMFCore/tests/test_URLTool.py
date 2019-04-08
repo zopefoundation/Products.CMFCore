@@ -19,10 +19,10 @@ from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummyFolder
-from Products.CMFCore.tests.base.dummy import DummySite
+from ..interfaces import ISiteRoot
+from .base.dummy import DummyContent
+from .base.dummy import DummyFolder
+from .base.dummy import DummySite
 
 
 class URLToolTests(unittest.TestCase):
@@ -36,15 +36,15 @@ class URLToolTests(unittest.TestCase):
         cleanUp()
 
     def _makeOne(self, *args, **kw):
-        from Products.CMFCore.URLTool import URLTool
+        from ..URLTool import URLTool
 
         url_tool = URLTool(*args, **kw)
         return url_tool.__of__(self.site)
 
     def test_interfaces(self):
-        from Products.CMFCore.interfaces import IActionProvider
-        from Products.CMFCore.interfaces import IURLTool
-        from Products.CMFCore.URLTool import URLTool
+        from ..interfaces import IActionProvider
+        from ..interfaces import IURLTool
+        from ..URLTool import URLTool
 
         verifyClass(IActionProvider, URLTool)
         verifyClass(IURLTool, URLTool)

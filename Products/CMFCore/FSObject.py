@@ -31,10 +31,10 @@ from OFS.SimpleItem import Item
 from Products.PythonScripts.standard import html_quote
 from zope.component import getUtility
 
-from Products.CMFCore.interfaces import ISkinsTool
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import View
-from Products.CMFCore.permissions import ViewManagementScreens
+from .interfaces import ISkinsTool
+from .permissions import ManagePortal
+from .permissions import View
+from .permissions import ViewManagementScreens
 
 
 class FSObject(Implicit, Item, RoleManager, Cacheable):

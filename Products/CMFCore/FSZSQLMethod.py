@@ -22,12 +22,12 @@ from App.config import getConfiguration
 from App.special_dtml import DTMLFile
 from Products.ZSQLMethods.SQL import SQL
 
-from Products.CMFCore.DirectoryView import registerFileExtension
-from Products.CMFCore.DirectoryView import registerMetaType
-from Products.CMFCore.FSObject import FSObject
-from Products.CMFCore.permissions import View
-from Products.CMFCore.permissions import ViewManagementScreens
-from Products.CMFCore.utils import _dtmldir
+from .DirectoryView import registerFileExtension
+from .DirectoryView import registerMetaType
+from .FSObject import FSObject
+from .permissions import View
+from .permissions import ViewManagementScreens
+from .utils import _dtmldir
 
 logger = logging.getLogger('CMFCore.FSZSQLMethod')
 

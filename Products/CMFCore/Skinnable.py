@@ -26,7 +26,7 @@ from OFS.ObjectManager import ObjectManager
 from ZODB.POSException import ConflictError
 from zope.component import queryUtility
 
-from Products.CMFCore.interfaces import ISkinsTool
+from .interfaces import ISkinsTool
 
 logger = logging.getLogger('CMFCore.Skinnable')
 

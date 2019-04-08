@@ -28,14 +28,14 @@ from zope.globalrequest import getRequest
 from zope.i18nmessageid import Message
 from zope.interface import implementer
 
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.interfaces import IAction
-from Products.CMFCore.interfaces import IActionCategory
-from Products.CMFCore.interfaces import IActionInfo
-from Products.CMFCore.interfaces import IMembershipTool
-from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.permissions import View
-from Products.CMFCore.utils import _checkPermission
+from .Expression import Expression
+from .interfaces import IAction
+from .interfaces import IActionCategory
+from .interfaces import IActionInfo
+from .interfaces import IMembershipTool
+from .interfaces import IURLTool
+from .permissions import View
+from .utils import _checkPermission
 
 _unchanged = []  # marker
 

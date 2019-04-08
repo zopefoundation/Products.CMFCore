@@ -24,8 +24,8 @@ from Products.GenericSetup.utils import ObjectManagerHelpers
 from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 
-from Products.CMFCore.interfaces import ITypeInformation
-from Products.CMFCore.interfaces import ITypesTool
+from ..interfaces import ITypeInformation
+from ..interfaces import ITypesTool
 
 
 class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):

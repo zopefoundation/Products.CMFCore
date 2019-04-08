@@ -27,8 +27,8 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.interfaces import ISkinsTool
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...interfaces import ISkinsTool
+from ...testing import ExportImportZCMLLayer
 
 ZopeTestCase.installProduct('CMFCore', 1)
 
@@ -216,7 +216,7 @@ class DummySkinsTool(Folder):
 class _DVRegistrySetup:
 
     def setUp(self):
-        from Products.CMFCore import DirectoryView
+        from ... import DirectoryView
 
         self._olddirreg = DirectoryView._dirreg
         DirectoryView._dirreg = DirectoryView.DirectoryRegistry()
@@ -227,7 +227,7 @@ class _DVRegistrySetup:
         self._dirreg.registerDirectory('four', globals())
 
     def tearDown(self):
-        from Products.CMFCore import DirectoryView
+        from ... import DirectoryView
 
         DirectoryView._dirreg = self._olddirreg
 
@@ -239,7 +239,7 @@ class DirectoryViewAdapterTests(_DVRegistrySetup,
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.skins \
+        from ..skins \
                 import DirectoryViewNodeAdapter
 
         return DirectoryViewNodeAdapter
@@ -248,7 +248,7 @@ class DirectoryViewAdapterTests(_DVRegistrySetup,
         obj._dirpath = 'Products.CMFCore.exportimport.tests:one'
 
     def setUp(self):
-        from Products.CMFCore.DirectoryView import DirectoryView
+        from ...DirectoryView import DirectoryView
 
         _DVRegistrySetup.setUp(self)
         self._obj = DirectoryView('foo_directoryview').__of__(Folder())
@@ -265,12 +265,12 @@ class SkinsToolXMLAdapterTests(_DVRegistrySetup,
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from Products.CMFCore.exportimport.skins import SkinsToolXMLAdapter
+        from ..skins import SkinsToolXMLAdapter
 
         return SkinsToolXMLAdapter
 
     def _populate(self, obj):
-        from Products.CMFCore.DirectoryView import DirectoryView
+        from ...DirectoryView import DirectoryView
 
         obj._setObject('foo_directoryview',
                        DirectoryView(
@@ -282,7 +282,7 @@ class SkinsToolXMLAdapterTests(_DVRegistrySetup,
         pass
 
     def setUp(self):
-        from Products.CMFCore.SkinsTool import SkinsTool
+        from ...SkinsTool import SkinsTool
 
         _DVRegistrySetup.setUp(self)
         self._obj = SkinsTool()
@@ -295,7 +295,7 @@ class SkinsToolXMLAdapterTests(_DVRegistrySetup,
 class _SkinsSetup(_DVRegistrySetup, BaseRegistryTests):
 
     def _initSite(self, selections={}, ids=()):
-        from Products.CMFCore.DirectoryView import DirectoryView
+        from ...DirectoryView import DirectoryView
 
         site = DummySite()
         fsdvs = [(id,
@@ -322,7 +322,7 @@ class exportSkinsToolTests(_SkinsSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from Products.CMFCore.exportimport.skins import exportSkinsTool
+        from ..skins import exportSkinsTool
 
         site, _stool = self._initSite()
         context = DummyExportContext(site)
@@ -335,7 +335,7 @@ class exportSkinsToolTests(_SkinsSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.skins import exportSkinsTool
+        from ..skins import exportSkinsTool
 
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
@@ -372,7 +372,7 @@ class importSkinsToolTests(_SkinsSetup):
     _NORMAL_EXPORT = _NORMAL_EXPORT
 
     def test_remove_skin_path(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
@@ -388,7 +388,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertFalse('fancy' in skins_tool._getSelections())
 
     def test_empty_default_purge(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
@@ -412,7 +412,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skins_tool.objectItems()), 0)
 
     def test_empty_explicit_purge(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
@@ -436,7 +436,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skins_tool.objectItems()), 0)
 
     def test_empty_skip_purge(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two', 'three')
         _PATHS = {'basic': 'one', 'fancy': 'three, two, one'}
@@ -460,7 +460,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skins_tool.objectItems()), 3)
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         site, skins_tool = self._initSite()
 
@@ -481,7 +481,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skins_tool.objectItems()), 3)
 
     def test_fragment_skip_purge(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two')
         _PATHS = {'basic': 'one', 'fancy': 'two,one'}
@@ -525,7 +525,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skins_tool.objectItems()), 4)
 
     def test_fragment3_skip_purge(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two')
         _PATHS = {'basic': 'one', 'fancy': 'two,one'}
@@ -556,7 +556,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skins_tool.objectItems()), 4)
 
     def test_fragment4_removal(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two')
         _PATHS = {'basic': 'one', 'fancy': 'two,one'}
@@ -593,7 +593,7 @@ class importSkinsToolTests(_SkinsSetup):
         self.assertEqual(len(skins_tool.objectItems()), 4)
 
     def test_fragment5_based_skin(self):
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two', 'three', 'four')
         _PATHS = {'basic': 'one,three,four', 'existing': 'one,two,four'}
@@ -622,7 +622,7 @@ class importSkinsToolTests(_SkinsSetup):
 
     def test_fragment7_modified_skin(self):
         # https://bugs.launchpad.net/zope-cmf/+bug/161732
-        from Products.CMFCore.exportimport.skins import importSkinsTool
+        from ..skins import importSkinsTool
 
         _IDS = ('one', 'two', 'three', 'four')
         _PATHS = {'existing': 'one,three,four'}

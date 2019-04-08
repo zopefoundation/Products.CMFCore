@@ -27,7 +27,7 @@ from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
 
-from Products.CMFCore.testing import ExportImportZCMLLayer
+from ...testing import ExportImportZCMLLayer
 
 _DEFAULT_EXPORT = """\
 <?xml version="1.0"?>
@@ -76,7 +76,7 @@ class exportMailHostTests(_MailHostSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from Products.CMFCore.exportimport.mailhost import exportMailHost
+        from ..mailhost import exportMailHost
 
         site, _mh = self._initSite(use_changed=False)
         context = DummyExportContext(site)
@@ -89,7 +89,7 @@ class exportMailHostTests(_MailHostSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
-        from Products.CMFCore.exportimport.mailhost import exportMailHost
+        from ..mailhost import exportMailHost
 
         site, _mh = self._initSite(use_changed=True)
         context = DummyExportContext(site)
@@ -107,7 +107,7 @@ class importMailHostTests(_MailHostSetup):
     layer = ExportImportZCMLLayer
 
     def test_normal(self):
-        from Products.CMFCore.exportimport.mailhost import importMailHost
+        from ..mailhost import importMailHost
 
         site, mh = self._initSite()
         context = DummyImportContext(site)
@@ -122,7 +122,7 @@ class importMailHostTests(_MailHostSetup):
         self.assertEqual(mh.smtp_queue_directory, '/tmp')
 
     def test_migration(self):
-        from Products.CMFCore.exportimport.mailhost import importMailHost
+        from ..mailhost import importMailHost
 
         site, mh = self._initSite()
         context = DummyImportContext(site)

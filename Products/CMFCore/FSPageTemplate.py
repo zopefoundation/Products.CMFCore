@@ -30,15 +30,15 @@ from Products.PageTemplates.ZopePageTemplate import Src
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from Shared.DC.Scripts.Script import Script
 
-from Products.CMFCore.DirectoryView import registerFileExtension
-from Products.CMFCore.DirectoryView import registerMetaType
-from Products.CMFCore.FSObject import FSObject
-from Products.CMFCore.permissions import FTPAccess
-from Products.CMFCore.permissions import View
-from Products.CMFCore.permissions import ViewManagementScreens
-from Products.CMFCore.utils import _checkConditionalGET
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import _setCacheHeaders
+from .DirectoryView import registerFileExtension
+from .DirectoryView import registerMetaType
+from .FSObject import FSObject
+from .permissions import FTPAccess
+from .permissions import View
+from .permissions import ViewManagementScreens
+from .utils import _checkConditionalGET
+from .utils import _dtmldir
+from .utils import _setCacheHeaders
 
 
 xml_detect_re = re.compile(

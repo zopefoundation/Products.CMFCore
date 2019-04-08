@@ -22,12 +22,12 @@ from App.Common import rfc1123_date
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
 
-from Products.CMFCore.interfaces import ICachingPolicyManager
-from Products.CMFCore.tests.base.dummy import DummyCachingManager
-from Products.CMFCore.tests.base.dummy import DummyCachingManagerWithPolicy
-from Products.CMFCore.tests.base.dummy import FAKE_ETAG
-from Products.CMFCore.tests.base.testcase import FSDVTest
-from Products.CMFCore.tests.base.testcase import TransactionalTest
+from ..interfaces import ICachingPolicyManager
+from .base.dummy import DummyCachingManager
+from .base.dummy import DummyCachingManagerWithPolicy
+from .base.dummy import FAKE_ETAG
+from .base.testcase import FSDVTest
+from .base.testcase import TransactionalTest
 
 
 class FSImageTests(TransactionalTest, FSDVTest):
@@ -42,7 +42,7 @@ class FSImageTests(TransactionalTest, FSDVTest):
         TransactionalTest.tearDown(self)
 
     def _makeOne(self, id, filename):
-        from Products.CMFCore.FSImage import FSImage
+        from ..FSImage import FSImage
 
         return FSImage(id, path_join(self.skin_path_name, filename))
 

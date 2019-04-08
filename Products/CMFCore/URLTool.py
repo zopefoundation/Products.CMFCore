@@ -24,14 +24,14 @@ from zope.globalrequest import getRequest
 from zope.interface import implementer
 from ZPublisher.BaseRequest import RequestContainer
 
-from Products.CMFCore.ActionProviderBase import ActionProviderBase
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.CMFCore.interfaces import IURLTool
-from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.permissions import View
-from Products.CMFCore.utils import _dtmldir
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
+from .ActionProviderBase import ActionProviderBase
+from .interfaces import ISiteRoot
+from .interfaces import IURLTool
+from .permissions import ManagePortal
+from .permissions import View
+from .utils import _dtmldir
+from .utils import registerToolInterface
+from .utils import UniqueObject
 
 
 @implementer(IURLTool)

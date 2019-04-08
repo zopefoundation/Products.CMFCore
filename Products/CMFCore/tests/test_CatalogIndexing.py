@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from Acquisition import Implicit
-from Products.CMFCore.indexing import getQueue
-from Products.CMFCore.indexing import INDEX
-from Products.CMFCore.indexing import IndexQueue
-from Products.CMFCore.indexing import QueueTM
-from Products.CMFCore.indexing import REINDEX
-from Products.CMFCore.indexing import UNINDEX
-from Products.CMFCore.interfaces import IIndexing
-from Products.CMFCore.interfaces import IIndexQueue
-from Products.CMFCore.interfaces import IIndexQueueProcessor
-from Products.CMFCore.tests.base.dummy import DummyContent
-from Products.CMFCore.tests.base.dummy import DummyFolder
+from ..indexing import getQueue
+from ..indexing import INDEX
+from ..indexing import IndexQueue
+from ..indexing import QueueTM
+from ..indexing import REINDEX
+from ..indexing import UNINDEX
+from ..interfaces import IIndexing
+from ..interfaces import IIndexQueue
+from ..interfaces import IIndexQueueProcessor
+from .base.dummy import DummyContent
+from .base.dummy import DummyFolder
 from threading import currentThread
 from threading import Thread
 from time import sleep
@@ -470,7 +470,7 @@ class UnindexWrapperTests(TestCase):
         self.root.sub1.testcontent.title = 'Test Title'
 
     def test_wrap_content(self):
-        from Products.CMFCore.indexing import wrap
+        from ..indexing import wrap
 
         unwrapped = self.root.sub1.testcontent
         wrapped = wrap(unwrapped)

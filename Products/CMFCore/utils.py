@@ -53,9 +53,9 @@ from zope.interface.interfaces import ComponentLookupError
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 
-from Products.CMFCore.exceptions import AccessControl_Unauthorized
-from Products.CMFCore.exceptions import NotFound
-from Products.CMFCore.interfaces import ICachingPolicyManager
+from .exceptions import AccessControl_Unauthorized
+from .exceptions import NotFound
+from .interfaces import ICachingPolicyManager
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 ProductsPath = [abspath(ppath) for ppath in Products.__path__]
