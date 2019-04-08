@@ -1,6 +1,8 @@
 import os
-from setuptools import setup
+
 from setuptools import find_packages
+from setuptools import setup
+
 
 NAME = 'CMFCore'
 
@@ -24,32 +26,32 @@ setup(name='Products.%s' % NAME,
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
-          "Development Status :: 4 - Beta",
-          "Framework :: Plone",
-          "Framework :: Zope :: 4",
-          "Intended Audience :: Developers",
-          "License :: OSI Approved :: Zope Public License",
-          "Programming Language :: Python :: 2",
-          "Programming Language :: Python :: 2.7",
-          "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.5",
-          "Programming Language :: Python :: 3.6",
-          "Programming Language :: Python :: 3.7",
-          "Programming Language :: Python :: 3.8",
-          "Programming Language :: Python :: Implementation :: CPython",
-          "Topic :: Software Development :: Libraries :: Application Frameworks",  # noqa
+          'Development Status :: 4 - Beta',
+          'Framework :: Plone',
+          'Framework :: Zope :: 4',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python :: 2',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: Implementation :: CPython',
+          'Topic :: Software Development :: Libraries :: Application Frameworks',  # noqa
       ],
       keywords='web application server zope cmf',
-      author="Zope Foundation and Contributors",
-      author_email="zope-cmf@zope.org",
-      url="https://github.com/zopefoundation/Products.CMFCore",
+      author='Zope Foundation and Contributors',
+      author_email='zope-cmf@zope.org',
+      url='https://github.com/zopefoundation/Products.CMFCore',
       project_urls={
           'Documentation': 'https://zope.readthedocs.io',
           'Issue Tracker': ('https://github.com/zopefoundation/'
                             'Products.CMFCore/issues'),
           'Sources': 'https://github.com/zopefoundation/Products.CMFCore',
       },
-      license="ZPL 2.1",
+      license='ZPL 2.1',
       packages=find_packages(),
       include_package_data=True,
       namespace_packages=['Products'],

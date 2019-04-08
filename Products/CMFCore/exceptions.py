@@ -10,21 +10,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+# flake8: noqa
 """ CMFCore product exceptions.
 """
 
 from AccessControl import ModuleSecurityInfo
-from AccessControl import Unauthorized as AccessControl_Unauthorized  # noqa
-from OFS.CopySupport import CopyError  # noqa
-from zExceptions import BadRequest  # noqa
-from zExceptions import NotFound  # noqa
-from zExceptions import Unauthorized as zExceptions_Unauthorized  # noqa
+from AccessControl import Unauthorized as AccessControl_Unauthorized
+from OFS.CopySupport import CopyError
+from zExceptions import BadRequest
+from zExceptions import NotFound
+from zExceptions import Unauthorized as zExceptions_Unauthorized
 
 
 try:
-    from zExceptions import ResourceLockedError  # noqa
+    from zExceptions import ResourceLockedError
 except ImportError:
-    from webdav.Lockable import ResourceLockedError  # noqa
+    from webdav.Lockable import ResourceLockedError
 
 
 security = ModuleSecurityInfo('Products.CMFCore.exceptions')
@@ -32,10 +33,10 @@ security = ModuleSecurityInfo('Products.CMFCore.exceptions')
 # Use AccessControl_Unauthorized to raise Unauthorized errors and
 # zExceptions_Unauthorized to catch them all.
 
-security.declarePublic('AccessControl_Unauthorized')  # NOQA: flake8: D001
-security.declarePublic('BadRequest')  # NOQA: flake8: D001
-security.declarePublic('CopyError')  # NOQA: flake8: D001
-security.declarePublic('NotFound')  # NOQA: flake8: D001
+security.declarePublic('AccessControl_Unauthorized')
+security.declarePublic('BadRequest')
+security.declarePublic('CopyError')
+security.declarePublic('NotFound')
 
 
 @security.public
