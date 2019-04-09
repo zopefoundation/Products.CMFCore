@@ -63,8 +63,7 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..properties \
-                import PropertiesXMLAdapter
+        from ..properties import PropertiesXMLAdapter
 
         return PropertiesXMLAdapter
 
@@ -123,8 +122,7 @@ class exportSitePropertiesTests(_SitePropertiesSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from ..properties \
-                import exportSiteProperties
+        from ..properties import exportSiteProperties
 
         site = self._initSite(0, 0)
         context = DummyExportContext(site)
@@ -137,8 +135,7 @@ class exportSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from ..properties \
-                import exportSiteProperties
+        from ..properties import exportSiteProperties
 
         site = self._initSite()
         context = DummyExportContext(site)
@@ -156,8 +153,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty_default_purge(self):
-        from ..properties \
-                import importSiteProperties
+        from ..properties import importSiteProperties
 
         site = self._initSite()
 
@@ -174,8 +170,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(len(site.propertyIds()), 1)
 
     def test_empty_explicit_purge(self):
-        from ..properties \
-                import importSiteProperties
+        from ..properties import importSiteProperties
 
         site = self._initSite()
 
@@ -192,8 +187,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(len(site.propertyIds()), 1)
 
     def test_empty_skip_purge(self):
-        from ..properties \
-                import importSiteProperties
+        from ..properties import importSiteProperties
 
         site = self._initSite()
 
@@ -214,8 +208,7 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         self.assertEqual(site.getProperty('bar'), ('Bar',))
 
     def test_normal(self):
-        from ..properties \
-                import importSiteProperties
+        from ..properties import importSiteProperties
 
         site = self._initSite(0, 0)
 
@@ -237,10 +230,8 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
     layer = ExportImportZCMLLayer
 
     def test_nonascii_no_default_charset(self):
-        from ..properties \
-                import exportSiteProperties
-        from ..properties \
-            import importSiteProperties
+        from ..properties import exportSiteProperties
+        from ..properties import importSiteProperties
 
         NONASCII = u'B\xe4r'
         site = self._initSite(foo=0, bar=0)

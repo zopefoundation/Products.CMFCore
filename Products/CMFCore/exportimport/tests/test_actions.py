@@ -298,8 +298,7 @@ class ActionCategoryNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..actions \
-                import ActionCategoryNodeAdapter
+        from ..actions import ActionCategoryNodeAdapter
 
         return ActionCategoryNodeAdapter
 
@@ -324,8 +323,7 @@ class ActionsToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..actions \
-                import ActionsToolXMLAdapter
+        from ..actions import ActionsToolXMLAdapter
 
         return ActionsToolXMLAdapter
 
@@ -396,8 +394,7 @@ class exportActionProvidersTests(_ActionSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from ..actions \
-                import exportActionProviders
+        from ..actions import exportActionProviders
 
         site, _atool = self._initSite(0, 0)
         context = DummyExportContext(site)
@@ -410,8 +407,7 @@ class exportActionProvidersTests(_ActionSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_normal(self):
-        from ..actions \
-                import exportActionProviders
+        from ..actions import exportActionProviders
 
         site, atool = self._initSite()
         # Set up an old action for added difficulty
@@ -438,8 +434,7 @@ class importActionProvidersTests(_ActionSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty_default_purge(self):
-        from ..actions \
-                import importActionProviders
+        from ..actions import importActionProviders
 
         site, atool = self._initSite(2, 0)
 
@@ -457,8 +452,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(len(atool.objectIds()), 0)
 
     def test_empty_explicit_purge(self):
-        from ..actions \
-                import importActionProviders
+        from ..actions import importActionProviders
 
         site, atool = self._initSite(2, 0)
 
@@ -476,8 +470,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(len(atool.objectIds()), 0)
 
     def test_empty_skip_purge(self):
-        from ..actions \
-                import importActionProviders
+        from ..actions import importActionProviders
 
         site, atool = self._initSite(2, 0)
 
@@ -494,10 +487,8 @@ class importActionProvidersTests(_ActionSetup):
         self.assertTrue('portal_actions' in atool.listActionProviders())
 
     def test_normal(self):
-        from ..actions \
-            import exportActionProviders
-        from ..actions \
-            import importActionProviders
+        from ..actions import exportActionProviders
+        from ..actions import importActionProviders
 
         site, atool = self._initSite(1, 1)
         foo = site.portal_foo
@@ -540,10 +531,8 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_i18n(self):
-        from ..actions \
-            import exportActionProviders
-        from ..actions \
-            import importActionProviders
+        from ..actions import exportActionProviders
+        from ..actions import importActionProviders
 
         site, atool = self._initSite(0, 0)
 
@@ -567,8 +556,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_insert_skip_purge(self):
-        from ..actions \
-                import importActionProviders
+        from ..actions import importActionProviders
 
         site, atool = self._initSite(0, 0)
 
@@ -591,8 +579,7 @@ class importActionProvidersTests(_ActionSetup):
         self.assertEqual(atool.dummy.baz.icon_expr, 'string:baz_icon.png')
 
     def test_remove_skip_purge(self):
-        from ..actions \
-                import importActionProviders
+        from ..actions import importActionProviders
 
         site, atool = self._initSite(2, 2)
 

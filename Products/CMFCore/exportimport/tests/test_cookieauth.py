@@ -92,8 +92,7 @@ class CookieCrumblerXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..cookieauth \
-                import CookieCrumblerXMLAdapter
+        from ..cookieauth import CookieCrumblerXMLAdapter
 
         return CookieCrumblerXMLAdapter
 
@@ -127,8 +126,7 @@ class exportCookieCrumblerTests(_CookieCrumblerSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from ..cookieauth \
-                import exportCookieCrumbler
+        from ..cookieauth import exportCookieCrumbler
 
         site, _cc = self._initSite(use_changed=False)
         context = DummyExportContext(site)
@@ -141,8 +139,7 @@ class exportCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
-        from ..cookieauth \
-                import exportCookieCrumbler
+        from ..cookieauth import exportCookieCrumbler
 
         site, _cc = self._initSite(use_changed=True)
         context = DummyExportContext(site)
@@ -160,8 +157,7 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
     layer = ExportImportZCMLLayer
 
     def test_normal(self):
-        from ..cookieauth \
-                import importCookieCrumbler
+        from ..cookieauth import importCookieCrumbler
 
         site, cc = self._initSite()
 
@@ -179,8 +175,7 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
         self.assertEqual(cc.local_cookie_path, 1)
 
     def test_migration(self):
-        from ..cookieauth \
-                import importCookieCrumbler
+        from ..cookieauth import importCookieCrumbler
 
         site, cc = self._initSite()
 

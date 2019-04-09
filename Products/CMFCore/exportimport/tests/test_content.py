@@ -63,8 +63,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         from Products.GenericSetup.interfaces import IINIAware
         from ...interfaces import IFolderish
 
-        from ..content import \
-            StructureFolderWalkingAdapter
+        from ..content import StructureFolderWalkingAdapter
         from Products.GenericSetup.content import CSVAwareFileAdapter
         from Products.GenericSetup.content import INIAwareFileAdapter
 

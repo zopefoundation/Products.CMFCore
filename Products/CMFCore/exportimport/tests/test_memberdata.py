@@ -71,8 +71,7 @@ class MemberDataToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..memberdata \
-                import MemberDataToolXMLAdapter
+        from ..memberdata import MemberDataToolXMLAdapter
 
         return MemberDataToolXMLAdapter
 
@@ -105,8 +104,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
     layer = ExportImportZCMLLayer
 
     def test_unchanged(self):
-        from ..memberdata \
-                import exportMemberDataTool
+        from ..memberdata import exportMemberDataTool
 
         site, _mdtool = self._initSite(use_changed=False)
         context = DummyExportContext(site)
@@ -119,8 +117,7 @@ class exportMemberDataToolTests(_MemberDataToolSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_changed(self):
-        from ..memberdata \
-                import exportMemberDataTool
+        from ..memberdata import exportMemberDataTool
 
         site, _mdtool = self._initSite(use_changed=True)
         context = DummyExportContext(site)
@@ -138,8 +135,7 @@ class importMemberDataToolTests(_MemberDataToolSetup):
     layer = ExportImportZCMLLayer
 
     def test_normal(self):
-        from ..memberdata \
-                import importMemberDataTool
+        from ..memberdata import importMemberDataTool
 
         site, mdtool = self._initSite()
 

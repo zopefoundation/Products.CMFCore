@@ -79,8 +79,7 @@ class ContentTypeRegistryXMLAdapterTests(BodyAdapterTestCase,
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..contenttyperegistry \
-                import ContentTypeRegistryXMLAdapter
+        from ..contenttyperegistry import ContentTypeRegistryXMLAdapter
 
         return ContentTypeRegistryXMLAdapter
 
@@ -184,8 +183,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from ..contenttyperegistry \
-                import exportContentTypeRegistry
+        from ..contenttyperegistry import exportContentTypeRegistry
 
         site, _ctr = self._initSite(mit_predikat=False)
         context = DummyExportContext(site)
@@ -198,8 +196,7 @@ class exportContentTypeRegistryTests(_ContentTypeRegistrySetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_policy(self):
-        from ..contenttyperegistry \
-                import exportContentTypeRegistry
+        from ..contenttyperegistry import exportContentTypeRegistry
 
         site, _ctr = self._initSite(mit_predikat=True)
         context = DummyExportContext(site)
@@ -220,8 +217,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
     _FRAGMENT2_IMPORT = _FRAGMENT2_IMPORT
 
     def test_normal(self):
-        from ..contenttyperegistry \
-                import importContentTypeRegistry
+        from ..contenttyperegistry import importContentTypeRegistry
 
         site, ctr = self._initSite(mit_predikat=False)
         self.assertEqual(len(ctr.listPredicates()), 0)
@@ -254,8 +250,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
         self.assertEqual(predicate.pattern.pattern, self.NAME_REGEX)
 
     def test_fragment1_skip_purge(self):
-        from ..contenttyperegistry \
-                import importContentTypeRegistry
+        from ..contenttyperegistry import importContentTypeRegistry
 
         site, ctr = self._initSite(mit_predikat=True)
         self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))
@@ -271,8 +266,7 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
                                              'images', 'plain_text'))
 
     def test_fragment2_skip_purge(self):
-        from ..contenttyperegistry \
-                import importContentTypeRegistry
+        from ..contenttyperegistry import importContentTypeRegistry
 
         site, ctr = self._initSite(mit_predikat=True)
         self.assertEqual(len(ctr.listPredicates()), len(_TEST_PREDICATES))

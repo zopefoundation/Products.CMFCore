@@ -54,8 +54,7 @@ class CachingPolicyNodeAdapterTests(NodeAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..cachingpolicymgr \
-                import CachingPolicyNodeAdapter
+        from ..cachingpolicymgr import CachingPolicyNodeAdapter
 
         return CachingPolicyNodeAdapter
 
@@ -72,8 +71,7 @@ class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase,
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..cachingpolicymgr import \
-            CachingPolicyManagerXMLAdapter
+        from ..cachingpolicymgr import CachingPolicyManagerXMLAdapter
 
         return CachingPolicyManagerXMLAdapter
 
@@ -150,8 +148,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
     layer = ExportImportZCMLLayer
 
     def test_empty(self):
-        from ..cachingpolicymgr \
-                import exportCachingPolicyManager
+        from ..cachingpolicymgr import exportCachingPolicyManager
 
         site, _cpm = self._initSite(with_policy=False)
         context = DummyExportContext(site)
@@ -164,8 +161,7 @@ class exportCachingPolicyManagerTests(_CachingPolicyManagerSetup):
         self.assertEqual(content_type, 'text/xml')
 
     def test_with_policy(self):
-        from ..cachingpolicymgr \
-                import exportCachingPolicyManager
+        from ..cachingpolicymgr import exportCachingPolicyManager
 
         site, _cpm = self._initSite(with_policy=True)
         context = DummyExportContext(site)
@@ -183,8 +179,7 @@ class importCachingPolicyManagerTests(_CachingPolicyManagerSetup):
     layer = ExportImportZCMLLayer
 
     def test_normal(self):
-        from ..cachingpolicymgr \
-                import importCachingPolicyManager
+        from ..cachingpolicymgr import importCachingPolicyManager
 
         site, cpm = self._initSite(with_policy=False)
         self.assertEqual(len(cpm.listPolicies()), 0)

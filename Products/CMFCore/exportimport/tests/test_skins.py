@@ -239,8 +239,7 @@ class DirectoryViewAdapterTests(_DVRegistrySetup,
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..skins \
-                import DirectoryViewNodeAdapter
+        from ..skins import DirectoryViewNodeAdapter
 
         return DirectoryViewNodeAdapter
 

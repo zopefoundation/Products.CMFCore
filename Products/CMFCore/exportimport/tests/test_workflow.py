@@ -162,8 +162,7 @@ class WorkflowToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..workflow \
-                import WorkflowToolXMLAdapter
+        from ..workflow import WorkflowToolXMLAdapter
 
         return WorkflowToolXMLAdapter
 

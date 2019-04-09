@@ -372,8 +372,7 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..typeinfo \
-                import TypeInformationXMLAdapter
+        from ..typeinfo import TypeInformationXMLAdapter
 
         return TypeInformationXMLAdapter
 
@@ -413,8 +412,7 @@ class TypesToolXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
     layer = ExportImportZCMLLayer
 
     def _getTargetClass(self):
-        from ..typeinfo \
-                import TypesToolXMLAdapter
+        from ..typeinfo import TypesToolXMLAdapter
 
         return TypesToolXMLAdapter
 

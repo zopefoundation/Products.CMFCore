@@ -107,14 +107,12 @@ class ExtensionPredicateTests(unittest.TestCase):
 class MimeTypeRegexPredicateTests(unittest.TestCase):
 
     def _makeOne(self, *args, **kw):
-        from ..ContentTypeRegistry \
-                import MimeTypeRegexPredicate
+        from ..ContentTypeRegistry import MimeTypeRegexPredicate
 
         return MimeTypeRegexPredicate(*args, **kw)
 
     def test_interfaces(self):
-        from ..ContentTypeRegistry \
-                import MimeTypeRegexPredicate
+        from ..ContentTypeRegistry import MimeTypeRegexPredicate
         from ..interfaces import IContentTypeRegistryPredicate
 
         verifyClass(IContentTypeRegistryPredicate, MimeTypeRegexPredicate)
