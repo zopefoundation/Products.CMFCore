@@ -30,6 +30,7 @@ from ...testing import ExportImportZCMLLayer
 _COOKIECRUMBLER_BODY = b"""\
 <?xml version="1.0" encoding="utf-8"?>
 <object name="cookie_authentication" meta_type="Cookie Crumbler">
+ <property name="title"></property>
  <property name="auth_cookie">__ac</property>
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
@@ -43,6 +44,7 @@ _COOKIECRUMBLER_BODY = b"""\
 _DEFAULT_EXPORT = """\
 <?xml version="1.0"?>
 <object name="cookie_authentication" meta_type="Cookie Crumbler">
+ <property name="title"></property>
  <property name="auth_cookie">__ac</property>
  <property name="name_cookie">__ac_name</property>
  <property name="pw_cookie">__ac_password</property>
@@ -56,6 +58,7 @@ _DEFAULT_EXPORT = """\
 _CHANGED_EXPORT = """\
 <?xml version="1.0"?>
 <object name="cookie_authentication" meta_type="Cookie Crumbler">
+ <property name="title">I am a cookie</property>
  <property name="auth_cookie">value1</property>
  <property name="name_cookie">value3</property>
  <property name="pw_cookie">value5</property>
@@ -69,6 +72,7 @@ _CHANGED_EXPORT = """\
 _CMF22_IMPORT = """\
 <?xml version="1.0"?>
 <object name="foo_cookiecrumbler" meta_type="Cookie Crumbler">
+ <property name="title"></property>
  <property name="auth_cookie">value1</property>
  <property name="name_cookie">value3</property>
  <property name="pw_cookie">value5</property>
@@ -106,6 +110,7 @@ class _CookieCrumblerSetup(BaseRegistryTests):
         getSiteManager().registerUtility(cc, ICookieCrumbler)
 
         if use_changed:
+            cc.title = 'I am a cookie'
             cc.auth_cookie = 'value1'
             cc.cache_header_value = 'value2'
             cc.name_cookie = 'value3'
@@ -164,6 +169,7 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
         context._files['cookieauth.xml'] = _CHANGED_EXPORT
         importCookieCrumbler(context)
 
+        self.assertEqual(cc.title, 'I am a cookie')
         self.assertEqual(cc.auth_cookie, 'value1')
         self.assertEqual(cc.cache_header_value, 'value2')
         self.assertEqual(cc.name_cookie, 'value3')

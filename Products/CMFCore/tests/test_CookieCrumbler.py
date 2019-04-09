@@ -122,6 +122,21 @@ class CookieCrumblerTests(unittest.TestCase):
 
         verifyClass(ICookieCrumbler, self._getTargetClass())
 
+    def test_defaults(self):
+        klass = self._getTargetClass()
+        cc = self._makeOne()
+        self.assertEqual(cc.getId(), klass.id)
+        self.assertEqual(cc.title, '')
+
+    def test_factory(self):
+        from ..CookieCrumbler import manage_addCC
+        _root, _cc, req, _credentials = self._makeSite()
+        manage_addCC(_root, 'new_cc', title='I am a Cookie Crumbler')
+
+        self.assertIn('new_cc', _root.objectIds())
+        self.assertEqual(_root.new_cc.getId(), 'new_cc')
+        self.assertEqual(_root.new_cc.title, 'I am a Cookie Crumbler')
+
     def testNoCookies(self):
         # verify the cookie crumbler doesn't break when no cookies are given
         _root, _cc, req, _credentials = self._makeSite()

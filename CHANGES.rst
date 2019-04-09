@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.4.0b7 (unreleased)
 --------------------
 
+- expose the Cookie Crumbler title property
+  (`#70 <https://github.com/zopefoundation/Products.CMFCore/issues/70>`_)
+
 - clean up test and linting configurations
 
 - Add ``project_urls`` with relevant links in ``setup.py``

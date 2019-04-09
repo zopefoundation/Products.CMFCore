@@ -83,7 +83,9 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
     # By default, anonymous users can view login/logout pages.
     _View_Permission = ('Anonymous',)
 
-    _properties = ({'id': 'auth_cookie', 'type': 'string', 'mode': 'w',
+    _properties = ({'id': 'title', 'type': 'string', 'mode': 'w',
+                    'label': 'Title'},
+                   {'id': 'auth_cookie', 'type': 'string', 'mode': 'w',
                     'label': 'Authentication cookie name'},
                    {'id': 'name_cookie', 'type': 'string', 'mode': 'w',
                     'label': 'User name form variable'},
@@ -338,10 +340,11 @@ manage_addCCForm = HTMLFile('dtml/addCC', globals())
 manage_addCCForm.__name__ = 'addCC'
 
 
-def manage_addCC(dispatcher, id, REQUEST=None):
+def manage_addCC(dispatcher, id, title='', REQUEST=None):
     """ """
     ob = CookieCrumbler()
     ob.id = id
+    ob.title = title
     dispatcher._setObject(ob.getId(), ob)
     ob = getattr(dispatcher.this(), ob.getId())
     if REQUEST is not None:
