@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.0b7 (unreleased)
+2.4.0b7 (2019-04-08)
 --------------------
 
 - expose the Cookie Crumbler title property
