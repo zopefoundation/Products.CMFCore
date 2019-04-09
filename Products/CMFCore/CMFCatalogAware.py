@@ -117,8 +117,8 @@ class CatalogAware(Base):
                 # BBB: Ignore old references to deleted objects.
                 # Can happen only when using
                 # catalog-getObject-raises off in Zope 2.8
-                logger.warning("reindexObjectSecurity: Cannot get %s from "
-                               "catalog", brain_path)
+                logger.warning('reindexObjectSecurity: Cannot get %s from '
+                               'catalog', brain_path)
                 continue
             s = getattr(ob, '_p_changed', 0)
             ob.reindexObject(idxs=self._cmf_security_indexes)

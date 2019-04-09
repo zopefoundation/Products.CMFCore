@@ -171,16 +171,16 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
         return result
 
     def getCacheNamespaceKeys(self):
-        '''
+        """
         Returns the cacheNamespaceKeys.
-        '''
+        """
         return self._cache_namespace_keys
 
     def setCacheNamespaceKeys(self, keys, REQUEST=None):
-        '''
+        """
         Sets the list of names that should be looked up in the
         namespace to provide a cache key.
-        '''
+        """
         ks = []
         for key in keys:
             key = str(key).strip()

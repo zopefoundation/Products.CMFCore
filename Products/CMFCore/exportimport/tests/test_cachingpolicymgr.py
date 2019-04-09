@@ -89,10 +89,10 @@ class _CachingPolicyManagerSetup(BaseRegistryTests):
 
     POLICY_ID = 'policy_id'
     PREDICATE = "python:object.getId() == 'foo'"
-    MTIME_FUNC = "object/modified"
+    MTIME_FUNC = 'object/modified'
     MAX_AGE_SECS = 60
-    VARY = "Test"
-    ETAG_FUNC = "object/getETag"
+    VARY = 'Test'
+    ETAG_FUNC = 'object/getETag'
     S_MAX_AGE_SECS = 120
     PRE_CHECK = 42
     POST_CHECK = 43

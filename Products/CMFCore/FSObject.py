@@ -132,7 +132,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             if RESPONSE is not None:
                 RESPONSE.redirect('%s/manage_main?manage_tabs_message=%s' % (
                     obj.absolute_url(),
-                    html_quote("An object with this id already exists")))
+                    html_quote('An object with this id already exists')))
         else:
             folder._verifyObjectPaste(obj, validate_src=0)
             folder._setObject(id, obj)
@@ -147,7 +147,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""
-        raise NotImplementedError("This should be implemented in a subclass.")
+        raise NotImplementedError('This should be implemented in a subclass.')
 
     def _readFile(self, reparse):
         """Read the data from the filesystem.
@@ -156,7 +156,7 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
         data if necessary.  'reparse' is set when reading the second
         time and beyond.
         """
-        raise NotImplementedError("This should be implemented in a subclass.")
+        raise NotImplementedError('This should be implemented in a subclass.')
 
     # Refresh our contents from the filesystem if that is newer and we are
     # running in debug mode.

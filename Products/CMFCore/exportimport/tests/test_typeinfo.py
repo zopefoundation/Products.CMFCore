@@ -380,7 +380,7 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         obj.setMethodAliases({'(Default)': 'foo', 'view': 'foo'})
         obj.addAction('foo_action', 'Foo', 'string:${object_url}/foo',
                       'python:1', (), 'Bar',
-                      icon_expr="string:${portal_url}/icon.png")
+                      icon_expr='string:${portal_url}/icon.png')
 
     def _verifyImport(self, obj):
         self.assertEqual(type(obj._aliases), dict)
@@ -400,7 +400,7 @@ class TypeInformationXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         self.assertEqual(obj._actions[0].condition.text, 'python:1')
         self.assertEqual(type(obj._actions[0].icon_expr.text), str)
         self.assertEqual(obj._actions[0].icon_expr.text,
-                         "string:${portal_url}/icon.png")
+                         'string:${portal_url}/icon.png')
 
     def setUp(self):
         self._obj = FactoryTypeInformation('foo_fti')

@@ -182,7 +182,7 @@ class FSPythonScript(FSObject, Script):
 
     @security.protected(FTPAccess)
     def manage_FTPget(self):
-        "Get source for FTP download"
+        """Get source for FTP download"""
         self.REQUEST.RESPONSE.setHeader('Content-Type', 'text/plain')
         return self.read()
 

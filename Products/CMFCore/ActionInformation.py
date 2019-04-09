@@ -233,7 +233,7 @@ class ActionInfo(UserDict):
     def update(*args, **kwargs):
         if not args:
             raise TypeError("descriptor 'update' of 'UserDict' object "
-                            "needs an argument")
+                            'needs an argument')
         self = args[0]
         args = args[1:]
         if len(args) > 1:

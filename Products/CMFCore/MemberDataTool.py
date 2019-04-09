@@ -97,10 +97,10 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
     #
     @security.private
     def getMemberDataContents(self):
-        '''
+        """
         Return the number of members stored in the _members
         BTree and some other useful info
-        '''
+        """
         mtool = getUtility(IMembershipTool)
         members = self._members
         user_list = mtool.listMemberIds()
@@ -189,10 +189,10 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
 
     @security.private
     def wrapUser(self, u):
-        '''
+        """
         If possible, returns the Member object that corresponds
         to the given User object.
-        '''
+        """
         return getMultiAdapter((u, self), IMember)
 
     @security.private
@@ -255,10 +255,10 @@ class MemberAdapter(object):
 
     @security.protected(SetOwnProperties)
     def setProperties(self, properties=None, **kw):
-        '''Allows the authenticated member to set his/her own properties.
+        """Allows the authenticated member to set his/her own properties.
         Accepts either keyword arguments or a mapping for the "properties"
         argument.
-        '''
+        """
         mtool = getUtility(IMembershipTool)
         if not mtool.isMemberAccessAllowed(self._user.getId()):
             raise BadRequest(u'Only own properties can be set.')
@@ -273,8 +273,8 @@ class MemberAdapter(object):
 
     @security.private
     def setMemberProperties(self, mapping):
-        '''Sets the properties of the member.
-        '''
+        """Sets the properties of the member.
+        """
         # Sets the properties given in the MemberDataTool.
         tool = self._tool
         for id in tool.propertyIds():

@@ -55,12 +55,12 @@ class SkinnableObjectManager(ObjectManager):
     security = ClassSecurityInfo()
 
     def __getattr__(self, name):
-        '''
+        """
         Looks for the name in an object with wrappers that only reach
         up to the root skins folder.
 
         This should be fast, flexible, and predictable.
-        '''
+        """
         if not name:
             raise AttributeError(name)
         if name[0] not in ('_', '@', '+') and not name.startswith('aq_'):
@@ -99,7 +99,7 @@ class SkinnableObjectManager(ObjectManager):
 
     @security.public
     def getSkinNameFromRequest(self, REQUEST=None):
-        '''Returns the skin name from the Request.'''
+        """Returns the skin name from the Request."""
         if REQUEST is None:
             return None
         stool = queryUtility(ISkinsTool)
@@ -111,11 +111,11 @@ class SkinnableObjectManager(ObjectManager):
 
     @security.public
     def changeSkin(self, skinname, REQUEST=None):
-        '''Change the current skin.
+        """Change the current skin.
 
         Can be called manually, allowing the user to change
         skins in the middle of a request.
-        '''
+        """
         skinobj = self.getSkin(skinname)
         if skinobj is not None:
             tid = get_ident()
@@ -125,8 +125,8 @@ class SkinnableObjectManager(ObjectManager):
 
     @security.public
     def getCurrentSkinName(self):
-        '''Return the current skin name.
-        '''
+        """Return the current skin name.
+        """
         sd = SKINDATA.get(get_ident())
         if sd is not None:
             _ob, skinname, _ignore, _resolve = sd
@@ -148,12 +148,12 @@ class SkinnableObjectManager(ObjectManager):
 
     @security.public
     def setupCurrentSkin(self, REQUEST=None):
-        '''
+        """
         Sets up skindata so that __getattr__ can find it.
 
         Can NOT be called manually to change skins in the middle of a
         request! Use changeSkin for that.
-        '''
+        """
         if REQUEST is None:
             return
         if get_ident() in SKINDATA:
@@ -167,15 +167,15 @@ class SkinnableObjectManager(ObjectManager):
         except Exception:
             # This shouldn't happen, even if the requested skin
             # does not exist.
-            logger.exception("Unable to setupCurrentSkin()")
+            logger.exception('Unable to setupCurrentSkin()')
 
     def _checkId(self, id, allow_dup=0):
-        '''
+        """
         Override of ObjectManager._checkId().
 
         Allows the user to create objects with IDs that match the ID of
         a skin object.
-        '''
+        """
         superCheckId = SkinnableObjectManager.inheritedAttribute('_checkId')
         if not allow_dup:
             # Temporarily disable skindata.

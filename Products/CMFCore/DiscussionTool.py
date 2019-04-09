@@ -113,7 +113,7 @@ class OldDiscussable(Implicit):
             as a quote in a response.
         """
 
-        return ""
+        return ''
 
 
 InitializeClass(OldDiscussable)
@@ -144,16 +144,16 @@ class DiscussionTool(UniqueObject, SimpleItem, ActionProviderBase):
     #
     @security.public
     def getDiscussionFor(self, content):
-        '''Gets the PortalDiscussion object that applies to content.
-        '''
+        """Gets the PortalDiscussion object that applies to content.
+        """
         return OldDiscussable(content).__of__(content)
 
     @security.public
     def isDiscussionAllowedFor(self, content):
-        '''
+        """
             Returns a boolean indicating whether a discussion is
             allowed for the specified content.
-        '''
+        """
         if hasattr(content, 'allow_discussion'):
             return content.allow_discussion
         typeInfo = content.getTypeInfo()

@@ -24,8 +24,8 @@ class IWorkflowActionEvent(IObjectEvent):
 
     __module__ = 'Products.CMFCore.interfaces'
 
-    workflow = Attribute("The workflow definition object")
-    action = Attribute("The name of the action being invoked")
+    workflow = Attribute('The workflow definition object')
+    action = Attribute('The name of the action being invoked')
 
 
 class IActionWillBeInvokedEvent(IWorkflowActionEvent):
@@ -43,7 +43,7 @@ class IActionRaisedExceptionEvent(IWorkflowActionEvent):
 
     __module__ = 'Products.CMFCore.interfaces'
 
-    exc = Attribute("The exception info for the exception raised")
+    exc = Attribute('The exception info for the exception raised')
 
 
 class IActionSucceededEvent(IWorkflowActionEvent):
@@ -53,4 +53,4 @@ class IActionSucceededEvent(IWorkflowActionEvent):
 
     __module__ = 'Products.CMFCore.interfaces'
 
-    result = Attribute("The result of the workflow action")
+    result = Attribute('The result of the workflow action')

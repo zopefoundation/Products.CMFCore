@@ -66,7 +66,7 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
 
         Should be overriden by portal objects.
         """
-        return "%s %s" % (self.Title(), self.Description())
+        return '%s %s' % (self.Title(), self.Description())
 
     def __call__(self):
         """ Invokes the default view.

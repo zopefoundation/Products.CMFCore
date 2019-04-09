@@ -108,7 +108,7 @@ class FSZSQLMethod(SQL, FSObject):
                              parameters['connection_id'])
         except KeyError as e:
             raise ValueError("The '%s' parameter is required "
-                             "but was not supplied" % e)
+                             'but was not supplied' % e)
 
         # Optional parameters
         title = parameters.get('title', '')
@@ -141,7 +141,7 @@ class FSZSQLMethod(SQL, FSObject):
                 self._updateFromFS()
                 return self
             except Exception:
-                logger.exception("Error during __of__")
+                logger.exception('Error during __of__')
                 raise
 
 

@@ -264,7 +264,7 @@ class StructureFolderWalkingAdapter(object):
                     state_variable = workflow.state_var
                     wf_state = {'action': None,
                                 'actor': None,
-                                'comments': "Setting state to %s" % state_id,
+                                'comments': 'Setting state to %s' % state_id,
                                 state_variable: state_id,
                                 'time': DateTime()}
 

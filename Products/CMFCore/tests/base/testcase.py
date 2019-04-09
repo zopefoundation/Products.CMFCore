@@ -217,8 +217,8 @@ class WritableFSDVTest(FSDVTest):
             # directory mod time.
             if time.time() > limit:
                 raise RuntimeError(
-                    "This platform (%s) does not update directory mod times "
-                    "reliably." % sys.platform)
+                    'This platform (%s) does not update directory mod times '
+                    'reliably.' % sys.platform)
             time.sleep(0.1)
             fn = join(self.skin_path_name, '.touch')
             f = open(fn, 'w')

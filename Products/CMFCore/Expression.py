@@ -94,9 +94,9 @@ def getExprContext(context, object=None):
 
 
 def createExprContext(folder, portal, object):
-    '''
+    """
     An expression context provides names for TALES expressions.
-    '''
+    """
     try:
         mtool = getUtility(IMembershipTool)
     except ComponentLookupError:
