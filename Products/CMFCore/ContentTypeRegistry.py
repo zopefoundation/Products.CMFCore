@@ -340,6 +340,7 @@ class ContentTypeRegistry(SimpleItem):
     meta_type = 'Content Type Registry'
     id = 'content_type_registry'
     zmi_icon = 'fas fa-expand-arrows-alt'
+    zmi_show_add_dialog = False
 
     manage_options = (
         ({'label': 'Predicates', 'action': 'manage_predicates'},
