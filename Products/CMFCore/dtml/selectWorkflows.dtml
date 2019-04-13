@@ -14,45 +14,54 @@
 
 <dtml-var manage_tabs>
 
-<h3>Workflows by type</h3>
+<main class="container-fluid">
 
-<form action="manage_changeWorkflows" method="POST">
-<table>
+  <h3>Workflows by type</h3>
+  
+  <form action="manage_changeWorkflows" method="POST">
 
-<dtml-in types_info mapping sort=id>
-<tr>
-<td class="form-label">
- <a href="../portal_types/&dtml.url_quote-id;/manage_workspace"
-  >&dtml-id;<dtml-if title> (&dtml-title;)</dtml-if></a>
-</td>
-<td class="form-element">
- <input type="text" name="chain_&dtml-id;" value="&dtml-chain;" size="70" />
-</td>
-</tr>
-</dtml-in>
+    <dtml-in types_info mapping sort=id>
+      <div class="form-group row">
+        <label for="chain_&dtml-id;" class="form-label col-sm-3 col-md-2">
+          <a href="../portal_types/&dtml.url_quote-id;/manage_workspace">
+            &dtml-id;<dtml-if title> (&dtml-title;)</dtml-if>
+          </a>
+        </label>
+        <div class="col-sm-9 col-md-10">
+          <input id="chain_&dtml-id;" class="form-control" type="text"
+                 name="chain_&dtml-id;" value="&dtml-chain;" />
+        </div>
+      </div>
+    </dtml-in>
 
-<tr>
-<td class="form-label" align="left">(Default)</td>
-<td class="form-element">
- <input type="text" name="default_chain" value="&dtml-default_chain;" size="70" />
-</td>
-</tr>
+    <div class="form-group row">
+      <label for="default_chain" class="form-label col-sm-3 col-md-2">
+        (Default)
+      </label>
+      <div class="col-sm-9 col-md-10">
+        <input id="default_chain" class="form-control" type="text"
+               name="default_chain" value="&dtml-default_chain;" />
+      </div>
+    </div>
 
-</table>
+    <div class="zmi-controls">
+      <input class="btn btn-primary" type="submit" name="submit" value="Change" />
+    </div>
 
-<input type="submit" name="submit" value="Change" />
+  <hr />
+  
+  <p>
+    Click the button below to update the security settings of all
+    workflow-aware objects in this portal.
+  </p>
+  
+  <form action="updateRoleMappings" method="POST">
+    <div class="zmi-controls">
+      <input class="btn btn-primary" type="submit" name="submit"
+             value="Update security settings" />
+    </div>
+  </form>
 
-</form>
-
-<hr />
-
-<p>
-Click the button below to update the security settings of all
-workflow-aware objects in this portal.
-
-<form action="updateRoleMappings" method="POST">
-<input type="submit" name="submit" value="Update security settings" />
-</form>
-</p>
+</main>
 
 <dtml-var manage_page_footer>

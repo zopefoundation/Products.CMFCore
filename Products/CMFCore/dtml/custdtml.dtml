@@ -13,6 +13,8 @@
 </dtml-let>
 <dtml-var manage_tabs>
 
+<main class="container-fluid">
+
   <FORM ACTION="manage_doCustomize" METHOD="POST">
     <TABLE CELLSPACING="2">
       <TR>
@@ -63,5 +65,8 @@
 <table border="1" bgcolor="#cccccc"><tr><td>
 <code><dtml-var this newline_to_br></code>
 </td></tr></table>
+
+</main>
+
 </BODY>
 </HTML>

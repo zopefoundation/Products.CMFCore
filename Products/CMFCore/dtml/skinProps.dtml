@@ -13,99 +13,125 @@
 </dtml-let>
 <dtml-var manage_tabs>
 
-<form action="manage_skinLayers" method="POST">
-<table>
-  <tr>
-     <th valign="top" align="left">Skin selections</th>
-  </tr>
-  <tr>
-     <td colspan="2">
-       <table>
-         <tr>
-           <th align="left">Name</th>
-           <th align="left">Layers (in order of precedence)</th>
-         </tr>
-         <dtml-in getSkinPaths>
-         <tr>
-           <td class="form-label">
-             <input type="checkbox" name="chosen:list"
-              value="&dtml-sequence-key;">
-             &dtml-sequence-key;
-           </td>
-           <td class="form-element">
-             <textarea cols="30" rows="8" name="skinpath_&dtml-sequence-key;:lines"><dtml-var expr="'\n'.join([s.strip() for s in _['sequence-item'].split(',')])"></textarea>
-           </td>
-         </tr>
-         </dtml-in>
+<main class="container-fluid">
 
-         <tr>
-           <td colspan="2">
-             <input type="submit" name="del_skin" value="Delete">
-             <input type="submit" name="submit" value="Save">
-           </td>
-         </tr>
-         
-         <tr><th colspan="2" align="left">Add a new skin</th><tr>
-         <tr>
-            <th align="left">Name</th>
-            <th align="left">Layers</th>
-         </tr>
-         <tr>
-           <td valign="top">
-             <input type="text" name="skinname" value="" size="20">
-           </td>
-           <td>
-             <textarea cols="30" rows="3" name="skinpath:lines"></textarea>
-           </td>
-         </tr>
+  <h3>Skin selections</h3>
+  
+  <form action="manage_skinLayers" method="POST">
+    <table>
+      <tr>
+        <th align="left">Name</th>
+        <th align="left">Layers (in order of precedence)</th>
+      </tr>
+      <dtml-in getSkinPaths>
+      <tr>
+        <td class="form-label">
+          <input type="checkbox" name="chosen:list"
+           value="&dtml-sequence-key;">
+          &dtml-sequence-key;
+        </td>
+        <td class="form-element">
+          <textarea cols="30" rows="8" name="skinpath_&dtml-sequence-key;:lines"><dtml-var expr="'\n'.join([s.strip() for s in _['sequence-item'].split(',')])"></textarea>
+        </td>
+      </tr>
+      </dtml-in>
+  
+      <tr>
+        <td colspan="2">
+          <input type="submit" name="del_skin" value="Delete">
+          <input type="submit" name="submit" value="Save">
+        </td>
+      </tr>
 
-         <tr>
-           <td colspan="2">
-             <input type="submit" name="add_skin" value="Add">
-           </td>
-         </tr>
+    </table>
 
-       </table>
-     </td>
-  </tr>
-  <tr>
-</table>
-</form>
-<hr />
-<form action="manage_properties" method="POST">
-<table>
-  </tr>
-  <tr>
-     <td class="form-label" valign="top" align="left">Default skin</td>
-     <td class="form-element"><select name="default_skin" size="1">
-       <dtml-in getSkinSelections>
-         <option value="&dtml-sequence-item;" <dtml-if
-          expr="_['sequence-item'] == getDefaultSkin()"
-          >selected="selected"</dtml-if>>&dtml-sequence-item;</option>
-       </dtml-in>
-     </select></td>
-  </tr>
-  <tr>
-     <td class="form-label" valign="top" align="left">REQUEST variable name</td>
-     <td class="form-element"><input type="text" name="request_varname"
-          value="&dtml-getRequestVarname;" size="25"></td>
-  </tr>
-  <tr>
-     <td class="form-label" valign="top" align="left">Skin flexibility</td>
-     <td class="form-element"><input type="checkbox" name="allow_any" id="cb_allowany"
-          <dtml-if getAllowAny>checked="checked"</dtml-if> />
-         <label for="cb_allowany">Allow arbitrary skins to be
-	 selected</label></td>
-  </tr>
-  <tr>
-    <td class="form-label" valign="top" align="left">Skin Cookie persistence</td>
-    <td class="form-element"><input type="checkbox" name="cookie_persistence" id="cb_cookiep"
-         <dtml-if getCookiePersistence>checked="checked"</dtml-if> />
-        <label for="cb_cookiep">Make skin cookie persist indefinitely
-        </label></td>
-  </tr>
-</table>
-<input type="submit" name="submit" value="Save">
-</form>
+    <hr/>
+
+    <h3>Add a new skin</h3>
+      
+    <table>
+      <tr>
+         <th align="left">Name</th>
+         <th align="left">Layers</th>
+      </tr>
+      <tr>
+        <td valign="top">
+          <input type="text" name="skinname" value="" size="20">
+        </td>
+        <td>
+          <textarea cols="30" rows="3" name="skinpath:lines"></textarea>
+        </td>
+      </tr>
+  
+      <tr>
+        <td colspan="2">
+          <input type="submit" name="add_skin" value="Add">
+        </td>
+      </tr>
+  
+    </table>
+  </form>
+  
+  <hr />
+
+  <h3>Skins settings</h3>
+  
+  <form action="manage_properties" method="POST">
+
+    <div class="form-group row">
+      <label for="default_skin" class="form-label col-sm-3 col-md-2">
+        Default skin
+      </label>
+      <div class="col-sm-9 col-md-10">
+        <select class="form-control" name="default_skin">
+          <dtml-in getSkinSelections>
+            <option value="&dtml-sequence-item;" <dtml-if
+             expr="_['sequence-item'] == getDefaultSkin()"
+             >selected="selected"</dtml-if>>&dtml-sequence-item;</option>
+          </dtml-in>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="request_varname" class="form-label col-sm-3 col-md-2">
+        REQUEST variable name
+      </label>
+      <div class="col-sm-9 col-md-10">
+        <input id="request_varname" class="form-control" type="text"
+               name="request_varname" value="&dtml-getRequestVarname;"/>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="allow_any" class="form-label col-sm-3 col-md-2">
+        REQUEST variable name
+      </label>
+      <div class="form-check">
+        <input id="allow_any" class="form-control" type="checkbox"
+               name="allow_any" <dtml-if getAllowAny>checked="checked"</dtml-if>/>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="cookie_persistence" class="form-label col-sm-3 col-md-2">
+        Skin Cookie persistence
+      </label>
+      <div class="form-check">
+        <input id="cookie_persistence" class="form-control" type="checkbox"
+               name="cookie_persistence"
+               <dtml-if getCookiePersistence>checked="checked"</dtml-if>/>
+        <small>Make skin cookie persist indefinitely</small>
+      </div>
+    </div>
+
+    <div class="zmi-controls">
+      <input class="btn btn-primary" type="submit" name="submit" value="Save" />
+    </div>
+
+  </form>
+
+</main>
+
 </body>
 </html>

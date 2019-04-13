@@ -2,6 +2,8 @@
 <h2 tal:define="manage_tabs_message options/manage_tabs_message | nothing"
     tal:replace="structure context/manage_tabs">Tabs</h2>
 
+<main class="container-fluid">
+
 <h3>Method Aliases Chart</h3>
 
 <p>Method Aliases are Type Information properties. This chart is for
@@ -68,5 +70,7 @@
   <br />It's recommended to use explicit method values like <tt>index_html</tt>
   instead.</dd>
 </dl>
+
+</main>
 
 <h1 tal:replace="structure context/manage_page_footer">Footer</h1>

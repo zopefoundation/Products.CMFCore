@@ -13,11 +13,15 @@
 </dtml-let>
 
 <dtml-var name="manage_tabs">
+
+<main class="container-fluid">
   
 <h2>Membership role mappings</h2>
 
-<p>Use this screen if you are using a userfolder other than the built-in folder to map 
-existing role names to roles understood by the CMF.</p>
+<p class="form-help">
+  Use this screen if you are using a userfolder other than the built-in
+  folder to map existing role names to roles understood by the CMF.
+</p>
 
 <dtml-in expr="getPortalRoles()">
   <dtml-if name="sequence-start">
@@ -31,9 +35,12 @@ existing role names to roles understood by the CMF.</p>
 
   <tr>
     <form method="post" action="setRoleMapping">
-    <td class="form-label"><dtml-var name="sequence-item"><input type="hidden" name="portal_role" value="&dtml-sequence-item;"></td>
+    <td class="form-label">
+      <dtml-var name="sequence-item">
+      <input type="hidden" name="portal_role" value="&dtml-sequence-item;"/>
+    </td>
     <td class="form-element"><input type="text" size="30" name="userfolder_role" 
-              value="<dtml-var expr="getMappedRole(_['sequence-item'])">"></td>
+        value="<dtml-var expr="getMappedRole(_['sequence-item'])">"></td>
     <td><input type="submit" value="Set Mapping"></td>
     </form>
   </tr>
@@ -47,8 +54,11 @@ existing role names to roles understood by the CMF.</p>
 
 <h2>Control creation of member areas</h2>
 
-<p>This feature controls whether users coming from an outside user source (such as an underlying 
-user folder) will have their own folder created upon first login or not</p>
+<p class="form-help">
+  This feature controls whether users coming from an outside user source
+  (such as an underlying user folder) will have their own folder created upon
+  first login or not
+</p>
 
 <form method="post" action="setMemberareaCreationFlag">
 
@@ -61,6 +71,8 @@ user folder) will have their own folder created upon first login or not</p>
 </dtml-if>
 
 </form>
+
+</main>
 
 </body>
 </html>

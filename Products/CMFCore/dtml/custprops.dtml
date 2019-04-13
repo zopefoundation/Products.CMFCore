@@ -13,6 +13,8 @@
 </dtml-let>
 <dtml-var manage_tabs>
 
+<main class="container-fluid">
+
   <FORM ACTION="manage_doCustomize" METHOD="POST">
     <TABLE CELLSPACING="2">
       <TR>
@@ -92,6 +94,8 @@
 </tr>
 </dtml-in>
 </table>
+
+</main>
 
 <dtml-if manage_page_footer>
   <dtml-var manage_page_footer>

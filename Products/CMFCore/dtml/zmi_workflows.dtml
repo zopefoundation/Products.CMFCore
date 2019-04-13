@@ -1,7 +1,9 @@
 <dtml-var manage_page_header>
 <dtml-var manage_tabs>
 
-<h2>Workflows</h2>
+<main class="container-fluid">
+
+<h3>Workflows</h3>
 
 <p class="form-help">This object's portal type is:
   <dtml-let portal_type=getPortalTypeName>
@@ -34,5 +36,6 @@
 
 </dtml-if>
 
+</main>
 
 <dtml-var manage_page_footer>

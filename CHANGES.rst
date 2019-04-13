@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.4.0 (unreleased)
 ------------------
 
+- fix up all ZMI forms to work better with the Zope 4 ZMI
+  (`#73 <https://github.com/zopefoundation/Products.CMFCore/issues/73>`_)
+
 - ensure Content Type Registries don't use a ZMI add dialog in the Zope 4 ZMI
   (`#72 <https://github.com/zopefoundation/Products.CMFCore/issues/72>`_)
 

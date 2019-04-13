@@ -13,6 +13,8 @@
 </dtml-let>
 <dtml-var manage_tabs>
 
+<main class="container-fluid">
+
 <p>The list of action providers queried by this tool is configurable here.</p>
 
 <form action="manage_aproviders" method="POST">
@@ -58,5 +60,8 @@
 
 </table>
 </form>
+
+</main>
+
 </body>
 </html>

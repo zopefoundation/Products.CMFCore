@@ -13,6 +13,8 @@
 </dtml-let>
 <dtml-var manage_tabs>
 
+  <main class="container-fluid">
+
     <p class="help-text">
       Configure registration policies here.
     </p>
@@ -57,6 +59,8 @@
       </table>
 
     </form>
+
+  </main>
 
   </body>
 </html>

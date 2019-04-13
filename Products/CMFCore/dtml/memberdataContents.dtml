@@ -3,6 +3,9 @@
 <head><title>Membership data tool contents</title></head>
 <body bgcolor="#ffffff">
 <dtml-var name="manage_tabs">
+
+<main class="container-fluid">
+
 <h2>Membership data tool contents</h2>
 
 <dtml-if name="button_pressed">
@@ -35,6 +38,8 @@
   </dtml-in>
 
 </dtml-if>
+
+</main>
 
 </body>
 </html>
