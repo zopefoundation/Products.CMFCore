@@ -283,7 +283,7 @@ class StructureFolderWalkingAdapter(object):
         context = self.context
         subdir = '%s/%s' % (subdir, id)
         properties = self.read_data_file(import_context, '.properties',
-                                         subdir)
+                                           subdir)
         tool = getUtility(ITypesTool)
 
         try:
