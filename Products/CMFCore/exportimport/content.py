@@ -23,6 +23,7 @@ from six import StringIO
 from six.moves.configparser import ConfigParser
 
 from DateTime import DateTime
+from Products.CMFCore.interfaces import ITypesTool
 from Products.GenericSetup.content import DAVAwareFileAdapter
 from Products.GenericSetup.content import _globtest
 from Products.GenericSetup.interfaces import IFilesystemExporter
@@ -30,8 +31,6 @@ from Products.GenericSetup.interfaces import IFilesystemImporter
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.http import MethodNotAllowed
-
-from ..interfaces import ITypesTool
 
 
 #
@@ -102,11 +101,17 @@ class StructureFolderWalkingAdapter(object):
 
     def __init__(self, context):
         self.context = context
+        self._encoding = self.context.getProperty('default_charset', 'utf-8')
+
+    def read_data_file(self, import_context, datafile, subdir):
+        out = import_context.readDataFile(datafile, subdir)
+        if not out:
+            return out
+        return encode_if_needed(out, self._encoding)
 
     def export(self, export_context, subdir, root=False):
         """ See IFilesystemExporter.
         """
-        self._encoding = self.context.getProperty('default_charset', 'utf-8')
         content_type = 'text/comma-separated-values'
 
         # Enumerate exportable children
@@ -190,8 +195,8 @@ class StructureFolderWalkingAdapter(object):
         if not root:
             subdir = '%s/%s' % (subdir, context.getId())
 
-        objects = import_context.readDataFile('.objects', subdir)
-        workflow_states = import_context.readDataFile('.workflow_states',
+        objects = self.read_data_file(import_context, '.objects', subdir)
+        workflow_states = self.read_data_file(import_context, '.workflow_states',
                                                       subdir)
         if objects is None:
             return
@@ -206,14 +211,14 @@ class StructureFolderWalkingAdapter(object):
 
         prior = set(context.contentIds())
 
-        preserve = import_context.readDataFile('.preserve', subdir)
+        preserve = self.read_data_file(import_context, '.preserve', subdir)
         if not preserve:
             preserve = set()
         else:
             preservable = prior.intersection(our_ids)
             preserve = set(_globtest(preserve, preservable))
 
-        delete = import_context.readDataFile('.delete', subdir)
+        delete = self.read_data_file(import_context, '.delete', subdir)
         if not delete:
             delete = set()
         else:
@@ -277,7 +282,7 @@ class StructureFolderWalkingAdapter(object):
 
         context = self.context
         subdir = '%s/%s' % (subdir, id)
-        properties = import_context.readDataFile('.properties',
+        properties = self.read_data_file(import_context, '.properties',
                                                  subdir)
         tool = getUtility(ITypesTool)
 
