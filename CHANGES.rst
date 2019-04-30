@@ -1,8 +1,8 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.0 (unreleased)
-------------------
+2.4.0b8 (2019-04-30)
+--------------------
 
 - fix up all ZMI forms to work better with the Zope 4 ZMI
   (`#73 <https://github.com/zopefoundation/Products.CMFCore/issues/73>`_)
