@@ -504,9 +504,9 @@ class MembershipTool(UniqueObject, Folder):
                 acl_users.userFolderDelUsers(member_ids)
             except (AttributeError, NotImplementedError):
                 raise NotImplementedError('The underlying User Folder '
-                                          'doesn\'t support deleting members.')
+                                          "doesn't support deleting members.")
         else:
-            raise AccessControl_Unauthorized('You need the \'Manage users\' '
+            raise AccessControl_Unauthorized("You need the 'Manage users' "
                                              'permission for the underlying '
                                              'User Folder.')
 

@@ -125,6 +125,9 @@ class ActionTests(unittest.TestCase):
         container._getProductRegistryData = prd.get
 
         a = self._makeOne('extensible').__of__(container)
+        # EEK short-term solution until a new Zope release is out
+        from App.special_dtml import DTMLFile
+        DTMLFile.encoding = None
         form_html = a.manage_propertiesForm(request)
 
         self.assertIn('value="Add"', form_html)

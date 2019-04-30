@@ -503,7 +503,7 @@ class CatalogToolTests(SecurityTest):
         ctool.refreshCatalog(clear=1)
         length = len(ctool._catalog.searchResults(query))
         self.assertEqual(1, length,
-                         'CMF Collector issue #379 (\'Update Catalog\' '
+                         "CMF Collector issue #379 ('Update Catalog' "
                          'fails): %s entries after refreshCatalog'
                          % length)
 

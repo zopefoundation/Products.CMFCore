@@ -77,7 +77,7 @@ class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase,
 
     def _populate(self, obj):
         obj.addPolicy('foo_policy',
-                      'python:object.getPortalTypeName() == \'Foo\'',
+                      "python:object.getPortalTypeName() == 'Foo'",
                       'object/modified', 600, 0, 0, 0, '', '')
 
     def setUp(self):
