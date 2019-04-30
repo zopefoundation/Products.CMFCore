@@ -53,6 +53,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     _proxy_roles = ()
     _cache_namespace_keys = ()
     _reading = 0
+    encoding = None
 
     manage_options = (
         {'label': 'Customize', 'action': 'manage_main'},
