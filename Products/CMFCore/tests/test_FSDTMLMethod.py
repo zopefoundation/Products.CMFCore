@@ -87,6 +87,15 @@ class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
         owner_tuple = script.getOwnerTuple()
         self.assertEqual(owner_tuple, None)
 
+    def test_explicit_encoding(self):
+        script = self._makeOne('testDTML', 'testDTML.dtml')
+        self.assertEqual(script.encoding, 'iso-8859-15')
+
+    def test_default_encoding(self):
+        from ZPublisher.HTTPRequest import default_encoding
+        script = self._makeOne('testDTML', 'testDTML_CPM3.dtml')
+        self.assertEqual(script.encoding, default_encoding)
+
     def test_304_response_from_cpm(self):
         # test that we get a 304 response from the cpm via this template
         mod_time = DateTime()

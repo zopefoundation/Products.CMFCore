@@ -27,6 +27,7 @@ from OFS.DTMLMethod import DTMLMethod
 from OFS.DTMLMethod import decapitate
 from OFS.DTMLMethod import guess_content_type
 from OFS.role import RoleManager
+from ZPublisher.HTTPRequest import default_encoding
 
 from .DirectoryView import registerFileExtension
 from .DirectoryView import registerMetaType
@@ -53,7 +54,6 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     _proxy_roles = ()
     _cache_namespace_keys = ()
     _reading = 0
-    encoding = None
 
     manage_options = (
         {'label': 'Customize', 'action': 'manage_main'},
@@ -71,6 +71,9 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
         # Normally called via HTML.__init__ but we don't need the rest that
         # happens there.
         self.initvars(None, {})
+        # Set a sane default encoding value if it was not already set
+        if 'encoding' not in self.__dict__:
+            self.encoding = default_encoding
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""
@@ -117,6 +120,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
 
         kw['document_id'] = self.getId()
         kw['document_title'] = self.title
+        kw['encoding'] = getattr(self, 'encoding') or None
 
         if client is not None:
             if _checkConditionalGET(self, kw):

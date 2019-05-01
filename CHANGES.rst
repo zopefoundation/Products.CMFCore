@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.4.0 (unreleased)
 ------------------
 
+- set default encoding values on FSDTMLMethods
+
 
 2.4.0b8 (2019-04-30)
 --------------------
