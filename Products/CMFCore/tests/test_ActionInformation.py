@@ -96,7 +96,7 @@ class ActionTests(unittest.TestCase):
         self.assertEqual(a.getInfoData(), WANTED)
 
     def test_manage_propertiesForm_allows_adding(self):
-        from OFS.SimpleItem import SimpleItem
+        from OFS.Folder import Folder
 
         def _header(*args, **kw):
             return 'HEADER'
@@ -107,7 +107,7 @@ class ActionTests(unittest.TestCase):
         def _main(*args, **kw):
             return 'MAIN'
 
-        container = SimpleItem()
+        container = Folder('folder')
 
         container.REQUEST = request = DummyRequest()
         request.set('manage_page_header', _header)
