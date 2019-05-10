@@ -1,6 +1,2 @@
 pkginfo
 repoze.sphinx.autointerface
-Zope >= 4.0b10
-AccessControl >= 4.0b6
-Persistence >= 3.0b4
-Products.CMFCore >= 2.4.0b6
