@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 2.4.1b1 (unreleased)
 --------------------
 
+- make sure ``FSFile.__str__`` returns correct native strings under Python 3
+  (`#76 <https://github.com/zopefoundation/Products.CMFCore/issues/76>`_)
+
+- add a ``__bytes__`` method to ``FSFile``
+
 
 2.4.0 (2019-05-10)
 ------------------

@@ -23,6 +23,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
 from OFS.Image import File
 from zope.contenttype import guess_content_type
+from ZPublisher.HTTPRequest import default_encoding
 
 from .DirectoryView import registerFileExtension
 from .DirectoryView import registerMetaType
@@ -113,7 +114,14 @@ class FSFile(FSObject):
 
     def __str__(self):
         self._updateFromFS()
-        return str(self._readFile(0))
+        if six.PY2:
+            return str(self._readFile(0))
+        else:
+            return str(self._readFile(0), encoding=default_encoding)
+
+    def __bytes__(self):
+        self._updateFromFS()
+        return bytes(self._readFile(0))
 
     def modified(self):
         return self.getModTime()
