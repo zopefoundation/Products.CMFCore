@@ -1,7 +1,7 @@
 from logging import getLogger
+from operator import itemgetter
 from threading import local
 from warnings import warn
-from operator import itemgetter
 
 from Acquisition import aq_base
 from Acquisition import aq_inner
