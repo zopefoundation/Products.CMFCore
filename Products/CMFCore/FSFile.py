@@ -15,6 +15,7 @@
 
 import codecs
 import os
+from warnings import warn
 
 import six
 
@@ -116,8 +117,24 @@ class FSFile(FSObject):
         self._updateFromFS()
         if six.PY2:
             return str(self._readFile(0))
-        else:
-            return str(self._readFile(0), encoding=default_encoding)
+
+        data = self._readFile(0)
+        ct = self.content_type
+        encoding = None
+
+        if 'charset=' in ct:
+            encoding = ct[ct.find('charset=')+8:]
+        elif getattr(self, 'encoding', None):
+            encoding = self.encoding
+        elif ct.startswith('text/'):
+            encoding = default_encoding
+
+        if encoding:
+            return str(data, encoding=encoding)
+
+        warn('Calling str() on non-text data is deprecated, use bytes()',
+             DeprecationWarning, stacklevel=2)
+        return str(data, encoding=default_encoding)
 
     def __bytes__(self):
         self._updateFromFS()
