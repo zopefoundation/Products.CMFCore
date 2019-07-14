@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.4.1b1 (unreleased)
 --------------------
 
+- add more files types to the FSFile registrations
+
 
 2.4.0 (2019-05-10)
 ------------------
