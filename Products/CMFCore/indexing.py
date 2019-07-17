@@ -214,8 +214,9 @@ class IndexQueue(local):
         processed = 0
         for name, util in utilities:
             util.begin()
-        # ??? must the queue be handled independently for each processor?
-        for op, obj, attributes, metadata in self.queue:
+            # ??? must the queue be handled independently for each processor?
+        while self.queue:
+            op, obj, attributes, metadata = self.queue.pop(0)
             for name, util in utilities:
                 if op == INDEX:
                     util.index(obj, attributes)

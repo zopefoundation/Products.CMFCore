@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.4.1b1 (unreleased)
 --------------------
 
+- fix problem with iteration over queue in ``.indexing.IndexQueue.process``
+  (`#79 <https://github.com/zopefoundation/Products.CMFCore/issues/79>`_)
+
 - add more files types to the FSFile registrations
 
 
