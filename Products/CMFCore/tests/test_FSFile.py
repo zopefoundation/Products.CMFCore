@@ -16,6 +16,8 @@
 import os
 import unittest
 
+import six
+
 from App.Common import rfc1123_date
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
@@ -67,11 +69,57 @@ class FSFileTests(TransactionalTest, FSDVTest):
         self.assertEqual(file.get_size(), len(ref))
         self.assertEqual(file._readFile(0), ref)
 
-    def test_str(self):
+    def test_bytes(self):
         _path, ref = self._extractFile('test_file.swf')
         file = self._makeOne('test_file', 'test_file.swf')
         file = file.__of__(self.app)
-        self.assertEqual(len(str(file)), len(str(ref)))
+        self.assertEqual(len(bytes(file)), len(bytes(ref)))
+
+    def test_str(self):
+        from ZPublisher.HTTPRequest import default_encoding
+
+        if six.PY2:
+            # This test only makes sense under Python 2. The file
+            # being loaded is a binary string, which is what ``str``
+            # under Python 2 returns. Under Python 3 this will lead
+            # to a decoding attempt, which will fail or destroy the data.
+            _path, ref = self._extractFile('test_file.swf')
+            file = self._makeOne('test_file', 'test_file.swf')
+            file = file.__of__(self.app)
+            self.assertEqual(len(str(file)), len(str(ref)))
+
+        encoded = b'Th\xc3\xaes \xc3\xaes s\xc3\xb6me t\xc3\xa9xt.'
+
+        # This file contains UTF-8 text data
+        file = self._makeOne('test_text', 'test_text.txt')
+        data = str(file).strip()
+
+        self.assertIsInstance(data, str)
+        if six.PY2:
+            self.assertEqual(data, encoded)
+        else:
+            self.assertEqual(data, encoded.decode(default_encoding))
+
+        # This file contains latin-1 test data
+        file = self._makeOne('test_text', 'test_text_latin1.txt')
+        data = str(file).strip()
+
+        self.assertIsInstance(data, str)
+        if six.PY2:
+            l1_data = encoded.decode(default_encoding).encode('latin-1')
+            self.assertEqual(data, l1_data)
+        else:
+            self.assertEqual(data, encoded.decode(default_encoding))
+
+        # This file contains non-text binary data
+        file = self._makeOne('test_binary', 'test_image.gif')
+        _path, real_data = self._extractFile('test_image.gif')
+
+        self.assertIsInstance(data, str)
+        if six.PY2:
+            self.assertEqual(str(file), real_data)
+        else:
+            self.assertRaises(UnicodeDecodeError, file.__str__)
 
     def test_index_html(self):
         path, ref = self._extractFile('test_file.swf')
