@@ -9,6 +9,8 @@ Products.CMFCore Changelog
 
 - add a ``__bytes__`` method to ``FSFile``
 
+- add more files types to the FSFile registrations
+
 
 2.4.0 (2019-05-10)
 ------------------
