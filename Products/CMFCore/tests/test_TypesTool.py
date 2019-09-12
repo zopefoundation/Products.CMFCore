@@ -17,7 +17,10 @@ import unittest
 import warnings
 
 from AccessControl.Permission import Permission
-from OFS import bbb
+try:
+    from OFS import bbb
+except:
+    from . import bbb
 from zope.component import getSiteManager
 
 from ..interfaces import IWorkflowTool

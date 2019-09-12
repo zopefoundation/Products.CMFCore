@@ -22,7 +22,10 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.special_dtml import HTML
 from App.special_dtml import DTMLFile
 from DocumentTemplate.security import RestrictedDTML
-from OFS import bbb
+try:
+    from OFS import bbb
+except:
+    from . import bbb
 from OFS.DTMLMethod import DTMLMethod
 from OFS.DTMLMethod import decapitate
 from OFS.DTMLMethod import guess_content_type

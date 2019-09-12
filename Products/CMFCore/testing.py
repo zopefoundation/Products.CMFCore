@@ -13,7 +13,10 @@
 """ Unit test mixin classes and layers.
 """
 
-from OFS import bbb
+try:
+    from OFS import bbb
+except:
+    from . import bbb
 from OFS.SimpleItem import SimpleItem
 from Products.GenericSetup.utils import BodyAdapterBase
 from Testing.ZopeTestCase.layer import ZopeLite
