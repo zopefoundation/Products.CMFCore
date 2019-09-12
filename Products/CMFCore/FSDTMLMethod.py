@@ -23,9 +23,9 @@ from App.special_dtml import HTML
 from App.special_dtml import DTMLFile
 from DocumentTemplate.security import RestrictedDTML
 try:
-    from OFS import bbb
+    from OFS.bbb import HAS_ZSERVER
 except:
-    from . import bbb
+    HAS_ZSERVER = False
 from OFS.DTMLMethod import DTMLMethod
 from OFS.DTMLMethod import decapitate
 from OFS.DTMLMethod import guess_content_type
@@ -202,7 +202,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     def validate(self, inst, parent, name, value, md=None):
         return getSecurityManager().validate(inst, parent, name, value)
 
-    if bbb.HAS_ZSERVER:
+    if HAS_ZSERVER:
         security.declareProtected(FTPAccess, 'manage_FTPget')
         manage_FTPget = get_unbound_function(DTMLMethod.manage_FTPget)
 

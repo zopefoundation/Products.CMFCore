@@ -18,9 +18,9 @@ import warnings
 
 from AccessControl.Permission import Permission
 try:
-    from OFS import bbb
+    from OFS.bbb import HAS_ZSERVER
 except:
-    from . import bbb
+    HAS_ZSERVER = False
 from zope.component import getSiteManager
 
 from ..interfaces import IWorkflowTool
@@ -104,7 +104,7 @@ class TypesToolFunctionalTests(SecurityTest):
         # all typeinfo's returned by allMetaTypes can be traversed to.
         from Acquisition import aq_base
         from ..interfaces import ITypeInformation
-        if bbb.HAS_ZSERVER:
+        if HAS_ZSERVER:
             from webdav.NullResource import NullResource
         else:
             NullResource = object()

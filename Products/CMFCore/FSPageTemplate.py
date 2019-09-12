@@ -23,9 +23,9 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from App.special_dtml import DTMLFile
 try:
-    from OFS import bbb
+    from OFS.bbb import HAS_ZSERVER
 except:
-    from . import bbb
+    HAS_ZSERVER = False
 from Products.PageTemplates.PageTemplate import PageTemplate
 from Products.PageTemplates.utils import charsetFromMetaEquiv
 from Products.PageTemplates.utils import encodingFromXMLPreamble
@@ -260,7 +260,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return result
 
     # Copy over more methods
-    if bbb.HAS_ZSERVER:
+    if HAS_ZSERVER:
         security.declareProtected(FTPAccess,  # NOQA: flake8: D001
                                   'manage_FTPget')
         manage_FTPget = get_unbound_function(ZopePageTemplate.manage_FTPget)

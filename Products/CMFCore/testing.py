@@ -14,9 +14,9 @@
 """
 
 try:
-    from OFS import bbb
+    from OFS.bbb import HAS_ZSERVER
 except:
-    from . import bbb
+    HAS_ZSERVER = False
 from OFS.SimpleItem import SimpleItem
 from Products.GenericSetup.utils import BodyAdapterBase
 from Testing.ZopeTestCase.layer import ZopeLite
@@ -75,7 +75,7 @@ class ConformsToContent:
         verifyClass(IDublinCore, self._getTargetClass())
         verifyClass(IDynamicType, self._getTargetClass())
         verifyClass(IMutableDublinCore, self._getTargetClass())
-        if bbb.HAS_ZSERVER:
+        if HAS_ZSERVER:
             verifyClass(IDAVAware, self._getTargetClass())
 
     def test_content_extra_interfaces(self):
