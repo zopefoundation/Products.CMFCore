@@ -22,7 +22,6 @@ from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from App.special_dtml import DTMLFile
-from OFS import bbb
 from Products.PageTemplates.PageTemplate import PageTemplate
 from Products.PageTemplates.utils import charsetFromMetaEquiv
 from Products.PageTemplates.utils import encodingFromXMLPreamble
@@ -37,6 +36,7 @@ from .FSObject import FSObject
 from .permissions import FTPAccess
 from .permissions import View
 from .permissions import ViewManagementScreens
+from .utils import HAS_ZSERVER
 from .utils import _checkConditionalGET
 from .utils import _dtmldir
 from .utils import _setCacheHeaders
@@ -257,7 +257,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return result
 
     # Copy over more methods
-    if bbb.HAS_ZSERVER:
+    if HAS_ZSERVER:
         security.declareProtected(FTPAccess,  # NOQA: flake8: D001
                                   'manage_FTPget')
         manage_FTPget = get_unbound_function(ZopePageTemplate.manage_FTPget)

@@ -22,7 +22,6 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.special_dtml import HTML
 from App.special_dtml import DTMLFile
 from DocumentTemplate.security import RestrictedDTML
-from OFS import bbb
 from OFS.DTMLMethod import DTMLMethod
 from OFS.DTMLMethod import decapitate
 from OFS.DTMLMethod import guess_content_type
@@ -35,6 +34,7 @@ from .FSObject import FSObject
 from .permissions import FTPAccess
 from .permissions import View
 from .permissions import ViewManagementScreens
+from .utils import HAS_ZSERVER
 from .utils import _checkConditionalGET
 from .utils import _dtmldir
 from .utils import _setCacheHeaders
@@ -199,7 +199,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     def validate(self, inst, parent, name, value, md=None):
         return getSecurityManager().validate(inst, parent, name, value)
 
-    if bbb.HAS_ZSERVER:
+    if HAS_ZSERVER:
         security.declareProtected(FTPAccess, 'manage_FTPget')
         manage_FTPget = get_unbound_function(DTMLMethod.manage_FTPget)
 

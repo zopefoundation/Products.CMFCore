@@ -17,11 +17,11 @@ import unittest
 import warnings
 
 from AccessControl.Permission import Permission
-from OFS import bbb
 from zope.component import getSiteManager
 
 from ..interfaces import IWorkflowTool
 from ..testing import FunctionalZCMLLayer
+from ..utils import HAS_ZSERVER
 from .base.testcase import SecurityTest
 
 
@@ -101,7 +101,7 @@ class TypesToolFunctionalTests(SecurityTest):
         # all typeinfo's returned by allMetaTypes can be traversed to.
         from Acquisition import aq_base
         from ..interfaces import ITypeInformation
-        if bbb.HAS_ZSERVER:
+        if HAS_ZSERVER:
             from webdav.NullResource import NullResource
         else:
             NullResource = object()
