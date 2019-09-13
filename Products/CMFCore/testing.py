@@ -13,10 +13,6 @@
 """ Unit test mixin classes and layers.
 """
 
-try:
-    from OFS.bbb import HAS_ZSERVER
-except:
-    HAS_ZSERVER = False
 from OFS.SimpleItem import SimpleItem
 from Products.GenericSetup.utils import BodyAdapterBase
 from Testing.ZopeTestCase.layer import ZopeLite
@@ -30,6 +26,7 @@ from zope.publisher.interfaces.http import IHTTPRequest
 from zope.testing.cleanup import cleanUp
 
 from .interfaces import IWorkflowDefinition
+from .utils import HAS_ZSERVER
 
 
 class ConformsToFolder:

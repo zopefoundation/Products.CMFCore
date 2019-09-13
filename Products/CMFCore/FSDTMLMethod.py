@@ -22,10 +22,6 @@ from AccessControl.SecurityManagement import getSecurityManager
 from App.special_dtml import HTML
 from App.special_dtml import DTMLFile
 from DocumentTemplate.security import RestrictedDTML
-try:
-    from OFS.bbb import HAS_ZSERVER
-except:
-    HAS_ZSERVER = False
 from OFS.DTMLMethod import DTMLMethod
 from OFS.DTMLMethod import decapitate
 from OFS.DTMLMethod import guess_content_type
@@ -38,6 +34,7 @@ from .FSObject import FSObject
 from .permissions import FTPAccess
 from .permissions import View
 from .permissions import ViewManagementScreens
+from .utils import HAS_ZSERVER
 from .utils import _checkConditionalGET
 from .utils import _dtmldir
 from .utils import _setCacheHeaders

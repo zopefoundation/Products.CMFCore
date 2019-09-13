@@ -22,10 +22,6 @@ from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
 from App.special_dtml import DTMLFile
-try:
-    from OFS.bbb import HAS_ZSERVER
-except:
-    HAS_ZSERVER = False
 from Products.PageTemplates.PageTemplate import PageTemplate
 from Products.PageTemplates.utils import charsetFromMetaEquiv
 from Products.PageTemplates.utils import encodingFromXMLPreamble
@@ -40,6 +36,7 @@ from .FSObject import FSObject
 from .permissions import FTPAccess
 from .permissions import View
 from .permissions import ViewManagementScreens
+from .utils import HAS_ZSERVER
 from .utils import _checkConditionalGET
 from .utils import _dtmldir
 from .utils import _setCacheHeaders

@@ -21,6 +21,7 @@ from os import path as os_path
 from os.path import abspath
 from warnings import warn
 
+import pkg_resources
 import six
 from six.moves._thread import allocate_lock
 
@@ -58,6 +59,12 @@ from .exceptions import AccessControl_Unauthorized
 from .exceptions import NotFound
 from .interfaces import ICachingPolicyManager
 
+
+HAS_ZSERVER = True
+try:
+    dist = pkg_resources.get_distribution('ZServer')
+except pkg_resources.DistributionNotFound:
+    HAS_ZSERVER = False
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
 ProductsPath = [abspath(ppath) for ppath in Products.__path__]

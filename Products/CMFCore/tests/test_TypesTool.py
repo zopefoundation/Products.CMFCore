@@ -17,14 +17,11 @@ import unittest
 import warnings
 
 from AccessControl.Permission import Permission
-try:
-    from OFS.bbb import HAS_ZSERVER
-except:
-    HAS_ZSERVER = False
 from zope.component import getSiteManager
 
 from ..interfaces import IWorkflowTool
 from ..testing import FunctionalZCMLLayer
+from ..utils import HAS_ZSERVER
 from .base.testcase import SecurityTest
 
 
