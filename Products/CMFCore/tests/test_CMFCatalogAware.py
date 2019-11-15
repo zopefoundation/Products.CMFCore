@@ -93,7 +93,8 @@ class DummyCatalog(SimpleItem):
         self.log.append('index %s' % physicalpath(ob))
 
     def reindexObject(self, ob, idxs=[], update_metadata=0, uid=None):
-        self.log.append('reindex %s %s' % (physicalpath(ob), idxs))
+        self.log.append(
+            'reindex %s %s %i' % (physicalpath(ob), idxs, update_metadata))
 
     def unindexObject(self, ob):
         self.log.append('unindex %s' % physicalpath(ob))
@@ -174,6 +175,13 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo.reindexObject(idxs=['bar'])
         self.assertEqual(cat.log, ["reindex /site/foo ['bar']"])
         self.assertFalse(foo.notified)
+
+    def test_reindexObject_metadata(self):
+        foo = self.site.foo
+        cat = self.ctool
+        foo.reindexObject(update_metadata=0)
+        self.assertEqual(cat.log, ['reindex /site/foo [] 0'])
+        self.assertTrue(foo.notified)
 
     def test_reindexObjectSecurity(self):
         foo = self.site.foo
