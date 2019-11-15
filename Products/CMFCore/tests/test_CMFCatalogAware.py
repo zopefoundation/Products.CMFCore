@@ -166,14 +166,14 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo = self.site.foo
         cat = self.ctool
         foo.reindexObject()
-        self.assertEqual(cat.log, ['reindex /site/foo []'])
+        self.assertEqual(cat.log, ['reindex /site/foo [] 1'])
         self.assertTrue(foo.notified)
 
     def test_reindexObject_idxs(self):
         foo = self.site.foo
         cat = self.ctool
         foo.reindexObject(idxs=['bar'])
-        self.assertEqual(cat.log, ["reindex /site/foo ['bar']"])
+        self.assertEqual(cat.log, ["reindex /site/foo ['bar'] 1"])
         self.assertFalse(foo.notified)
 
     def test_reindexObject_metadata(self):
@@ -194,9 +194,9 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo.reindexObjectSecurity()
         log = sorted(cat.log)
         self.assertEqual(log, [
-            'reindex /site/foo %s' % str(CMF_SECURITY_INDEXES),
-            'reindex /site/foo/bar %s' % str(CMF_SECURITY_INDEXES),
-            'reindex /site/foo/hop %s' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo %s 1' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/bar %s 1' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/hop %s 1' % str(CMF_SECURITY_INDEXES),
             ])
         self.assertFalse(foo.notified)
         self.assertFalse(bar.notified)
@@ -225,8 +225,9 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         cat = self.ctool
         cat.setObs([foo, missing])
         foo.reindexObjectSecurity()
-        self.assertEqual(cat.log,
-                         ['reindex /site/foo %s' % str(CMF_SECURITY_INDEXES)])
+        self.assertEqual(
+            cat.log,
+            ['reindex /site/foo %s 1' % str(CMF_SECURITY_INDEXES)])
         self.assertFalse(foo.notified)
         self.assertFalse(missing.notified)
         self.assertEqual(len(self.logged), 1)  # logging because no raise
