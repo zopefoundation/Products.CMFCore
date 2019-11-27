@@ -1,8 +1,8 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.1b1 (unreleased)
---------------------
+2.4.1 (2019-1-27)
+-----------------
 
 - make sure ``FSFile.__str__`` returns correct native strings under Python 3
   (`#76 <https://github.com/zopefoundation/Products.CMFCore/issues/76>`_)
