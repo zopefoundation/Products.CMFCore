@@ -20,7 +20,10 @@ downloads
 eggs
 flake8
 htmlcov
+lib/
+lib64
 local.cfg
 parts
+pyvenv.cfg
 src
 var
