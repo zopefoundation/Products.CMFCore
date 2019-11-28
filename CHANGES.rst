@@ -4,8 +4,7 @@ Products.CMFCore Changelog
 2.4.2 (unreleased)
 ------------------
 
-- resolve dependency conflict on `docutils` between `Products.CMFCore`
-  and `Zope`
+- resolve ``docutils`` dependency conflict with ``Zope``
   (`#83 <https://github.com/zopefoundation/Products.CMFCore/issues/83>`_)
 
 
