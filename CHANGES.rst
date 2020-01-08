@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.4.3 (unreleased)
 ------------------
 
+- fix encoding detection for XML files
+  (`#85 <https://github.com/zopefoundation/Products.CMFCore/issues/85>`_)
+
 
 2.4.2 (2019-11-28)
 ------------------
