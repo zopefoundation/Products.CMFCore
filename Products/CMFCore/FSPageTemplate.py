@@ -115,7 +115,10 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                     # Smells like xml
                     # set "content_type" from the XML declaration
                     if xml_info.group(1):
-                        encoding = xml_info.group(1).decode('ascii')
+                        if six.PY3:
+                            encoding = xml_info.group(1).decode('ascii')
+                        else:
+                            encoding = xml_info.group(1)
                     else:
                         encoding = 'utf-8'
                     self.content_type = 'text/xml; charset=%s' % encoding
