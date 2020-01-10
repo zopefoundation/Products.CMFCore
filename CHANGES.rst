@@ -4,67 +4,67 @@ Products.CMFCore Changelog
 2.4.3 (unreleased)
 ------------------
 
-- fix encoding detection for XML files
+- Fix encoding detection for XML files.
   (`#85 <https://github.com/zopefoundation/Products.CMFCore/issues/85>`_)
 
 
 2.4.2 (2019-11-28)
 ------------------
 
-- resolve ``docutils`` dependency conflict with ``Zope``
+- Resolve ``docutils`` dependency conflict with ``Zope``.
   (`#83 <https://github.com/zopefoundation/Products.CMFCore/issues/83>`_)
 
 
 2.4.1 (2019-11-27)
 ------------------
 
-- make sure ``FSFile.__str__`` returns correct native strings under Python 3
+- Make sure ``FSFile.__str__`` returns correct native strings under Python 3.
   (`#76 <https://github.com/zopefoundation/Products.CMFCore/issues/76>`_)
 
-- add a ``__bytes__`` method to ``FSFile``
+- Add a ``__bytes__`` method to ``FSFile``.
 
-- add more files types to the FSFile registrations
+- Add more files types to the FSFile registrations.
 
 
 2.4.0 (2019-05-10)
 ------------------
 
-- set default encoding values on FSDTMLMethods
+- Set default encoding values on FSDTMLMethods.
 
 
 2.4.0b8 (2019-04-30)
 --------------------
 
-- fix up all ZMI forms to work better with the Zope 4 ZMI
+- Fix up all ZMI forms to work better with the Zope 4 ZMI.
   (`#73 <https://github.com/zopefoundation/Products.CMFCore/issues/73>`_)
 
-- ensure Content Type Registries don't use a ZMI add dialog in the Zope 4 ZMI
+- Ensure Content Type Registries don't use a ZMI add dialog in the Zope 4 ZMI.
   (`#72 <https://github.com/zopefoundation/Products.CMFCore/issues/72>`_)
 
 
 2.4.0b7 (2019-04-08)
 --------------------
 
-- expose the Cookie Crumbler title property
+- Expose the Cookie Crumbler title property.
   (`#70 <https://github.com/zopefoundation/Products.CMFCore/issues/70>`_)
 
-- clean up test and linting configurations
+- Clean up test and linting configurations.
 
-- Add ``project_urls`` with relevant links in ``setup.py``
+- Add ``project_urls`` with relevant links in ``setup.py``.
 
-- Specify supported Python versions using ``python_requires`` in setup.py
+- Specify supported Python versions using ``python_requires`` in setup.py.
 
-- Added support for Python 3.8
+- Added support for Python 3.8.
 
-- Deprecated unused method ``PortalCatalogProcessor.get_dispatcher``
+- Deprecated unused method ``PortalCatalogProcessor.get_dispatcher``.
   (`#57 <https://github.com/zopefoundation/Products.CMFCore/issues/57>`_)
 
 - Backport plone/collective.indexing#16 to use the catalog queue
-  also when reindexing the object security
+  also when reindexing the object security.
   (`#58 <https://github.com/zopefoundation/Products.CMFCore/issues/58>`_)
 
 - Code cleanup: avoid to call the ``keys`` method on dictionary
-  when not needed
+  when not needed.
   [ale-rt]
 
 
