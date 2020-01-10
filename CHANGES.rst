@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.3 (unreleased)
+2.4.3 (2020-01-10)
 ------------------
 
 - Fix encoding detection for XML files.
