@@ -114,7 +114,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                 if xml_info:
                     # Smells like xml
                     # set "content_type" from the XML declaration
-                    encoding = xml_info.group(1) or 'utf-8'
+                    if xml_info.group(1):
+                        if six.PY3:
+                            encoding = xml_info.group(1).decode('ascii')
+                        else:
+                            encoding = xml_info.group(1)
+                    else:
+                        encoding = 'utf-8'
                     self.content_type = 'text/xml; charset=%s' % encoding
 
             if not isinstance(data, six.text_type):
