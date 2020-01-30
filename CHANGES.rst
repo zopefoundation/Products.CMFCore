@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.4 (unreleased)
+2.4.4 (2020-01-29)
 ------------------
 
 - Remove Zope Help System fossils so this products is compatible with Zope 5
