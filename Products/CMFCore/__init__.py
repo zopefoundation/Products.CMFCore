@@ -133,15 +133,3 @@ def initialize(context):
                       permission=AddPortalFolders,
                       extra_constructors=_EXTRA_CONSTRUCTORS,
                       visibility=None).initialize(context)
-
-    # make registerHelp work with 2 directories
-    help = context.getProductHelp()
-    lastRegistered = help.lastRegistered
-    context.registerHelp(directory='help', clear=1)
-    context.registerHelp(directory='interfaces', clear=1)
-    if help.lastRegistered != lastRegistered:
-        help.lastRegistered = None
-        context.registerHelp(directory='help', clear=1)
-        help.lastRegistered = None
-        context.registerHelp(directory='interfaces', clear=0)
-    context.registerHelpTitle('CMF Core Help')
