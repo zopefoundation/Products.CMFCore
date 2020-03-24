@@ -175,6 +175,9 @@ class DummyRequest:
     def __len__(self):
         return len(self._data)
 
+    def getVirtualRoot(self):
+        return '/'
+
 
 class ActionInfoTests(unittest.TestCase):
 
