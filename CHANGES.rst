@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.5 (unreleased)
+2.4.5 (2020-03-27)
 ------------------
 
 - Fix tests to be able to run on Zope 4.3.
