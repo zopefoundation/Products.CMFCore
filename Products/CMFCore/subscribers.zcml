@@ -1,5 +1,6 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <!-- See docstring on subscribers.py -->
 
@@ -39,7 +40,7 @@
            zope.lifecycleevent.interfaces.IObjectMovedEvent"
       trusted="y" />
 
-  <subscriber
+  <subscriber zcml:condition="installed Products.DCWorkflow"
       handler="Products.CMFCore.subscribers.objectTransitioned"
       for="Products.DCWorkflow.interfaces.IAfterTransitionEvent"
       trusted="y" />

@@ -6,6 +6,8 @@ Products.CMFCore Changelog
 
 - Fix tests to be able to run on Zope 4.3.
 
+- Fix not declared dependency on ``Products.DCWorkflow`` in `subscribers.zcml`.
+
 
 2.4.4 (2020-01-29)
 ------------------
