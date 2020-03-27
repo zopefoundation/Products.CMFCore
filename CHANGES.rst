@@ -1,6 +1,12 @@
 Products.CMFCore Changelog
 ==========================
 
+2.4.6 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 2.4.5 (2020-03-27)
 ------------------
 
