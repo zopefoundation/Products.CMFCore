@@ -1,70 +1,93 @@
-<dtml-let form_title="'Customize'">
-<dtml-if manage_page_header>
- <dtml-var manage_page_header>
-<dtml-else>
- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
- <html lang="en">
- <head>
- <title>&dtml-form_title;</title>
- </head>
- <body bgcolor="#FFFFFF" link="#000099" vlink="#555555">
- <h3>&dtml-form_title;</h3>
-</dtml-if>
-</dtml-let>
+<dtml-var manage_page_header>
+
 <dtml-var manage_tabs>
 
 <main class="container-fluid">
 
-<FORM ACTION="manage_doCustomize" METHOD="POST">
-  <TABLE CELLSPACING="2">
-    <TR>
-      <TH ALIGN="LEFT" VALIGN="TOP" class="form-label">Id</STRONG></TH>
-      <TD ALIGN="LEFT" VALIGN="TOP" class="form-element"><dtml-var getId></TD>
-    </TR>
-    <TR>
-      <TH ALIGN="LEFT" VALIGN="TOP" class="form-label">Content Type</TH>
-      <TD ALIGN="LEFT" VALIGN="TOP" class="form-element">&dtml-getContentType;</TD>
-    </TR>
-    <TR>
-      <TH ALIGN="LEFT" VALIGN="TOP" class="form-label">Dimensions</TH>
-      <TD ALIGN="LEFT" VALIGN="TOP" class="form-element">&dtml-width; x &dtml-height;</TD>
-    </TR>
-    <TR>
-      <TH ALIGN="LEFT" VALIGN="TOP" class="form-label">Size</TH>
-      <TD ALIGN="LEFT" VALIGN="TOP" class="form-element"><dtml-var get_size thousands_commas> bytes</TD>
-    </TR>
-    <TR>
-      <TH ALIGN="LEFT" VALIGN="TOP" class="form-label">Last modified</TH>
-      <TD ALIGN="LEFT" VALIGN="TOP" class="form-element">&dtml-getModTime;</TD>
-    </TR>
-      <tr>
-	<th align="left" valign="top" class="form-label">
-        <em>Source file</em>
-        </th>
-	<td align="left" valign="top" class="form-element">
+  <form action="manage_doCustomize" method="post"
+        class="zmi-dtml zmi-edit">
+
+    <div class="form-group row">
+      <label for="source_file" class="form-label col-sm-3 col-md-2">
+        Source file
+      </label>
+      <div class="col-sm-9 col-md-10">
         &dtml-getObjectFSPath;
-	</td>
-      </tr>
-      <tr>
-        <th align="left" valign="top" class="form-label">
-          Customize
-        </th>
-        <td align="left" valign="top" class="form-element">
-          <em>Select a destination folder and press the button
-          to make a copy of this method that can be customized.</em><br>
-          <select name="folder_path" size="1">
-            <dtml-in expr="listCustFolderPaths('Image')">
-              <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
-            </dtml-in>
-          </select>
-          <input type="submit" name="submit" value=" Customize ">
-        </td>
-      </tr>
-  </TABLE>
-  <dtml-var tag>
-</FORM>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="last_modified" class="form-label col-sm-3 col-md-2">
+        Last modified
+      </label>
+      <div class="col-sm-9 col-md-10">
+        <dtml-var "getModTime().ISO()">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="file_size" class="form-label col-sm-3 col-md-2">
+        File size
+      </label>
+      <div class="col-sm-9 col-md-10">
+        <dtml-var get_size thousands_commas> bytes
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="content_type" class="form-label col-sm-3 col-md-2">
+        Content type
+      </label>
+      <div class="col-sm-9 col-md-10">
+        &dtml-getContentType;
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="dimensions" class="form-label col-sm-3 col-md-2">
+        Dimensions
+      </label>
+      <div class="col-sm-9 col-md-10">
+        &dtml-width; x &dtml-height;
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="folder_path" class="form-label col-sm-3 col-md-2">
+        Customize
+      </label>
+      <div class="col-sm-9 col-md-10">
+        <select name="folder_path">
+          <dtml-in expr="listCustFolderPaths('DTML Method')">
+            <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
+          </dtml-in>
+        </select>
+        <input class="btn btn-primary" type="submit" name="submit"
+               value=" Customize " />
+        <br/>
+        <small>
+          Select a destination folder and press the button
+          to make a copy of this method that can be customized.
+        </small>
+      </div>
+    </div>
+
+  </form>
+
+  <br/>
+
+  <figure id="preview" class="figure col-sm-9 col-md-10"
+      ><span onclick="javascript: window.open('../<dtml-var "getId()">')"
+          style="cursor:zoom-in" title="Click to View"
+      ><dtml-if "_.same_type(height, 1) and height and height > 250">
+          <dtml-var "tag(scale=250.0 / height, css_class='img-thumbnail', id='preview')">
+      <dtml-elif "_.same_type(height, 's') and height and _.int(height) > 250">
+          <dtml-var "tag(scale=250.0 / _.int(height), css_class='img-thumbnail', id='preview')">
+      <dtml-else>
+          <dtml-var "tag(css_class='img-thumbnail', id='preview')">
+      </dtml-if></span>
+  </figure>
 
 </main>
 
-</BODY>
-</HTML>
+<dtml-var manage_page_footer>

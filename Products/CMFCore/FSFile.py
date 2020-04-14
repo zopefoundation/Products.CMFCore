@@ -46,6 +46,7 @@ class FSFile(FSObject):
     # Note that OFS.Image.File is not a base class because it is mutable.
 
     meta_type = 'Filesystem File'
+    zmi_icon = 'far fa-file-archive'
     content_type = 'unknown/unknown'
 
     manage_options = ({'label': 'Customize', 'action': 'manage_main'},)

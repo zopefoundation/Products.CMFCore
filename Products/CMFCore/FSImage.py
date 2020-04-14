@@ -43,6 +43,7 @@ class FSImage(FSObject):
     # Note that OFS.Image.Image is not a base class because it is mutable.
 
     meta_type = 'Filesystem Image'
+    zmi_icon = 'far fa-file-image'
     content_type = 'unknown/unknown'
     alt = ''
     height = ''

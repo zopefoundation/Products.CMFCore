@@ -82,6 +82,7 @@ class FSPythonScript(FSObject, Script):
     modifiable from the management interface."""
 
     meta_type = 'Filesystem Script (Python)'
+    zmi_icon = 'fa fa-terminal'
     _params = _body = ''
     _proxy_roles = ()
     _owner = None  # Unowned

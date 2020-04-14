@@ -4,7 +4,7 @@ Products.CMFCore Changelog
 2.4.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Redid most filesystem content type ZMI Customize views.
 
 
 2.4.5 (2020-03-27)

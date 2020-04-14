@@ -55,6 +55,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     """
 
     meta_type = 'Filesystem Page Template'
+    zmi_icon = 'far fa-file-code'
     _owner = None  # Unowned
 
     manage_options = (

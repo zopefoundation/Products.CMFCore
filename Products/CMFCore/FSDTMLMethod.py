@@ -50,6 +50,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     """
 
     meta_type = 'Filesystem DTML Method'
+    zmi_icon = 'far fa-file-alt'
     _owner = None
     _proxy_roles = ()
     _cache_namespace_keys = ()
