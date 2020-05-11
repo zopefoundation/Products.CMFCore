@@ -79,7 +79,7 @@ class CatalogAware(Base):
             catalog.unindexObject(self)
 
     @security.protected(ModifyPortalContent)
-    def reindexObject(self, idxs=[], update_metadata=1, uid=False):
+    def reindexObject(self, idxs=[], update_metadata=1, uid=None):
         """ Reindex the object in the portal catalog.
         """
         if idxs == []:
