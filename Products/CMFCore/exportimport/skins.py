@@ -109,7 +109,9 @@ class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
         for k, v in self.context.getSkinPaths():
             node = self._doc.createElement('skin-path')
             node.setAttribute('name', k)
-            for layer in [l.strip() for l in v.split(',') if l.strip()]:
+            for layer in [
+                    layer.strip()
+                    for layer in v.split(',') if layer.strip()]:
                 child = self._doc.createElement('layer')
                 child.setAttribute('name', layer)
                 node.appendChild(child)
