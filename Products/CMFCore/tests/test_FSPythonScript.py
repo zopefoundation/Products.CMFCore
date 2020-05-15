@@ -266,7 +266,7 @@ class CustomizedPythonScriptTests(unittest.TestCase):
         self.assertEqual(len(list(cps.getDiff())), 0)
 
         cps.write(_REPLACEMENT_TEXT)
-        self.assertEqual([l.rstrip() for l in cps.getDiff()],
+        self.assertEqual([line.rstrip() for line in cps.getDiff()],
                          _DIFF_TEXT.splitlines())
 
 
