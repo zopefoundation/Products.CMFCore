@@ -108,6 +108,8 @@ class ActionTests(unittest.TestCase):
             return 'MAIN'
 
         container = Folder('folder')
+        # Mocking out a bit of the ZMI
+        container.ZopeVersion = lambda **kw: '4.99'
 
         container.REQUEST = request = DummyRequest()
         request.set('manage_page_header', _header)

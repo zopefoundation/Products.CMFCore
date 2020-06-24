@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.7 (unreleased)
+2.4.7 (2020-06-24)
 ------------------
 
 - Change the default value of uid to None on CMFCatalogAware's reindexObject method (`#87 <https://github.com/zopefoundation/Products.CMFCore/issues/87>`_)
