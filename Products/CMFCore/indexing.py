@@ -183,10 +183,13 @@ class IndexQueue(local):
             if op == INDEX and iop == UNINDEX:
                 del res[hash_id]
             else:
-                # Operators are -1, 0 or 1 which makes it safe to add them
-                op += iop
-                # operator always within -1 and 1
-                op = min(max(op, UNINDEX), INDEX)
+                if op == UNINDEX and iop == REINDEX:
+                    op = REINDEX
+                else:
+                    # Operators are -1, 0 or 1 which makes it safe to add them
+                    op += iop
+                    # operator always within -1 and 1
+                    op = min(max(op, UNINDEX), INDEX)
 
                 # Handle attributes, None means all fields,
                 # and takes precedence
