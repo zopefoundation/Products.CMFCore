@@ -264,6 +264,10 @@ class QueueTests(CleanUp, TestCase):
         queue.optimize()
         self.assertEqual(queue.getState(), [(REINDEX, 'A', [], None)])
 
+        queue.setState([(UNINDEX, 'A', None, None), (REINDEX, 'A', [], 1)])
+        queue.optimize()
+        self.assertEqual(queue.getState(), [(REINDEX, 'A', [], 1)])
+
     def testOptimizeQueueWithAttributes(self):
         queue = self.queue
 

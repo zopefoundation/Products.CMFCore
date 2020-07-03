@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 2.4.8 (unreleased)
 ------------------
 
+- Fix an issue with the indexing queue where an UNINDEX followed by REINDEX was
+  wrongly optimized to UNINDEX instead of REINDEX.
+  (`#96 <https://github.com/zopefoundation/Products.CMFCore/pull/96>`_)
+
 
 2.4.7 (2020-06-24)
 ------------------
