@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.8 (unreleased)
+2.4.8 (2020-07-03)
 ------------------
 
 - Fix an issue with the indexing queue where an UNINDEX followed by REINDEX was
