@@ -17,8 +17,8 @@
 class ConformsToISimpleItem:
 
     def test_conforms_to_Five_ISimpleItem(self):
-        from zope.interface.verify import verifyClass
         from Products.Five.interfaces import ISimpleItem
+        from zope.interface.verify import verifyClass
 
         verifyClass(ISimpleItem, self._getTargetClass())
 
@@ -27,6 +27,7 @@ class ConformsToIINIAware:
 
     def test_conforms_to_IINIAware(self):
         from zope.interface.verify import verifyClass
+
         from ...interfaces import IINIAware
 
         verifyClass(IINIAware, self._getTargetClass())
@@ -36,6 +37,7 @@ class ConformsToICSVAware:
 
     def test_conforms_to_ICSVAware(self):
         from zope.interface.verify import verifyClass
+
         from ...interfaces import ICSVAware
 
         verifyClass(ICSVAware, self._getTargetClass())
@@ -46,6 +48,7 @@ class ConformsToIFilesystemExporter:
     """
     def test_conforms_to_IFilesystemExporter(self):
         from zope.interface.verify import verifyClass
+
         from ...interfaces import IFilesystemExporter
 
         verifyClass(IFilesystemExporter, self._getTargetClass())
@@ -56,6 +59,7 @@ class ConformsToIFilesystemImporter:
     """
     def test_conforms_to_IFilesystemImporter(self):
         from zope.interface.verify import verifyClass
+
         from ...interfaces import IFilesystemImporter
 
         verifyClass(IFilesystemImporter, self._getTargetClass())

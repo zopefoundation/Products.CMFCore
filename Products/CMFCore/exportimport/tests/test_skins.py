@@ -17,14 +17,15 @@ import os
 import unittest
 
 from OFS.Folder import Folder
+from Testing import ZopeTestCase
+from zope.component import getSiteManager
+from zope.interface import implementer
+
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
-from Testing import ZopeTestCase
-from zope.component import getSiteManager
-from zope.interface import implementer
 
 from ...interfaces import ISkinsTool
 from ...testing import ExportImportZCMLLayer

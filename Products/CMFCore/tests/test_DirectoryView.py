@@ -38,8 +38,8 @@ class DirectoryViewPathTests(unittest.TestCase):
     """
 
     def setUp(self):
-        from Products.CMFCore.DirectoryView import registerDirectory
         from Products.CMFCore.DirectoryView import addDirectoryViews
+        from Products.CMFCore.DirectoryView import registerDirectory
         registerDirectory('fake_skins', _globals)
         self.ob = DummyFolder()
         addDirectoryViews(self.ob, 'fake_skins', _globals)
@@ -174,6 +174,7 @@ class DirectoryViewFolderTests(FSDVTest):
 
     def tearDown(self):
         from Products.CMFCore import DirectoryView
+
         # This is nasty, but there is no way to unregister anything
         # right now...
         metatype_registry = DirectoryView._dirreg._meta_types

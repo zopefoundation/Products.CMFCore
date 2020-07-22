@@ -16,10 +16,11 @@
 import unittest
 
 from OFS.Folder import manage_addFolder
-from Products.PythonScripts.PythonScript import manage_addPythonScript
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
+
+from Products.PythonScripts.PythonScript import manage_addPythonScript
 
 from ..Expression import Expression
 from ..Expression import createExprContext

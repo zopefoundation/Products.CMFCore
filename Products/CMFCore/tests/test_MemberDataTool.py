@@ -95,6 +95,7 @@ class MemberDataToolTests(unittest.TestCase):
     def test_pruneMemberData(self):
         # This needs a tad more setup
         from OFS.Folder import Folder
+
         from ..MembershipTool import MembershipTool
         folder = Folder('test')
         folder._setObject('portal_memberdata', self._makeOne())
@@ -135,6 +136,7 @@ class MemberAdapterTests(unittest.TestCase):
 
     def setUp(self):
         from OFS.Folder import Folder
+
         from ..MemberDataTool import MemberDataTool
         from ..MembershipTool import MembershipTool
 
@@ -149,6 +151,7 @@ class MemberAdapterTests(unittest.TestCase):
 
     def test_interfaces(self):
         from AccessControl.interfaces import IUser
+
         from ..interfaces import IMember
         from ..interfaces import IMemberData
 

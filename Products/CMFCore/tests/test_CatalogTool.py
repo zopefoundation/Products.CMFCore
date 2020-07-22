@@ -73,6 +73,7 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
     def test_interfaces(self):
         from zope.interface.verify import verifyClass
+
         from ..interfaces import IIndexableObjectWrapper
 
         verifyClass(IIndexableObjectWrapper, self._getTargetClass())
@@ -104,8 +105,8 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         self.assertEqual(w.baz, 2)
 
     def test_provided(self):
-        from ..interfaces import IIndexableObjectWrapper
         from ..interfaces import IIndexableObject
+        from ..interfaces import IIndexableObjectWrapper
 
         obj = self._makeContent()
         w = self._makeOne({}, obj)
@@ -115,6 +116,7 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
     def test_adapts(self):
         from zope.component import adaptedBy
+
         from ..interfaces import ICatalogTool
 
         w = self._getTargetClass()
@@ -153,9 +155,11 @@ class CatalogToolTests(SecurityTest):
 
     def test_interfaces(self):
         from zope.interface.verify import verifyClass
+
+        from Products.ZCatalog.interfaces import IZCatalog
+
         from ..interfaces import IActionProvider
         from ..interfaces import ICatalogTool
-        from Products.ZCatalog.interfaces import IZCatalog
 
         verifyClass(IActionProvider, self._getTargetClass())
         verifyClass(ICatalogTool, self._getTargetClass())
@@ -163,12 +167,14 @@ class CatalogToolTests(SecurityTest):
 
     def loginWithRoles(self, *roles):
         from AccessControl.SecurityManagement import newSecurityManager
+
         from .base.security import UserWithRoles
         user = UserWithRoles(*roles).__of__(self.app)
         newSecurityManager(None, user)
 
     def loginManager(self):
         from AccessControl.SecurityManagement import newSecurityManager
+
         from .base.security import OmnipotentUser
         user = OmnipotentUser().__of__(self.app)
         newSecurityManager(None, user)

@@ -15,6 +15,7 @@
 
 try:
     import Products.ZSQLMethods  # noqa
+
     from . import FSZSQLMethod
     HAVE_ZSQL = True
 except ImportError:

@@ -163,6 +163,7 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
     def test_customize(self):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+
         from ..FSReSTMethod import _CUSTOMIZED_TEMPLATE_ZPT
 
         self.custom.all_meta_types = ZPT_META_TYPES

@@ -25,7 +25,6 @@ import pkg_resources
 import six
 from six.moves._thread import allocate_lock
 
-import Products
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
@@ -54,6 +53,8 @@ from zope.component import queryUtility
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 from zope.interface.interfaces import ComponentLookupError
+
+import Products
 
 from .exceptions import AccessControl_Unauthorized
 from .exceptions import NotFound

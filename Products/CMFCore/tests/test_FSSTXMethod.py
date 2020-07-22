@@ -87,8 +87,9 @@ class _TemplateSwitcher:
         FSSTXMaker.tearDown(self)
 
     def _setWhichTemplate(self, which):
-        from .. import FSSTXMethod
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+
+        from .. import FSSTXMethod
         FSSTXMethod._STX_TEMPLATE = which
 
         if which == 'DTML':
@@ -225,6 +226,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
     def test_customize_with_DTML(self):
         from OFS.DTMLDocument import DTMLDocument
+
         from ..FSSTXMethod import _CUSTOMIZED_TEMPLATE_DTML
 
         self._setWhichTemplate('DTML')
@@ -245,6 +247,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
     def test_customize_with_ZPT(self):
         from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
+
         from ..FSSTXMethod import _CUSTOMIZED_TEMPLATE_ZPT
 
         self._setWhichTemplate('ZPT')
