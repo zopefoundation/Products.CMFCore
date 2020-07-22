@@ -26,10 +26,11 @@ from OFS.Image import Image
 from OFS.ObjectManager import REPLACEABLE
 from Persistence import PersistentMapping
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-from Products.PythonScripts.PythonScript import PythonScript
 from zope.component import getUtility
 from zope.globalrequest import getRequest
 from zope.interface import implementer
+
+from Products.PythonScripts.PythonScript import PythonScript
 
 from .ActionProviderBase import ActionProviderBase
 from .DirectoryView import base_ignore

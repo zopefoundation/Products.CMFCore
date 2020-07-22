@@ -17,11 +17,12 @@ import unittest
 
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
+from zope.component import getSiteManager
+
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
-from zope.component import getSiteManager
 
 from ...interfaces import IMemberDataTool
 from ...MemberDataTool import MemberDataTool
