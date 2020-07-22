@@ -21,10 +21,10 @@ from os import path as os_path
 from os.path import abspath
 from warnings import warn
 
+import pkg_resources
 import six
 from six.moves._thread import allocate_lock
 
-import pkg_resources
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
