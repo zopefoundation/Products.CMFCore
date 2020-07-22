@@ -55,17 +55,16 @@ class SiteStructureExporterTests(unittest.TestCase):
         return obj
 
     def _setUpAdapters(self):
-        from zope.component import provideAdapter
-
-        from Products.GenericSetup.interfaces import IFilesystemExporter
-        from Products.GenericSetup.interfaces import IFilesystemImporter
-        from Products.GenericSetup.interfaces import ICSVAware
-        from Products.GenericSetup.interfaces import IINIAware
-        from ...interfaces import IFolderish
-
-        from ..content import StructureFolderWalkingAdapter
         from Products.GenericSetup.content import CSVAwareFileAdapter
         from Products.GenericSetup.content import INIAwareFileAdapter
+        from Products.GenericSetup.interfaces import ICSVAware
+        from Products.GenericSetup.interfaces import IFilesystemExporter
+        from Products.GenericSetup.interfaces import IFilesystemImporter
+        from Products.GenericSetup.interfaces import IINIAware
+        from zope.component import provideAdapter
+
+        from ...interfaces import IFolderish
+        from ..content import StructureFolderWalkingAdapter
 
         provideAdapter(StructureFolderWalkingAdapter,
                        (IFolderish,),
@@ -558,8 +557,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(site.objectIds()[0], 'setup_tool')
 
     def test_import_site_with_subfolders(self):
-        from Products.GenericSetup.tests.test_content \
-            import _PROPERTIES_TEMPLATE
+        from Products.GenericSetup.tests.test_content import \
+            _PROPERTIES_TEMPLATE
         self._setUpAdapters()
         FOLDER_IDS = ('foo', 'bar', 'baz')
 
@@ -586,8 +585,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(len(content), len(FOLDER_IDS))
 
     def test_import_site_with_dav_aware_folder(self):
-        from Products.GenericSetup.tests.test_content \
-            import _PROPERTIES_TEMPLATE
+        from Products.GenericSetup.tests.test_content import \
+            _PROPERTIES_TEMPLATE
         self._setUpAdapters()
         FOLDER_IDS = ('foo', 'bar', 'baz')
 
@@ -615,8 +614,8 @@ class SiteStructureExporterTests(unittest.TestCase):
                          KNOWN_DAV % ('Title', 'Description', 'Body'))
 
     def test_import_site_with_dav_aware_folder_with_generic_file_data(self):
-        from Products.GenericSetup.tests.test_content \
-            import _PROPERTIES_TEMPLATE
+        from Products.GenericSetup.tests.test_content import \
+            _PROPERTIES_TEMPLATE
         self._setUpAdapters()
         FOLDER_IDS = ('foo', 'bar', 'baz')
 
@@ -912,9 +911,10 @@ four,five,six
 
 def _makeCSVAware(id):
     from OFS.SimpleItem import SimpleItem
-    from zope.interface import implementer
-    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import ICSVAware
+    from zope.interface import implementer
+
+    from ...interfaces import IDynamicType
 
     @implementer(IDynamicType, ICSVAware)
     class _TestCSVAware(SimpleItem):
@@ -946,9 +946,10 @@ description = %s
 
 def _makeINIAware(id):
     from OFS.SimpleItem import SimpleItem
-    from zope.interface import implementer
-    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IINIAware
+    from zope.interface import implementer
+
+    from ...interfaces import IDynamicType
 
     @implementer(IDynamicType, IINIAware)
     class _TestINIAware(SimpleItem):
@@ -986,9 +987,10 @@ Description: %s
 
 def _makeDAVAware(id):
     from OFS.SimpleItem import SimpleItem
-    from zope.interface import implementer
-    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IDAVAware
+    from zope.interface import implementer
+
+    from ...interfaces import IDynamicType
 
     @implementer(IDynamicType, IDAVAware)
     class _TestDAVAware(SimpleItem):
@@ -1019,10 +1021,11 @@ TEST_DAV_FOLDER = 'Test DAV Folder'
 
 
 def _makeDAVAwareFolder(id):
-    from ...PortalFolder import PortalFolder
-    from zope.interface import implementer
-    from ...interfaces import IDynamicType
     from Products.GenericSetup.interfaces import IDAVAware
+    from zope.interface import implementer
+
+    from ...interfaces import IDynamicType
+    from ...PortalFolder import PortalFolder
 
     @implementer(IDynamicType, IDAVAware)
     class _TestDAVAwareFolder(PortalFolder):
@@ -1052,6 +1055,7 @@ TEST_CONTENT = 'Test Content'
 def _makeItem(self):
     from OFS.SimpleItem import SimpleItem
     from zope.interface import implementer
+
     from ...interfaces import IDynamicType
 
     @implementer(IDynamicType)
@@ -1072,8 +1076,8 @@ TEST_FOLDER = 'Test Folder'
 
 def _makeFolder(id, site_folder=False):
     from ...PortalFolder import PortalFolder
-    from ...TypesTool import TypesTool
     from ...tests.base.dummy import DummyType
+    from ...TypesTool import TypesTool
 
     class _TypeInfo(DummyType):
         def _getId(self):

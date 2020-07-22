@@ -973,7 +973,9 @@ class PortalFolderCopySupportTests(SecurityTest):
 
     def _assertCopyErrorUnauth(self, callable, *args, **kw):
         import re
+
         from OFS.CopySupport import CopyError
+
         from ..exceptions import zExceptions_Unauthorized
 
         ce_regex = kw.get('ce_regex')
@@ -1127,6 +1129,7 @@ class PortalFolderCopySupportTests(SecurityTest):
 
     def test_move_cant_delete_source(self):
         from AccessControl.Permissions import delete_objects as DeleteObjects
+
         from ..PortalFolder import PortalFolder
 
         folder1, folder2 = self._initFolders()

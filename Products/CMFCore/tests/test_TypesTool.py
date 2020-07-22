@@ -36,26 +36,31 @@ class TypesToolTests(unittest.TestCase):
 
     def test_class_conforms_to_IActionProvider(self):
         from zope.interface.verify import verifyClass
+
         from ..interfaces import IActionProvider
         verifyClass(IActionProvider, self._getTargetClass())
 
     def test_instance_conforms_to_IActionProvider(self):
         from zope.interface.verify import verifyObject
+
         from ..interfaces import IActionProvider
         verifyObject(IActionProvider, self._makeOne())
 
     def test_class_conforms_to_ITypesTool(self):
         from zope.interface.verify import verifyClass
+
         from ..interfaces import IActionProvider
         verifyClass(IActionProvider, self._getTargetClass())
 
     def test_instance_conforms_to_ITypesTool(self):
         from zope.interface.verify import verifyObject
+
         from ..interfaces import IActionProvider
         verifyObject(IActionProvider, self._makeOne())
 
     def test_listActions_passes_all_context_information_to_TIs(self):
         from zope.interface import implementer
+
         from ..interfaces import ITypeInformation
         from .base.dummy import DummyContent
 
@@ -100,6 +105,7 @@ class TypesToolFunctionalTests(SecurityTest):
     def test_allMetaTypes(self):
         # all typeinfo's returned by allMetaTypes can be traversed to.
         from Acquisition import aq_base
+
         from ..interfaces import ITypeInformation
         if HAS_ZSERVER:
             from webdav.NullResource import NullResource
@@ -124,6 +130,7 @@ class TypesToolFunctionalTests(SecurityTest):
     def test_constructContent_simple_FTI(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from ..TypesTool import FactoryTypeInformation as FTI
         from .base.dummy import DummyFolder
         from .base.tidata import FTIDATA_DUMMY
@@ -143,6 +150,7 @@ class TypesToolFunctionalTests(SecurityTest):
     def test_constructContent_FTI_w_wftool_no_workflows(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from ..TypesTool import FactoryTypeInformation as FTI
         from .base.dummy import DummyFolder
         from .base.tidata import FTIDATA_DUMMY
@@ -163,6 +171,7 @@ class TypesToolFunctionalTests(SecurityTest):
     def test_constructContent_FTI_w_wftool_w_workflow_no_guard(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from ..TypesTool import FactoryTypeInformation as FTI
         from .base.dummy import DummyFolder
         from .base.tidata import FTIDATA_DUMMY
@@ -183,6 +192,7 @@ class TypesToolFunctionalTests(SecurityTest):
     def test_constructContent_FTI_w_wftool_w_workflow_w_guard_allows(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from ..TypesTool import FactoryTypeInformation as FTI
         from .base.dummy import DummyFolder
         from .base.tidata import FTIDATA_DUMMY
@@ -204,6 +214,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from AccessControl import Unauthorized
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from ..TypesTool import FactoryTypeInformation as FTI
         from .base.dummy import DummyFolder
         from .base.tidata import FTIDATA_DUMMY
@@ -228,11 +239,12 @@ class TypesToolFunctionalTests(SecurityTest):
         from AccessControl import Unauthorized
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+        from Products.PythonScripts.PythonScript import PythonScript
+
         from ..PortalFolder import PortalFolder
         from ..TypesTool import ScriptableTypeInformation as STI
         from .base.dummy import DummyFactoryDispatcher
         from .base.tidata import STI_SCRIPT
-        from Products.PythonScripts.PythonScript import PythonScript
         site = self._makeSite().__of__(self.app)
         acl_users = site.acl_users
         setSecurityPolicy(self._oldPolicy)
@@ -273,11 +285,13 @@ class TypeInfoTests(object):
 
     def test_class_conforms_to_ITypeInformation(self):
         from zope.interface.verify import verifyClass
+
         from ..interfaces import ITypeInformation
         verifyClass(ITypeInformation, self._getTargetClass())
 
     def test_instance_conforms_to_ITypeInformation(self):
         from zope.interface.verify import verifyObject
+
         from ..interfaces import ITypeInformation
         verifyObject(ITypeInformation, self._makeOne())
 
@@ -563,6 +577,7 @@ class FTIConstructionTestCase:
 
     def test_isConstructionAllowed_for_Omnipotent(self):
         from AccessControl.SecurityManagement import newSecurityManager
+
         from .base.security import OmnipotentUser
         newSecurityManager(None, OmnipotentUser().__of__(self.f))
         self.assertTrue(self.ti.isConstructionAllowed(self.f))
@@ -572,6 +587,7 @@ class FTIConstructionTestCase:
 
     def test_isConstructionAllowed_wo_Role(self):
         from AccessControl.SecurityManagement import newSecurityManager
+
         from .base.security import UserWithRoles
         newSecurityManager(None, UserWithRoles('FooViewer').__of__(self.f))
         self.assertFalse(self.ti.isConstructionAllowed(self.f))
@@ -583,6 +599,7 @@ class FTIConstructionTestCase:
     def test_constructInstance_wo_Roles(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.unauthorized import Unauthorized
+
         from .base.security import UserWithRoles
         newSecurityManager(None, UserWithRoles('FooViewer').__of__(self.f))
         self.assertRaises(Unauthorized,
@@ -595,6 +612,7 @@ class FTIConstructionTestCase:
 
     def test_constructInstance_private(self):
         from AccessControl.SecurityManagement import newSecurityManager
+
         from .base.security import UserWithRoles
         newSecurityManager(None, UserWithRoles('NotAFooAdder').__of__(self.f))
         self.ti._constructInstance(self.f, 'foo')
@@ -623,6 +641,7 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
 
     def setUp(self):
         from AccessControl.SecurityManagement import newSecurityManager
+
         from .base.dummy import DummyFolder
         from .base.security import UserWithRoles
 
@@ -698,6 +717,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
     def setUp(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from zope.component.interfaces import IFactory
+
         from .base.dummy import DummyFactory
         from .base.dummy import DummyFolder
         from .base.security import UserWithRoles

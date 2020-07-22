@@ -71,8 +71,8 @@ class CoreUtilsTests(unittest.TestCase):
                              ['foo', 'bar', 'baz'])
 
     def test_getPackageName(self):
-        from ..utils import getPackageName
         from ..utils import _globals
+        from ..utils import getPackageName
 
         self.assertEqual(getPackageName(globals()), 'Products.CMFCore.tests')
         self.assertEqual(getPackageName(_globals), 'Products.CMFCore')
@@ -162,9 +162,10 @@ class CoreUtilsSecurityTests(SecurityTest):
 
     def _makeSite(self):
         from OFS.owner import Owned
+
+        from .base.dummy import DummyObject
         from .base.dummy import DummySite
         from .base.dummy import DummyUserFolder
-        from .base.dummy import DummyObject
 
         class _DummyObject(Owned, DummyObject):
             pass
@@ -182,6 +183,7 @@ class CoreUtilsSecurityTests(SecurityTest):
         from AccessControl.Permission import Permission
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from ..utils import _checkPermission
 
         setSecurityPolicy(ZopeSecurityPolicy())
@@ -213,8 +215,8 @@ class CoreUtilsSecurityTests(SecurityTest):
         # actual local role settings and it was possible to manipulate them
         # by changing the return value.
         # http://www.zope.org/Collectors/CMF/376 (FIXME: broken link)
-        from .base.dummy import DummyContent
         from ..utils import _mergedLocalRoles
+        from .base.dummy import DummyContent
         obj = DummyContent()
         obj.manage_addLocalRoles('dummyuser1', ['Manager', 'Owner'])
         self.assertEqual(len(obj.get_local_roles_for_userid('dummyuser1')), 2)
@@ -246,6 +248,7 @@ class CoreUtilsSecurityTests(SecurityTest):
         from AccessControl.Permission import Permission
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from ..utils import FakeExecutableObject
 
         setSecurityPolicy(ZopeSecurityPolicy())
