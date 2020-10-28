@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/zopefoundation/Products.CMFCore.svg?branch=master
-        :target: https://travis-ci.org/zopefoundation/Products.CMFCore
+.. image:: https://travis-ci.com/zopefoundation/Products.CMFCore.svg?branch=master
+        :target: https://travis-ci.com/zopefoundation/Products.CMFCore
 
 .. image:: https://coveralls.io/repos/github/zopefoundation/Products.CMFCore/badge.svg
         :target: https://coveralls.io/github/zopefoundation/Products.CMFCore
