@@ -28,7 +28,7 @@ from six.moves._thread import allocate_lock
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
-from AccessControl.Role import gather_permissions
+from AccessControl.rolemanager import gather_permissions
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityInfo import ModuleSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager

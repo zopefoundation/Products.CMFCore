@@ -4,7 +4,9 @@ Products.CMFCore Changelog
 2.4.9 (unreleased)
 ------------------
 
-- update configuration for version 5 of ``isort``
+- Update configuration for version 5 of ``isort``.
+
+- Fix deprecation warnings occurring on Zope 5.
 
 
 2.4.8 (2020-07-03)
