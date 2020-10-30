@@ -22,7 +22,7 @@ from AccessControl.class_init import InitializeClass
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
-from AccessControl.User import nobody
+from AccessControl.users import nobody
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
