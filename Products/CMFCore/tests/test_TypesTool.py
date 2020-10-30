@@ -239,6 +239,7 @@ class TypesToolFunctionalTests(SecurityTest):
         from AccessControl import Unauthorized
         from AccessControl.SecurityManagement import newSecurityManager
         from AccessControl.SecurityManager import setSecurityPolicy
+
         from Products.PythonScripts.PythonScript import PythonScript
 
         from ..PortalFolder import PortalFolder

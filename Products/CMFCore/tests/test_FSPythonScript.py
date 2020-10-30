@@ -26,9 +26,10 @@ from Acquisition import aq_base
 from DateTime.DateTime import DateTime
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
-from Products.StandardCacheManagers import RAMCacheManager
 from Testing import ZopeTestCase
 from zope.testing.cleanup import cleanUp
+
+from Products.StandardCacheManagers import RAMCacheManager
 
 from ..FSMetadata import FSMetadata
 from ..FSPythonScript import FSPythonScript

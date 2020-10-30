@@ -20,10 +20,11 @@ from six import StringIO
 from six import binary_type
 from six.moves.configparser import ConfigParser
 
-from Products.GenericSetup.tests.common import DummyExportContext
-from Products.GenericSetup.tests.common import DummyImportContext
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
+
+from Products.GenericSetup.tests.common import DummyExportContext
+from Products.GenericSetup.tests.common import DummyImportContext
 
 from ...interfaces import ITypesTool
 from ...testing import DummyWorkflow
@@ -55,13 +56,14 @@ class SiteStructureExporterTests(unittest.TestCase):
         return obj
 
     def _setUpAdapters(self):
+        from zope.component import provideAdapter
+
         from Products.GenericSetup.content import CSVAwareFileAdapter
         from Products.GenericSetup.content import INIAwareFileAdapter
         from Products.GenericSetup.interfaces import ICSVAware
         from Products.GenericSetup.interfaces import IFilesystemExporter
         from Products.GenericSetup.interfaces import IFilesystemImporter
         from Products.GenericSetup.interfaces import IINIAware
-        from zope.component import provideAdapter
 
         from ...interfaces import IFolderish
         from ..content import StructureFolderWalkingAdapter
@@ -911,8 +913,9 @@ four,five,six
 
 def _makeCSVAware(id):
     from OFS.SimpleItem import SimpleItem
-    from Products.GenericSetup.interfaces import ICSVAware
     from zope.interface import implementer
+
+    from Products.GenericSetup.interfaces import ICSVAware
 
     from ...interfaces import IDynamicType
 
@@ -946,8 +949,9 @@ description = %s
 
 def _makeINIAware(id):
     from OFS.SimpleItem import SimpleItem
-    from Products.GenericSetup.interfaces import IINIAware
     from zope.interface import implementer
+
+    from Products.GenericSetup.interfaces import IINIAware
 
     from ...interfaces import IDynamicType
 
@@ -987,8 +991,9 @@ Description: %s
 
 def _makeDAVAware(id):
     from OFS.SimpleItem import SimpleItem
-    from Products.GenericSetup.interfaces import IDAVAware
     from zope.interface import implementer
+
+    from Products.GenericSetup.interfaces import IDAVAware
 
     from ...interfaces import IDynamicType
 
@@ -1021,8 +1026,9 @@ TEST_DAV_FOLDER = 'Test DAV Folder'
 
 
 def _makeDAVAwareFolder(id):
-    from Products.GenericSetup.interfaces import IDAVAware
     from zope.interface import implementer
+
+    from Products.GenericSetup.interfaces import IDAVAware
 
     from ...interfaces import IDynamicType
     from ...PortalFolder import PortalFolder

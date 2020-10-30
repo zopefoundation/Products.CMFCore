@@ -14,7 +14,6 @@
 """
 
 from OFS.SimpleItem import SimpleItem
-from Products.GenericSetup.utils import BodyAdapterBase
 from Testing.ZopeTestCase.layer import ZopeLite
 from Zope2.App import zcml
 from zope.component import adapts
@@ -24,6 +23,8 @@ from zope.interface import implementer
 from zope.interface.verify import verifyClass
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.testing.cleanup import cleanUp
+
+from Products.GenericSetup.utils import BodyAdapterBase
 
 from .interfaces import IWorkflowDefinition
 from .utils import HAS_ZSERVER
@@ -213,11 +214,11 @@ class ExportImportZCMLLayer(ZopeLite):
     def testSetUp(cls):
         import AccessControl
         import Products.Five
-        import Products.GenericSetup
         import Zope2.App
 
         import Products.CMFCore
         import Products.CMFCore.exportimport
+        import Products.GenericSetup
 
         zcml.load_config('meta.zcml', Zope2.App)
         zcml.load_config('meta.zcml', Products.Five)
