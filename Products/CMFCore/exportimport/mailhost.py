@@ -13,11 +13,10 @@
 """Mailhost setup handlers.
 """
 
-from zope.component import getSiteManager
-
 from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import importObjects
 from Products.MailHost.interfaces import IMailHost
+from zope.component import getSiteManager
 
 
 def importMailHost(context):

@@ -18,14 +18,13 @@ import unittest
 from Acquisition import Implicit
 from Acquisition import aq_parent
 from OFS.OrderedFolder import OrderedFolder
-from zope.component import getSiteManager
-from zope.interface import implementer
-
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
+from zope.component import getSiteManager
+from zope.interface import implementer
 
 from ...ActionProviderBase import ActionProviderBase
 from ...interfaces import IActionProvider

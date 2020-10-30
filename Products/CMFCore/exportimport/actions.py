@@ -13,9 +13,6 @@
 """Actions tool node adapters.
 """
 
-from zope.component import adapts
-from zope.component import getSiteManager
-
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import I18NURI
 from Products.GenericSetup.utils import NodeAdapterBase
@@ -24,6 +21,8 @@ from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
 from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import importObjects
+from zope.component import adapts
+from zope.component import getSiteManager
 
 from ..interfaces import IAction
 from ..interfaces import IActionCategory

@@ -15,12 +15,11 @@
 
 from xml.dom.minidom import parseString
 
-from zope.component import queryMultiAdapter
-from zope.component import queryUtility
-
 from Products.GenericSetup.browser.utils import AddWithPresettingsViewBase
 from Products.GenericSetup.interfaces import IBody
 from Products.GenericSetup.interfaces import ISetupTool
+from zope.component import queryMultiAdapter
+from zope.component import queryUtility
 
 from ..TypesTool import FactoryTypeInformation
 from ..TypesTool import ScriptableTypeInformation

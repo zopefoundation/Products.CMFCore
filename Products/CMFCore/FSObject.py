@@ -28,9 +28,8 @@ from DateTime.DateTime import DateTime
 from OFS.Cache import Cacheable
 from OFS.role import RoleManager
 from OFS.SimpleItem import Item
-from zope.component import getUtility
-
 from Products.PythonScripts.standard import html_quote
+from zope.component import getUtility
 
 from .interfaces import ISkinsTool
 from .permissions import ManagePortal

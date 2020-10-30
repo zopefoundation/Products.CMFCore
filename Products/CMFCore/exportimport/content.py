@@ -23,14 +23,13 @@ from six import StringIO
 from six.moves.configparser import ConfigParser
 
 from DateTime import DateTime
-from zope.component import getUtility
-from zope.interface import implementer
-from zope.publisher.interfaces.http import MethodNotAllowed
-
 from Products.GenericSetup.content import DAVAwareFileAdapter
 from Products.GenericSetup.content import _globtest
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter
+from zope.component import getUtility
+from zope.interface import implementer
+from zope.publisher.interfaces.http import MethodNotAllowed
 
 from ..interfaces import ITypesTool
 

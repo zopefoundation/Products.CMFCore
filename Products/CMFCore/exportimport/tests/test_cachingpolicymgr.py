@@ -16,13 +16,12 @@
 import unittest
 
 from OFS.Folder import Folder
-from zope.component import getSiteManager
-
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.testing import NodeAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
+from zope.component import getSiteManager
 
 from ...CachingPolicyManager import CachingPolicyManager
 from ...interfaces import ICachingPolicyManager

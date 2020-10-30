@@ -22,6 +22,8 @@ from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
+from Products.PluginIndexes.util import safe_callable
+from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.component import adapts
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
@@ -30,9 +32,6 @@ from zope.interface import providedBy
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.interface.declarations import getObjectSpecification
-
-from Products.PluginIndexes.util import safe_callable
-from Products.ZCatalog.ZCatalog import ZCatalog
 
 from .ActionProviderBase import ActionProviderBase
 from .indexing import filterTemporaryItems

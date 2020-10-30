@@ -154,9 +154,8 @@ class CatalogToolTests(SecurityTest):
         return CatalogDummyContent(*args, **kw)
 
     def test_interfaces(self):
-        from zope.interface.verify import verifyClass
-
         from Products.ZCatalog.interfaces import IZCatalog
+        from zope.interface.verify import verifyClass
 
         from ..interfaces import IActionProvider
         from ..interfaces import ICatalogTool

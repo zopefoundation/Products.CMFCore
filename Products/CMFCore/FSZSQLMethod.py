@@ -20,7 +20,6 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import ImplicitAcquisitionWrapper
 from App.config import getConfiguration
 from App.special_dtml import DTMLFile
-
 from Products.ZSQLMethods.SQL import SQL
 
 from .DirectoryView import registerFileExtension

@@ -22,9 +22,8 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
 from ComputedAttribute import ComputedAttribute
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Shared.DC.Scripts.Script import Script
-
 from Products.PythonScripts.PythonScript import PythonScript
+from Shared.DC.Scripts.Script import Script
 
 from .DirectoryView import registerFileExtension
 from .DirectoryView import registerMetaType

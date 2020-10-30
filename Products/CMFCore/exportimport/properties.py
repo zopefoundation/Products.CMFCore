@@ -13,13 +13,12 @@
 """Site properties xml adapters and setup handlers.
 """
 
-from zope.component import adapts
-from zope.component import queryMultiAdapter
-
 from Products.GenericSetup.interfaces import IBody
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import PropertyManagerHelpers
 from Products.GenericSetup.utils import XMLAdapterBase
+from zope.component import adapts
+from zope.component import queryMultiAdapter
 
 from ..interfaces import ISiteRoot
 

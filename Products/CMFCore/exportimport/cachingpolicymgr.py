@@ -13,16 +13,15 @@
 """Caching policy manager xml adapters and setup handlers.
 """
 
-from zope.component import adapts
-from zope.component import getSiteManager
-from zope.component import queryMultiAdapter
-
 from Products.GenericSetup.interfaces import INode
 from Products.GenericSetup.interfaces import ISetupEnviron
 from Products.GenericSetup.utils import NodeAdapterBase
 from Products.GenericSetup.utils import XMLAdapterBase
 from Products.GenericSetup.utils import exportObjects
 from Products.GenericSetup.utils import importObjects
+from zope.component import adapts
+from zope.component import getSiteManager
+from zope.component import queryMultiAdapter
 
 from ..interfaces import ICachingPolicy
 from ..interfaces import ICachingPolicyManager

@@ -20,11 +20,10 @@ from Acquisition import aq_base
 from App.Common import rfc1123_date
 from DateTime import DateTime
 from OFS.Folder import Folder
+from Products.StandardCacheManagers import RAMCacheManager
 from zope.component import getSiteManager
 from zope.component.hooks import setHooks
 from zope.testing.cleanup import cleanUp
-
-from Products.StandardCacheManagers import RAMCacheManager
 
 from ..FSMetadata import FSMetadata
 from ..interfaces import ICachingPolicyManager

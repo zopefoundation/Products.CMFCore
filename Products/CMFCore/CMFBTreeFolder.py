@@ -15,9 +15,8 @@
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from zope.component.factory import Factory
-
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
+from zope.component.factory import Factory
 
 from .permissions import AddPortalFolders
 from .PortalFolder import PortalFolder

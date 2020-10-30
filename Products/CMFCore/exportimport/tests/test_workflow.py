@@ -16,13 +16,12 @@
 import unittest
 
 from OFS.Folder import Folder
-from zope.component import getSiteManager
-from zope.interface import implementer
-
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
 from Products.GenericSetup.tests.common import DummyImportContext
+from zope.component import getSiteManager
+from zope.interface import implementer
 
 from ...interfaces import IConfigurableWorkflowTool
 from ...interfaces import IWorkflowTool
