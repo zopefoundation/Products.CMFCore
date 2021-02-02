@@ -7,7 +7,6 @@ from setuptools import setup
 NAME = 'CMFCore'
 
 here = os.path.abspath(os.path.dirname(__file__))
-package = os.path.join(here, 'Products', NAME)
 
 
 def _package_doc(name):
@@ -22,13 +21,14 @@ README = _boundary.join([
 ])
 
 setup(name='Products.%s' % NAME,
-      version='2.4.9.dev0',
+      version='2.5.0.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
-          'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Production/Stable',
           'Framework :: Plone',
           'Framework :: Zope :: 4',
+          'Framework :: Zope :: 5',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python :: 2',
@@ -38,6 +38,7 @@ setup(name='Products.%s' % NAME,
           'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: 3.9',
           'Programming Language :: Python :: Implementation :: CPython',
           'Topic :: Software Development :: Libraries :: Application Frameworks',  # noqa
       ],
@@ -52,7 +53,8 @@ setup(name='Products.%s' % NAME,
           'Sources': 'https://github.com/zopefoundation/Products.CMFCore',
       },
       license='ZPL 2.1',
-      packages=find_packages(),
+      packages=find_packages('src'),
+      package_dir={'': 'src'},
       include_package_data=True,
       namespace_packages=['Products'],
       zip_safe=False,
