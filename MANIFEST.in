@@ -1,22 +1,28 @@
-include *.txt
+# Generated from:
+# https://github.com/zopefoundation/meta/tree/master/config/zope-product
 include *.rst
+include *.txt
+include buildout.cfg
+include tox.ini
 
-exclude MANIFEST.in
-
-recursive-include Products *.dtml
-recursive-include Products *.gif
-recursive-include Products *.js
-recursive-include Products *.metadata
-recursive-include Products *.props
-recursive-include Products *.pt
-recursive-include Products *.py
-recursive-include Products *.rst
-recursive-include Products *.stx
-recursive-include Products *.swf
-recursive-include Products *.txt
-recursive-include Products *.zcml
-recursive-include Products *.zpt
-recursive-include Products *.zsql
+recursive-include docs *.bat
 recursive-include docs *.py
 recursive-include docs *.rst
+recursive-include docs *.txt
 recursive-include docs Makefile
+
+recursive-include src *.pt
+recursive-include src *.py
+recursive-include src *.rst
+recursive-include src *.txt
+recursive-include src *.zcml
+include buildout4.cfg
+recursive-include src *.dtml
+recursive-include src *.gif
+recursive-include src *.js
+recursive-include src *.metadata
+recursive-include src *.props
+recursive-include src *.stx
+recursive-include src *.swf
+recursive-include src *.zpt
+recursive-include src *.zsql

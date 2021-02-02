@@ -1,6 +1,0 @@
-[run]
-branch = True
-source = Products.CMFCore
-
-[report]
-precision = 2
