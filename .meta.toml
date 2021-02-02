@@ -1,0 +1,37 @@
+# Generated from:
+# https://github.com/zopefoundation/meta/tree/master/config/zope-product
+[meta]
+template = "zope-product"
+commit-id = "dff30b80f91fd1b4e68f2a73f7de721d9559de17"
+
+[python]
+with-appveyor = false
+with-pypy = false
+with-legacy-python = true
+with-docs = true
+with-sphinx-doctests = false
+
+[coverage]
+fail-under = 85
+
+[isort]
+known_first_party = "Products.GenericSetup, Products.MailHost, Products.BTreeFolder2, Products.PluginIndexes, Products.ZCatalog, Products.PythonScripts, Products.ZSQLMethods, Products.ZCTextIndex, Products.StandardCacheManagers"
+
+[check-manifest]
+additional-ignores = [
+    "docs/_build/html/_sources/api/*",
+    ]
+
+[manifest]
+additional-rules = [
+    "include buildout4.cfg",
+    "recursive-include src *.dtml",
+    "recursive-include src *.gif",
+    "recursive-include src *.js",
+    "recursive-include src *.metadata",
+    "recursive-include src *.props",
+    "recursive-include src *.stx",
+    "recursive-include src *.swf",
+    "recursive-include src *.zpt",
+    "recursive-include src *.zsql",
+    ]
