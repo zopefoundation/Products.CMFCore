@@ -1,12 +1,14 @@
 Products.CMFCore Changelog
 ==========================
 
-2.4.9 (unreleased)
+2.5.0 (unreleased)
 ------------------
 
 - Update configuration for version 5 of ``isort``.
 
 - Fix deprecation warnings occurring on Zope 5.
+
+- Added support for Python 3.9.
 
 
 2.4.8 (2020-07-03)
