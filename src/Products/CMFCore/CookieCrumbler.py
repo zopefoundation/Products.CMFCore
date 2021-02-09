@@ -281,7 +281,11 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         if request is None:
             request = getRequest()  # BBB for Membershiptool
         reponse = request['RESPONSE']
-        ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
+        if six.PY2:
+            ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
+        else:
+            ac = base64.encodebytes(
+                ('%s:%s' % (name, pw)).encode()).rstrip().decode()
         method = self.getCookieMethod('setAuthCookie',
                                       self.defaultSetAuthCookie)
         method(reponse, self.auth_cookie, quote(ac))
