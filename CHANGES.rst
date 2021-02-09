@@ -1,6 +1,12 @@
 Products.CMFCore Changelog
 ==========================
 
+2.5.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 2.5.0 (2021-02-09)
 ------------------
 
