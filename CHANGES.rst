@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.5.0 (unreleased)
+2.5.0 (2021-02-09)
 ------------------
 
 - Update configuration for version 5 of ``isort``.
