@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.com/zopefoundation/Products.CMFCore.svg?branch=master
-        :target: https://travis-ci.com/zopefoundation/Products.CMFCore
+.. image:: https://github.com/zopefoundation/Products.CMFCore/actions/workflows/tests.yml/badge.svg
+        :target: https://github.com/zopefoundation/Products.CMFCore/actions/workflows/tests.yml
 
 .. image:: https://coveralls.io/repos/github/zopefoundation/Products.CMFCore/badge.svg
         :target: https://coveralls.io/github/zopefoundation/Products.CMFCore
