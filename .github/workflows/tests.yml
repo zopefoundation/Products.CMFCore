@@ -3,7 +3,9 @@
 name: tests
 
 on:
-  [push, pull_request]:
+  push:
+    branches: [ '**' ]
+  pull_request:
     branches: [ '**' ]
   schedule:
     - cron: '0 12 * * 0'  # run once a week on Sunday
