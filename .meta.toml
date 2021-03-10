@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/config/zope-product
 [meta]
 template = "zope-product"
-commit-id = "dff30b80f91fd1b4e68f2a73f7de721d9559de17"
+commit-id = "3bf40f37c17ed4698155034581f702ff32586f1e"
 
 [python]
 with-appveyor = false
@@ -35,3 +35,6 @@ additional-rules = [
     "recursive-include src *.zpt",
     "recursive-include src *.zsql",
     ]
+
+[tox]
+use-flake8 = true
