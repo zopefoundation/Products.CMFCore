@@ -116,20 +116,25 @@ class SkinnableTests(RequestTest):
         stool = SkinsTool()
         getSiteManager().registerUtility(stool, ISkinsTool)
 
-        # by default, no special sinname is set
+        # by default, no special skin name is set
         self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), None)
 
-        # provide a value
+        # provide a value, but at this point that skin is not registered
         self.REQUEST['portal_skin'] = 'skinA'
+        self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), None)
+
+        # After registering the skin name ``skinA`` it will be found
+        stool.addSkinSelection('skinA', ('foo', 'bar'))
         self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), 'skinA')
 
-        # test for non-existend http header variable
+        # test for non-existent http header variable
         # see https://dev.plone.org/ticket/10071
         stool.request_varname = 'HTTP_SKIN_NAME'
         self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), None)
 
         # test for http header variable
         self.REQUEST['HTTP_SKIN_NAME'] = 'skinB'
+        stool.addSkinSelection('skinB', ('bar, foo'))
         self.assertEqual(som.getSkinNameFromRequest(self.REQUEST), 'skinB')
 
 

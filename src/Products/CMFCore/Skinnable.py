@@ -105,7 +105,7 @@ class SkinnableObjectManager(ObjectManager):
         stool = queryUtility(ISkinsTool)
         if stool is not None:
             name = REQUEST.get(stool.getRequestVarname(), None)
-            if name == '':
+            if not name or name not in stool.getSkinSelections():
                 return None
             return name
 
