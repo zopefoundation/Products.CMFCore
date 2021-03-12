@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.5.1 (unreleased)
 ------------------
 
+- Make sure ``getSkinNameFromRequest`` only returns sane values
+  (`#109 <https://github.com/zopefoundation/Products.CMFCore/issues/109>`_)
+
 - Fix Python 3 incompatibility in ``CookieCrumbler.credentialsChanged``
 
 
