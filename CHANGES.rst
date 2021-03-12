@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.5.1 (unreleased)
+2.5.1 (2021-03-12)
 ------------------
 
 - Make sure ``getSkinNameFromRequest`` only returns sane values
