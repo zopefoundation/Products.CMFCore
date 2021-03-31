@@ -191,6 +191,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
             # If we have a conditional get, set status 304 and return
             # no content
             if _checkConditionalGET(self, extra_context):
+                _setCacheHeaders(self, extra_context)
                 return ''
 
         result = FSPageTemplate.inheritedAttribute('pt_render')(

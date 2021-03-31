@@ -140,6 +140,8 @@ class FSReSTMethodTests(TransactionalTest, FSReSTMaker):
 
         self.assertEqual(data, '')
         self.assertEqual(self.RESPONSE.getStatus(), 304)
+        self.assertNotEqual(self.RESPONSE.getHeader('x-cache-headers-set-by'),
+                            None)
 
 
 ADD_ZPT = 'Add page templates'

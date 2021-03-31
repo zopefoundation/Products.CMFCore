@@ -125,6 +125,8 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
 
         if client is not None:
             if _checkConditionalGET(self, kw):
+                # caching policy manager hook
+                _setCacheHeaders(self, {})
                 return ''
 
         if not self._cache_namespace_keys:

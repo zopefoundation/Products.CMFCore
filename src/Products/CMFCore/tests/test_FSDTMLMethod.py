@@ -113,6 +113,8 @@ class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
 
         self.assertEqual(data, '')
         self.assertEqual(self.RESPONSE.getStatus(), 304)
+        self.assertNotEqual(self.RESPONSE.getHeader('x-cache-headers-set-by'),
+                            None)
 
 
 class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
