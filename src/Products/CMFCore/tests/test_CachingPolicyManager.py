@@ -708,6 +708,7 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
         request.environ['HTTP_AUTHORIZATION'] = self.auth_header
         doc1()
         self.assertEqual(response.getStatus(), 304)
+        self.assertNotEqual(response.getHeader('cache-control'), None)
         self._cleanup()
 
         # ETag handling is not enabled in the policy for doc1, so asking for
@@ -767,6 +768,7 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
         request.environ['HTTP_AUTHORIZATION'] = self.auth_header
         doc2()
         self.assertEqual(response.getStatus(), 304)
+        self.assertNotEqual(response.getHeader('cache-control'), None)
         self._cleanup()
 
         # We specify an ETag and a modification time condition that dooes not
@@ -795,6 +797,7 @@ class CachingPolicyManager304Tests(SecurityTest, FSDVTest):
         request.environ['HTTP_AUTHORIZATION'] = self.auth_header
         doc2()
         self.assertEqual(response.getStatus(), 304)
+        self.assertNotEqual(response.getHeader('cache-control'), None)
         self._cleanup()
 
     def testConditionalGETDisabled(self):

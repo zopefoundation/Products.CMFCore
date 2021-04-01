@@ -111,6 +111,14 @@ class FSImage(FSObject):
         self._updateFromFS()
         view = _ViewEmulator().__of__(self)
 
+        # There are 2 Cache Managers which can be in play....
+        # need to decide which to use to determine where the cache headers
+        # are decided on.
+        if self.ZCacheable_getManager() is not None:
+            self.ZCacheable_set(None)
+        else:
+            _setCacheHeaders(view, extra_context={})
+
         # If we have a conditional get, set status 304 and return
         # no content
         if _checkConditionalGET(view, extra_context={}):
@@ -127,14 +135,6 @@ class FSImage(FSObject):
         data = self._readFile(0)
         data_len = len(data)
         RESPONSE.setHeader('Content-Length', data_len)
-
-        # There are 2 Cache Managers which can be in play....
-        # need to decide which to use to determine where the cache headers
-        # are decided on.
-        if self.ZCacheable_getManager() is not None:
-            self.ZCacheable_set(None)
-        else:
-            _setCacheHeaders(view, extra_context={})
         return data
 
     def _setOldCacheHeaders(self):

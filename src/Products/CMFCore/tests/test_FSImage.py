@@ -132,6 +132,8 @@ class FSImageTests(TransactionalTest, FSDVTest):
         data = file.index_html(self.REQUEST, self.RESPONSE)
         self.assertEqual(len(data), 0)
         self.assertEqual(self.RESPONSE.getStatus(), 304)
+        self.assertNotEqual(self.RESPONSE.getHeader('x-cache-headers-set-by'),
+                            None)
 
     def test_index_html_200_with_cpm(self):
         # should behave the same as without cpm installed

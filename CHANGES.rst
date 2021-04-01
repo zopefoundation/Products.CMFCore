@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.5.2 (unreleased)
 ------------------
 
+- Set Cache-Control header in '304 Not Modified' response case as well.
+  (`#111 <https://github.com/zopefoundation/Products.CMFCore/issues/111>`_)
 
 2.5.1 (2021-03-12)
 ------------------

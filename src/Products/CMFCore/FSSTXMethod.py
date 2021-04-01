@@ -156,10 +156,10 @@ class FSSTXMethod(FSObject):
             RESPONSE.setHeader('Content-Type', 'text/html')
 
         view = _ViewEmulator(self.getId()).__of__(self)
+        _setCacheHeaders(view, extra_context={})
+
         if _checkConditionalGET(view, extra_context={}):
             return ''
-
-        _setCacheHeaders(view, extra_context={})
 
         return self._render(REQUEST, RESPONSE, **kw)
 
