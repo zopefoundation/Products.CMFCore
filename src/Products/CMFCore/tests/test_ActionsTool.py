@@ -159,21 +159,28 @@ class ActionsToolSecurityTests(SecurityTest):
                                 visible=1),)
 
         newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
-        self.assertEqual(tool.listFilteredActionsFor(self.app.foo),
-                         {'workflow': [],
-                          'user': [],
-                          'object': [],
-                          'folder': [{'id': 'folderContents',
-                                      'url': 'http://nohost/folder_contents',
-                                      'icon': 'http://nohost/icon.gif',
-                                      'title': 'Folder contents',
-                                      'description': '',
-                                      'visible': True,
-                                      'available': True,
-                                      'allowed': True,
-                                      'category': 'folder',
-                                      'link_target': '_top'}],
-                          'global': []})
+        expected = {'workflow': [],
+                    'user': [],
+                    'object': [],
+                    'folder': [{'id': 'folderContents',
+                                'url': 'http://nohost/folder_contents',
+                                'icon': 'http://nohost/icon.gif',
+                                'title': 'Folder contents',
+                                'description': '',
+                                'visible': True,
+                                'available': True,
+                                'allowed': True,
+                                'category': 'folder',
+                                'link_target': '_top'}],
+                    'global': []}
+        with warnings.catch_warnings():
+            # Ignore the warning - anything that uses the attribute
+            # ``_actions`` will raise it. The DeprecationWarning mentions the
+            # goal of removing old-style actions, but this is too hard and may
+            # never happen.
+            warnings.simplefilter('ignore')
+            self.assertEqual(tool.listFilteredActionsFor(self.app.foo),
+                             expected)
 
 
 def test_suite():
