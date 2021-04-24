@@ -15,6 +15,7 @@
 
 import os
 import unittest
+import warnings
 
 import six
 
@@ -119,7 +120,12 @@ class FSFileTests(TransactionalTest, FSDVTest):
         if six.PY2:
             self.assertEqual(str(file), real_data)
         else:
-            self.assertRaises(UnicodeDecodeError, file.__str__)
+            # Calling ``__str__`` on non-text binary data in Python 3
+            # will raise a DeprecationWarning because it makes no sense.
+            # Ignore it here, the warning is irrelevant for the test.
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore')
+                self.assertRaises(UnicodeDecodeError, file.__str__)
 
     def test_index_html(self):
         path, ref = self._extractFile('test_file.swf')

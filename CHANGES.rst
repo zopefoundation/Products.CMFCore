@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.5.2 (unreleased)
 ------------------
 
+- Fix several DeprecationWarnings during unit tests
+  (`#112 <https://github.com/zopefoundation/Products.CMFCore/issues/112>`_)
+
 - Set Cache-Control header in '304 Not Modified' response case as well.
   (`#111 <https://github.com/zopefoundation/Products.CMFCore/issues/111>`_)
 
