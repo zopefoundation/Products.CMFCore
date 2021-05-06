@@ -15,7 +15,6 @@
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.Common import rfc1123_date
 from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
 from OFS.Cache import ZCM_MANAGERS
@@ -29,6 +28,7 @@ from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.Expressions import getEngine
 from zope.component import getUtility
 from zope.container.interfaces import IObjectMovedEvent
+from zope.datetime import rfc1123_date
 from zope.interface import implementer
 
 from .Expression import Expression

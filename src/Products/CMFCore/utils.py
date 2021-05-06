@@ -37,7 +37,6 @@ from Acquisition import aq_get
 from Acquisition import aq_parent
 from Acquisition.interfaces import IAcquirer
 from App.Common import package_home
-from App.Common import rfc1123_date
 from App.ImageFile import ImageFile
 from App.special_dtml import HTMLFile
 from DateTime.DateTime import DateTime
@@ -50,6 +49,7 @@ from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
 from zope.component import queryUtility
+from zope.datetime import rfc1123_date
 from zope.dottedname.resolve import resolve as resolve_dotted_name
 from zope.i18nmessageid import MessageFactory
 from zope.interface.interfaces import ComponentLookupError

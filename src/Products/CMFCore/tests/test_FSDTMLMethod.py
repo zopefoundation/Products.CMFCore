@@ -17,11 +17,11 @@ import unittest
 from os.path import join as path_join
 
 from Acquisition import aq_base
-from App.Common import rfc1123_date
 from DateTime import DateTime
 from OFS.Folder import Folder
 from zope.component import getSiteManager
 from zope.component.hooks import setHooks
+from zope.datetime import rfc1123_date
 from zope.testing.cleanup import cleanUp
 
 from Products.StandardCacheManagers import RAMCacheManager

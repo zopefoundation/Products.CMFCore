@@ -18,9 +18,9 @@ import re
 import unittest
 
 from Acquisition import aq_base
-from App.Common import rfc1123_date
 from DateTime import DateTime
 from zope.component import getSiteManager
+from zope.datetime import rfc1123_date
 from zope.testing.cleanup import cleanUp
 
 from ..interfaces import ICachingPolicyManager

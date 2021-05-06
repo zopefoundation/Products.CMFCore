@@ -71,6 +71,7 @@ setup(name='Products.%s' % NAME,
           'Products.StandardCacheManagers',
           'Products.ZCatalog >= 4.0a2',  # Products.ZCTextIndex lives there now
           'six',
+          'zope.datetime',
           'zope.interface >= 3.8',
           ],
       extras_require={

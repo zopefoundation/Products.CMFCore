@@ -19,10 +19,10 @@ from os.path import join as path_join
 
 from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import Implicit
-from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
 from OFS.Cache import Cacheable
 from zope.component import getSiteManager
+from zope.datetime import rfc1123_date
 from zope.interface.verify import verifyClass
 
 from ..FSDTMLMethod import FSDTMLMethod

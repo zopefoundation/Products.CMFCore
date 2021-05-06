@@ -17,7 +17,6 @@ from Acquisition import Implicit
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from App.Common import rfc1123_date
 from OFS.event import ObjectWillBeAddedEvent
 from OFS.event import ObjectWillBeRemovedEvent
 from OFS.interfaces import IObjectManager
@@ -26,6 +25,7 @@ from zope.component.factory import Factory
 from zope.container.contained import ObjectAddedEvent
 from zope.container.contained import ObjectRemovedEvent
 from zope.container.contained import notifyContainerModified
+from zope.datetime import rfc1123_date
 from zope.event import notify
 from zope.interface import implementer
 

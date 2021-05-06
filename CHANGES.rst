@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 2.5.2 (unreleased)
 ------------------
 
+- Avoid DeprecationWarning for changed import location for ``rfc1123_date``
+
 - Fix several DeprecationWarnings during unit tests
   (`#112 <https://github.com/zopefoundation/Products.CMFCore/issues/112>`_)
 

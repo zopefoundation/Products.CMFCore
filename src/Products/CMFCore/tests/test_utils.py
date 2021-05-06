@@ -16,9 +16,9 @@
 import unittest
 
 from Acquisition import Implicit
-from App.Common import rfc1123_date
 from DateTime.DateTime import DateTime
 from Testing.makerequest import makerequest
+from zope.datetime import rfc1123_date
 
 from .base.testcase import SecurityTest
 
