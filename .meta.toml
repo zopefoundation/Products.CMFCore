@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/config/zope-product
 [meta]
 template = "zope-product"
-commit-id = "1535afe197234079e35fd6ba2088cef13301e19d"
+commit-id = "f8468b0bc5c92479b3043372d89cf5852176015d"
 
 [python]
 with-appveyor = false
@@ -30,8 +30,12 @@ additional-rules = [
     "recursive-include src *.js",
     "recursive-include src *.metadata",
     "recursive-include src *.props",
+    "recursive-include src *.pt",
+    "recursive-include src *.rst",
     "recursive-include src *.stx",
     "recursive-include src *.swf",
+    "recursive-include src *.txt",
+    "recursive-include src *.zcml",
     "recursive-include src *.zpt",
     "recursive-include src *.zsql",
     ]
