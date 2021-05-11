@@ -10,18 +10,18 @@ recursive-include docs *.rst
 recursive-include docs *.txt
 recursive-include docs Makefile
 
-recursive-include src *.pt
 recursive-include src *.py
-recursive-include src *.rst
-recursive-include src *.txt
-recursive-include src *.zcml
 include buildout4.cfg
 recursive-include src *.dtml
 recursive-include src *.gif
 recursive-include src *.js
 recursive-include src *.metadata
 recursive-include src *.props
+recursive-include src *.pt
+recursive-include src *.rst
 recursive-include src *.stx
 recursive-include src *.swf
+recursive-include src *.txt
+recursive-include src *.zcml
 recursive-include src *.zpt
 recursive-include src *.zsql
