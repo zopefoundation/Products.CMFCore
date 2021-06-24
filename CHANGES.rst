@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.5.2 (unreleased)
+2.5.2 (2021-06-24)
 ------------------
 
 - Avoid DeprecationWarning for changed import location for ``rfc1123_date``
