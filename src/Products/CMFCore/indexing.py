@@ -40,7 +40,8 @@ class PortalCatalogProcessor(object):
 
     def index(self, obj, attributes=None):
         catalog = getToolByName(obj, 'portal_catalog', None)
-        catalog._indexObject(obj)
+        if catalog is not None:
+            catalog._indexObject(obj)
 
     def reindex(self, obj, attributes=None, update_metadata=1):
         catalog = getToolByName(obj, 'portal_catalog', None)
