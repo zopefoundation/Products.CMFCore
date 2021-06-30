@@ -4,7 +4,10 @@ Products.CMFCore Changelog
 2.5.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Do not break at startup when ``subscribers.zcml`` is included but no
+  ``portal_catalog`` object is in the database, e. g. when starting for the
+  first time.
+  (`#115 <https://github.com/zopefoundation/Products.CMFCore/pull/115>`_)
 
 
 2.5.2 (2021-06-24)
@@ -17,6 +20,7 @@ Products.CMFCore Changelog
 
 - Set Cache-Control header in '304 Not Modified' response case as well.
   (`#111 <https://github.com/zopefoundation/Products.CMFCore/issues/111>`_)
+
 
 2.5.1 (2021-03-12)
 ------------------
