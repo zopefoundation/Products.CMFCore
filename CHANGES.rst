@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.5.3 (unreleased)
+2.5.3 (2021-06-30)
 ------------------
 
 - Do not break at startup when ``subscribers.zcml`` is included but no
