@@ -107,7 +107,7 @@ class StructureFolderWalkingAdapter(object):
 
     def read_data_file(self, import_context, datafile, subdir):
         out = import_context.readDataFile(datafile, subdir)
-        if not out:
+        if out is None:
             return out
         return encode_if_needed(out, self._encoding)
 
