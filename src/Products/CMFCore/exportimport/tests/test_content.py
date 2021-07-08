@@ -612,8 +612,9 @@ class SiteStructureExporterTests(unittest.TestCase):
         importer(context)
         content = site.contentValues()
         self.assertEqual(len(content), len(FOLDER_IDS))
-        self.assertEqual(content[0]._was_put_as_read,
-                         KNOWN_DAV % ('Title', 'Description', 'Body'))
+        self.assertEqual(
+            content[0]._was_put_as_read,
+            (KNOWN_DAV % ('Title', 'Description', 'Body')).encode('UTF-8'))
 
     def test_import_site_with_dav_aware_folder_with_generic_file_data(self):
         from Products.GenericSetup.tests.test_content import \
