@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.5.4 (unreleased)
+2.5.4 (2021-07-29)
 ------------------
 
 - Fix code and tests when running on ``Products.GenericSetup >= 2.1.2``, thus
