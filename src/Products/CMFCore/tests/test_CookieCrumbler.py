@@ -257,6 +257,7 @@ class CookieCrumblerTests(unittest.TestCase):
 
 # compatibility
 try:
+    # Zope 4.8+/5.5+
     from ZPublisher.cookie import normalizeCookieParameterName
 except ImportError:
     def normalizeCookieParameterName(name):
