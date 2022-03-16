@@ -158,7 +158,8 @@ class CookieCrumblerTests(unittest.TestCase):
         resp = req.response
         self.assertTrue('__ac' in resp.cookies)
         self.assertEqual(resp.cookies['__ac']['value'], credentials)
-        self.assertEqual(resp.cookies['__ac']['path'], '/')
+        self.assertEqual(resp.cookies['__ac'][
+            normalizeCookieParameterName('path')], '/')
 
     def testCookieResume(self):
         # verify the cookie crumbler continues the session
@@ -252,6 +253,14 @@ class CookieCrumblerTests(unittest.TestCase):
 
         bt_removed = getattr(container, '__before_traverse__')
         self.assertEqual(len(bt_removed.items()), 0)
+
+
+# compatibility
+try:
+    from ZPublisher.cookie import normalizeCookieParameterName
+except ImportError:
+    def normalizeCookieParameterName(name):
+        return name
 
 
 def test_suite():
