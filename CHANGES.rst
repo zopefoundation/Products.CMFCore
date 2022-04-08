@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.5.5 (unreleased)
+2.6.0 (unreleased)
 ------------------
 
 - Fix cookie test failure
