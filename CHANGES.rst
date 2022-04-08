@@ -7,6 +7,7 @@ Products.CMFCore Changelog
 - Fix cookie test failure
   (`#120 <https://github.com/zopefoundation/Products.CMFCore/pull/120>`_).
 
+- Add support for Python 3.10.
 
 
 2.5.4 (2021-07-29)
