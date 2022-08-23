@@ -34,7 +34,7 @@ class FSMetadata(FSDVTest, MetadataChecker):
     def test_basicPermissions(self):
         # Test basic FS permissions
         # check it has a title
-        assert(self.ob.fake_skin.test6.title == 'Test object')
+        assert self.ob.fake_skin.test6.title == 'Test object'
         self._checkSettings(
             self.ob.fake_skin.test6,
             'View management screens',
@@ -47,7 +47,7 @@ class FSMetadata(FSDVTest, MetadataChecker):
     def test_basicPermissionsOnImage(self):
         # Test basic FS permissions on Image
         test_image = getattr(self.ob.fake_skin, 'test_image.gif')
-        assert(test_image.title == 'Test image')
+        assert test_image.title == 'Test image'
         self._checkSettings(
             test_image,
             'View management screens',
@@ -57,7 +57,7 @@ class FSMetadata(FSDVTest, MetadataChecker):
     def test_basicPermissionsOnFile(self):
         # Test basic FS permissions on File
         test_file = getattr(self.ob.fake_skin, 'test_file.swf')
-        assert(test_file.title == 'Test file')
+        assert test_file.title == 'Test file'
         self._checkSettings(
             test_file,
             'View management screens',
