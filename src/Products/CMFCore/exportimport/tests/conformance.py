@@ -44,7 +44,7 @@ class ConformsToICSVAware:
 
 
 class ConformsToIFilesystemExporter:
-    """ Mix-in for test cases whose target class implements IFilesystemExporter.
+    """Mix-in for test cases whose target class implements IFilesystemExporter.
     """
     def test_conforms_to_IFilesystemExporter(self):
         from zope.interface.verify import verifyClass
@@ -55,7 +55,7 @@ class ConformsToIFilesystemExporter:
 
 
 class ConformsToIFilesystemImporter:
-    """ Mix-in for test cases whose target class implements IFilesystemImporter.
+    """Mix-in for test cases whose target class implements IFilesystemImporter.
     """
     def test_conforms_to_IFilesystemImporter(self):
         from zope.interface.verify import verifyClass
