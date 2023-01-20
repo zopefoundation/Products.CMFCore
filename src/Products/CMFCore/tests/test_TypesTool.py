@@ -669,7 +669,7 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
         from zope.component import adapter
         from zope.component import provideHandler
         from zope.container.interfaces import IContainerModifiedEvent
-        from zope.container.interfaces import IObjectAddedEvent
+        from zope.lifecycleevent.interfaces import IObjectAddedEvent
         from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 
@@ -744,7 +744,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         from zope.component import adapter
         from zope.component import provideHandler
         from zope.container.interfaces import IContainerModifiedEvent
-        from zope.container.interfaces import IObjectAddedEvent
+        from zope.lifecycleevent.interfaces import IObjectAddedEvent
         from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 

@@ -126,40 +126,28 @@ class _ContentTypeRegistrySetup(BaseRegistryTests):
 <object name="content_type_registry" meta_type="Content Type Registry"/>
 """
 
-    _WITH_POLICY_EXPORT = """\
+    _WITH_POLICY_EXPORT = f"""\
 <?xml version="1.0"  encoding="utf-8"?>
 <object name="content_type_registry" meta_type="Content Type Registry">
- <predicate name="{}" content_type_name="{}"
+ <predicate name="{MAJOR_MINOR_ID}" content_type_name="{MAJOR_MINOR_TYPENAME}"
     predicate_type="major_minor">
-  <argument value="{}"/>
-  <argument value="{}"/>
+  <argument value="{MAJOR}"/>
+  <argument value="{MINOR}"/>
  </predicate>
- <predicate name="{}" content_type_name="{}"
+ <predicate name="{EXTENSION_ID}" content_type_name="{EXTENSION_TYPENAME}"
     predicate_type="extension">
-  <argument value="{}"/>
+  <argument value="{EXTENSIONS}"/>
  </predicate>
- <predicate name="{}" content_type_name="{}"
+ <predicate name="{MIMETYPE_REGEX_ID}" content_type_name="{MIMETYPE_REGEX_TYPENAME}"
     predicate_type="mimetype_regex">
-  <argument value="{}"/>
+  <argument value="{MIMETYPE_REGEX}"/>
  </predicate>
- <predicate name="{}" content_type_name="{}"
+ <predicate name="{NAME_REGEX_ID}" content_type_name="{NAME_REGEX_TYPENAME}"
     predicate_type="name_regex">
-  <argument value="{}"/>
+  <argument value="{NAME_REGEX}"/>
  </predicate>
 </object>
-""".format(MAJOR_MINOR_ID,
-           MAJOR_MINOR_TYPENAME,
-           MAJOR,
-           MINOR,
-           EXTENSION_ID,
-           EXTENSION_TYPENAME,
-           EXTENSIONS,
-           MIMETYPE_REGEX_ID,
-           MIMETYPE_REGEX_TYPENAME,
-           MIMETYPE_REGEX,
-           NAME_REGEX_ID,
-           NAME_REGEX_TYPENAME,
-           NAME_REGEX)
+"""  # NOQA: E501 line too long
 
     def _initSite(self, mit_predikat=False):
         from ...ContentTypeRegistry import ContentTypeRegistry

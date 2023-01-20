@@ -75,7 +75,7 @@ class DummyWorkflow(Dummy):
     #   WorkflowDefinition interface
     #
     def getCatalogVariablesFor(self, ob):
-        return {'dummy': '{}: {}'.format(self.getId(), ob.getId())}
+        return {'dummy': f'{self.getId()}: {ob.getId()}'}
 
     def updateRoleMappingsFor(self, ob):
         pass

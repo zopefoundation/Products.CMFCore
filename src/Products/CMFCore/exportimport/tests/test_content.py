@@ -568,8 +568,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             context._files['structure/%s/.properties' % id] = (
                 _PROPERTIES_TEMPLATE % id)
 
-        _ROOT_OBJECTS = '\n'.join(['{},{}'.format(id, TEST_FOLDER)
-                                   for id in FOLDER_IDS])
+        _ROOT_OBJECTS = '\n'.join([f'{id},{TEST_FOLDER}' for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
         context._files['structure/.properties'] = (
@@ -596,7 +595,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             context._files['structure/%s/.properties' % id] = (
                 KNOWN_DAV % ('Title', 'Description', 'Body'))
 
-        _ROOT_OBJECTS = '\n'.join(['{},{}'.format(id, TEST_DAV_FOLDER)
+        _ROOT_OBJECTS = '\n'.join([f'{id},{TEST_DAV_FOLDER}'
                                   for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
@@ -626,7 +625,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             context._files['structure/%s/.properties' % id] = (
                 _PROPERTIES_TEMPLATE % ('Sub Folder Title',))
 
-        _ROOT_OBJECTS = '\n'.join(['{},{}'.format(id, TEST_DAV_FOLDER)
+        _ROOT_OBJECTS = '\n'.join([f'{id},{TEST_DAV_FOLDER}'
                                    for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
@@ -648,7 +647,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         context = DummyImportContext(site)
         # We want to add 'baz' to 'foo', without losing 'bar'
         context._files['structure/.objects'] = '\n'.join(
-            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
+            [f'{x},{TEST_INI_AWARE}' for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -772,7 +771,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         context = DummyImportContext(site)
         # defined structure => object deleted and recreated
         context._files['structure/.objects'] = '\n'.join(
-            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
+            [f'{x},{TEST_INI_AWARE}' for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -797,7 +796,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
-            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
+            [f'{x},{TEST_INI_AWARE}' for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -826,7 +825,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
-            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
+            [f'{x},{TEST_INI_AWARE}' for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -856,7 +855,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
-            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS[:-1]])
+            [f'{x},{TEST_INI_AWARE}' for x in ITEM_IDS[:-1]])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[

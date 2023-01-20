@@ -126,7 +126,7 @@ class DynamicType:
             icon = icon[len(portal_url)+1:]
             if not relative_to_portal:
                 # Relative to REQUEST['BASEPATH1']
-                icon = '{}/{}'.format(utool(relative=1), icon)
+                icon = f'{utool(relative=1)}/{icon}'
         try:
             utool.getPortalObject().unrestrictedTraverse(icon)
         except (AttributeError, KeyError):

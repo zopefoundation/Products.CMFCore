@@ -70,8 +70,9 @@ class FSPropertiesObject(FSObject, PropertyManager):
             else:
                 fpath = tuple(folder_path.split('/'))
             folder = self.restrictedTraverse(fpath)
-            RESPONSE.redirect('{}/{}/manage_propertiesForm'.format(
-                folder.absolute_url(), self.getId()))
+            RESPONSE.redirect(
+                f'{folder.absolute_url()}/{self.getId()}/manage_propertiesForm'
+                )
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""

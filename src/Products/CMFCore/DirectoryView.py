@@ -385,7 +385,7 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
                 subpath = subob.getId()
             title = getattr(subob, 'title', None)
             if title:
-                name = '{} ({})'.format(subpath, title)
+                name = f'{subpath} ({title})'
             else:
                 name = subpath
             rval.append((subpath, name))

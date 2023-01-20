@@ -140,12 +140,10 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             folder._setObject(id, obj)
 
             if RESPONSE is not None:
-                RESPONSE.redirect('{}/{}/manage_main'.format(
-                    folder.absolute_url(), id))
+                RESPONSE.redirect(f'{folder.absolute_url()}/{id}/manage_main')
 
         if RESPONSE is not None:
-            RESPONSE.redirect('{}/{}/manage_main'.format(
-                folder.absolute_url(), id))
+            RESPONSE.redirect(f'{folder.absolute_url()}/{id}/manage_main')
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""

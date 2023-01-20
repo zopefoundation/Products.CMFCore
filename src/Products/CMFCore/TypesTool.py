@@ -807,9 +807,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         ob = info.constructInstance(container, id, *args, **kw)
 
         if RESPONSE is not None:
-            immediate_url = '{}/{}'.format(
-                ob.absolute_url(), info.immediate_view)
-            RESPONSE.redirect(immediate_url)
+            RESPONSE.redirect(f'{ob.absolute_url()}/{info.immediate_view}')
 
         return ob.getId()
 

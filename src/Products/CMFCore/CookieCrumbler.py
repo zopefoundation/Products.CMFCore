@@ -28,9 +28,9 @@ from OFS.interfaces import IObjectWillBeMovedEvent
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from zope.component import getUtility
-from zope.container.interfaces import IObjectMovedEvent
 from zope.globalrequest import getRequest
 from zope.interface import implementer
+from zope.lifecycleevent.interfaces import IObjectMovedEvent
 from ZPublisher import BeforeTraverse
 from ZPublisher.HTTPRequest import HTTPRequest
 
@@ -205,7 +205,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 name = req[self.name_cookie]
                 pw = req[self.pw_cookie]
                 ac = base64.encodebytes(
-                    ('{}:{}'.format(name, pw)).encode()).rstrip().decode()
+                    (f'{name}:{pw}').encode()).rstrip().decode()
                 self._setAuthHeader(ac, req, resp)
                 if req.get(self.persist_cookie, 0):
                     # Persist the user name (but not the pw or session)
@@ -274,7 +274,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
             request = getRequest()  # BBB for Membershiptool
         reponse = request['RESPONSE']
         ac = base64.encodebytes(
-            ('{}:{}'.format(name, pw)).encode()).rstrip().decode()
+            (f'{name}:{pw}').encode()).rstrip().decode()
         method = self.getCookieMethod('setAuthCookie',
                                       self.defaultSetAuthCookie)
         method(reponse, self.auth_cookie, quote(ac))

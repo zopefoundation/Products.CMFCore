@@ -27,9 +27,9 @@ from Persistence import PersistentMapping
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.Expressions import getEngine
 from zope.component import getUtility
-from zope.container.interfaces import IObjectMovedEvent
 from zope.datetime import rfc1123_date
 from zope.interface import implementer
+from zope.lifecycleevent.interfaces import IObjectMovedEvent
 
 from .Expression import Expression
 from .interfaces import ICachingPolicy
@@ -661,8 +661,7 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         self._removePolicy(policy_id)
         if REQUEST is not None:
             pth = '/manage_cachingPolicies?manage_tabs_message=Policy+removed.'
-            REQUEST['RESPONSE'].redirect('{}{}'.format(
-                self.absolute_url(), pth))
+            REQUEST['RESPONSE'].redirect(f'{self.absolute_url()}{pth}')
 
     #
     #   Policy manipulation methods.
@@ -887,4 +886,4 @@ def manage_addCachingPolicyManager(self, REQUEST=None):
 
     if REQUEST is not None:
         pth = '/manage_main?manage_tabs_message=Caching+Policy+Manager+added.'
-        REQUEST['RESPONSE'].redirect('{}{}'.format(self.absolute_url(), pth))
+        REQUEST['RESPONSE'].redirect(f'{self.absolute_url()}{pth}')

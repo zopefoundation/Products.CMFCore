@@ -121,7 +121,7 @@ class StructureFolderWalkingAdapter:
         wf_csv_writer = writer(wf_stream)
 
         if not root:
-            subdir = '{}/{}'.format(subdir, self.context.getId())
+            subdir = f'{subdir}/{self.context.getId()}'
 
         try:
             wft = self.context.portal_workflow
@@ -189,7 +189,7 @@ class StructureFolderWalkingAdapter:
         """
         context = self.context
         if not root:
-            subdir = '{}/{}'.format(subdir, context.getId())
+            subdir = f'{subdir}/{context.getId()}'
 
         objects = self.read_data_file(import_context, '.objects', subdir)
         workflow_states = self.read_data_file(import_context,
@@ -277,7 +277,7 @@ class StructureFolderWalkingAdapter:
     def _makeInstance(self, id, portal_type, subdir, import_context):
 
         context = self.context
-        subdir = '{}/{}'.format(subdir, id)
+        subdir = f'{subdir}/{id}'
         properties = self.read_data_file(import_context, '.properties',
                                          subdir)
         tool = getUtility(ITypesTool)

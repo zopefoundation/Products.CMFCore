@@ -136,7 +136,7 @@ class FSDVTest(unittest.TestCase):
         if subpath != 'tests':
             # we have a temp dir in tests
             subpath = 'tests/%s' % subpath
-        reg_key = 'Products.CMFCore:{}/{}'.format(subpath, self._skinname)
+        reg_key = f'Products.CMFCore:{subpath}/{self._skinname}'
         _dirreg.registerDirectoryByKey(filepath, reg_key, ignore=ignore)
         if obj is not None:
             ob = obj.ob = DummyFolder()

@@ -162,7 +162,7 @@ class FSPythonScript(FSObject, Script):
     @security.protected(ViewManagementScreens)
     def PrincipiaSearchSource(self):
         """Support for searching - the document's contents are searched."""
-        return '{}\n{}'.format(self._params, self._body)
+        return f'{self._params}\n{self._body}'
 
     @security.protected(ViewManagementScreens)
     def params(self):

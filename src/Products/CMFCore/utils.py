@@ -613,7 +613,7 @@ class ToolInit:
             icon = None
         for tool in self.tools:
             tool.__factory_meta_type__ = self.meta_type
-            tool.icon = 'misc_/{}/{}'.format(self.product_name, icon)
+            tool.icon = f'misc_/{self.product_name}/{icon}'
 
 
 InitializeClass(ToolInit)
@@ -741,7 +741,7 @@ def registerIcon(klass, iconspec, _prefix=None):
     modname = klass.__module__
     pid = modname.split('.')[1]
     name = os_path.split(iconspec)[1]
-    klass.icon = 'misc_/{}/{}'.format(pid, name)
+    klass.icon = f'misc_/{pid}/{name}'
     icon = ImageFile(iconspec, _prefix)
     icon.__roles__ = None
     if not hasattr(misc_images, pid):

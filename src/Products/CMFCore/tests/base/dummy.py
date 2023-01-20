@@ -68,10 +68,10 @@ class DummyObject(Implicit):
         return parent
 
     def icon(self):
-        return '%s ICON' % self._id
+        return f'{self._id} ICON'
 
     def getIconURL(self):
-        return '%s ICON' % self._id
+        return f'{self._id} ICON'
 
     def getId(self):
         return self._id
@@ -207,7 +207,7 @@ class DummyFactoryDispatcher:
 
     def addFoo(self, id, *args, **kw):
         if getattr(self._folder, '_prefix', None):
-            id = '{}_{}'.format(self._folder._prefix, id)
+            id = f'{self._folder._prefix}_{id}'
         foo = DummyContent(id, *args, **kw)
         self._folder._setObject(id, foo, suppress_events=True)
         if getattr(self._folder, '_prefix', None):
