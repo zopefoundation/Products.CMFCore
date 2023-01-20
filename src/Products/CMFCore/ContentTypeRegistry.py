@@ -15,8 +15,7 @@
 
 import os
 import re
-
-from six.moves import urllib
+import urllib
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -382,7 +381,7 @@ class ContentTypeRegistry(SimpleItem):
         """
         self.updatePredicate(predicate_id, predicate, typeObjectName)
         pth = '/manage_predicates?manage_tabs_message=Predicate+updated.'
-        REQUEST['RESPONSE'].redirect('%s%s' % (self.absolute_url(), pth))
+        REQUEST['RESPONSE'].redirect('{}{}'.format(self.absolute_url(), pth))
 
     @security.protected(ManagePortal)
     def doMovePredicateUp(self, predicate_id, REQUEST):
@@ -420,7 +419,7 @@ class ContentTypeRegistry(SimpleItem):
         """
         self.removePredicate(predicate_id)
         pth = '/manage_predicates?manage_tabs_message=Predicate+removed.'
-        REQUEST['RESPONSE'].redirect('%s%s' % (self.absolute_url(), pth))
+        REQUEST['RESPONSE'].redirect('{}{}'.format(self.absolute_url(), pth))
 
     security.declareProtected(ManagePortal,  # NOQA: flake8: D001
                               'manage_testRegistry')

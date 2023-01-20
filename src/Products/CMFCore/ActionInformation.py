@@ -13,8 +13,7 @@
 """ Information about customizable actions.
 """
 
-import six
-from six.moves import UserDict
+from collections import UserDict
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -347,7 +346,7 @@ class ActionInformation(SimpleItem):
         if category is not _unchanged:
             self.category = category
         if condition is not _unchanged:
-            if condition and isinstance(condition, six.string_types):
+            if condition and isinstance(condition, str):
                 condition = Expression(condition)
             self.condition = condition
         if permissions is not _unchanged:
@@ -359,11 +358,11 @@ class ActionInformation(SimpleItem):
         if visible is not _unchanged:
             self.visible = visible
         if action is not _unchanged:
-            if action and isinstance(action, six.string_types):
+            if action and isinstance(action, str):
                 action = Expression(action)
             self.setActionExpression(action)
         if icon_expr is not _unchanged:
-            if icon_expr and isinstance(icon_expr, six.string_types):
+            if icon_expr and isinstance(icon_expr, str):
                 icon_expr = Expression(icon_expr)
             self.setIconExpression(icon_expr)
         if link_target is not _unchanged:
@@ -417,7 +416,7 @@ class ActionInformation(SimpleItem):
         """
         action = self._getActionObject()
         expr = action and action.text or ''
-        if expr and isinstance(expr, six.string_types):
+        if expr and isinstance(expr, str):
             if not expr.startswith('string:') and \
                not expr.startswith('python:'):
                 expr = 'string:${object_url}/%s' % expr
@@ -426,7 +425,7 @@ class ActionInformation(SimpleItem):
 
     @security.private
     def setActionExpression(self, action):
-        if action and isinstance(action, six.string_types):
+        if action and isinstance(action, str):
             if not action.startswith('string:') and \
                not action.startswith('python:'):
                 action = 'string:${object_url}/%s' % action
@@ -445,7 +444,7 @@ class ActionInformation(SimpleItem):
         """
         icon_expr = self._getIconExpressionObject()
         expr = icon_expr and icon_expr.text or ''
-        if expr and isinstance(expr, six.string_types):
+        if expr and isinstance(expr, str):
             if not expr.startswith('string:') and \
                not expr.startswith('python:'):
                 expr = 'string:${object_url}/%s' % expr
@@ -454,7 +453,7 @@ class ActionInformation(SimpleItem):
 
     @security.private
     def setIconExpression(self, icon_expr):
-        if icon_expr and isinstance(icon_expr, six.string_types):
+        if icon_expr and isinstance(icon_expr, str):
             if not icon_expr.startswith('string:') and \
                not icon_expr.startswith('python:'):
                 icon_expr = 'string:${object_url}/%s' % icon_expr
@@ -580,7 +579,7 @@ def getOAI(context, object=None):
     return info
 
 
-class oai(object):
+class oai:
 
     # Provided for backward compatibility
     # Provides information that may be needed when constructing the list of

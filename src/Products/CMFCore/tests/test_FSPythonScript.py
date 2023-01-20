@@ -16,11 +16,10 @@
 import os
 import unittest
 import warnings
+from _thread import start_new_thread
 from os.path import join
 from sys import exc_info
 from time import sleep
-
-from six.moves._thread import start_new_thread
 
 from Acquisition import aq_base
 from DateTime.DateTime import DateTime
@@ -306,9 +305,10 @@ class FSPythonScriptWarningsTests(SecurityTest, FSPSMaker):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(FSPythonScriptTests),
-        unittest.makeSuite(FSPythonScriptCustomizationTests),
-        unittest.makeSuite(CustomizedPythonScriptTests),
-        unittest.makeSuite(FSPythonScriptWarningsTests),
-        ))
+        loadTestsFromTestCase(FSPythonScriptTests),
+        loadTestsFromTestCase(FSPythonScriptCustomizationTests),
+        loadTestsFromTestCase(CustomizedPythonScriptTests),
+        loadTestsFromTestCase(FSPythonScriptWarningsTests),
+    ))

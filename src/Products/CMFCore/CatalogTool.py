@@ -76,7 +76,7 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 
 
 @implementer(IIndexableObjectWrapper, IIndexableObject)
-class IndexableObjectWrapper(object):
+class IndexableObjectWrapper:
 
     adapts(IContentish, ICatalogTool)
     __providedBy__ = IndexableObjectSpecification()

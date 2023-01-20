@@ -15,8 +15,6 @@
 
 import os
 
-from six import get_unbound_function
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
@@ -90,9 +88,9 @@ class FSImage(FSObject):
 
     # The following is mainly taken from OFS/Image.py
 
-    __str__ = get_unbound_function(Image.__str__)
+    __str__ = Image.__str__
 
-    _image_tag = get_unbound_function(Image.tag)
+    _image_tag = Image.tag
 
     @security.protected(View)
     def tag(self, *args, **kw):

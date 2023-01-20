@@ -53,8 +53,8 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
         """ Check if isLocked via webDav.
         """
         if self.wl_isLocked():
-            raise ResourceLockedError(_(u'This resource is locked via '
-                                        u'webDAV.'))
+            raise ResourceLockedError(_('This resource is locked via '
+                                        'webDAV.'))
         return 0
 
     #
@@ -66,7 +66,7 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
 
         Should be overriden by portal objects.
         """
-        return '%s %s' % (self.Title(), self.Description())
+        return '{} {}'.format(self.Title(), self.Description())
 
     def __call__(self):
         """ Invokes the default view.

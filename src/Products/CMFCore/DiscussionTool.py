@@ -13,7 +13,7 @@
 """ Basic portal discussion access tool.
 """
 
-from six.moves import urllib
+import urllib
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo

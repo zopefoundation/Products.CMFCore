@@ -75,7 +75,7 @@ class DummyWorkflow(Dummy):
     #   WorkflowDefinition interface
     #
     def getCatalogVariablesFor(self, ob):
-        return {'dummy': '%s: %s' % (self.getId(), ob.getId())}
+        return {'dummy': '{}: {}'.format(self.getId(), ob.getId())}
 
     def updateRoleMappingsFor(self, ob):
         pass
@@ -448,4 +448,4 @@ class WorkflowToolTests(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(WorkflowToolTests),))
+        unittest.defaultTestLoader.loadTestsFromTestCase(WorkflowToolTests),))

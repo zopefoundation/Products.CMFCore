@@ -137,6 +137,6 @@ class importMailHostTests(_MailHostSetup):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(exportMailHostTests),
-        unittest.makeSuite(importMailHostTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(exportMailHostTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(importMailHostTests),
         ))

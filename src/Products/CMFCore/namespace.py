@@ -26,7 +26,7 @@ from .interfaces import ITypesTool
 
 
 @implementer(ITraversable)
-class AddViewTraverser(object):
+class AddViewTraverser:
 
     """Add view traverser.
     """

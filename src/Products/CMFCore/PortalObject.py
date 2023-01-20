@@ -52,7 +52,7 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         )
 
     def __init__(self, id, title='', description=''):
-        super(PortalObjectBase, self).__init__(id, title, description)
+        super().__init__(id, title, description)
         components = PersistentComponents('++etc++site')
         components.__parent__ = self
         self.setSiteManager(components)
@@ -70,8 +70,7 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
             pass
         self.setupCurrentSkin(REQUEST)
 
-        super(PortalObjectBase,
-              self).__before_publishing_traverse__(arg1, arg2)
+        super().__before_publishing_traverse__(arg1, arg2)
 
 
 InitializeClass(PortalObjectBase)

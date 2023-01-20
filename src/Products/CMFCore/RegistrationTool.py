@@ -141,8 +141,8 @@ class RegistrationTool(UniqueObject, SimpleItem):
         # detected before the fact so that a cleaner message can be printed.
 
         if not self.isMemberIdAllowed(id):
-            raise ValueError(_(u'The login name you selected is already in '
-                               u'use or is not valid. Please choose another.'))
+            raise ValueError(_('The login name you selected is already in '
+                               'use or is not valid. Please choose another.'))
 
         failMessage = self.testPasswordValidity(password)
         if failMessage is not None:

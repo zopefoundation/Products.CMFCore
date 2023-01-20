@@ -72,5 +72,5 @@ class FSMetadata(FSDVTest, MetadataChecker):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(FSMetadata),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSMetadata),
         ))

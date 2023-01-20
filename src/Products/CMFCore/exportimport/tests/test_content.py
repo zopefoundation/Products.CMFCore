@@ -14,11 +14,9 @@
 """
 
 import unittest
+from configparser import ConfigParser
 from csv import reader
-
-from six import StringIO
-from six import binary_type
-from six.moves.configparser import ConfigParser
+from io import StringIO
 
 from zope.component import getSiteManager
 from zope.testing.cleanup import cleanUp
@@ -32,7 +30,7 @@ from .test_workflow import DummyWorkflowTool
 
 
 def safe_bytes(value, encoding='utf8'):
-    if isinstance(value, binary_type):
+    if isinstance(value, bytes):
         return value
     return value.encode(encoding)
 
@@ -94,10 +92,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
     def _get_config_parser(self, text):
         parser = ConfigParser()
-        try:
-            parser.read_file(StringIO(text))
-        except AttributeError:  # Python 2
-            parser.readfp(StringIO(text))
+        parser.read_file(StringIO(text))
         return parser
 
     def tearDown(self):
@@ -200,8 +195,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         site = _makeFolder('site', site_folder=True)
         site.title = 'AAA'
         site.description = 'DESCRIPTION'
-        ITEMS_TITLE = u'Actualit\xe9'
-        ITEMS_DESCRIPTION = u'Actualit\xe9 r\xe9centes'
+        ITEMS_TITLE = 'Actualit\xe9'
+        ITEMS_DESCRIPTION = 'Actualit\xe9 r\xe9centes'
         for id in ITEM_IDS:
             site._setObject(id, _makeINIAware(id))
             item = getattr(site, id)
@@ -324,8 +319,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         site = _makeFolder('site', site_folder=True)
         site.title = 'AAA'
         site.description = 'DESCRIPTION'
-        ITEMS_TITLE = u'Actualit\xe9'
-        ITEMS_DESCRIPTION = u'Actualit\xe9 r\xe9centes'
+        ITEMS_TITLE = 'Actualit\xe9'
+        ITEMS_DESCRIPTION = 'Actualit\xe9 r\xe9centes'
         for id in ITEM_IDS:
             site._setObject(id, _makeINIAware(id))
             item = getattr(site, id)
@@ -372,8 +367,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         site._setProperty('default_charset', 'iso-8859-1', 'string')
         site.title = 'AAA'
         site.description = 'DESCRIPTION'
-        ITEMS_TITLE = u'Actualit\xe9'
-        ITEMS_DESCRIPTION = u'Actualit\xe9 r\xe9centes'
+        ITEMS_TITLE = 'Actualit\xe9'
+        ITEMS_DESCRIPTION = 'Actualit\xe9 r\xe9centes'
         for id in ITEM_IDS:
             site._setObject(id, _makeINIAware(id))
             item = getattr(site, id)
@@ -573,7 +568,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             context._files['structure/%s/.properties' % id] = (
                 _PROPERTIES_TEMPLATE % id)
 
-        _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_FOLDER)
+        _ROOT_OBJECTS = '\n'.join(['{},{}'.format(id, TEST_FOLDER)
                                    for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
@@ -601,7 +596,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             context._files['structure/%s/.properties' % id] = (
                 KNOWN_DAV % ('Title', 'Description', 'Body'))
 
-        _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
+        _ROOT_OBJECTS = '\n'.join(['{},{}'.format(id, TEST_DAV_FOLDER)
                                   for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
@@ -631,7 +626,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             context._files['structure/%s/.properties' % id] = (
                 _PROPERTIES_TEMPLATE % ('Sub Folder Title',))
 
-        _ROOT_OBJECTS = '\n'.join(['%s,%s' % (id, TEST_DAV_FOLDER)
+        _ROOT_OBJECTS = '\n'.join(['{},{}'.format(id, TEST_DAV_FOLDER)
                                    for id in FOLDER_IDS])
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
@@ -653,7 +648,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         context = DummyImportContext(site)
         # We want to add 'baz' to 'foo', without losing 'bar'
         context._files['structure/.objects'] = '\n'.join(
-                            ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
+            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -683,9 +678,9 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
-                            ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
+            [f'{x},{TEST_INI_AWARE}' for x in ITEM_IDS])
         context._files['structure/.workflow_states'] = '\n'.join(
-                            ['%s,foo_workflow,draft' % (x) for x in ITEM_IDS])
+            ['%s,foo_workflow,draft' % (x) for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -706,7 +701,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         # We want to add 'baz' to 'foo', without losing 'bar'
-        correct = '\n'.join(['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
+        correct = '\n'.join([f'{x},{TEST_INI_AWARE}' for x in ITEM_IDS])
         broken = correct + '\n\n'
         context._files['structure/.objects'] = broken
         for index in range(len(ITEM_IDS)):
@@ -777,7 +772,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         context = DummyImportContext(site)
         # defined structure => object deleted and recreated
         context._files['structure/.objects'] = '\n'.join(
-            ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
+            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -802,7 +797,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
-            ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
+            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -831,7 +826,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
-            ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS])
+            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -861,7 +856,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context = DummyImportContext(site)
         context._files['structure/.objects'] = '\n'.join(
-            ['%s,%s' % (x, TEST_INI_AWARE) for x in ITEM_IDS[:-1]])
+            ['{},{}'.format(x, TEST_INI_AWARE) for x in ITEM_IDS[:-1]])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
@@ -1121,9 +1116,3 @@ def _makeFolder(id, site_folder=False):
         getSiteManager().registerUtility(ttool, ITypesTool)
 
     return folder
-
-
-def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SiteStructureExporterTests))
-    return suite

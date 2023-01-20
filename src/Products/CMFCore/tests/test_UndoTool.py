@@ -18,7 +18,7 @@ import unittest
 from zope.interface.verify import verifyClass
 
 
-class DummyFolder(object):
+class DummyFolder:
 
     def undoable_transactions(self, first_transaction=None,
                               last_transaction=None,
@@ -50,5 +50,5 @@ class UndoToolTests(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(UndoToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(UndoToolTests),
         ))

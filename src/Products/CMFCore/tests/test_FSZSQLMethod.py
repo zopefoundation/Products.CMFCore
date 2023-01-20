@@ -129,6 +129,7 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(FSZSQLMethodTests),
-        unittest.makeSuite(FSZSQLMethodCustomizationTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSZSQLMethodTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            FSZSQLMethodCustomizationTests),
         ))

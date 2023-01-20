@@ -306,9 +306,10 @@ class DebugModeTests(WritableFSDVTest):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DirectoryViewPathTests))
-    suite.addTest(unittest.makeSuite(DirectoryViewTests))
-    suite.addTest(unittest.makeSuite(DirectoryViewIgnoreTests))
-    suite.addTest(unittest.makeSuite(DirectoryViewFolderTests))
-    suite.addTest(unittest.makeSuite(DebugModeTests))
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
+    suite.addTest(loadTestsFromTestCase(DirectoryViewPathTests))
+    suite.addTest(loadTestsFromTestCase(DirectoryViewTests))
+    suite.addTest(loadTestsFromTestCase(DirectoryViewIgnoreTests))
+    suite.addTest(loadTestsFromTestCase(DirectoryViewFolderTests))
+    suite.addTest(loadTestsFromTestCase(DebugModeTests))
     return suite

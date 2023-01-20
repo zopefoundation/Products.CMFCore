@@ -661,7 +661,8 @@ class CachingPolicyManager(SimpleItem, CacheManager):
         self._removePolicy(policy_id)
         if REQUEST is not None:
             pth = '/manage_cachingPolicies?manage_tabs_message=Policy+removed.'
-            REQUEST['RESPONSE'].redirect('%s%s' % (self.absolute_url(), pth))
+            REQUEST['RESPONSE'].redirect('{}{}'.format(
+                self.absolute_url(), pth))
 
     #
     #   Policy manipulation methods.
@@ -886,4 +887,4 @@ def manage_addCachingPolicyManager(self, REQUEST=None):
 
     if REQUEST is not None:
         pth = '/manage_main?manage_tabs_message=Caching+Policy+Manager+added.'
-        REQUEST['RESPONSE'].redirect('%s%s' % (self.absolute_url(), pth))
+        REQUEST['RESPONSE'].redirect('{}{}'.format(self.absolute_url(), pth))

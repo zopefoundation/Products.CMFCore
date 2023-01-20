@@ -129,37 +129,37 @@ class _ContentTypeRegistrySetup(BaseRegistryTests):
     _WITH_POLICY_EXPORT = """\
 <?xml version="1.0"  encoding="utf-8"?>
 <object name="content_type_registry" meta_type="Content Type Registry">
- <predicate name="%s" content_type_name="%s"
+ <predicate name="{}" content_type_name="{}"
     predicate_type="major_minor">
-  <argument value="%s"/>
-  <argument value="%s"/>
+  <argument value="{}"/>
+  <argument value="{}"/>
  </predicate>
- <predicate name="%s" content_type_name="%s"
+ <predicate name="{}" content_type_name="{}"
     predicate_type="extension">
-  <argument value="%s"/>
+  <argument value="{}"/>
  </predicate>
- <predicate name="%s" content_type_name="%s"
+ <predicate name="{}" content_type_name="{}"
     predicate_type="mimetype_regex">
-  <argument value="%s"/>
+  <argument value="{}"/>
  </predicate>
- <predicate name="%s" content_type_name="%s"
+ <predicate name="{}" content_type_name="{}"
     predicate_type="name_regex">
-  <argument value="%s"/>
+  <argument value="{}"/>
  </predicate>
 </object>
-""" % (MAJOR_MINOR_ID,
-       MAJOR_MINOR_TYPENAME,
-       MAJOR,
-       MINOR,
-       EXTENSION_ID,
-       EXTENSION_TYPENAME,
-       EXTENSIONS,
-       MIMETYPE_REGEX_ID,
-       MIMETYPE_REGEX_TYPENAME,
-       MIMETYPE_REGEX,
-       NAME_REGEX_ID,
-       NAME_REGEX_TYPENAME,
-       NAME_REGEX)
+""".format(MAJOR_MINOR_ID,
+           MAJOR_MINOR_TYPENAME,
+           MAJOR,
+           MINOR,
+           EXTENSION_ID,
+           EXTENSION_TYPENAME,
+           EXTENSIONS,
+           MIMETYPE_REGEX_ID,
+           MIMETYPE_REGEX_TYPENAME,
+           MIMETYPE_REGEX,
+           NAME_REGEX_ID,
+           NAME_REGEX_TYPENAME,
+           NAME_REGEX)
 
     def _initSite(self, mit_predikat=False):
         from ...ContentTypeRegistry import ContentTypeRegistry
@@ -284,8 +284,9 @@ class importContentTypeRegistryTests(_ContentTypeRegistrySetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(ContentTypeRegistryXMLAdapterTests),
-        unittest.makeSuite(exportContentTypeRegistryTests),
-        unittest.makeSuite(importContentTypeRegistryTests),
-        ))
+        loadTestsFromTestCase(ContentTypeRegistryXMLAdapterTests),
+        loadTestsFromTestCase(exportContentTypeRegistryTests),
+        loadTestsFromTestCase(importContentTypeRegistryTests),
+    ))

@@ -83,7 +83,7 @@ class DynamicType:
             return ti.getActionInfo(action_chain, self, check_visibility,
                                     check_condition)
         else:
-            msg = 'Action "%s" not available for %s' % (
+            msg = 'Action "{}" not available for {}'.format(
                         action_chain, '/'.join(self.getPhysicalPath()))
             raise ValueError(msg)
 
@@ -126,7 +126,7 @@ class DynamicType:
             icon = icon[len(portal_url)+1:]
             if not relative_to_portal:
                 # Relative to REQUEST['BASEPATH1']
-                icon = '%s/%s' % (utool(relative=1), icon)
+                icon = '{}/{}'.format(utool(relative=1), icon)
         try:
             utool.getPortalObject().unrestrictedTraverse(icon)
         except (AttributeError, KeyError):

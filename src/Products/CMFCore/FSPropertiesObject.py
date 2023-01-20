@@ -70,7 +70,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
             else:
                 fpath = tuple(folder_path.split('/'))
             folder = self.restrictedTraverse(fpath)
-            RESPONSE.redirect('%s/%s/manage_propertiesForm' % (
+            RESPONSE.redirect('{}/{}/manage_propertiesForm'.format(
                 folder.absolute_url(), self.getId()))
 
     def _createZODBClone(self):
@@ -93,7 +93,7 @@ class FSPropertiesObject(FSObject, PropertyManager):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
+        file = open(self._filepath)  # not 'rb', as this is a text file!
         try:
             lines = file.readlines()
         finally:

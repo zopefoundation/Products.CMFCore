@@ -19,13 +19,8 @@ from AccessControl import Unauthorized as AccessControl_Unauthorized
 from OFS.CopySupport import CopyError
 from zExceptions import BadRequest
 from zExceptions import NotFound
+from zExceptions import ResourceLockedError
 from zExceptions import Unauthorized as zExceptions_Unauthorized
-
-
-try:
-    from zExceptions import ResourceLockedError
-except ImportError:
-    from webdav.Lockable import ResourceLockedError
 
 
 security = ModuleSecurityInfo('Products.CMFCore.exceptions')

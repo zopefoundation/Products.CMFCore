@@ -16,8 +16,6 @@
 import logging
 from warnings import warn
 
-import six
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -568,7 +566,7 @@ class FactoryTypeInformation(TypeInformation):
                 obj._setPortalTypeName(self.getId())
             notify(ObjectCreatedEvent(obj))
             rval = container._setObject(id, obj)
-            newid = isinstance(rval, six.string_types) and rval or id
+            newid = isinstance(rval, str) and rval or id
             obj = container._getOb(newid)
 
         return obj
@@ -737,7 +735,7 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
             an object, rather than a string, attempt to look up
             the appropriate type info using its portal_type.
         """
-        if not isinstance(contentType, six.string_types):
+        if not isinstance(contentType, str):
             if hasattr(aq_base(contentType), 'getPortalTypeName'):
                 contentType = contentType.getPortalTypeName()
                 if contentType is None:
@@ -809,8 +807,8 @@ class TypesTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         ob = info.constructInstance(container, id, *args, **kw)
 
         if RESPONSE is not None:
-            immediate_url = '%s/%s' % (ob.absolute_url(),
-                                       info.immediate_view)
+            immediate_url = '{}/{}'.format(
+                ob.absolute_url(), info.immediate_view)
             RESPONSE.redirect(immediate_url)
 
         return ob.getId()

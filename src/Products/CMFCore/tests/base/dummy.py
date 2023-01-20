@@ -207,7 +207,7 @@ class DummyFactoryDispatcher:
 
     def addFoo(self, id, *args, **kw):
         if getattr(self._folder, '_prefix', None):
-            id = '%s_%s' % (self._folder._prefix, id)
+            id = '{}_{}'.format(self._folder._prefix, id)
         foo = DummyContent(id, *args, **kw)
         self._folder._setObject(id, foo, suppress_events=True)
         if getattr(self._folder, '_prefix', None):

@@ -177,6 +177,7 @@ class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(FSDTMLMethodTests),
-        unittest.makeSuite(FSDTMLMethodCustomizationTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSDTMLMethodTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            FSDTMLMethodCustomizationTests),
         ))

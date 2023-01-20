@@ -16,14 +16,13 @@
 import base64
 import re
 import sys
+from _thread import allocate_lock
 from copy import deepcopy
 from os import path as os_path
 from os.path import abspath
 from warnings import warn
 
 import pkg_resources
-import six
-from six.moves._thread import allocate_lock
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
@@ -187,7 +186,7 @@ def tuplize(valueName, value):
         return value
     if isinstance(value, list):
         return tuple(value)
-    if isinstance(value, six.string_types):
+    if isinstance(value, str):
         return tuple(value.split())
     raise ValueError('%s of unsupported type' % valueName)
 
@@ -203,7 +202,7 @@ def _getAuthenticatedUser(self):
 
 @security.private
 def _checkPermission(permission, obj):
-    if not isinstance(permission, six.string_types):
+    if not isinstance(permission, str):
         permission = permission.decode()
     return getSecurityManager().checkPermission(permission, obj)
 
@@ -289,7 +288,7 @@ def _modifyPermissionMappings(ob, map):
     perm_info = _ac_inherited_permissions(ob, 1)
     for name, settings in map.items():
         cur_roles = rolesForPermissionOn(name, ob)
-        if isinstance(cur_roles, six.string_types):
+        if isinstance(cur_roles, str):
             cur_roles = [cur_roles]
         else:
             cur_roles = list(cur_roles)
@@ -614,7 +613,7 @@ class ToolInit:
             icon = None
         for tool in self.tools:
             tool.__factory_meta_type__ = self.meta_type
-            tool.icon = 'misc_/%s/%s' % (self.product_name, icon)
+            tool.icon = 'misc_/{}/{}'.format(self.product_name, icon)
 
 
 InitializeClass(ToolInit)
@@ -742,7 +741,7 @@ def registerIcon(klass, iconspec, _prefix=None):
     modname = klass.__module__
     pid = modname.split('.')[1]
     name = os_path.split(iconspec)[1]
-    klass.icon = 'misc_/%s/%s' % (pid, name)
+    klass.icon = 'misc_/{}/{}'.format(pid, name)
     icon = ImageFile(iconspec, _prefix)
     icon.__roles__ = None
     if not hasattr(misc_images, pid):
@@ -903,16 +902,10 @@ class SimpleRecord:
 
 
 def base64_encode(text):
-    # Helper method to avoid deprecation warning under Python 3
-    if six.PY2:
-        return base64.encodestring(text).rstrip()
     return base64.encodebytes(text).rstrip()
 
 
 def base64_decode(text):
-    # Helper method to avoid deprecation warning under Python 3
-    if six.PY2:
-        return base64.decodestring(text)
     return base64.decodebytes(text)
 
 

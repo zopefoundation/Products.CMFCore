@@ -15,8 +15,6 @@
 
 import unittest
 
-import six
-
 from zope.component import getSiteManager
 from zope.interface import implementer
 
@@ -57,7 +55,7 @@ class DummyContent(OriginalDummyContent):
         if opaqueItem is None:
             self.opaqueItem = 'noncallable'
             self.opaqueItemsId = 'opaqueItem'
-        elif isinstance(opaqueItem, six.string_types):
+        elif isinstance(opaqueItem, str):
             Hooks(self, opaqueItem)
             self.opaqueItemsId = opaqueItem
         else:
@@ -271,5 +269,6 @@ class ManageBeforeAfterTests(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(ManageBeforeAfterTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            ManageBeforeAfterTests),
         ))

@@ -64,7 +64,3 @@ class URLToolTests(unittest.TestCase):
                          ('buz', 'qux.html'))
         self.assertEqual(url_tool.getRelativeContentURL(obj), 'buz/qux.html')
         self.assertEqual(url_tool.getRelativeUrl(obj), 'buz/qux.html')
-
-
-def test_suite():
-    return unittest.TestSuite((unittest.makeSuite(URLToolTests)))

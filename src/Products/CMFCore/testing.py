@@ -33,10 +33,7 @@ from .utils import HAS_ZSERVER
 class ConformsToFolder:
 
     def test_conforms_to_IWritelock(self):
-        try:
-            from OFS.interfaces import IWriteLock
-        except ImportError:
-            from webdav.interfaces import IWriteLock
+        from OFS.interfaces import IWriteLock
         verifyClass(IWriteLock, self._getTargetClass())
 
     def test_conforms_to_IDynamicType(self):
@@ -89,7 +86,7 @@ class ConformsToContent:
 
 
 @implementer(IUserPreferredLanguages)
-class BrowserLanguages(object):
+class BrowserLanguages:
 
     adapts(IHTTPRequest)
 

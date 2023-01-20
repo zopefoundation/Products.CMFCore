@@ -290,6 +290,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(FSSTXMethodTests),
-        unittest.makeSuite(FSSTXMethodCustomizationTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSSTXMethodTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            FSSTXMethodCustomizationTests),
         ))

@@ -14,10 +14,8 @@
 """
 
 import base64
-
-import six
-from six.moves.urllib.parse import quote
-from six.moves.urllib.parse import unquote
+from urllib.parse import quote
+from urllib.parse import unquote
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permissions import view_management_screens
@@ -206,11 +204,8 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 attempt = ATTEMPT_LOGIN
                 name = req[self.name_cookie]
                 pw = req[self.pw_cookie]
-                if six.PY2:
-                    ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
-                else:
-                    ac = base64.encodebytes(
-                        ('%s:%s' % (name, pw)).encode()).rstrip().decode()
+                ac = base64.encodebytes(
+                    ('{}:{}'.format(name, pw)).encode()).rstrip().decode()
                 self._setAuthHeader(ac, req, resp)
                 if req.get(self.persist_cookie, 0):
                     # Persist the user name (but not the pw or session)
@@ -234,10 +229,7 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
                 ac = unquote(req[self.auth_cookie])
                 if ac and ac != 'deleted':
                     try:
-                        if six.PY2:
-                            base64.decodestring(ac)
-                        else:
-                            base64.decodebytes(ac.encode())
+                        base64.decodebytes(ac.encode())
                     except Exception:
                         # Not a valid auth header.
                         pass
@@ -281,11 +273,8 @@ class CookieCrumbler(UniqueObject, PropertyManager, SimpleItem):
         if request is None:
             request = getRequest()  # BBB for Membershiptool
         reponse = request['RESPONSE']
-        if six.PY2:
-            ac = base64.encodestring('%s:%s' % (name, pw)).rstrip()
-        else:
-            ac = base64.encodebytes(
-                ('%s:%s' % (name, pw)).encode()).rstrip().decode()
+        ac = base64.encodebytes(
+            ('{}:{}'.format(name, pw)).encode()).rstrip().decode()
         method = self.getCookieMethod('setAuthCookie',
                                       self.defaultSetAuthCookie)
         method(reponse, self.auth_cookie, quote(ac))

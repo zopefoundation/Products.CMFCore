@@ -359,6 +359,7 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(CMFCatalogAwareTests),
-        unittest.makeSuite(CMFCatalogAware_CopySupport_Tests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(CMFCatalogAwareTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            CMFCatalogAware_CopySupport_Tests),
         ))

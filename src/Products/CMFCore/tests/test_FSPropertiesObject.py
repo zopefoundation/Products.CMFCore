@@ -115,5 +115,5 @@ class FSPOTests(SecurityTest, FSDVTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(FSPOTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSPOTests),
         ))

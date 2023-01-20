@@ -333,7 +333,9 @@ class MembershipToolMemberAreaTests(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(MembershipToolTests),
-        unittest.makeSuite(MembershipToolSecurityTests),
-        unittest.makeSuite(MembershipToolMemberAreaTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(MembershipToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            MembershipToolSecurityTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            MembershipToolMemberAreaTests),
         ))

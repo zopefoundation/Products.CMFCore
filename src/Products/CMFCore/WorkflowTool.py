@@ -15,8 +15,6 @@
 
 import sys
 
-import six
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -233,21 +231,21 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             wfs = ()
         if wf_id is None:
             if not wfs:
-                raise WorkflowException(_(u'No workflows found.'))
+                raise WorkflowException(_('No workflows found.'))
             found = 0
             for wf in wfs:
                 if wf.isActionSupported(ob, action, **kw):
                     found = 1
                     break
             if not found:
-                msg = _(u"No workflow provides the '${action_id}' action.",
+                msg = _("No workflow provides the '${action_id}' action.",
                         mapping={'action_id': action})
                 raise WorkflowException(msg)
         else:
             wf = self.getWorkflowById(wf_id)
             if wf is None:
                 raise WorkflowException(
-                    _(u'Requested workflow definition not found.'))
+                    _('Requested workflow definition not found.'))
         return self._invokeWithNotification(
             wfs, ob, action, wf.doActionFor, (ob, action) + args, kw)
 
@@ -259,7 +257,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             wfs = self.getWorkflowsFor(ob)
             if wfs is None:
                 if default is _marker:
-                    raise WorkflowException(_(u'No workflows found.'))
+                    raise WorkflowException(_('No workflows found.'))
                 else:
                     return default
             found = 0
@@ -269,7 +267,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
                     break
             if not found:
                 if default is _marker:
-                    msg = _(u"No workflow provides '${name}' information.",
+                    msg = _("No workflow provides '${name}' information.",
                             mapping={'name': name})
                     raise WorkflowException(msg)
                 else:
@@ -279,12 +277,12 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
             if wf is None:
                 if default is _marker:
                     raise WorkflowException(
-                        _(u'Requested workflow definition not found.'))
+                        _('Requested workflow definition not found.'))
                 else:
                     return default
         res = wf.getInfoFor(ob, name, default, *args, **kw)
         if res is _marker:
-            msg = _(u'Could not get info: ${name}', mapping={'name': name})
+            msg = _('Could not get info: ${name}', mapping={'name': name})
             raise WorkflowException(msg)
         return res
 
@@ -379,7 +377,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         if cbt is None:
             self._chains_by_type = cbt = PersistentMapping()
 
-        if isinstance(chain, six.string_types):
+        if isinstance(chain, str):
             if chain == '(Default)':
                 chain = None
             else:
@@ -416,7 +414,7 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
         """ Get the chain that applies to the given object.
         """
         cbt = self._chains_by_type
-        if isinstance(ob, six.string_types):
+        if isinstance(ob, str):
             pt = ob
         elif hasattr(aq_base(ob), 'getPortalTypeName'):
             pt = ob.getPortalTypeName()
@@ -615,7 +613,7 @@ registerToolInterface('portal_workflow', IWorkflowTool)
 
 
 @implementer(IWorkflowStatus)
-class DefaultWorkflowStatus(object):
+class DefaultWorkflowStatus:
     adapts(IWorkflowAware, IWorkflowDefinition)
 
     def __init__(self, context, workflow):

@@ -1301,9 +1301,11 @@ class OFSCacheTests(TransactionalTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(CachingPolicyTests),
-        unittest.makeSuite(CachingPolicyManagerTests),
-        unittest.makeSuite(CachingPolicyManager304Tests),
-        unittest.makeSuite(NestedTemplateTests),
-        unittest.makeSuite(OFSCacheTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(CachingPolicyTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            CachingPolicyManagerTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            CachingPolicyManager304Tests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(NestedTemplateTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(OFSCacheTests),
         ))

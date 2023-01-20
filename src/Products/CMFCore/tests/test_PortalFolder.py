@@ -1101,16 +1101,6 @@ class PortalFolderCopySupportTests(SecurityTest):
                                     ce_regex='Not Supported')
 
     def test_move_cant_create_target_metatype_not_allowed(self):
-
-        #
-        #   This test can't succeed on Zope's earlier than 2.7.3 because
-        #   of the DWIM'y behavior of 'guarded_getattr', which tries to
-        #   filter acquired-but-inaccessible objects, rather than raising
-        #   Unauthorized.
-        #
-        #   If you are running with such a Zope, this test will error out
-        #   with an AttributeError (instead of the expected Unauthorized).
-        #
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
@@ -1264,10 +1254,11 @@ class PortalFolderCopySupportTests(SecurityTest):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(PortalFolderFactoryTests),
-        unittest.makeSuite(PortalFolderTests),
-        unittest.makeSuite(PortalFolderSecurityTests),
-        unittest.makeSuite(PortalFolderMoveTests),
-        unittest.makeSuite(ContentFilterTests),
-        unittest.makeSuite(PortalFolderCopySupportTests)))
+        loadTestsFromTestCase(PortalFolderFactoryTests),
+        loadTestsFromTestCase(PortalFolderTests),
+        loadTestsFromTestCase(PortalFolderSecurityTests),
+        loadTestsFromTestCase(PortalFolderMoveTests),
+        loadTestsFromTestCase(ContentFilterTests),
+        loadTestsFromTestCase(PortalFolderCopySupportTests)))

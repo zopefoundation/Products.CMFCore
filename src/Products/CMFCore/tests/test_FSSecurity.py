@@ -24,7 +24,7 @@ from .base.testcase import LogInterceptor
 from .base.testcase import WritableFSDVTest
 
 
-class MetadataChecker(object):
+class MetadataChecker:
 
     def _checkSettings(self, object, permissionname, acquire=0, roles=[]):
         # check the roles and acquire settings for a permission on an
@@ -188,6 +188,8 @@ class DebugModeTests(WritableFSDVTest, MetadataChecker):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(FSSecurityTests))
-    suite.addTest(unittest.makeSuite(DebugModeTests))
+    suite.addTest(
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSSecurityTests))
+    suite.addTest(
+        unittest.defaultTestLoader.loadTestsFromTestCase(DebugModeTests))
     return suite

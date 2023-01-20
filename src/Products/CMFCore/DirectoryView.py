@@ -63,7 +63,7 @@ def _filtered_listdir(path, ignore):
 class _walker:
     def __init__(self, ignore):
         # make a dict for faster lookup
-        self.ignore = dict([(x, None) for x in ignore])
+        self.ignore = {x: None for x in ignore}
 
     def __call__(self, dirlist, dirname, names):
         # filter names inplace, so filtered directories don't get visited
@@ -146,8 +146,8 @@ class DirectoryInformation:
         """
         types = {}
         try:
-            f = open(os.path.join(self._filepath, '.objects'), 'rt')
-        except IOError:
+            f = open(os.path.join(self._filepath, '.objects'))
+        except OSError:
             pass
         else:
             lines = f.readlines()
@@ -385,7 +385,7 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
                 subpath = subob.getId()
             title = getattr(subob, 'title', None)
             if title:
-                name = '%s (%s)' % (subpath, title)
+                name = '{} ({})'.format(subpath, title)
             else:
                 name = subpath
             rval.append((subpath, name))

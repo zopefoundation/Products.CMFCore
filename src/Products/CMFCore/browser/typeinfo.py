@@ -33,7 +33,7 @@ class FactoryTypeInformationAddView(AddWithPresettingsViewBase):
 
     klass = FactoryTypeInformation
 
-    description = u'A type information object defines a portal type.'
+    description = 'A type information object defines a portal type.'
 
     def getProfileInfos(self):
         profiles = []

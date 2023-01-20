@@ -15,12 +15,10 @@
 
 import itertools
 import operator
+from configparser import ConfigParser
 from csv import reader
 from csv import writer
-
-import six
-from six import StringIO
-from six.moves.configparser import ConfigParser
+from io import StringIO
 
 from DateTime import DateTime
 from zope.component import getUtility
@@ -47,14 +45,10 @@ def importSiteStructure(context):
 
 
 def encode_if_needed(text, encoding):
-    if six.PY2:
-        if isinstance(text, six.text_type):
-            text = text.encode(encoding)
-    else:
-        if not isinstance(text, six.text_type):
-            text = text.decode(encoding)
-        # no need to encode;
-        # let's avoid double encoding in case of encoded string
+    if not isinstance(text, str):
+        text = text.decode(encoding)
+    # no need to encode;
+    # let's avoid double encoding in case of encoded string
     return text
 
 
@@ -73,7 +67,7 @@ class FolderishDAVAwareFileAdapter(DAVAwareFileAdapter):
 #   Filesystem export/import adapters
 #
 @implementer(IFilesystemExporter, IFilesystemImporter)
-class StructureFolderWalkingAdapter(object):
+class StructureFolderWalkingAdapter:
     """ Tree-walking exporter for "folderish" types.
 
     Folderish instances are mapped to directories within the 'structure'
@@ -127,7 +121,7 @@ class StructureFolderWalkingAdapter(object):
         wf_csv_writer = writer(wf_stream)
 
         if not root:
-            subdir = '%s/%s' % (subdir, self.context.getId())
+            subdir = '{}/{}'.format(subdir, self.context.getId())
 
         try:
             wft = self.context.portal_workflow
@@ -195,7 +189,7 @@ class StructureFolderWalkingAdapter(object):
         """
         context = self.context
         if not root:
-            subdir = '%s/%s' % (subdir, context.getId())
+            subdir = '{}/{}'.format(subdir, context.getId())
 
         objects = self.read_data_file(import_context, '.objects', subdir)
         workflow_states = self.read_data_file(import_context,
@@ -209,7 +203,7 @@ class StructureFolderWalkingAdapter(object):
 
         object_rowiter = reader(object_stream, dialect)
         ours = [_f for _f in tuple(object_rowiter) if _f]
-        our_ids = set([item[0] for item in ours])
+        our_ids = {item[0] for item in ours}
 
         prior = set(context.contentIds())
 
@@ -283,7 +277,7 @@ class StructureFolderWalkingAdapter(object):
     def _makeInstance(self, id, portal_type, subdir, import_context):
 
         context = self.context
-        subdir = '%s/%s' % (subdir, id)
+        subdir = '{}/{}'.format(subdir, id)
         properties = self.read_data_file(import_context, '.properties',
                                          subdir)
         tool = getUtility(ITypesTool)
@@ -310,10 +304,7 @@ class StructureFolderWalkingAdapter(object):
             stream = StringIO('\n'.join(lines))
             parser = ConfigParser(defaults={'title': '',
                                             'description': 'NONE'})
-            try:
-                parser.read_file(stream)
-            except AttributeError:  # Python 2
-                parser.readfp(stream)
+            parser.read_file(stream)
 
             title = parser.get('DEFAULT', 'title')
             description = parser.get('DEFAULT', 'description')

@@ -133,5 +133,6 @@ class TestContentCopyPaste(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(PortalContentTests),
-        unittest.makeSuite(TestContentCopyPaste)))
+        unittest.defaultTestLoader.loadTestsFromTestCase(PortalContentTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(TestContentCopyPaste),
+    ))

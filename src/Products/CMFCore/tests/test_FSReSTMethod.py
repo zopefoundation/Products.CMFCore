@@ -231,6 +231,7 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(FSReSTMethodTests),
-        unittest.makeSuite(FSReSTMethodCustomizationTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSReSTMethodTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            FSReSTMethodCustomizationTests),
         ))
