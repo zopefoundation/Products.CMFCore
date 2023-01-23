@@ -230,7 +230,7 @@ class CoreUtilsSecurityTests(SecurityTest):
     def test_mergedLocalRolesOnFunctions(self):
         from ..utils import _mergedLocalRoles
 
-        class Dummy(object):
+        class Dummy:
             __ac_local_roles__ = {'a': 'b'}
 
             def render(self):
@@ -271,6 +271,7 @@ class CoreUtilsSecurityTests(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(CoreUtilsTests),
-        unittest.makeSuite(CoreUtilsSecurityTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(CoreUtilsTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            CoreUtilsSecurityTests),
         ))

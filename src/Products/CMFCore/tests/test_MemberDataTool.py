@@ -212,6 +212,6 @@ class MemberAdapterTests(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(MemberDataToolTests),
-        unittest.makeSuite(MemberAdapterTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(MemberDataToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(MemberAdapterTests),
         ))

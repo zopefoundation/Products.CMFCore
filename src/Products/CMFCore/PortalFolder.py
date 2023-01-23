@@ -16,9 +16,6 @@
 import marshal
 import re
 
-import six
-from six import get_unbound_function
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -152,7 +149,7 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
             # We'll modify it, work on a copy.
             filt = filt.copy()
         pt = filt.get('portal_type', [])
-        if isinstance(pt, six.string_types):
+        if isinstance(pt, str):
             pt = [pt]
         ttool = getUtility(ITypesTool)
         allowed_types = ttool.listContentTypes()
@@ -483,8 +480,7 @@ InitializeClass(PortalFolder)
 
 PortalFolderFactory = Factory(PortalFolder)
 
-manage_addPortalFolder = get_unbound_function(
-                            PortalFolder.manage_addPortalFolder)
+manage_addPortalFolder = PortalFolder.manage_addPortalFolder
 
 
 class ContentFilter:
@@ -544,13 +540,13 @@ class ContentFilter:
                 self.description.append('Modified before: %s' % modified)
 
         if Type:
-            if isinstance(Type, six.string_types):
+            if isinstance(Type, str):
                 Type = [Type]
             self.predicates.append(lambda x, Type=Type: x.Type() in Type)
             self.description.append('Type: %s' % ', '.join(Type))
 
         if portal_type and portal_type is not self.MARKER:
-            if isinstance(portal_type, six.string_types):
+            if isinstance(portal_type, str):
                 portal_type = [portal_type]
             self.predicates.append(lambda x, pt=portal_type:
                                    hasattr(aq_base(x), 'getPortalTypeName')

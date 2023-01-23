@@ -590,6 +590,7 @@ class CatalogToolTests(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(IndexableObjectWrapperTests),
-        unittest.makeSuite(CatalogToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            IndexableObjectWrapperTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(CatalogToolTests),
         ))

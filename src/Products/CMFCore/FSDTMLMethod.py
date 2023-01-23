@@ -13,9 +13,6 @@
 """ Customizable DTML methods that come from the filesystem.
 """
 
-import six
-from six import get_unbound_function
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -83,7 +80,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
+        file = open(self._filepath)  # not 'rb', as this is a text file!
         try:
             data = file.read()
         finally:
@@ -151,7 +148,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
                     self.ZCacheable_set(result)
                 return result
 
-            if not isinstance(r, six.string_types) or RESPONSE is None:
+            if not isinstance(r, str) or RESPONSE is None:
                 if not self._cache_namespace_keys:
                     self.ZCacheable_set(r)
                 return r
@@ -164,10 +161,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
             if 'content_type' in self.__dict__:
                 c = self.content_type
             else:
-                if six.PY2:
-                    c, _e = guess_content_type(self.getId(), r)
-                else:
-                    c, _e = guess_content_type(self.getId(), r.encode())
+                c, _e = guess_content_type(self.getId(), r.encode())
 
             RESPONSE.setHeader('Content-Type', c)
         if RESPONSE is not None:
@@ -204,17 +198,16 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, HTML):
 
     if HAS_ZSERVER:
         security.declareProtected(FTPAccess, 'manage_FTPget')
-        manage_FTPget = get_unbound_function(DTMLMethod.manage_FTPget)
+        manage_FTPget = DTMLMethod.manage_FTPget
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = get_unbound_function(
-                                DTMLMethod.PrincipiaSearchSource)
+    PrincipiaSearchSource = DTMLMethod.PrincipiaSearchSource
 
     security.declareProtected(ViewManagementScreens, 'document_src')
-    document_src = get_unbound_function(DTMLMethod.document_src)
+    document_src = DTMLMethod.document_src
 
     security.declareProtected(ViewManagementScreens, 'manage_haveProxy')
-    manage_haveProxy = get_unbound_function(DTMLMethod.manage_haveProxy)
+    manage_haveProxy = DTMLMethod.manage_haveProxy
 
 
 InitializeClass(FSDTMLMethod)

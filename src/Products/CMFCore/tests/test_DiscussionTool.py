@@ -40,6 +40,6 @@ class OldDiscussableTests(unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(DiscussionToolTests),
-        unittest.makeSuite(OldDiscussableTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(DiscussionToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(OldDiscussableTests),
         ))

@@ -17,8 +17,6 @@ import codecs
 import os
 from warnings import warn
 
-import six
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
@@ -80,7 +78,7 @@ class FSFile(FSObject):
             # Last resort: Use the (imperfect) content type guessing
             # mechanism from OFS.Image, which ultimately uses the
             # Python mimetypes module.
-            if not isinstance(body, (six.string_types, six.binary_type)):
+            if not isinstance(body, ((str,), bytes)):
                 body = body.data
             content_type, enc = guess_content_type(
                 getattr(file, 'filename', id), body, content_type)
@@ -116,8 +114,6 @@ class FSFile(FSObject):
 
     def __str__(self):
         self._updateFromFS()
-        if six.PY2:
-            return str(self._readFile(0))
 
         data = self._readFile(0)
         ct = self.content_type

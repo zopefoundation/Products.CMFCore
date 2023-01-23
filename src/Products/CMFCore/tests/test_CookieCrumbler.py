@@ -14,9 +14,8 @@
 """
 
 import unittest
-
-from six import StringIO
-from six.moves.urllib.parse import quote
+from io import StringIO
+from urllib.parse import quote
 
 from zope.component import eventtesting
 from zope.interface.verify import verifyClass
@@ -257,14 +256,8 @@ class CookieCrumblerTests(unittest.TestCase):
 
 # compatibility
 try:
-    # Zope 4.8+/5.5+
+    # Zope 5.5+
     from ZPublisher.cookie import normalizeCookieParameterName
 except ImportError:
     def normalizeCookieParameterName(name):
         return name
-
-
-def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(CookieCrumblerTests),
-        ))

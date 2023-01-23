@@ -647,9 +647,10 @@ class importSkinsToolTests(_SkinsSetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(DirectoryViewAdapterTests),
-        unittest.makeSuite(SkinsToolXMLAdapterTests),
-        unittest.makeSuite(exportSkinsToolTests),
-        unittest.makeSuite(importSkinsToolTests),
-        ))
+        loadTestsFromTestCase(DirectoryViewAdapterTests),
+        loadTestsFromTestCase(SkinsToolXMLAdapterTests),
+        loadTestsFromTestCase(exportSkinsToolTests),
+        loadTestsFromTestCase(importSkinsToolTests),
+    ))

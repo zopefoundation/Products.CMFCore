@@ -15,9 +15,6 @@
 
 import re
 
-import six
-from six import get_unbound_function
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -89,15 +86,10 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         """Read the data from the filesystem.
         """
         if reparse:
-            if six.PY2:
-                # not 'rb', as this is a text file!
-                file = open(self._filepath, 'rU')
-            else:
-                file = open(self._filepath, 'br')
+            file = open(self._filepath, 'br')
             try:
                 data = file.read()
-                if not six.PY2:
-                    data = data.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
+                data = data.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
             finally:
                 file.close()
 
@@ -116,15 +108,12 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                     # Smells like xml
                     # set "content_type" from the XML declaration
                     if xml_info.group(1):
-                        if six.PY3:
-                            encoding = xml_info.group(1).decode('ascii')
-                        else:
-                            encoding = xml_info.group(1)
+                        encoding = xml_info.group(1).decode('ascii')
                     else:
                         encoding = 'utf-8'
                     self.content_type = 'text/xml; charset=%s' % encoding
 
-            if not isinstance(data, six.text_type):
+            if not isinstance(data, str):
                 if encoding is None:
                     charset = getattr(self, 'charset', None)
 
@@ -152,13 +141,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
                 for enc in preferred:
                     try:
-                        data = six.text_type(data, enc)
-                        if isinstance(data, six.text_type):
+                        data = str(data, enc)
+                        if isinstance(data, str):
                             break
                     except UnicodeDecodeError:
                         continue
                 else:
-                    data = six.text_type(data)
+                    data = str(data)
 
             self.write(data)
 
@@ -208,7 +197,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return 'file:%s' % self._filepath
 
     security.declarePrivate('_ZPT_exec')  # NOQA: flake8: D001
-    _ZPT_exec = get_unbound_function(ZopePageTemplate._exec)
+    _ZPT_exec = ZopePageTemplate._exec
 
     @security.private
     def _exec(self, bound_names, args, kw):
@@ -268,22 +257,21 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
     if HAS_ZSERVER:
         security.declareProtected(FTPAccess,  # NOQA: flake8: D001
                                   'manage_FTPget')
-        manage_FTPget = get_unbound_function(ZopePageTemplate.manage_FTPget)
+        manage_FTPget = ZopePageTemplate.manage_FTPget
 
     security.declareProtected(View, 'get_size')  # NOQA: flake8: D001
-    get_size = get_unbound_function(ZopePageTemplate.get_size)
+    get_size = ZopePageTemplate.get_size
     getSize = get_size
 
     security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
                               'PrincipiaSearchSource')
-    PrincipiaSearchSource = get_unbound_function(
-                                ZopePageTemplate.PrincipiaSearchSource)
+    PrincipiaSearchSource = ZopePageTemplate.PrincipiaSearchSource
 
     security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
                               'document_src')
-    document_src = get_unbound_function(ZopePageTemplate.document_src)
+    document_src = ZopePageTemplate.document_src
 
-    pt_getContext = get_unbound_function(ZopePageTemplate.pt_getContext)
+    pt_getContext = ZopePageTemplate.pt_getContext
 
     source_dot_xml = Src()
 

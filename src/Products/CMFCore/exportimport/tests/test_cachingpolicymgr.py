@@ -212,9 +212,10 @@ class importCachingPolicyManagerTests(_CachingPolicyManagerSetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(CachingPolicyNodeAdapterTests),
-        unittest.makeSuite(CachingPolicyManagerXMLAdapterTests),
-        unittest.makeSuite(exportCachingPolicyManagerTests),
-        unittest.makeSuite(importCachingPolicyManagerTests),
-        ))
+        loadTestsFromTestCase(CachingPolicyNodeAdapterTests),
+        loadTestsFromTestCase(CachingPolicyManagerXMLAdapterTests),
+        loadTestsFromTestCase(exportCachingPolicyManagerTests),
+        loadTestsFromTestCase(importCachingPolicyManagerTests),
+    ))

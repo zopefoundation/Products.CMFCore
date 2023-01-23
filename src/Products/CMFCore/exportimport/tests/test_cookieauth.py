@@ -194,8 +194,9 @@ class importCookieCrumblerTests(_CookieCrumblerSetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(CookieCrumblerXMLAdapterTests),
-        unittest.makeSuite(exportCookieCrumblerTests),
-        unittest.makeSuite(importCookieCrumblerTests),
-        ))
+        loadTestsFromTestCase(CookieCrumblerXMLAdapterTests),
+        loadTestsFromTestCase(exportCookieCrumblerTests),
+        loadTestsFromTestCase(importCookieCrumblerTests),
+    ))

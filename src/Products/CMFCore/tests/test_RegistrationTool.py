@@ -34,9 +34,3 @@ class RegistrationToolTests(unittest.TestCase):
     def test_generatePassword(self):
         rtool = self._makeOne()
         self.assertTrue(len(rtool.generatePassword()) >= 5)
-
-
-def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(RegistrationToolTests),
-        ))

@@ -221,6 +221,8 @@ class importCatalogToolTests(_CatalogToolSetup):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(exportCatalogToolTests),
-        unittest.makeSuite(importCatalogToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            exportCatalogToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            importCatalogToolTests),
         ))

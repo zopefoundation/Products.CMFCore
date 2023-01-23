@@ -21,28 +21,24 @@ README = _boundary.join([
 ])
 
 setup(name='Products.%s' % NAME,
-      version='2.7.1.dev0',
+      version='3.0.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Framework :: Plone',
-          'Framework :: Zope :: 4',
           'Framework :: Zope :: 5',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
-          'Programming Language :: Python :: 3.5',
-          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
           'Programming Language :: Python :: 3.10',
           'Programming Language :: Python :: 3.11',
           'Programming Language :: Python :: Implementation :: CPython',
-          'Topic :: Software Development :: Libraries :: Application Frameworks',  # noqa
+          'Topic :: Software Development :: Libraries'
+          ' :: Application Frameworks',
       ],
       keywords='web application server zope cmf',
       author='Zope Foundation and Contributors',
@@ -60,10 +56,10 @@ setup(name='Products.%s' % NAME,
       include_package_data=True,
       namespace_packages=['Products'],
       zip_safe=False,
-      python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*',
+      python_requires='>=3.7',
       install_requires=[
           'setuptools',
-          'Zope >= 4.0b8',
+          'Zope >= 5',
           'docutils > 0.15',
           'five.localsitemanager',
           'Products.BTreeFolder2',
@@ -72,7 +68,6 @@ setup(name='Products.%s' % NAME,
           'Products.PythonScripts',
           'Products.StandardCacheManagers',
           'Products.ZCatalog >= 4.0a2',  # Products.ZCTextIndex lives there now
-          'six',
           'zope.datetime',
           'zope.interface >= 3.8',
           ],
@@ -83,6 +78,6 @@ setup(name='Products.%s' % NAME,
           },
       entry_points="""
       [zope2.initialize]
-      Products.%s = Products.%s:initialize
-      """ % (NAME, NAME),
+      Products.{} = Products.{}:initialize
+      """.format(NAME, NAME),
       )

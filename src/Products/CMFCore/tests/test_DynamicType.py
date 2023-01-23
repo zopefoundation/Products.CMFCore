@@ -14,8 +14,7 @@
 """
 
 import unittest
-
-from six import StringIO
+from io import StringIO
 
 from Acquisition import Implicit
 from zope.component import getSiteManager
@@ -23,6 +22,7 @@ from zope.component import provideAdapter
 from zope.interface import alsoProvides
 from zope.interface.verify import verifyClass
 from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces import IDefaultViewName
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.testing.cleanup import cleanUp
@@ -40,12 +40,6 @@ from .base.dummy import DummySite
 from .base.dummy import DummyTool
 from .base.testcase import SecurityTest
 from .base.tidata import FTIDATA_CMF
-
-
-try:
-    from zope.publisher.interfaces import IDefaultViewName
-except ImportError:  # BBB: zope.component had this before the ZTK
-    from zope.component.interfaces import IDefaultViewName
 
 
 def defineDefaultViewName(name, for_=None):
@@ -196,13 +190,15 @@ class DynamicTypeSecurityTests(SecurityTest):
             foo.getActionInfo('object/%s' % INVALID_ID)
         except ValueError as e:
             message = e.args[0]
-            detail = '"%s" does not offer action "%s"' % (message, INVALID_ID)
+            detail = f'"{message}" does not offer action "{INVALID_ID}"'
             self.assertTrue(message.find(INVALID_ID) != -1, detail)
 
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(DynamicTypeTests),
-        unittest.makeSuite(DynamicTypeDefaultTraversalTests),
-        unittest.makeSuite(DynamicTypeSecurityTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(DynamicTypeTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            DynamicTypeDefaultTraversalTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            DynamicTypeSecurityTests),
         ))

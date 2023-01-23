@@ -25,11 +25,11 @@ from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
 from zope.component import queryUtility
 from zope.component import subscribers
-from zope.container.interfaces import IObjectAddedEvent
-from zope.container.interfaces import IObjectMovedEvent
 from zope.interface import implementer
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
+from zope.lifecycleevent.interfaces import IObjectMovedEvent
 
 from .interfaces import ICallableOpaqueItem
 from .interfaces import ICatalogAware

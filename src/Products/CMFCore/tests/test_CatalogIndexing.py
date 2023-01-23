@@ -25,7 +25,7 @@ from .base.dummy import DummyFolder
 
 
 @implementer(IIndexing)
-class MockIndexer(object):
+class MockIndexer:
 
     def __init__(self):
         self.queue = []
@@ -49,15 +49,15 @@ class MockQueue(MockIndexer):
         pass
 
     def index(self, obj, attributes=None):
-        super(MockQueue, self).index(obj, attributes)
+        super().index(obj, attributes)
         self.hook()
 
     def reindex(self, obj, attributes=None, update_metadata=1):
-        super(MockQueue, self).reindex(obj, attributes)
+        super().reindex(obj, attributes)
         self.hook()
 
     def unindex(self, obj):
-        super(MockQueue, self).unindex(obj)
+        super().unindex(obj)
         self.hook()
 
     def getState(self):
@@ -106,7 +106,7 @@ class QueueTests(CleanUp, TestCase):
         self.assertTrue(IIndexQueue.providedBy(self.queue))
 
     def testQueueHook(self):
-        class CaptainHook(object):
+        class CaptainHook:
             def __init__(self):
                 self.hooked = 0
 

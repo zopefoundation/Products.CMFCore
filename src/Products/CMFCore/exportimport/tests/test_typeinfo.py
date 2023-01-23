@@ -701,9 +701,10 @@ class importTypesToolTests(_TypeInfoSetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(TypeInformationXMLAdapterTests),
-        unittest.makeSuite(TypesToolXMLAdapterTests),
-        unittest.makeSuite(exportTypesToolTests),
-        unittest.makeSuite(importTypesToolTests),
-        ))
+        loadTestsFromTestCase(TypeInformationXMLAdapterTests),
+        loadTestsFromTestCase(TypesToolXMLAdapterTests),
+        loadTestsFromTestCase(exportTypesToolTests),
+        loadTestsFromTestCase(importTypesToolTests),
+    ))

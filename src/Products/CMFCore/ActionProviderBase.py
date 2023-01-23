@@ -15,8 +15,6 @@
 
 from warnings import warn
 
-import six
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
@@ -94,7 +92,7 @@ class ActionProviderBase:
 
         if action_chain:
             filtered_actions = []
-            if isinstance(action_chain, six.string_types):
+            if isinstance(action_chain, str):
                 action_chain = (action_chain,)
             for action_ident in action_chain:
                 sep = action_ident.rfind('/')
@@ -131,7 +129,7 @@ class ActionProviderBase:
                 provider = self
             else:
                 provider = object
-            msg = 'Action "%s" not available for %s' % (
+            msg = 'Action "{}" not available for {}'.format(
                         action_chain, '/'.join(provider.getPhysicalPath()))
             raise ValueError(msg)
         for ai in action_infos:
@@ -319,7 +317,7 @@ class ActionProviderBase:
         if category == '':
             category = 'object'
 
-        if isinstance(permissions, six.string_types):
+        if isinstance(permissions, str):
             permissions = (permissions,)
 
         return ActionInformation(id=id, title=title, action=action,

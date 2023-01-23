@@ -34,26 +34,26 @@ class IRegisterDirectoryDirective(Interface):
     """
 
     name = PythonIdentifier(
-        title=u'Name',
-        description=u'Name of the directory.',
+        title='Name',
+        description='Name of the directory.',
         required=True)
 
     directory = Path(
-        title=u'Path',
-        description=u'Path relative to the package. If not specified, '
-                    u"'skins/<name>' is used.",
+        title='Path',
+        description='Path relative to the package. If not specified, '
+                    "'skins/<name>' is used.",
         required=False)
 
     recursive = Bool(
-        title=u'Recursive?',
-        description=u'False by default. If true, register all subdirectories '
-                    u'as well.',
+        title='Recursive?',
+        description='False by default. If true, register all subdirectories '
+                    'as well.',
         required=False)
 
     ignore = Tokens(
-        title=u'Ignore',
-        description=u'Files and subdirectories that should be ignored. If '
-                    u"not specified, 'CVS' and '.svn' are ignored.",
+        title='Ignore',
+        description='Files and subdirectories that should be ignored. If '
+                    "not specified, 'CVS' and '.svn' are ignored.",
         value_type=ASCIILine(),
         required=False)
 

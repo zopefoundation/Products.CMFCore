@@ -158,10 +158,20 @@ class ActionTests(unittest.TestCase):
         self.assertFalse(hasattr(a, 'available_expr_object'))
 
 
+class DummyResponse:
+
+    def getHeader(self, key):
+        return ''
+
+    def setHeader(self, key, value):
+        pass
+
+
 class DummyRequest:
 
     charset = 'UTF-8'
     URL = ''
+    RESPONSE = DummyResponse()
 
     def __init__(self):
         self._data = {}
@@ -508,13 +518,3 @@ class ActionInformationTests(TransactionalTest):
                    'link_target': a.link_target},
                   ['url', 'icon'])
         self.assertEqual(a.getInfoData(), WANTED)
-
-
-def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(ActionCategoryTests),
-        unittest.makeSuite(ActionTests),
-        unittest.makeSuite(ActionInfoTests),
-        unittest.makeSuite(ActionInfoSecurityTests),
-        unittest.makeSuite(ActionInformationTests),
-        ))

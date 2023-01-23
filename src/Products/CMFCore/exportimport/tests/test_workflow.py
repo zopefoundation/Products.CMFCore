@@ -372,8 +372,9 @@ class importWorkflowToolTests(_WorkflowSetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(WorkflowToolXMLAdapterTests),
-        unittest.makeSuite(exportWorkflowToolTests),
-        unittest.makeSuite(importWorkflowToolTests),
-        ))
+        loadTestsFromTestCase(WorkflowToolXMLAdapterTests),
+        loadTestsFromTestCase(exportWorkflowToolTests),
+        loadTestsFromTestCase(importWorkflowToolTests),
+    ))

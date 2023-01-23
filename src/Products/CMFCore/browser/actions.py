@@ -33,7 +33,7 @@ class ActionAddView(AddWithPresettingsViewBase):
 
     klass = Action
 
-    description = u'An Action object represents a reference to an action.'
+    description = 'An Action object represents a reference to an action.'
 
     def getProfileInfos(self):
         profiles = []
@@ -66,7 +66,7 @@ class ActionAddView(AddWithPresettingsViewBase):
                 action_paths.append(action_id)
             else:
                 action_paths += self._extractChildren(child)
-        return [('%s/%s' % (category_id, path)) for path in action_paths]
+        return [f'{category_id}/{path}' for path in action_paths]
 
     def _initSettings(self, obj, profile_id, obj_path):
         stool = queryUtility(ISetupTool)
@@ -111,7 +111,7 @@ class ActionCategoryAddView(AddWithPresettingsViewBase):
     klass = ActionCategory
 
     description = \
-        u'An Action Category object represents a group of Action objects.'
+        'An Action Category object represents a group of Action objects.'
 
     def getProfileInfos(self):
         return []

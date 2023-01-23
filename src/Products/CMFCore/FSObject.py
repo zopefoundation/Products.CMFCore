@@ -131,20 +131,19 @@ class FSObject(Implicit, Item, RoleManager, Cacheable):
             # we'll that to check before hand
             obj = folder._getOb(id)
             if RESPONSE is not None:
-                RESPONSE.redirect('%s/manage_main?manage_tabs_message=%s' % (
-                    obj.absolute_url(),
-                    html_quote('An object with this id already exists')))
+                RESPONSE.redirect(
+                    '{}/manage_main?manage_tabs_message={}'.format(
+                        obj.absolute_url(),
+                        html_quote('An object with this id already exists')))
         else:
             folder._verifyObjectPaste(obj, validate_src=0)
             folder._setObject(id, obj)
 
             if RESPONSE is not None:
-                RESPONSE.redirect('%s/%s/manage_main' % (folder.absolute_url(),
-                                                         id))
+                RESPONSE.redirect(f'{folder.absolute_url()}/{id}/manage_main')
 
         if RESPONSE is not None:
-            RESPONSE.redirect('%s/%s/manage_main' % (
-                folder.absolute_url(), id))
+            RESPONSE.redirect(f'{folder.absolute_url()}/{id}/manage_main')
 
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""

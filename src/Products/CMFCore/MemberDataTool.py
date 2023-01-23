@@ -224,7 +224,7 @@ class MemberData(Persistent):
 
 
 @implementer(IMember)
-class MemberAdapter(object):
+class MemberAdapter:
 
     """Member data adapter.
     """
@@ -261,7 +261,7 @@ class MemberAdapter(object):
         """
         mtool = getUtility(IMembershipTool)
         if not mtool.isMemberAccessAllowed(self._user.getId()):
-            raise BadRequest(u'Only own properties can be set.')
+            raise BadRequest('Only own properties can be set.')
         if properties is None:
             properties = kw
         rtool = queryUtility(IRegistrationTool)

@@ -15,8 +15,6 @@
 
 import unittest
 
-import six
-
 from Products.GenericSetup.testing import BodyAdapterTestCase
 from Products.GenericSetup.tests.common import BaseRegistryTests
 from Products.GenericSetup.tests.common import DummyExportContext
@@ -71,7 +69,7 @@ class PropertiesXMLAdapterTests(BodyAdapterTestCase, unittest.TestCase):
         obj._setPropValue('title', 'Foo')
         obj._setProperty('default_charset', 'iso-8859-1', 'string')
         obj._setProperty('foo_string', 'foo', 'string')
-        obj._setProperty('bar_string', u'B\xe4r'.encode('iso-8859-1'),
+        obj._setProperty('bar_string', b'B\xe4r',
                          'string')
         obj._setProperty('foo_boolean', False, 'boolean')
 
@@ -233,15 +231,12 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         from ..properties import exportSiteProperties
         from ..properties import importSiteProperties
 
-        NONASCII = u'B\xe4r'
+        NONASCII = 'B\xe4r'
         site = self._initSite(foo=0, bar=0)
         site._updateProperty('title', NONASCII)
 
         self.assertIsInstance(site.title, str)
-        self.assertEqual(
-            site.title,
-            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r',
-        )
+        self.assertEqual(site.title, 'B\xe4r')
 
         # export the site properties
         context = DummyExportContext(site)
@@ -257,16 +252,14 @@ class roundtripSitePropertiesTests(_SitePropertiesSetup):
         context._files['properties.xml'] = text
         importSiteProperties(context)
 
-        self.assertEqual(
-            site.title,
-            b'B\xc3\xa4r' if six.PY2 else u'B\xe4r',
-        )
+        self.assertEqual(site.title, 'B\xe4r')
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(PropertiesXMLAdapterTests),
-        unittest.makeSuite(exportSitePropertiesTests),
-        unittest.makeSuite(importSitePropertiesTests),
-        unittest.makeSuite(roundtripSitePropertiesTests),
-        ))
+        loadTestsFromTestCase(PropertiesXMLAdapterTests),
+        loadTestsFromTestCase(exportSitePropertiesTests),
+        loadTestsFromTestCase(importSitePropertiesTests),
+        loadTestsFromTestCase(roundtripSitePropertiesTests),
+    ))

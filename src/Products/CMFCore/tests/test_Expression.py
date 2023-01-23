@@ -81,5 +81,5 @@ class ExpressionTests(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(ExpressionTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(ExpressionTests),
         ))

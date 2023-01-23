@@ -16,8 +16,6 @@
 import logging
 from warnings import warn
 
-import six
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
@@ -494,7 +492,7 @@ class MembershipTool(UniqueObject, Folder):
         # Delete members in acl_users.
         acl_users = self.acl_users
         if _checkPermission(ManageUsers, acl_users):
-            if isinstance(member_ids, six.string_types):
+            if isinstance(member_ids, str):
                 member_ids = (member_ids,)
             member_ids = list(member_ids)
             for member_id in member_ids[:]:
@@ -550,17 +548,17 @@ registerToolInterface('portal_membership', IMembershipTool)
 
 
 @implementer(IFactory)
-class HomeFolderFactoryBase(object):
+class HomeFolderFactoryBase:
 
     """Creates a home folder.
     """
 
-    title = _(u'Home Folder')
-    description = _(u'A home folder for portal members.')
+    title = _('Home Folder')
+    description = _('A home folder for portal members.')
 
     def __call__(self, id, title=None, *args, **kw):
         if title is None:
-            title = "{0}'s Home".format(id)
+            title = f"{id}'s Home"
         item = PortalFolder(id, title, *args, **kw)
         item.manage_setLocalRoles(id, ['Owner'])
         return item
@@ -574,11 +572,10 @@ class _BBBHomeFolderFactory(HomeFolderFactoryBase):
     """Creates a home folder.
     """
 
-    description = _(u'Classic CMFCore home folder for portal members.')
+    description = _('Classic CMFCore home folder for portal members.')
 
     def __call__(self, id, title=None, *args, **kw):
-        item = super(_BBBHomeFolderFactory,
-                     self).__call__(id, title=title, *args, **kw)
+        item = super().__call__(id, title=title, *args, **kw)
 
         item.manage_permission(View,
                                ['Owner', 'Manager', 'Reviewer'], 0)

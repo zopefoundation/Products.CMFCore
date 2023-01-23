@@ -595,10 +595,11 @@ class importActionProvidersTests(_ActionSetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(ActionNodeAdapterTests),
-        unittest.makeSuite(ActionCategoryNodeAdapterTests),
-        unittest.makeSuite(ActionsToolXMLAdapterTests),
-        unittest.makeSuite(exportActionProvidersTests),
-        unittest.makeSuite(importActionProvidersTests),
-        ))
+        loadTestsFromTestCase(ActionNodeAdapterTests),
+        loadTestsFromTestCase(ActionCategoryNodeAdapterTests),
+        loadTestsFromTestCase(ActionsToolXMLAdapterTests),
+        loadTestsFromTestCase(exportActionProvidersTests),
+        loadTestsFromTestCase(importActionProvidersTests),
+    ))

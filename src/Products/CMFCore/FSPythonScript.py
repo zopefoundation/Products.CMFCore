@@ -15,8 +15,6 @@
 
 from difflib import unified_diff
 
-from six import get_unbound_function
-
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
@@ -48,7 +46,7 @@ class CustomizedPythonScript(PythonScript):
     security = ClassSecurityInfo()
 
     def __init__(self, id, text):
-        super(CustomizedPythonScript, self).__init__(id)
+        super().__init__(id)
         self.write(text)
         self.original_source = text
 
@@ -111,7 +109,7 @@ class FSPythonScript(FSObject, Script):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r')
+        file = open(self._filepath)
         try:
             data = file.read()
         finally:
@@ -133,7 +131,7 @@ class FSPythonScript(FSObject, Script):
         self._updateFromFS()
         return Script.__call__(self, *args, **kw)
 
-    _exec = get_unbound_function(PythonScript._exec)
+    _exec = PythonScript._exec
 
     security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
                               'getModTime')
@@ -164,7 +162,7 @@ class FSPythonScript(FSObject, Script):
     @security.protected(ViewManagementScreens)
     def PrincipiaSearchSource(self):
         """Support for searching - the document's contents are searched."""
-        return '%s\n%s' % (self._params, self._body)
+        return f'{self._params}\n{self._body}'
 
     @security.protected(ViewManagementScreens)
     def params(self):
@@ -172,7 +170,7 @@ class FSPythonScript(FSObject, Script):
 
     security.declareProtected(ViewManagementScreens,  # NOQA: flake8: D001
                               'manage_haveProxy')
-    manage_haveProxy = get_unbound_function(PythonScript.manage_haveProxy)
+    manage_haveProxy = PythonScript.manage_haveProxy
 
     @security.protected(ViewManagementScreens)
     def body(self):

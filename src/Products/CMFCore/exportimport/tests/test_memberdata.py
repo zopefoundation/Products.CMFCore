@@ -152,8 +152,9 @@ class importMemberDataToolTests(_MemberDataToolSetup):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(MemberDataToolXMLAdapterTests),
-        unittest.makeSuite(exportMemberDataToolTests),
-        unittest.makeSuite(importMemberDataToolTests),
-        ))
+        loadTestsFromTestCase(MemberDataToolXMLAdapterTests),
+        loadTestsFromTestCase(exportMemberDataToolTests),
+        loadTestsFromTestCase(importMemberDataToolTests),
+    ))

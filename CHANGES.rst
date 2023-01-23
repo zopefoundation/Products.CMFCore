@@ -1,8 +1,14 @@
 Products.CMFCore Changelog
 ==========================
 
-2.7.1 (unreleased)
-------------------
+3.0 (unreleased)
+----------------
+
+- Drop support for Python 2.7, 3.5, 3.6.
+
+- Drop support for ``Zope 4.x``.
+
+- Make tests compatible with ``Zope >= 5.7.1``.
 
 
 2.7.0 (2022-12-16)

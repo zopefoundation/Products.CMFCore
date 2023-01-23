@@ -228,10 +228,11 @@ class ContentTypeRegistryTests(unittest.TestCase):
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(MajorMinorPredicateTests),
-        unittest.makeSuite(ExtensionPredicateTests),
-        unittest.makeSuite(MimeTypeRegexPredicateTests),
-        unittest.makeSuite(NameRegexPredicateTests),
-        unittest.makeSuite(ContentTypeRegistryTests),
-        ))
+        loadTestsFromTestCase(MajorMinorPredicateTests),
+        loadTestsFromTestCase(ExtensionPredicateTests),
+        loadTestsFromTestCase(MimeTypeRegexPredicateTests),
+        loadTestsFromTestCase(NameRegexPredicateTests),
+        loadTestsFromTestCase(ContentTypeRegistryTests),
+    ))

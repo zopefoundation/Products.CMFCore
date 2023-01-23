@@ -12,8 +12,6 @@
 ##############################################################################
 """ Unit tests for ActionProviderBase module.
 """
-
-import unittest
 import warnings
 
 from zope.component import getSiteManager
@@ -278,12 +276,5 @@ class ActionProviderBaseTests(SecurityTest):
                 rval = apb.getActionInfo('object/%s' % INVALID_ID)
             except ValueError as e:
                 message = e.args[0]
-                detail = '"%s" does not offer action "%s"' % (message,
-                                                              INVALID_ID)
+                detail = f'"{message}" does not offer action "{INVALID_ID}"'
                 self.assertTrue(message.find(INVALID_ID) != -1, detail)
-
-
-def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(ActionProviderBaseTests),
-        ))

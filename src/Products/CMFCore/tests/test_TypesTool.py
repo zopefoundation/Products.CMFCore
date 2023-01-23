@@ -273,7 +273,7 @@ class TypesToolFunctionalTests(SecurityTest):
         self.assertEqual(folder.page2.portal_type, 'Baz')
 
 
-class TypeInfoTests(object):
+class TypeInfoTests:
     # Subclass must define _getTargetClass
 
     def _makeOne(self, id='test', **kw):
@@ -429,7 +429,7 @@ class TypeInfoTests(object):
         self.assertEqual(info_data[0]['link_target'], ti.link_target)
 
         self.assertEqual(set(info_data[1]),
-                         set(['url', 'icon', 'available', 'allowed']))
+                         {'url', 'icon', 'available', 'allowed'})
 
     def test_getInfoData_without_urls(self):
         ti_data = {'id': 'foo',
@@ -453,7 +453,7 @@ class TypeInfoTests(object):
         self.assertEqual(info_data[0]['allowed'], ti._checkAllowed)
         self.assertEqual(info_data[0]['link_target'], None)
 
-        self.assertEqual(set(info_data[1]), set(['available', 'allowed']))
+        self.assertEqual(set(info_data[1]), {'available', 'allowed'})
 
     def _checkContentTI(self, ti):
         from ..ActionInformation import ActionInformation
@@ -669,7 +669,7 @@ class FTIOldstyleConstructionTests(FTIConstructionTestCase, unittest.TestCase):
         from zope.component import adapter
         from zope.component import provideHandler
         from zope.container.interfaces import IContainerModifiedEvent
-        from zope.container.interfaces import IObjectAddedEvent
+        from zope.lifecycleevent.interfaces import IObjectAddedEvent
         from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 
@@ -744,7 +744,7 @@ class FTINewstyleConstructionTests(FTIConstructionTestCase, SecurityTest):
         from zope.component import adapter
         from zope.component import provideHandler
         from zope.container.interfaces import IContainerModifiedEvent
-        from zope.container.interfaces import IObjectAddedEvent
+        from zope.lifecycleevent.interfaces import IObjectAddedEvent
         from zope.lifecycleevent.interfaces import IObjectCreatedEvent
         events = []
 
@@ -815,11 +815,12 @@ class DummyWorkflow:
 
 
 def test_suite():
+    loadTestsFromTestCase = unittest.defaultTestLoader.loadTestsFromTestCase
     return unittest.TestSuite((
-        unittest.makeSuite(TypesToolTests),
-        unittest.makeSuite(TypesToolFunctionalTests),
-        unittest.makeSuite(FTIDataTests),
-        unittest.makeSuite(STIDataTests),
-        unittest.makeSuite(FTIOldstyleConstructionTests),
-        unittest.makeSuite(FTINewstyleConstructionTests),
-        ))
+        loadTestsFromTestCase(TypesToolTests),
+        loadTestsFromTestCase(TypesToolFunctionalTests),
+        loadTestsFromTestCase(FTIDataTests),
+        loadTestsFromTestCase(STIDataTests),
+        loadTestsFromTestCase(FTIOldstyleConstructionTests),
+        loadTestsFromTestCase(FTINewstyleConstructionTests),
+    ))

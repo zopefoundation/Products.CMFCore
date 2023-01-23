@@ -111,7 +111,7 @@ class FSSTXMethod(FSObject):
     def _readFile(self, reparse):
         """Read the data from the filesystem.
         """
-        file = open(self._filepath, 'r')  # not 'rb', as this is a text file!
+        file = open(self._filepath)  # not 'rb', as this is a text file!
         try:
             data = file.read()
         finally:

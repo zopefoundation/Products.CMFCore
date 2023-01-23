@@ -140,6 +140,6 @@ class SkinnableTests(RequestTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(SkinsContainerTests),
-        unittest.makeSuite(SkinsToolTests),
-        unittest.makeSuite(SkinnableTests)))
+        unittest.defaultTestLoader.loadTestsFromTestCase(SkinsContainerTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(SkinsToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(SkinnableTests)))

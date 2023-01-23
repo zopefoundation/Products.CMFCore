@@ -185,6 +185,7 @@ class ActionsToolSecurityTests(SecurityTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(ActionsToolTests),
-        unittest.makeSuite(ActionsToolSecurityTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(ActionsToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            ActionsToolSecurityTests),
         ))

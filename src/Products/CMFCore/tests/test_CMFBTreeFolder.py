@@ -35,5 +35,5 @@ class CMFBTreeFolderTests(ConformsToFolder, unittest.TestCase):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(CMFBTreeFolderTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(CMFBTreeFolderTests),
         ))

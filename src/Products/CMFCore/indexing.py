@@ -34,7 +34,7 @@ processing = set()
 
 
 @implementer(IPortalCatalogQueueProcessor)
-class PortalCatalogProcessor(object):
+class PortalCatalogProcessor:
     """An index queue processor for the standard portal catalog via
        the `CatalogMultiplex` and `CMFCatalogAware` mixin classes """
 
@@ -72,7 +72,7 @@ class PortalCatalogProcessor(object):
         catalog = getToolByName(obj, 'portal_catalog', None)
         if catalog is None:
             return
-        attr = getattr(catalog, '_{0}'.format(name), None)
+        attr = getattr(catalog, f'_{name}', None)
         if attr is None:
             return
         return attr.__func__
@@ -103,7 +103,7 @@ def processQueue():
 class PathProxy(ProxyBase):
 
     def __init__(self, obj):
-        super(PathProxy, self).__init__(obj)
+        super().__init__(obj)
         self._old_path = obj.getPhysicalPath()
 
     @non_overridable
@@ -276,7 +276,7 @@ def filterTemporaryItems(obj, checkId=True):
     return obj
 
 
-class QueueSavepoint(object):
+class QueueSavepoint:
     """ transaction savepoints using the IIndexQueue interface """
 
     def __init__(self, queue):

@@ -248,5 +248,5 @@ class FSImageTests(TransactionalTest, FSDVTest):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(FSImageTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FSImageTests),
         ))
