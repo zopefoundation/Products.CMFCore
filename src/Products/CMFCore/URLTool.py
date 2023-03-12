@@ -15,6 +15,7 @@
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from App.special_dtml import DTMLFile
@@ -75,7 +76,20 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
         if portal_obj is None:
             # fallback for bootstrap
             portal_obj = aq_parent(aq_inner(self))
-        return portal_obj.__of__(request_container)
+
+        # rewrap
+        chain = []
+        parent = portal_obj
+        while 1:
+            chain.append(parent)
+            parent = aq_parent(aq_inner(parent))
+            if parent in chain or parent is None or isinstance(
+                    parent, RequestContainer):
+                break
+        obj = request_container
+        for ob in reversed(chain):
+            obj = aq_base(ob).__of__(obj)
+        return obj
 
     @security.public
     def getRelativeContentPath(self, content):

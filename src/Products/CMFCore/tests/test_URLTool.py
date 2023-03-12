@@ -15,7 +15,9 @@
 
 import unittest
 
+from Testing.makerequest import makerequest
 from zope.component import getSiteManager
+from zope.globalrequest import setRequest
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
@@ -28,7 +30,8 @@ from .base.dummy import DummySite
 class URLToolTests(unittest.TestCase):
 
     def setUp(self):
-        self.site = DummySite(id='foo')
+        self.site = makerequest(DummySite(id='foo'))
+        setRequest(self.site.REQUEST)
         sm = getSiteManager()
         sm.registerUtility(self.site, ISiteRoot)
 
@@ -54,6 +57,10 @@ class URLToolTests(unittest.TestCase):
         self.assertEqual(url_tool(), 'http://www.foobar.com/bar/foo')
         self.assertEqual(url_tool.getPortalObject(), self.site)
         self.assertEqual(url_tool.getPortalPath(), '/bar/foo')
+
+    def test_getPortalObject_aq_context(self):
+        url_tool = self._makeOne()
+        self.assertEqual(url_tool.getPortalObject().REQUEST, self.site.REQUEST)
 
     def test_content_methods(self):
         url_tool = self._makeOne()

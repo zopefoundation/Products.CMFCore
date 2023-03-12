@@ -17,7 +17,9 @@ import unittest
 import warnings
 
 from AccessControl.SecurityManagement import newSecurityManager
+from Testing.makerequest import makerequest
 from zope.component import getSiteManager
+from zope.globalrequest import setRequest
 from zope.interface.verify import verifyClass
 from zope.testing.cleanup import cleanUp
 
@@ -42,7 +44,7 @@ class ActionsToolTests(unittest.TestCase):
         return ActionsTool
 
     def _makeOne(self, *args, **kw):
-        return self._getTargetClass()(*args, **kw)
+        return makerequest(self._getTargetClass()(*args, **kw))
 
     def test_interfaces(self):
         from ..interfaces import IActionProvider
@@ -121,13 +123,14 @@ class ActionsToolSecurityTests(SecurityTest):
         return ActionsTool
 
     def _makeOne(self, *args, **kw):
-        return self._getTargetClass()(*args, **kw)
+        return makerequest(self._getTargetClass()(*args, **kw))
 
     def setUp(self):
         from ..interfaces import IActionsTool
 
         SecurityTest.setUp(self)
         self.tool = self._makeOne()
+        setRequest(self.tool.REQUEST)
         self.tool.action_providers = ('portal_actions',)
         self.app._setObject('foo', URLTool())
         sm = getSiteManager()
