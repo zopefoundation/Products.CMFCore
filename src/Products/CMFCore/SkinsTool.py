@@ -100,13 +100,8 @@ class SkinsTool(UniqueObject, SkinsContainer, Folder, ActionProviderBase):
                               'manage_propertiesForm')
     manage_propertiesForm = DTMLFile('dtml/skinProps', globals())
 
-    # the following two methods override those in FindSupport, to
+    # the following method override the one in FindSupport, to
     # support marking of objects used in specific skins
-    security.declareProtected(ManagePortal,  # NOQA: flake8: D001
-                              'manage_findResult')
-    manage_findResult = DTMLFile('findResult', _dtmldir,
-                                 management_view='Find')
-
     security.declareProtected(ManagePortal,  # NOQA: flake8: D001
                               'manage_findForm')
     manage_findForm = DTMLFile('findForm', _dtmldir,
