@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 3.0 (unreleased)
 ----------------
 
+- SkinsTool: fix Find form with Zope ZMI
+  (`#127 <https://github.com/zopefoundation/Products.CMFCore/pull/127>`_).
+
 - Drop support for Python 2.7, 3.5, 3.6.
 
 - Drop support for ``Zope 4.x``.
