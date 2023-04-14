@@ -1,5 +1,5 @@
 from threading import Thread
-from threading import currentThread
+from threading import current_thread
 from time import sleep
 from unittest import TestCase
 
@@ -400,7 +400,7 @@ class QueueThreadTests(TestCase):
             def runner():
                 for n in range(idx):    # index idx times
                     me.index(name)
-                queues[currentThread()] = me.queue
+                queues[current_thread()] = me.queue
             return runner
 
         threads = []
