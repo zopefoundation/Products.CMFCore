@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-3.0 (unreleased)
+3.0 (2023-04-25)
 ----------------
 
 - SkinsTool: fix Find form with Zope ZMI
