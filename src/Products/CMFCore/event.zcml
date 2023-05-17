@@ -37,4 +37,8 @@
       handler=".CMFCatalogAware.handleOpaqueItemEvent"
       />
 
+   <subscriber
+      handler=".explicitacquisition.after_traversal_hook"
+      />
+
 </configure>
