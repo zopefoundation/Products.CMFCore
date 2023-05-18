@@ -9,8 +9,9 @@ from Products.CMFCore.interfaces import IPublishableThroughAcquisition
 from Products.CMFCore.interfaces import IShouldAllowAcquiredItemPublication
 
 
-PTA_ENV_KEY = 'PUBLISHING_EXPLICIT_ACQUISITION'
+PTA_ENV_KEY = "PUBLISHING_EXPLICIT_ACQUISITION"
 SKIP_PTA = os.environ.get(PTA_ENV_KEY, "true") == "false"
+
 
 @adapter(IPubAfterTraversal)
 def after_traversal_hook(event):
