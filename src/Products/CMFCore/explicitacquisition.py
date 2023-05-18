@@ -9,6 +9,8 @@ from Products.CMFCore.interfaces import IShouldAllowAcquiredItemPublication
 
 @adapter(IPubAfterTraversal)
 def after_traversal_hook(event):
+    if IPublishableThroughAcquisition.providedBy(event.request):
+        return
     context = event.request["PARENTS"][0]
     if IShouldAllowAcquiredItemPublication(context, None) is False:
         raise NotFound()
