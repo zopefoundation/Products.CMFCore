@@ -18,7 +18,4 @@ def after_traversal_hook(event):
 def content_allowed(context):
     if IPublishableThroughAcquisition.providedBy(context):
         return True
-    parents = context.REQUEST["PARENTS"]
-    parent_ids = [item.getId() for item in parents]
-    parent_ids.reverse()
-    return parent_ids == list(context.getPhysicalPath())
+    return context.aq_chain == context.aq_inner.aq_chain
