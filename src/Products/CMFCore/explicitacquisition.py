@@ -8,8 +8,8 @@ from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IPublishableThroughAcquisition
 from Products.CMFCore.interfaces import IShouldAllowAcquiredItemPublication
 
-
-PTA = os.environ.get("PUBLISHING_EXPLICIT_ACQUISITION", "false") == "true"
+PTA_ENV_KEY = 'PUBLISHING_EXPLICIT_ACQUISITION'
+PTA = os.environ.get(PTA_ENV_KEY, "false") == "true"
 
 
 @adapter(IPubAfterTraversal)
