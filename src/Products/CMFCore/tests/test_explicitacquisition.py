@@ -29,32 +29,32 @@ class TestExplicitAcquisition(RequestTest):
             "SERVER_NAME": "localhost",
             "_hacked_path": 0,
         }
-        self.request = request = HTTPRequest(StringIO(), environment, HTTPResponse())
-        request.other.update(environment)
-        alsoProvides(request, IBrowserRequest)
+        self.req = req = HTTPRequest(StringIO(), environment, HTTPResponse())
+        req.other.update(environment)
+        alsoProvides(req, IBrowserRequest)
 
         self.app.snuk = DummyContent(id="snuk")
         self.app.foo = DummyContent(id="foo")
         self.app.foo.bar = DummyContent(id="bar")
 
     def test_notfound_when_acquired(self):
-        self.assertFalse(IPublishableThroughAcquisition.providedBy(self.request))
-        self.request.traverse("foo/foo/bar/snuk/foo")
+        self.assertFalse(IPublishableThroughAcquisition.providedBy(self.req))
+        self.req.traverse("foo/foo/bar/snuk/foo")
         with self.assertRaises(NotFound):
-            notify(PubAfterTraversal(self.request))
+            notify(PubAfterTraversal(self.req))
 
     def test_allow_for_item(self):
-        self.assertFalse(IPublishableThroughAcquisition.providedBy(self.request))
+        self.assertFalse(IPublishableThroughAcquisition.providedBy(self.req))
         alsoProvides(self.app.snuk, IPublishableThroughAcquisition)
-        self.request.traverse("foo/foo/bar/snuk/foo")
-        notify(PubAfterTraversal(self.request))
+        self.req.traverse("foo/foo/bar/snuk/foo")
+        notify(PubAfterTraversal(self.req))
 
     def test_allow_for_request(self):
-        self.assertFalse(IPublishableThroughAcquisition.providedBy(self.request))
+        self.assertFalse(IPublishableThroughAcquisition.providedBy(self.req))
         # not allowed
-        self.request.traverse("foo/foo/bar/snuk/foo")
+        self.req.traverse("foo/foo/bar/snuk/foo")
         with self.assertRaises(NotFound):
-            notify(PubAfterTraversal(self.request))
+            notify(PubAfterTraversal(self.req))
         # allowed
-        alsoProvides(self.request, IPublishableThroughAcquisition)
-        notify(PubAfterTraversal(self.request))
+        alsoProvides(self.req, IPublishableThroughAcquisition)
+        notify(PubAfterTraversal(self.req))
