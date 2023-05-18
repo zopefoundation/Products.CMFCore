@@ -9,7 +9,7 @@ from Products.CMFCore.interfaces import IPublishableThroughAcquisition
 from Products.CMFCore.interfaces import IShouldAllowAcquiredItemPublication
 
 PTA_ENV_KEY = 'PUBLISHING_EXPLICIT_ACQUISITION'
-PTA = os.environ.get(PTA_ENV_KEY, "false") == "true"
+PTA = os.environ.get(PTA_ENV_KEY, "false") == "false"
 
 
 @adapter(IPubAfterTraversal)
