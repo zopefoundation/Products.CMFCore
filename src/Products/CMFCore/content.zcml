@@ -46,4 +46,9 @@
     name="portal-catalog"
     factory="Products.CMFCore.indexing.PortalCatalogProcessor" />
 
+  <!-- Don't publish acquired content items  -->
+  <adapter
+      provides=".interfaces.IShouldAllowAcquiredItemPublication"
+      factory=".explicitacquisition.content_allowed" />
+
 </configure>
