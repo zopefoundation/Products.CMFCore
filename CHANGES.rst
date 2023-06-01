@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-3.1 (unreleased)
+3.1 (2023-06-01)
 ----------------
 
 - Provide a way to not publish items that are acquired.
