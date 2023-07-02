@@ -4,7 +4,7 @@ Products.CMFCore Changelog
 3.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Improve handling of PortalFolder filter input.
 
 
 3.1 (2023-06-01)

@@ -154,6 +154,38 @@ class PortalFolderTests(ConformsToFolder, unittest.TestCase):
 
         verifyClass(IOrderedContainer, self._getTargetClass())
 
+    def test_FolderFilter(self):
+        folder = self._getTargetClass()('test_id')
+
+        # No filter
+        request = {}
+        encoded_filter = folder.encodeFolderFilter(request)
+        self.assertEqual(folder.decodeFolderFilter(encoded_filter), {})
+
+        # Simple filter
+        request = {'filter_by_id': 'foobar'}
+        encoded_filter = folder.encodeFolderFilter(request)
+        self.assertEqual(folder.decodeFolderFilter(encoded_filter),
+                         {'id': 'foobar'})
+
+        # Multiple filters
+        request = {'filter_by_id': 'foobar',
+                   'filter_by_title': 'baz'}
+        encoded_filter = folder.encodeFolderFilter(request)
+        self.assertEqual(folder.decodeFolderFilter(encoded_filter),
+                         {'id': 'foobar', 'title': 'baz'})
+
+        # Non-filter request values are ignored
+        request = {'filter_by_id': 'foobar', 'somekey': 'somevalue'}
+        encoded_filter = folder.encodeFolderFilter(request)
+        self.assertEqual(folder.decodeFolderFilter(encoded_filter),
+                         {'id': 'foobar'})
+
+        # Conspicuously large input values to the decode operation
+        # are ignored to prevent a DOS
+        encoded_filter = 'x' * 2000
+        self.assertEqual(folder.decodeFolderFilter(encoded_filter), {})
+
 
 class PortalFolderSecurityTests(SecurityTest):
 
