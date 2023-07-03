@@ -13,7 +13,7 @@
 """ PortalFolder: CMF-enabled Folder objects.
 """
 
-import marshal
+import json
 import re
 
 from AccessControl.class_init import InitializeClass
@@ -235,23 +235,26 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         """
             Parse cookie string for using variables in dtml.
         """
-        filter = {}
+        folder_filter = {}
         for key, value in REQUEST.items():
             if key[:10] == 'filter_by_':
-                filter[key[10:]] = value
-        encoded = base64_encode(marshal.dumps(filter))
-        encoded = ''.join(encoded.split('\n'))
+                folder_filter[key[10:]] = value
+        encoded = base64_encode(json.dumps(folder_filter).encode())
+        encoded = b''.join(encoded.split(b'\n'))
         return encoded
 
     @security.public
     def decodeFolderFilter(self, encoded):
+        """ Parse cookie string for using variables in dtml.
+
+        This is a public method and the input is not under our control.
+        To prevent a DOS this method will refuse to decode data that seems
+        conspicuously large.
         """
-            Parse cookie string for using variables in dtml.
-        """
-        filter = {}
-        if encoded:
-            filter.update(marshal.loads(base64_decode(encoded)))
-        return filter
+        folder_filter = {}
+        if encoded and len(encoded) < 1000:
+            folder_filter.update(json.loads(base64_decode(encoded)))
+        return folder_filter
 
     def content_type(self):
         """
