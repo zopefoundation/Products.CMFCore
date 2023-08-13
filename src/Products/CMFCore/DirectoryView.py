@@ -385,6 +385,7 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
                 subpath = subob.getId()
             title = getattr(subob, 'title', None)
             if title:
+                title = re.sub(r'^(.{48}).*$', '\g<1>...', str(title))
                 name = f'{subpath} ({title})'
             else:
                 name = subpath

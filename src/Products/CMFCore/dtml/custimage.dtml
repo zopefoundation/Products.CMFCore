@@ -57,14 +57,17 @@
         Customize
       </label>
       <div class="col-sm-9 col-md-10">
-        <select name="folder_path">
-          <dtml-in expr="listCustFolderPaths('DTML Method')">
-            <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
-          </dtml-in>
-        </select>
-        <input class="btn btn-primary" type="submit" name="submit"
-               value=" Customize " />
-        <br/>
+        <div class="input-group">
+          <select name="folder_path" class="form-control">
+            <dtml-in expr="listCustFolderPaths('DTML Method')">
+              <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
+            </dtml-in>
+          </select>
+          <div cass="input-group-append">
+            <input class="btn btn-primary" type="submit" name="submit"
+                  value=" Customize " />
+          </div>
+        </div>
         <small>
           Select a destination folder and press the button
           to make a copy of this method that can be customized.
