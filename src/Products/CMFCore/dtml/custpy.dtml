@@ -57,8 +57,8 @@
         <small class="text-muted">
           Select a destination folder and press the button
           to make a copy of this method that can be customized.
-          If the destination folder is not listed, then 
-          enlarge the amount of maximum results (default: 20).
+          If the destination folder is not listed try 
+          increasing the maximum results number (default: 20).
         </small>
       </div>
     </div>
