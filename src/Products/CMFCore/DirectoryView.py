@@ -359,10 +359,11 @@ registerFileExtension = _dirreg.registerFileExtension
 registerMetaType = _dirreg.registerMetaType
 
 
-def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
+def listFolderHierarchy(ob, path, rval, adding_meta_type=None, max=0, c = 0):
     if not hasattr(ob, 'objectValues'):
         return
     for subob in ob.objectValues():
+        c+=1
         base = getattr(subob, 'aq_base', subob)
         if getattr(base, 'isPrincipiaFolderish', 0):
 
@@ -389,8 +390,9 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
                 name = f'{subpath} ({title})'
             else:
                 name = subpath
-            rval.append((subpath, name))
-            listFolderHierarchy(subob, subpath, rval, adding_meta_type)
+            if max==0 or c <= max:
+                rval.append((subpath, name))
+                listFolderHierarchy(subob, subpath, rval, adding_meta_type, max, c)
 
 
 @implementer(IDirectoryView)
@@ -488,12 +490,12 @@ class DirectoryViewSurrogate(Folder):
         return ob
 
     @security.protected(ACI)
-    def listCustFolderPaths(self, adding_meta_type=None):
+    def listCustFolderPaths(self, adding_meta_type=None, max=0):
         """ List possible customization folders as key, value pairs.
         """
         rval = []
         ob = self.getCustomizableObject()
-        listFolderHierarchy(ob, '', rval, adding_meta_type)
+        listFolderHierarchy(ob, '', rval, adding_meta_type, max)
         rval.sort()
         return rval
 

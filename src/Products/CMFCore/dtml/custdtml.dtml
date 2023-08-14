@@ -32,18 +32,39 @@
       <div class="col-sm-9 col-md-10">
         <div class="input-group">
           <select name="folder_path" class="form-control">
-            <dtml-in expr="listCustFolderPaths('DTML Method')">
+            <dtml-in expr="listCustFolderPaths('DTML Method', int(REQUEST.get('max',20)))">
               <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
             </dtml-in>
           </select>
           <div cass="input-group-append">
-            <input class="btn btn-primary" type="submit" name="submit"
-                  value=" Customize " />
+            <select name="max" class="form-control"
+              onchange="this.options[this.selectedIndex].value && (window.location = './manage_main?max=' + this.options[this.selectedIndex].value);"
+              title="Maximum results of folderish Zope objects (0 = All)">
+              <dtml-if "REQUEST.get('max') is not None">
+                <option class="alert-info" selected="selected"
+                  value="<dtml-var "REQUEST.get('max')">">
+                  <dtml-var "int(REQUEST.get('max'))==0 and 'All' or REQUEST.get('max')">
+                </option>
+                <option>---</option>
+              </dtml-if>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+              <option value="500">500</option>
+              <option value="1000">1000</option>
+              <option value="0">All</option>
+            </select>
+          </div>
+          <div cass="input-group-append">
+            <input class="btn btn-primary" type="submit" name="submit" value=" Customize " />
           </div>
         </div>
-        <small>
+        <small class="text-muted">
           Select a destination folder and press the button
           to make a copy of this method that can be customized.
+          If the destination folder is not listed, then 
+          enlarge the amount of maximum results (default: 20).
         </small>
       </div>
     </div>
