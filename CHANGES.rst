@@ -3,7 +3,7 @@ Products.CMFCore Changelog
 
 3.3 (unreleased)
 ----------------
-
+- ZMI: added limit of folderish objects for customizing (PR#130)
 
 3.2 (2023-07-03)
 ----------------
