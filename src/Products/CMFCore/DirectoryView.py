@@ -359,11 +359,11 @@ registerFileExtension = _dirreg.registerFileExtension
 registerMetaType = _dirreg.registerMetaType
 
 
-def listFolderHierarchy(ob, path, rval, adding_meta_type=None, max=0, c = 0):
+def listFolderHierarchy(ob, path, rval, adding_meta_type=None, max=0, c=0):
     if not hasattr(ob, 'objectValues'):
         return
     for subob in ob.objectValues():
-        c+=1
+        c += 1
         base = getattr(subob, 'aq_base', subob)
         if getattr(base, 'isPrincipiaFolderish', 0):
 
@@ -386,11 +386,11 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None, max=0, c = 0):
                 subpath = subob.getId()
             title = getattr(subob, 'title', None)
             if title:
-                title = re.sub(r'^(.{48}).*$', '\g<1>...', str(title))
+                title = re.sub(r'^(.{48}).*$', '\\g<1>...', str(title))
                 name = f'{subpath} ({title})'
             else:
                 name = subpath
-            if max==0 or c <= max:
+            if max == 0 or c <= max:
                 rval.append((subpath, name))
                 listFolderHierarchy(subob, subpath, rval, adding_meta_type, max, c)
 
