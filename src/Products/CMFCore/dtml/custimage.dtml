@@ -66,21 +66,15 @@
           <div cass="input-group-append">
             <select name="max" class="form-control"
               onchange="this.options[this.selectedIndex].value && (window.location = './manage_main?max=' + this.options[this.selectedIndex].value);"
-              title="Maximum results of folderish Zope objects (0 = All)">
-              <dtml-if "REQUEST.get('max') is not None">
-                <option class="alert-info" selected="selected"
-                  value="<dtml-var "REQUEST.get('max')">">
-                  <dtml-var "int(REQUEST.get('max'))==0 and 'All' or REQUEST.get('max')">
-                </option>
-                <option>---</option>
-              </dtml-if>
-              <option value="20">20</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <option value="200">200</option>
-              <option value="500">500</option>
-              <option value="1000">1000</option>
-              <option value="0">All</option>
+              title="Maximum results of folderish Zope objects.">
+              <dtml-in "[20, 50, 100, 200, 500, 1000, 0]">
+                <dtml-let v=sequence-item
+                          s="(int(REQUEST.get('max',20)) == v) and 'selected=\042selected\042' or ''">
+                  <option <dtml-var "'value=\042%s\042 %s'%(v,s)">>
+                    <dtml-var "(v == 0) and 'All' or v">
+                  </option>
+                </dtml-let>
+              </dtml-in>
             </select>
           </div>
           <div cass="input-group-append">
