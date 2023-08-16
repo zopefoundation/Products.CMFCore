@@ -392,7 +392,8 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None, max=0):
                 name = subpath
             if max == 0 or len(rval) <= max:
                 rval.append((subpath, name))
-                listFolderHierarchy(subob, subpath, rval, adding_meta_type, max)
+                listFolderHierarchy(subob, subpath, rval, adding_meta_type,
+                                    max)
 
 
 @implementer(IDirectoryView)
