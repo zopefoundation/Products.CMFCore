@@ -39,7 +39,7 @@
         Content type
       </label>
       <div class="col-sm-9 col-md-10">
-        &dtml-getContentType;
+        <dtml-var "getContentType() or 'not supported'">
       </div>
     </div>
 
@@ -48,7 +48,11 @@
         Dimensions
       </label>
       <div class="col-sm-9 col-md-10">
-        &dtml-width; x &dtml-height;
+        <dtml-if "width==-1">
+          not determinable
+        <dtml-else>
+          &dtml-width; x &dtml-height;
+        </dtml-if>
       </div>
     </div>
 
@@ -101,6 +105,12 @@
           <dtml-var "tag(scale=250.0 / height, css_class='img-thumbnail', id='preview')">
       <dtml-elif "_.same_type(height, 's') and height and _.int(height) > 250">
           <dtml-var "tag(scale=250.0 / _.int(height), css_class='img-thumbnail', id='preview')">
+      <dtml-elif "width==-1 and getId().split('.')[-1]=='svg'">
+        <!-- SVG images whose dimensions are not determinable -->
+        <object id="preview" class="img-thumbnail" 
+          alt="preview" title="Preview"
+          data="&dtml-absolute_url;"  type="image/svg+xml" 
+          onload="this.style.maxWidth='99.99%'" />
       <dtml-else>
           <dtml-var "tag(css_class='img-thumbnail', id='preview')">
       </dtml-if></span>
