@@ -115,7 +115,18 @@
           <dtml-var "tag(css_class='img-thumbnail', id='preview')">
       </dtml-if></span>
   </figure>
-
+  <style>
+    /* <!-- Checkerboard background visualizing white and transparency */
+    figure#preview img {
+      background-color: #fff;
+      background-position: 0px 0px, 10px 10px;
+      background-size: 20px 20px;
+      background-image: 
+        linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),
+        linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);"
+    }
+      /* -->*/
+    </style>
 </main>
 
 <dtml-var manage_page_footer>
