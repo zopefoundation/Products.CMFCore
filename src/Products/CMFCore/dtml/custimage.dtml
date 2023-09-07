@@ -107,7 +107,7 @@
           <dtml-var "tag(scale=250.0 / _.int(height), css_class='img-thumbnail', id='preview')">
       <dtml-elif "width==-1 and getId().split('.')[-1]=='svg'">
         <!-- SVG images whose dimensions are not determinable -->
-        <object id="preview" class="img-thumbnail" 
+        <object class="img-thumbnail" 
           alt="preview" title="Preview"
           data="&dtml-absolute_url;"  type="image/svg+xml" 
           onload="this.style.maxWidth='99.99%'" />
@@ -117,13 +117,15 @@
   </figure>
   <style>
     /* <!-- Checkerboard background visualizing white and transparency */
-    figure#preview img {
+    figure#preview img,
+    figure#preview object {
       background-color: #fff;
-      background-position: 0px 0px, 10px 10px;
+      background-position: 4px 4px, 14px 14px;
       background-size: 20px 20px;
       background-image: 
         linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),
-        linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);"
+        linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);
+      box-shadow: inset 0px 0px 0px 4px #fff;
     }
       /* -->*/
     </style>
