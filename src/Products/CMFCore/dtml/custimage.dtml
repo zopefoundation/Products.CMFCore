@@ -39,7 +39,7 @@
         Content type
       </label>
       <div class="col-sm-9 col-md-10">
-        &dtml-getContentType;
+        <dtml-var "getContentType() or 'not supported'">
       </div>
     </div>
 
@@ -48,7 +48,11 @@
         Dimensions
       </label>
       <div class="col-sm-9 col-md-10">
-        &dtml-width; x &dtml-height;
+        <dtml-if "width==-1">
+          not determinable
+        <dtml-else>
+          &dtml-width; x &dtml-height;
+        </dtml-if>
       </div>
     </div>
 
@@ -57,17 +61,35 @@
         Customize
       </label>
       <div class="col-sm-9 col-md-10">
-        <select name="folder_path">
-          <dtml-in expr="listCustFolderPaths('DTML Method')">
-            <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
-          </dtml-in>
-        </select>
-        <input class="btn btn-primary" type="submit" name="submit"
-               value=" Customize " />
-        <br/>
-        <small>
+        <div class="input-group">
+          <select name="folder_path" class="form-control">
+            <dtml-in expr="listCustFolderPaths('DTML Method', int(REQUEST.get('max',20)))">
+              <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
+            </dtml-in>
+          </select>
+          <div cass="input-group-append">
+            <select name="max" class="form-control"
+              onchange="this.options[this.selectedIndex].value && (window.location = './manage_main?max=' + this.options[this.selectedIndex].value);"
+              title="Maximum results of folderish Zope objects.">
+              <dtml-in "[20, 50, 100, 200, 500, 1000, 0]">
+                <dtml-let v=sequence-item
+                          s="(int(REQUEST.get('max',20)) == v) and 'selected=\042selected\042' or ''">
+                  <option <dtml-var "'value=\042%s\042 %s'%(v,s)">>
+                    <dtml-var "(v == 0) and 'All' or v">
+                  </option>
+                </dtml-let>
+              </dtml-in>
+            </select>
+          </div>
+          <div cass="input-group-append">
+            <input class="btn btn-primary" type="submit" name="submit" value=" Customize " />
+          </div>
+        </div>
+        <small class="text-muted">
           Select a destination folder and press the button
           to make a copy of this method that can be customized.
+          If the destination folder is not listed try 
+          increasing the maximum results number (default: 20).
         </small>
       </div>
     </div>
@@ -83,11 +105,34 @@
           <dtml-var "tag(scale=250.0 / height, css_class='img-thumbnail', id='preview')">
       <dtml-elif "_.same_type(height, 's') and height and _.int(height) > 250">
           <dtml-var "tag(scale=250.0 / _.int(height), css_class='img-thumbnail', id='preview')">
+      <dtml-elif "width==-1 and getId().split('.')[-1]=='svg'">
+        <!-- SVG images whose dimensions are not determinable -->
+        <object class="img-thumbnail" 
+          alt="preview" title="Preview"
+          data="&dtml-absolute_url;"  type="image/svg+xml" 
+          onload="this.style.maxWidth='99.99%'" />
       <dtml-else>
           <dtml-var "tag(css_class='img-thumbnail', id='preview')">
       </dtml-if></span>
   </figure>
-
+  <style>
+    /* <!-- Checkerboard background visualizing white and transparency */
+    figure#preview img,
+    figure#preview object {
+      background-color: #ddd;
+      background-position: 4px 4px, 14px 14px;
+      background-size: 20px 20px;
+      background-image: 
+        linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),
+        linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);
+      box-shadow: inset 0px 0px 0px 4px #fff;
+    }
+    figure#preview img:hover,
+    figure#preview object:hover {
+        background-image:none;
+    }
+    /* -->*/
+  </style>
 </main>
 
 <dtml-var manage_page_footer>

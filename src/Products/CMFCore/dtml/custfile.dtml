@@ -48,17 +48,35 @@
         Customize
       </label>
       <div class="col-sm-9 col-md-10">
-        <select name="folder_path">
-          <dtml-in expr="listCustFolderPaths('DTML Method')">
-            <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
-          </dtml-in>
-        </select>
-        <input class="btn btn-primary" type="submit" name="submit"
-               value=" Customize " />
-        <br/>
-        <small>
+        <div class="input-group">
+          <select name="folder_path" class="form-control">
+            <dtml-in expr="listCustFolderPaths('DTML Method', int(REQUEST.get('max',20)))">
+              <option value="&dtml-sequence-key;">&dtml-sequence-item;</option>
+            </dtml-in>
+          </select>
+          <div cass="input-group-append">
+            <select name="max" class="form-control"
+              onchange="this.options[this.selectedIndex].value && (window.location = './manage_main?max=' + this.options[this.selectedIndex].value);"
+              title="Maximum results of folderish Zope objects.">
+              <dtml-in "[20, 50, 100, 200, 500, 1000, 0]">
+                <dtml-let v=sequence-item
+                          s="(int(REQUEST.get('max',20)) == v) and 'selected=\042selected\042' or ''">
+                  <option <dtml-var "'value=\042%s\042 %s'%(v,s)">>
+                    <dtml-var "(v == 0) and 'All' or v">
+                  </option>
+                </dtml-let>
+              </dtml-in>
+            </select>
+          </div>
+          <div cass="input-group-append">
+            <input class="btn btn-primary" type="submit" name="submit" value=" Customize " />
+          </div>
+        </div>
+        <small class="text-muted">
           Select a destination folder and press the button
           to make a copy of this method that can be customized.
+          If the destination folder is not listed try 
+          increasing the maximum results number (default: 20).
         </small>
       </div>
     </div>

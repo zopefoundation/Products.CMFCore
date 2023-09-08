@@ -49,7 +49,7 @@ class DummyAction:
 
     def __eq__(self, other):
         return (
-            type(self) == type(other) and
+            isinstance(self, type(other)) and
             self.__class__ == other.__class__ and
             self.value == other.value
         )

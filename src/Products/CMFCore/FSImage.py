@@ -81,6 +81,8 @@ class FSImage(FSObject):
                 self.ZCacheable_invalidate()
                 self._file_mod_time = mtime
             ct, width, height = getImageInfo(data)
+            if ct == '' and self.id.endswith('.svg'):
+                ct = 'image/svg+xml'
             self.content_type = ct
             self.width = width
             self.height = height
@@ -170,4 +172,5 @@ registerFileExtension('jpg', FSImage)
 registerFileExtension('jpeg', FSImage)
 registerFileExtension('png', FSImage)
 registerFileExtension('bmp', FSImage)
+registerFileExtension('svg', FSImage)
 registerMetaType('Image', FSImage)
