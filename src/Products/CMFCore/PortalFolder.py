@@ -233,11 +233,8 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
     #
     #   other methods
     #
-    @security.public
     def encodeFolderFilter(self, REQUEST):
-        """
-            Parse cookie string for using variables in dtml.
-        """
+        # Parse cookie string for using variables in dtml.
         filter = {}
         for key, value in REQUEST.items():
             if key[:10] == 'filter_by_':
@@ -246,11 +243,8 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
         encoded = ''.join(encoded.split('\n'))
         return encoded
 
-    @security.public
     def decodeFolderFilter(self, encoded):
-        """
-            Parse cookie string for using variables in dtml.
-        """
+        # Parse cookie string for using variables in dtml.
         filter = {}
         if encoded:
             filter.update(marshal.loads(base64_decode(encoded)))
