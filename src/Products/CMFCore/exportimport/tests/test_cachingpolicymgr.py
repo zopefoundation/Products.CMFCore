@@ -13,6 +13,7 @@
 """Caching policy manager xml adapter and setup handler unit tests.
 """
 
+import six
 import unittest
 
 from OFS.Folder import Folder
@@ -46,6 +47,19 @@ _CPM_BODY = b"""\
     no_transform="False"
     predicate="python:object.getPortalTypeName() == &#x27;Foo&#x27;"
     private="False" proxy_revalidate="False" public="False" vary=""/>
+</object>
+"""
+
+# On Python 2.7 the tests fail if we use '&#x27;'.
+_CPM_BODY_27 = b"""\
+<?xml version="1.0" encoding="utf-8"?>
+<object name="caching_policy_manager" meta_type="CMF Caching Policy Manager">
+ <caching-policy name="foo_policy" enable_304s="False" etag_func=""
+    last_modified="True" max_age_secs="600" mtime_func="object/modified"
+    must_revalidate="False" no_cache="False" no_store="False"
+    no_transform="False"
+    predicate="python:object.getPortalTypeName() == 'Foo'" private="False"
+    proxy_revalidate="False" public="False" vary=""/>
 </object>
 """
 
@@ -83,7 +97,10 @@ class CachingPolicyManagerXMLAdapterTests(BodyAdapterTestCase,
 
     def setUp(self):
         self._obj = CachingPolicyManager()
-        self._BODY = _CPM_BODY
+        if six.PY3:
+            self._BODY = _CPM_BODY
+        else:
+            self._BODY = _CPM_BODY_27
 
 
 class _CachingPolicyManagerSetup(BaseRegistryTests):
