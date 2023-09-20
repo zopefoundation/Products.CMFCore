@@ -13,8 +13,9 @@
 """Caching policy manager xml adapter and setup handler unit tests.
 """
 
-import six
 import unittest
+
+import six
 
 from OFS.Folder import Folder
 from zope.component import getSiteManager
