@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.7.1 (unreleased)
 ------------------
 
+- Make ``decodeFolderFilter`` and ``encodeFolderFilter`` non-public.
+  This is the workaround from `CVE-2023-36814 <https://github.com/zopefoundation/Products.CMFCore/security/advisories/GHSA-4hpj-8rhv-9x87>`_.
+
 
 2.7.0 (2022-12-16)
 ------------------

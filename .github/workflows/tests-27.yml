@@ -20,26 +20,15 @@ jobs:
         - ["ubuntu", "ubuntu-20.04"]
         config:
         # [Python version, tox env]
-        - ["3.9",   "lint"]
-        - ["3.5",   "py35"]
-        - ["3.6",   "py36"]
-        - ["3.7",   "py37"]
-        - ["3.8",   "py38"]
-        - ["3.9",   "py39"]
-        - ["3.10",  "py310"]
-        - ["3.11",  "py311"]
-        - ["3.9",   "docs"]
-        - ["3.9",   "coverage"]
+        - ["2.7",   "py27"]
 
     runs-on: ${{ matrix.os[1] }}
+    container:
+      image: python:2.7.18-buster
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: ${{ matrix.config[1] }}
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.config[0] }}
     - name: Pip cache
       uses: actions/cache@v3
       with:
