@@ -4,7 +4,8 @@ Products.CMFCore Changelog
 3.3 (unreleased)
 ----------------
 - ZMI: added limit of folderish objects for customizing and 
-  handling SVG files as FSImage showing a preview (PR#130)
+  handling SVG files as FSImage showing a preview.
+  (`#130 <https://github.com/zopefoundation/Products.CMFCore/pull/130>`_)
 
 3.2 (2023-07-03)
 ----------------
