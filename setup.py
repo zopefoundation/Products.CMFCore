@@ -21,7 +21,7 @@ README = _boundary.join([
 ])
 
 setup(name='Products.%s' % NAME,
-      version='2.7.1',
+      version='2.7.2.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       classifiers=[
