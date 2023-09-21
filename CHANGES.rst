@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-2.7.1 (unreleased)
+2.7.1 (2023-09-21)
 ------------------
 
 - Make ``decodeFolderFilter`` and ``encodeFolderFilter`` non-public.
