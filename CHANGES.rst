@@ -3,9 +3,13 @@ Products.CMFCore Changelog
 
 3.3 (unreleased)
 ----------------
+
+- Add support for Python 3.12.
+
 - ZMI: added limit of folderish objects for customizing and 
   handling SVG files as FSImage showing a preview.
   (`#130 <https://github.com/zopefoundation/Products.CMFCore/pull/130>`_)
+
 
 3.2 (2023-07-03)
 ----------------
