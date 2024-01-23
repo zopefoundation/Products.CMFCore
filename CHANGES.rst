@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-3.3 (unreleased)
+3.3 (2024-01-23)
 ----------------
 
 - Add support for Python 3.12.
