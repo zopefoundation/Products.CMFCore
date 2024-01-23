@@ -1,6 +1,12 @@
 Products.CMFCore Changelog
 ==========================
 
+3.4 (unreleased)
+----------------
+
+- Nothing changed yet.
+
+
 3.3 (2024-01-23)
 ----------------
 
