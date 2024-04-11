@@ -4,7 +4,8 @@ Products.CMFCore Changelog
 3.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add pt_BR translations.
+- Add ``locales`` folder.
 
 
 3.3 (2024-01-23)
