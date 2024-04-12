@@ -4,6 +4,7 @@ Products.CMFCore Changelog
 3.4 (unreleased)
 ----------------
 
+- Change i18n domain to ``cmf_core``.
 - Add pt_BR translations.
 - Add ``locales`` folder.
 

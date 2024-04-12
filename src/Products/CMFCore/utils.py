@@ -910,4 +910,4 @@ def base64_decode(text):
 
 
 security.declarePublic('Message')  # NOQA: flake8: D001
-Message = MessageFactory('cmf_default')
+Message = MessageFactory('cmf_core')

@@ -76,7 +76,7 @@ class Action(PropertyManager, SimpleItem):
     """ Reference to an action.
     """
 
-    i18n_domain = 'cmf_default'
+    i18n_domain = 'cmf_core'
     link_target = ''
 
     security = ClassSecurityInfo()
