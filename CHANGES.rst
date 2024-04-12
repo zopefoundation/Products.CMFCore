@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-3.4 (unreleased)
+3.4 (2024-04-12)
 ----------------
 
 - Add i18n translation support.
