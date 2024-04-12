@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-04-12 15:35+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: DOMAIN\n"
+
+#: ../MembershipTool.py:557
+msgid "A home folder for portal members."
+msgstr "Uma pasta inicial para membros do portal."
+
+#: ../MembershipTool.py:575
+msgid "Classic CMFCore home folder for portal members."
+msgstr "Pasta inicial Classic CMFCore para membros do portal."
+
+#: ../WorkflowTool.py:285
+msgid "Could not get info: ${name}"
+msgstr "Não foi possível obter informação: ${name}"
+
+#: ../MembershipTool.py:556
+msgid "Home Folder"
+msgstr "Pasta Inicial"
+
+#: ../WorkflowTool.py:270
+msgid "No workflow provides '${name}' information."
+msgstr "Nenhum workflow fornece informações de '${name}'."
+
+#: ../WorkflowTool.py:241
+msgid "No workflow provides the '${action_id}' action."
+msgstr "Nenhum workflow fornece a ação '${action_id}'."
+
+#: ../WorkflowTool.py:234
+msgid "No workflows found."
+msgstr "Nenhum workflow encontrado."
+
+#: ../WorkflowTool.py:248
+msgid "Requested workflow definition not found."
+msgstr "Definição de workflow requerida não encontrada."
+
+#: ../RegistrationTool.py:144
+msgid "The login name you selected is already in use or is not valid. Please choose another."
+msgstr "O nome de usuário que você selecionou já está em uso ou não é válido. Por favor escolha outro."
+
+#: ../PortalContent.py:56
+msgid "This resource is locked via webDAV."
+msgstr "Este recurso está bloqueado via webDAV."

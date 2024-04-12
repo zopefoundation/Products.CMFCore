@@ -1,0 +1,58 @@
+#--- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+#SOME DESCRIPTIVE TITLE.
+#FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-04-12 15:35+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: cmf_core\n"
+
+#: ../MembershipTool.py:557
+msgid "A home folder for portal members."
+msgstr ""
+
+#: ../MembershipTool.py:575
+msgid "Classic CMFCore home folder for portal members."
+msgstr ""
+
+#: ../WorkflowTool.py:285
+msgid "Could not get info: ${name}"
+msgstr ""
+
+#: ../MembershipTool.py:556
+msgid "Home Folder"
+msgstr ""
+
+#: ../WorkflowTool.py:270
+msgid "No workflow provides '${name}' information."
+msgstr ""
+
+#: ../WorkflowTool.py:241
+msgid "No workflow provides the '${action_id}' action."
+msgstr ""
+
+#: ../WorkflowTool.py:234
+msgid "No workflows found."
+msgstr ""
+
+#: ../WorkflowTool.py:248
+msgid "Requested workflow definition not found."
+msgstr ""
+
+#: ../RegistrationTool.py:144
+msgid "The login name you selected is already in use or is not valid. Please choose another."
+msgstr ""
+
+#: ../PortalContent.py:56
+msgid "This resource is locked via webDAV."
+msgstr ""

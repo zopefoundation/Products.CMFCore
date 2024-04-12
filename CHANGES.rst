@@ -4,7 +4,8 @@ Products.CMFCore Changelog
 3.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add i18n translation support.
+  (`#135 <https://github.com/zopefoundation/Products.CMFCore/issues/135>`_)
 
 
 3.3 (2024-01-23)

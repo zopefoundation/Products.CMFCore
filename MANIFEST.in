@@ -17,9 +17,12 @@ recursive-include src *.dtml
 recursive-include src *.gif
 recursive-include src *.js
 recursive-include src *.metadata
+recursive-include src *.po
+recursive-include src *.pot
 recursive-include src *.props
 recursive-include src *.pt
 recursive-include src *.rst
+recursive-include src *.sh
 recursive-include src *.stx
 recursive-include src *.swf
 recursive-include src *.txt
