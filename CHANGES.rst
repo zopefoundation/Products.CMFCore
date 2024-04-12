@@ -4,9 +4,8 @@ Products.CMFCore Changelog
 3.4 (unreleased)
 ----------------
 
-- Change i18n domain to ``cmf_core``.
-- Add pt_BR translations.
-- Add ``locales`` folder.
+- Add i18n translation support.
+  (`#135 <https://github.com/zopefoundation/Products.CMFCore/issues/135>`_)
 
 
 3.3 (2024-01-23)
