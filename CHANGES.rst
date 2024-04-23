@@ -4,6 +4,10 @@ Products.CMFCore Changelog
 3.5 (unreleased)
 ----------------
 
+- Use the new ``resources`` keyword of ``registerClass`` if available.
+  This avoids a deprecation warning for using a non callable constructor in Zope higher than 5.9.
+  (`#1202 <https://github.com/zopefoundation/Zope/issues/1202>`_)
+
 
 3.4 (2024-04-12)
 ----------------
@@ -17,7 +21,7 @@ Products.CMFCore Changelog
 
 - Add support for Python 3.12.
 
-- ZMI: added limit of folderish objects for customizing and 
+- ZMI: added limit of folderish objects for customizing and
   handling SVG files as FSImage showing a preview.
   (`#130 <https://github.com/zopefoundation/Products.CMFCore/pull/130>`_)
 
