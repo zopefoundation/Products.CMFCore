@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-3.5 (unreleased)
+3.5 (2024-03-23)
 ----------------
 
 - Use the new ``resources`` keyword of ``registerClass`` if available.
