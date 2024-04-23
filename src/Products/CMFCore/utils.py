@@ -599,13 +599,20 @@ class ToolInit:
         # Add only one meta type to the folder add list.
         productObject = context._ProductContext__prod
         self.product_name = productObject.id
-        context.registerClass(
-            meta_type=self.meta_type,
-            # This is a little sneaky: we add self to the
-            # FactoryDispatcher under the name "toolinit".
-            # manage_addTool() can then grab it.
-            constructors=(manage_addToolForm, manage_addTool, self),
-            icon=self.icon)
+        # We add self to the FactoryDispatcher under the name 'toolinit'.
+        # manage_addContentType() can then grab it.
+        try:
+            context.registerClass(
+                meta_type=self.meta_type,
+                constructors=(manage_addToolForm, manage_addTool),
+                resources=(self, ),
+                icon=self.icon)
+        except TypeError:
+            # The 'resources' keyword was only introduced after Zope 5.9.
+            context.registerClass(
+                meta_type=self.meta_type,
+                constructors=(manage_addToolForm, manage_addTool, self),
+                icon=self.icon)
 
         if self.icon:
             icon = os_path.split(self.icon)[1]
@@ -680,15 +687,27 @@ class ContentInit:
 
     def initialize(self, context):
         # Add only one meta type to the folder add list.
-        context.registerClass(
-            meta_type=self.meta_type,
-            # This is a little sneaky: we add self to the
-            # FactoryDispatcher under the name "contentinit".
-            # manage_addContentType() can then grab it.
-            constructors=(manage_addContentForm, manage_addContent,
-                          self) + self.extra_constructors,
-            permission=self.permission,
-            visibility=self.visibility)
+        # We add self to the FactoryDispatcher under the name 'contentinit'.
+        # manage_addContentType() can then grab it.
+        try:
+            context.registerClass(
+                meta_type=self.meta_type,
+                constructors=(
+                    manage_addContentForm,
+                    manage_addContent,
+                    ) + self.extra_constructors,
+                resources=(self, ),
+                permission=self.permission,
+                visibility=self.visibility)
+        except TypeError:
+            # The 'resources' keyword was only introduced after Zope 5.9.
+            context.registerClass(
+                meta_type=self.meta_type,
+                constructors=(
+                    manage_addContentForm, manage_addContent, self,
+                    ) + self.extra_constructors,
+                permission=self.permission,
+                visibility=self.visibility)
 
         for ct in self.content_types:
             ct.__factory_meta_type__ = self.meta_type
