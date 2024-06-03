@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 3.6 (unreleased)
 ----------------
 
+- Drop support for Python 3.7.
+
 
 3.5 (2024-03-23)
 ----------------
