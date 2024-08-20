@@ -5,6 +5,7 @@ Products.CMFCore Changelog
 ----------------
 
 - Drop support for Python 3.7.
+- Fix reindexObjectSecurity to avoid a full reindex of affected objects
 
 
 3.5 (2024-03-23)
