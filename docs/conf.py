@@ -19,9 +19,10 @@ import sys
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.append(os.path.abspath('.'))
+# sys.path.append(os.path.abspath('.'))
 import Products
-Products.__path__.append(os.path.abspath('../Products'))
+
+Products.__path__.append(os.path.abspath("../Products"))
 
 # -- General configuration -----------------------------------------------------
 
@@ -39,7 +40,7 @@ extensions = [
 templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = {".rst": "restructuredtext"}
 
 # The encoding of source files.
 #source_encoding = 'utf-8'
@@ -211,4 +212,4 @@ latex_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/2/': None}
+intersphinx_mapping = {"python": ("https://docs.python.org/", None)}
