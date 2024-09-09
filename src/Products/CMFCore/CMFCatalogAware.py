@@ -125,7 +125,8 @@ class CatalogAware(Base):
                                'catalog', brain_path)
                 continue
             s = getattr(ob, '_p_changed', 0)
-            ob.reindexObject(idxs=self._cmf_security_indexes)
+            ob.reindexObject(idxs=self._cmf_security_indexes,
+                             update_metadata=0)
             if s is None:
                 ob._p_deactivate()
 

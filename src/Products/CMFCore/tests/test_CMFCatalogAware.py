@@ -194,9 +194,9 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo.reindexObjectSecurity()
         log = sorted(cat.log)
         self.assertEqual(log, [
-            'reindex /site/foo %s 1' % str(CMF_SECURITY_INDEXES),
-            'reindex /site/foo/bar %s 1' % str(CMF_SECURITY_INDEXES),
-            'reindex /site/foo/hop %s 1' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/bar %s 0' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/hop %s 0' % str(CMF_SECURITY_INDEXES),
             ])
         self.assertFalse(foo.notified)
         self.assertFalse(bar.notified)
@@ -227,7 +227,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         foo.reindexObjectSecurity()
         self.assertEqual(
             cat.log,
-            ['reindex /site/foo %s 1' % str(CMF_SECURITY_INDEXES)])
+            ['reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES)])
         self.assertFalse(foo.notified)
         self.assertFalse(missing.notified)
         self.assertEqual(len(self.logged), 1)  # logging because no raise
