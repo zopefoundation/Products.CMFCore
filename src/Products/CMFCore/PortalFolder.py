@@ -392,14 +392,14 @@ class PortalFolderBase(DynamicType, OpaqueItemManager, Folder):
                                                                  'allowed.')
                 else:
                     raise AccessControl_Unauthorized(
-                            'You do not possess the '
-                            '%r permission in the context of the container '
-                            'into which you are pasting, thus you are not '
-                            'able to perform this operation.' % mt_permission)
+                        'You do not possess the '
+                        '%r permission in the context of the container '
+                        'into which you are pasting, thus you are not '
+                        'able to perform this operation.' % mt_permission)
             else:
                 raise AccessControl_Unauthorized(
-                        'The object %r does not '
-                        'support this operation.' % object.getId())
+                    'The object %r does not '
+                    'support this operation.' % object.getId())
         else:
             # Call OFS' _verifyObjectPaste if necessary
             PortalFolderBase.inheritedAttribute(

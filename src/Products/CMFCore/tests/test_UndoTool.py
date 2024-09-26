@@ -51,4 +51,4 @@ class UndoToolTests(unittest.TestCase):
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(UndoToolTests),
-        ))
+    ))

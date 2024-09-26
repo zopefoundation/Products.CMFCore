@@ -76,7 +76,7 @@ class UndoTool(UniqueObject, SimpleItem):
                 lambda record, user_id=user_id:
                 record['user_name'].split()[-1] == user_id,
                 transactions,
-               ))
+            ))
         return transactions
 
     @security.public

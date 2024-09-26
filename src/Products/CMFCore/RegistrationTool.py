@@ -78,7 +78,7 @@ class RegistrationTool(UniqueObject, SimpleItem):
         else:
             self.member_id_pattern = ''
             self._ALLOWED_MEMBER_ID_PATTERN = re.compile(
-                                                self.default_member_id_pattern)
+                self.default_member_id_pattern)
 
         if REQUEST is not None:
             msg = 'Member ID Pattern changed'

@@ -81,6 +81,7 @@ class DummyContent(OriginalDummyContent):
 class OpaqueBase:
     """ Dummy opaque item without manage_after/before hookes
     """
+
     def __init__(self, obj, id):
         self.addCount = self.cloneCount = self.deleteCount = 0
         self.addCounter = self.cloneCounter = self.deleteCounter = 1
@@ -271,4 +272,4 @@ def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(
             ManageBeforeAfterTests),
-        ))
+    ))

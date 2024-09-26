@@ -38,6 +38,7 @@ SKINDATA = {}  # mapping thread-id -> (skinobj, skinname, ignore, resolve)
 
 class SkinDataCleanup:
     """Cleanup at the end of the request."""
+
     def __init__(self, tid):
         self.tid = tid
 

@@ -84,7 +84,7 @@ class DynamicType:
                                     check_condition)
         else:
             msg = 'Action "{}" not available for {}'.format(
-                        action_chain, '/'.join(self.getPhysicalPath()))
+                action_chain, '/'.join(self.getPhysicalPath()))
             raise ValueError(msg)
 
     @security.public
@@ -123,7 +123,7 @@ class DynamicType:
         portal_url = utool()
         icon = self.getIconURL()
         if icon.startswith(portal_url):
-            icon = icon[len(portal_url)+1:]
+            icon = icon[len(portal_url) + 1:]
             if not relative_to_portal:
                 # Relative to REQUEST['BASEPATH1']
                 icon = f'{utool(relative=1)}/{icon}'

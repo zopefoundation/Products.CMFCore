@@ -111,9 +111,9 @@ class FSReSTMethodTests(TransactionalTest, FSReSTMaker):
         obj = self._makeOne('testReST', 'testReST.rst')
         obj = obj.__of__(self.app)
         obj(self.REQUEST, self.RESPONSE)
-        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
-        self.assertTrue('foo' in self.RESPONSE.headers)
-        self.assertTrue('bar' in self.RESPONSE.headers)
+        self.assertGreaterEqual(len(self.RESPONSE.headers), original_len + 2)
+        self.assertIn('foo', self.RESPONSE.headers)
+        self.assertIn('bar', self.RESPONSE.headers)
 
     def test_ownership(self):
         script = self._makeOne('testReST', 'testReST.rst')
@@ -156,7 +156,7 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
         SecurityTest.setUp(self)
         FSReSTMaker.setUp(self)
         self.skins, self.custom, self.fsdir, self.fsReST = self._makeContext(
-                                                    'testReST', 'testReST.rst')
+            'testReST', 'testReST.rst')
 
     def tearDown(self):
         cleanUp()
@@ -173,10 +173,10 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
         self.fsReST.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.assertTrue('testReST' in self.custom.objectIds())
+        self.assertIn('testReST', self.custom.objectIds())
         target = self.custom._getOb('testReST')
 
-        self.assertTrue(isinstance(target, ZopePageTemplate))
+        self.assertIsInstance(target, ZopePageTemplate)
 
         propinfo = target.propdict()['rest']
         self.assertEqual(propinfo['type'], 'text')
@@ -192,15 +192,15 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
         self.fsReST.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.assertFalse('testReST' in self.custom.objectIds())
-        self.assertTrue('testReST' in self.app.other.objectIds())
+        self.assertNotIn('testReST', self.custom.objectIds())
+        self.assertIn('testReST', self.app.other.objectIds())
 
     def test_customize_fpath_as_dot(self):
 
         self.fsReST.manage_doCustomize(folder_path='.')
 
-        self.assertFalse('testReST' in self.custom.objectIds())
-        self.assertTrue('testReST' in self.skins.objectIds())
+        self.assertNotIn('testReST', self.custom.objectIds())
+        self.assertIn('testReST', self.skins.objectIds())
 
     def test_customize_manual_clone(self):
         from OFS.Folder import Folder
@@ -209,8 +209,8 @@ class FSReSTMethodCustomizationTests(SecurityTest, FSReSTMaker):
 
         self.fsReST.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.assertTrue('testReST' in self.custom.objectIds())
-        self.assertTrue(aq_base(self.custom._getOb('testReST')) is clone)
+        self.assertIn('testReST', self.custom.objectIds())
+        self.assertIs(aq_base(self.custom._getOb('testReST')), clone)
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
@@ -234,4 +234,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(FSReSTMethodTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             FSReSTMethodCustomizationTests),
-        ))
+    ))

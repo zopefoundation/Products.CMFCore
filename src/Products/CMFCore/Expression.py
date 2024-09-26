@@ -111,16 +111,16 @@ def createExprContext(folder, portal, object):
     else:
         member = mtool.getAuthenticatedMember()
     data = {
-        'object_url':   object_url,
-        'folder_url':   folder.absolute_url(),
-        'portal_url':   portal.absolute_url(),
-        'object':       object,
-        'folder':       folder,
-        'portal':       portal,
-        'nothing':      None,
-        'request':      getattr(portal, 'REQUEST', None),
-        'modules':      SecureModuleImporter,
-        'member':       member,
-        'here':         object,
-        }
+        'object_url': object_url,
+        'folder_url': folder.absolute_url(),
+        'portal_url': portal.absolute_url(),
+        'object': object,
+        'folder': folder,
+        'portal': portal,
+        'nothing': None,
+        'request': getattr(portal, 'REQUEST', None),
+        'modules': SecureModuleImporter,
+        'member': member,
+        'here': object,
+    }
     return getEngine().getContext(data)

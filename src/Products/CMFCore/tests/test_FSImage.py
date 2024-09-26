@@ -165,9 +165,9 @@ class FSImageTests(TransactionalTest, FSDVTest):
         obj = obj.__of__(self.app)
         obj.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
-        self.assertTrue(len(headers) >= original_len + 3)
-        self.assertTrue('foo' in headers)
-        self.assertTrue('bar' in headers)
+        self.assertGreaterEqual(len(headers), original_len + 3)
+        self.assertIn('foo', headers)
+        self.assertIn('bar', headers)
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_index_html_with_304_and_caching(self):
@@ -190,9 +190,9 @@ class FSImageTests(TransactionalTest, FSDVTest):
         self.assertEqual(self.RESPONSE.getStatus(), 304)
 
         headers = self.RESPONSE.headers
-        self.assertTrue(len(headers) >= original_len + 3)
-        self.assertTrue('foo' in headers)
-        self.assertTrue('bar' in headers)
+        self.assertGreaterEqual(len(headers), original_len + 3)
+        self.assertIn('foo', headers)
+        self.assertIn('bar', headers)
         self.assertEqual(headers['test_path'], '/test_image')
 
     def test_tag_with_acquired_clashing_attrs(self):
@@ -209,7 +209,7 @@ class FSImageTests(TransactionalTest, FSDVTest):
         image = image.__of__(self.app)
 
         tag = image.tag()
-        self.assertTrue('alt=""' in tag)
+        self.assertIn('alt=""', tag)
 
     def test_unnecessary_invalidation_avoidance(self):
         # See https://bugs.launchpad.net/zope-cmf/+bug/325246
@@ -249,4 +249,4 @@ class FSImageTests(TransactionalTest, FSDVTest):
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(FSImageTests),
-        ))
+    ))

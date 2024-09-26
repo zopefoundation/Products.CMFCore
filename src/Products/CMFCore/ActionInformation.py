@@ -100,7 +100,7 @@ class Action(PropertyManager, SimpleItem):
          'label': 'Permissions', 'select_variable': 'possible_permissions'},
         {'id': 'visible', 'type': 'boolean', 'mode': 'w',
          'label': 'Visible?'},
-        )
+    )
 
     manage_options = (
         PropertyManager.manage_options +

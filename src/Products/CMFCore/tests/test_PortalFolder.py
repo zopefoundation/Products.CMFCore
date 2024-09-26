@@ -118,12 +118,12 @@ class PortalFolderFactoryTests(SecurityTest):
 
     def test_invokeFactory(self):
         f = self.f
-        self.assertFalse('foo' in f.objectIds())
+        self.assertNotIn('foo', f.objectIds())
 
         f.manage_addProduct = {'FooProduct': DummyFactoryDispatcher(f)}
         f.invokeFactory(type_name='Dummy Content', id='foo')
 
-        self.assertTrue('foo' in f.objectIds())
+        self.assertIn('foo', f.objectIds())
         foo = f.foo
         self.assertEqual(foo.getId(), 'foo')
         self.assertEqual(foo.getPortalTypeName(), 'Dummy Content')
@@ -138,7 +138,7 @@ class PortalFolderFactoryTests(SecurityTest):
 
         ftype.allowed_content_types = (self._PORTAL_TYPE,)
         f.invokeFactory(self._PORTAL_TYPE, id='sub')
-        self.assertTrue('sub' in f.objectIds())
+        self.assertIn('sub', f.objectIds())
         self.assertRaises(ValueError, f.invokeFactory, 'Dummy Content', 'foo')
 
 
@@ -638,12 +638,12 @@ class PortalFolderMoveTests(SecurityTest):
         sm.registerUtility(ttool, ITypesTool)
 
         sub1._setObject('dummy', DummyContent('dummy', catalog=1))
-        self.assertTrue('dummy' in sub1.objectIds())
-        self.assertTrue('dummy' in sub1.contentIds())
-        self.assertFalse('dummy' in sub2.objectIds())
-        self.assertFalse('dummy' in sub2.contentIds())
-        self.assertFalse('dummy' in sub3.objectIds())
-        self.assertFalse('dummy' in sub3.contentIds())
+        self.assertIn('dummy', sub1.objectIds())
+        self.assertIn('dummy', sub1.contentIds())
+        self.assertNotIn('dummy', sub2.objectIds())
+        self.assertNotIn('dummy', sub2.contentIds())
+        self.assertNotIn('dummy', sub3.objectIds())
+        self.assertNotIn('dummy', sub3.contentIds())
         self.assertTrue(has_path(ctool, '/bar/site/sub1/dummy'))
         self.assertFalse(has_path(ctool, '/bar/site/sub2/dummy'))
         self.assertFalse(has_path(ctool, '/bar/site/sub3/dummy'))
@@ -654,12 +654,12 @@ class PortalFolderMoveTests(SecurityTest):
         sub2.all_meta_types.extend(sub2.all_meta_types)
         sub2.all_meta_types.extend(extra_meta_types())
         sub2.manage_pasteObjects(cookie)
-        self.assertTrue('dummy' in sub1.objectIds())
-        self.assertTrue('dummy' in sub1.contentIds())
-        self.assertTrue('dummy' in sub2.objectIds())
-        self.assertTrue('dummy' in sub2.contentIds())
-        self.assertFalse('dummy' in sub3.objectIds())
-        self.assertFalse('dummy' in sub3.contentIds())
+        self.assertIn('dummy', sub1.objectIds())
+        self.assertIn('dummy', sub1.contentIds())
+        self.assertIn('dummy', sub2.objectIds())
+        self.assertIn('dummy', sub2.contentIds())
+        self.assertNotIn('dummy', sub3.objectIds())
+        self.assertNotIn('dummy', sub3.contentIds())
         self.assertTrue(has_path(ctool, '/bar/site/sub1/dummy'))
         self.assertTrue(has_path(ctool, '/bar/site/sub2/dummy'))
         self.assertFalse(has_path(ctool, '/bar/site/sub3/dummy'))
@@ -671,12 +671,12 @@ class PortalFolderMoveTests(SecurityTest):
         sub3.all_meta_types.extend(sub3.all_meta_types)
         sub3.all_meta_types.extend(extra_meta_types())
         sub3.manage_pasteObjects(cookie)
-        self.assertFalse('dummy' in sub1.objectIds())
-        self.assertFalse('dummy' in sub1.contentIds())
-        self.assertTrue('dummy' in sub2.objectIds())
-        self.assertTrue('dummy' in sub2.contentIds())
-        self.assertTrue('dummy' in sub3.objectIds())
-        self.assertTrue('dummy' in sub3.contentIds())
+        self.assertNotIn('dummy', sub1.objectIds())
+        self.assertNotIn('dummy', sub1.contentIds())
+        self.assertIn('dummy', sub2.objectIds())
+        self.assertIn('dummy', sub2.contentIds())
+        self.assertIn('dummy', sub3.objectIds())
+        self.assertIn('dummy', sub3.contentIds())
         self.assertFalse(has_path(ctool, '/bar/site/sub1/dummy'))
         self.assertTrue(has_path(ctool, '/bar/site/sub2/dummy'))
         self.assertTrue(has_path(ctool, '/bar/site/sub3/dummy'))
@@ -942,8 +942,8 @@ class ContentFilterTests(unittest.TestCase):
         desc = str(cfilter)
         lines = desc.split('; ')
         self.assertEqual(len(lines), 2)
-        self.assertTrue('Created before: 2001/01/01 00:00:00 %s' % tz in lines)
-        self.assertTrue('Title: foo' in lines)
+        self.assertIn('Created before: 2001/01/01 00:00:00 %s' % tz, lines)
+        self.assertIn('Title: foo', lines)
 
 
 # -----------------------------------------------------------------------------
@@ -1055,14 +1055,14 @@ class PortalFolderCopySupportTests(SecurityTest):
 
         self._initPolicyAndUser()
 
-        self.assertTrue('file' in folder1.objectIds())
-        self.assertFalse('file' in folder2.objectIds())
+        self.assertIn('file', folder1.objectIds())
+        self.assertNotIn('file', folder2.objectIds())
 
         cookie = folder1.manage_copyObjects(ids=('file',))
         folder2.manage_pasteObjects(cookie)
 
-        self.assertTrue('file' in folder1.objectIds())
-        self.assertTrue('file' in folder2.objectIds())
+        self.assertIn('file', folder1.objectIds())
+        self.assertIn('file', folder2.objectIds())
 
     def test_copy_cant_read_source(self):
 
@@ -1096,16 +1096,16 @@ class PortalFolderCopySupportTests(SecurityTest):
         folder1, folder2 = self._initFolders()
         folder2.all_meta_types = FILE_META_TYPES
 
-        self.assertTrue('file' in folder1.objectIds())
-        self.assertFalse('file' in folder2.objectIds())
+        self.assertIn('file', folder1.objectIds())
+        self.assertNotIn('file', folder2.objectIds())
 
         self._initPolicyAndUser()
 
         cookie = folder1.manage_cutObjects(ids=('file',))
         folder2.manage_pasteObjects(cookie)
 
-        self.assertFalse('file' in folder1.objectIds())
-        self.assertTrue('file' in folder2.objectIds())
+        self.assertNotIn('file', folder1.objectIds())
+        self.assertIn('file', folder2.objectIds())
 
     def test_move_cant_read_source(self):
         folder1, folder2 = self._initFolders()
@@ -1244,7 +1244,7 @@ class PortalFolderCopySupportTests(SecurityTest):
         # an exception, because the folder's type allows it.
         copy_cookie = self.app.manage_copyObjects(ids=['folder2'])
         folder1.manage_pasteObjects(copy_cookie)
-        self.assertTrue('folder2' in folder1.objectIds())
+        self.assertIn('folder2', folder1.objectIds())
 
     def test_paste_with_restricted_container_content_type(self):
         #   Test from CMF Collector #216 (Plone #2186), for the case

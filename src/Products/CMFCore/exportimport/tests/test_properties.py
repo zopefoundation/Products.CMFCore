@@ -156,9 +156,9 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         site = self._initSite()
 
         self.assertEqual(len(site.propertyIds()), 4)
-        self.assertTrue('foo' in site.propertyIds())
+        self.assertIn('foo', site.propertyIds())
         self.assertEqual(site.getProperty('foo'), 'Foo')
-        self.assertTrue('bar' in site.propertyIds())
+        self.assertIn('bar', site.propertyIds())
         self.assertEqual(site.getProperty('bar'), ('Bar',))
 
         context = DummyImportContext(site)
@@ -173,9 +173,9 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         site = self._initSite()
 
         self.assertEqual(len(site.propertyIds()), 4)
-        self.assertTrue('foo' in site.propertyIds())
+        self.assertIn('foo', site.propertyIds())
         self.assertEqual(site.getProperty('foo'), 'Foo')
-        self.assertTrue('bar' in site.propertyIds())
+        self.assertIn('bar', site.propertyIds())
         self.assertEqual(site.getProperty('bar'), ('Bar',))
 
         context = DummyImportContext(site, True)
@@ -190,9 +190,9 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         site = self._initSite()
 
         self.assertEqual(len(site.propertyIds()), 4)
-        self.assertTrue('foo' in site.propertyIds())
+        self.assertIn('foo', site.propertyIds())
         self.assertEqual(site.getProperty('foo'), 'Foo')
-        self.assertTrue('bar' in site.propertyIds())
+        self.assertIn('bar', site.propertyIds())
         self.assertEqual(site.getProperty('bar'), ('Bar',))
 
         context = DummyImportContext(site, False)
@@ -200,9 +200,9 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         importSiteProperties(context)
 
         self.assertEqual(len(site.propertyIds()), 4)
-        self.assertTrue('foo' in site.propertyIds())
+        self.assertIn('foo', site.propertyIds())
         self.assertEqual(site.getProperty('foo'), 'Foo')
-        self.assertTrue('bar' in site.propertyIds())
+        self.assertIn('bar', site.propertyIds())
         self.assertEqual(site.getProperty('bar'), ('Bar',))
 
     def test_normal(self):
@@ -217,9 +217,9 @@ class importSitePropertiesTests(_SitePropertiesSetup):
         importSiteProperties(context)
 
         self.assertEqual(len(site.propertyIds()), 4)
-        self.assertTrue('foo' in site.propertyIds())
+        self.assertIn('foo', site.propertyIds())
         self.assertEqual(site.getProperty('foo'), 'Foo')
-        self.assertTrue('bar' in site.propertyIds())
+        self.assertIn('bar', site.propertyIds())
         self.assertEqual(site.getProperty('bar'), (b'Bar',))
 
 

@@ -89,7 +89,7 @@ class ActionProviderBaseTests(SecurityTest):
                       permission='',
                       category='')
         self.assertTrue(apb._actions)
-        self.assertFalse(apb._actions is old_actions)
+        self.assertIsNot(apb._actions, old_actions)
 
     def test_addActionBlankPermission(self):
         # make sure a blank permission gets stored as an empty tuple
@@ -134,7 +134,7 @@ class ActionProviderBaseTests(SecurityTest):
             'id_5': 'foo',
             'name_5': 'foo_action',
             'permission_5': (),
-            }
+        }
         action = apb._extractAction(properties, index)
         self.assertEqual(action.permissions, ())
 
@@ -143,7 +143,7 @@ class ActionProviderBaseTests(SecurityTest):
             'id_2': 'foo',
             'name_2': 'foo_action',
             'permission_2': ('',),
-            }
+        }
         action = apb._extractAction(properties, index)
         self.assertEqual(action.permissions, ())
 
@@ -188,7 +188,7 @@ class ActionProviderBaseTests(SecurityTest):
                 attr_value = getattr(apb._actions[i], attr, marker)
                 self.assertEqual(attr_value, value, '%s, %s != %s, %s'
                                  % (attr, attr_value, key, value))
-        self.assertFalse(apb._actions is old_actions)
+        self.assertIsNot(apb._actions, old_actions)
 
     def test_deleteActions(self):
 
@@ -197,7 +197,7 @@ class ActionProviderBaseTests(SecurityTest):
         highander_action = apb._actions[1]  # There can be only one
         apb.deleteActions(selections=(0, 2))
         self.assertEqual(len(apb._actions), 1)
-        self.assertTrue(highander_action in apb._actions)
+        self.assertIn(highander_action, apb._actions)
 
     def test_DietersNastySharingBug(self):
 
@@ -224,7 +224,7 @@ class ActionProviderBaseTests(SecurityTest):
 
             one_ids = list(map(idify, one.listActions()))
             another_ids = list(map(idify, another.listActions()))
-        self.assertFalse(one_ids == another_ids)
+        self.assertNotEqual(one_ids, another_ids)
         self.assertEqual(old_ids, another_ids)
 
     def test_listActionInfos(self):
@@ -277,4 +277,4 @@ class ActionProviderBaseTests(SecurityTest):
             except ValueError as e:
                 message = e.args[0]
                 detail = f'"{message}" does not offer action "{INVALID_ID}"'
-                self.assertTrue(message.find(INVALID_ID) != -1, detail)
+                self.assertNotEqual(message.find(INVALID_ID), -1, detail)

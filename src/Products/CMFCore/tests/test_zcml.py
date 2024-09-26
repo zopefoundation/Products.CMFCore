@@ -65,4 +65,4 @@ def test_registerDirectory():
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
-        ))
+    ))

@@ -72,9 +72,9 @@ class FSDTMLMethodTests(TransactionalTest, FSDTMLMaker):
         obj = self._makeOne('testDTML', 'testDTML.dtml')
         obj = obj.__of__(self.app)
         obj(self.app, self.REQUEST, self.RESPONSE)
-        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
-        self.assertTrue('foo' in self.RESPONSE.headers)
-        self.assertTrue('bar' in self.RESPONSE.headers)
+        self.assertGreaterEqual(len(self.RESPONSE.headers), original_len + 2)
+        self.assertIn('foo', self.RESPONSE.headers)
+        self.assertIn('bar', self.RESPONSE.headers)
 
     def test_ownership(self):
         script = self._makeOne('testDTML', 'testDTML.dtml')
@@ -123,7 +123,7 @@ class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
         FSDTMLMaker.setUp(self)
         SecurityTest.setUp(self)
         self.skins, self.custom, self.fsdir, self.fsDTML = self._makeContext(
-                                                   'testDTML', 'testDTML.dtml')
+            'testDTML', 'testDTML.dtml')
 
     def tearDown(self):
         cleanUp()
@@ -135,30 +135,30 @@ class FSDTMLMethodCustomizationTests(SecurityTest, FSDTMLMaker):
         self.fsDTML.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.assertTrue('testDTML' in self.custom.objectIds())
+        self.assertIn('testDTML', self.custom.objectIds())
 
     def test_customize_alternate_root(self):
         self.app.other = Folder('other')
 
         self.fsDTML.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.assertFalse('testDTML' in self.custom.objectIds())
-        self.assertTrue('testDTML' in self.app.other.objectIds())
+        self.assertNotIn('testDTML', self.custom.objectIds())
+        self.assertIn('testDTML', self.app.other.objectIds())
 
     def test_customize_fspath_as_dot(self):
 
         self.fsDTML.manage_doCustomize(folder_path='.')
 
-        self.assertFalse('testDTML' in self.custom.objectIds())
-        self.assertTrue('testDTML' in self.skins.objectIds())
+        self.assertNotIn('testDTML', self.custom.objectIds())
+        self.assertIn('testDTML', self.skins.objectIds())
 
     def test_customize_manual_clone(self):
         clone = Folder('testDTML')
 
         self.fsDTML.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.assertTrue('testDTML' in self.custom.objectIds())
-        self.assertTrue(aq_base(self.custom._getOb('testDTML')) is clone)
+        self.assertIn('testDTML', self.custom.objectIds())
+        self.assertIs(aq_base(self.custom._getOb('testDTML')), clone)
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
@@ -180,4 +180,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(FSDTMLMethodTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             FSDTMLMethodCustomizationTests),
-        ))
+    ))

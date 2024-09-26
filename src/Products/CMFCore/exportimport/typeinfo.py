@@ -153,7 +153,7 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
                     continue
                 permission = sub.getAttribute('value')
                 permissions.append(permission)
-            action_obj = self.context.getActionObject(category+'/'+id)
+            action_obj = self.context.getActionObject(category + '/' + id)
             if remove:
                 if action_obj is not None:
                     # Find the index for the action to remove it

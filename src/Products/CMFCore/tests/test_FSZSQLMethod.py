@@ -61,7 +61,7 @@ class FSZSQLMethodTests(FSDVTest):
         self.assertEqual(zsql.class_name_, 'MyRecord')
         self.assertEqual(zsql.class_file_, 'CMFCore.TestRecord')
         self.assertEqual(zsql.connection_hook, 'MyHook')
-        self.assertFalse(zsql.allow_simple_one_argument_traversal is None)
+        self.assertIsNotNone(zsql.allow_simple_one_argument_traversal)
 
 
 @unittest.skipUnless(HAVE_ZSQL, 'Products.ZSQLMethods not installed.')
@@ -71,7 +71,7 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
         FSZSQLMaker.setUp(self)
         SecurityTest.setUp(self)
         self.skins, self.custom, self.fsdir, self.fsZSQL = self._makeContext(
-                                                     'testsql', 'testsql.zsql')
+            'testsql', 'testsql.zsql')
 
     def tearDown(self):
         cleanUp()
@@ -82,7 +82,7 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
         self.fsZSQL.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.assertTrue('testsql' in self.custom.objectIds())
+        self.assertIn('testsql', self.custom.objectIds())
 
     def test_customize_alternate_root(self):
         from OFS.Folder import Folder
@@ -91,14 +91,14 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
 
         self.fsZSQL.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.assertFalse('testsql' in self.custom.objectIds())
-        self.assertTrue('testsql' in self.app.other.objectIds())
+        self.assertNotIn('testsql', self.custom.objectIds())
+        self.assertIn('testsql', self.app.other.objectIds())
 
     def test_customize_fspath_as_dot(self):
         self.fsZSQL.manage_doCustomize(folder_path='.')
 
-        self.assertFalse('testsql' in self.custom.objectIds())
-        self.assertTrue('testsql' in self.skins.objectIds())
+        self.assertNotIn('testsql', self.custom.objectIds())
+        self.assertIn('testsql', self.skins.objectIds())
 
     def test_customize_manual_clone(self):
         from OFS.Folder import Folder
@@ -107,8 +107,8 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
 
         self.fsZSQL.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.assertTrue('testsql' in self.custom.objectIds())
-        self.assertTrue(aq_base(self.custom._getOb('testsql')) is clone)
+        self.assertIn('testsql', self.custom.objectIds())
+        self.assertIs(aq_base(self.custom._getOb('testsql')), clone)
 
     def test_customize_properties(self):
         # Make sure all properties are coming across
@@ -124,7 +124,7 @@ class FSZSQLMethodCustomizationTests(SecurityTest, FSZSQLMaker):
         self.assertEqual(zsql.class_name_, 'MyRecord')
         self.assertEqual(zsql.class_file_, 'CMFCore.TestRecord')
         self.assertEqual(zsql.connection_hook, 'MyHook')
-        self.assertFalse(zsql.allow_simple_one_argument_traversal is None)
+        self.assertIsNotNone(zsql.allow_simple_one_argument_traversal)
 
 
 def test_suite():
@@ -132,4 +132,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(FSZSQLMethodTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             FSZSQLMethodCustomizationTests),
-        ))
+    ))

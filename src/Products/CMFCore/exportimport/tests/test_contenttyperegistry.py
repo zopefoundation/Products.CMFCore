@@ -28,10 +28,10 @@ from ...testing import ExportImportZCMLLayer
 
 
 _TEST_PREDICATES = (
- ('plain_text', 'major_minor', ('text', 'plain,javascript'), 'File'),
- ('stylesheets', 'extension', ('css,xsl,xslt',), 'Text File'),
- ('images', 'mimetype_regex', ('image/.*',), 'Image'),
- ('logfiles', 'name_regex', ('error_log-.*',), 'Log File'),
+    ('plain_text', 'major_minor', ('text', 'plain,javascript'), 'File'),
+    ('stylesheets', 'extension', ('css,xsl,xslt',), 'Text File'),
+    ('images', 'mimetype_regex', ('image/.*',), 'Image'),
+    ('logfiles', 'name_regex', ('error_log-.*',), 'Log File'),
 )
 
 _CTR_BODY = b"""\

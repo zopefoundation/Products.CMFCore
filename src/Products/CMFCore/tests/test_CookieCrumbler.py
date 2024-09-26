@@ -152,10 +152,10 @@ class CookieCrumblerTests(unittest.TestCase):
         req.cookies['__ac_password'] = 'pass-w'
         req.traverse('/')
 
-        self.assertTrue('AUTHENTICATED_USER' in req)
+        self.assertIn('AUTHENTICATED_USER', req)
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(), 'abraham')
         resp = req.response
-        self.assertTrue('__ac' in resp.cookies)
+        self.assertIn('__ac', resp.cookies)
         self.assertEqual(resp.cookies['__ac']['value'], credentials)
         self.assertEqual(resp.cookies['__ac'][
             normalizeCookieParameterName('path')], '/')
@@ -165,7 +165,7 @@ class CookieCrumblerTests(unittest.TestCase):
         _root, _cc, req, credentials = self._makeSite()
         req.cookies['__ac'] = credentials
         req.traverse('/')
-        self.assertTrue('AUTHENTICATED_USER' in req)
+        self.assertIn('AUTHENTICATED_USER', req)
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(), 'abraham')
 
     def testPasswordShredding(self):
@@ -173,18 +173,18 @@ class CookieCrumblerTests(unittest.TestCase):
         _root, _cc, req, _credentials = self._makeSite()
         req.cookies['__ac_name'] = 'abraham'
         req.cookies['__ac_password'] = 'pass-w'
-        self.assertTrue('__ac_password' in req)
+        self.assertIn('__ac_password', req)
         req.traverse('/')
-        self.assertFalse('__ac_password' in req)
-        self.assertFalse('__ac' in req)
+        self.assertNotIn('__ac_password', req)
+        self.assertNotIn('__ac', req)
 
     def testCredentialsNotRevealed(self):
         # verify the credentials are shredded before the app gets the request
         _root, _cc, req, credentials = self._makeSite()
         req.cookies['__ac'] = credentials
-        self.assertTrue('__ac' in req)
+        self.assertIn('__ac', req)
         req.traverse('/')
-        self.assertFalse('__ac' in req)
+        self.assertNotIn('__ac', req)
 
     def testCacheHeaderAnonymous(self):
         # Should not set cache-control
@@ -227,7 +227,7 @@ class CookieCrumblerTests(unittest.TestCase):
         req.cookies['__ac'] = credentials
         req.traverse('/')
 
-        self.assertTrue('AUTHENTICATED_USER' in req)
+        self.assertIn('AUTHENTICATED_USER', req)
         self.assertEqual(req['AUTHENTICATED_USER'].getUserName(), 'isaac')
 
     def test_before_traverse_hooks(self):
@@ -238,7 +238,7 @@ class CookieCrumblerTests(unittest.TestCase):
 
         marker = []
         bt_before = getattr(container, '__before_traverse__', marker)
-        self.assertTrue(bt_before is marker)
+        self.assertIs(bt_before, marker)
 
         container._setObject(cc.id, cc)
 

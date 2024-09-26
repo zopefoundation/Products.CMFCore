@@ -523,17 +523,17 @@ class CatalogToolTests(SecurityTest):
         # First case, no proxy roles set at all
         arus = catalog._listAllowedRolesAndUsers(user)
         self.assertEqual(len(arus), 3)
-        self.assertTrue('Anonymous' in arus)
-        self.assertTrue('Blob' in arus)
-        self.assertTrue('user:%s' % user.getId() in arus)
+        self.assertIn('Anonymous', arus)
+        self.assertIn('Blob', arus)
+        self.assertIn('user:%s' % user.getId(), arus)
 
         # Second case, a proxy role is set
         self.setupProxyRoles('Waggle')
         arus = catalog._listAllowedRolesAndUsers(user)
         self.assertEqual(len(arus), 3)
-        self.assertTrue('Anonymous' in arus)
-        self.assertTrue('Waggle' in arus)
-        self.assertTrue('user:%s' % user.getId() in arus)
+        self.assertIn('Anonymous', arus)
+        self.assertIn('Waggle', arus)
+        self.assertIn('user:%s' % user.getId(), arus)
 
         # Third case, proxy roles are an empty tuple. This happens if
         # proxy roles are unset using the ZMI. The behavior should
@@ -541,9 +541,9 @@ class CatalogToolTests(SecurityTest):
         self.setupProxyRoles()
         arus = catalog._listAllowedRolesAndUsers(user)
         self.assertEqual(len(arus), 3)
-        self.assertTrue('Anonymous' in arus)
-        self.assertTrue('Blob' in arus)
-        self.assertTrue('user:%s' % user.getId() in arus)
+        self.assertIn('Anonymous', arus)
+        self.assertIn('Blob', arus)
+        self.assertIn('user:%s' % user.getId(), arus)
 
     def test_wrapping1(self):
         # DummyContent implements IIndexableObject
@@ -593,4 +593,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(
             IndexableObjectWrapperTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(CatalogToolTests),
-        ))
+    ))

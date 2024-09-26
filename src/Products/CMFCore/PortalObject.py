@@ -49,7 +49,7 @@ class PortalObjectBase(PortalFolder, SkinnableObjectManager):
         (MailForgottenPassword, ()),
         (RequestReview, ()),
         (ReviewPortalContent, ()),
-        )
+    )
 
     def __init__(self, id, title='', description=''):
         super().__init__(id, title, description)

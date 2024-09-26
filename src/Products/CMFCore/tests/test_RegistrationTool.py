@@ -33,4 +33,4 @@ class RegistrationToolTests(unittest.TestCase):
 
     def test_generatePassword(self):
         rtool = self._makeOne()
-        self.assertTrue(len(rtool.generatePassword()) >= 5)
+        self.assertGreaterEqual(len(rtool.generatePassword()), 5)

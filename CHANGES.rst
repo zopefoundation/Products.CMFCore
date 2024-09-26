@@ -4,7 +4,10 @@ Products.CMFCore Changelog
 3.6 (unreleased)
 ----------------
 
+- Add support for Python 3.13.
+
 - Drop support for Python 3.7.
+
 - Fix reindexObjectSecurity to avoid a full reindex of affected objects
 
 

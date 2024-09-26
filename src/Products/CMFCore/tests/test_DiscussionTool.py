@@ -42,4 +42,4 @@ def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(DiscussionToolTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(OldDiscussableTests),
-        ))
+    ))

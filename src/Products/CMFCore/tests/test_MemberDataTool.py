@@ -87,9 +87,9 @@ class MemberDataToolTests(unittest.TestCase):
     def test_deleteMemberData(self):
         tool = self._makeOne()
         tool.registerMemberData('Dummy', 'user_foo')
-        self.assertTrue('user_foo' in tool._members)
+        self.assertIn('user_foo', tool._members)
         self.assertTrue(tool.deleteMemberData('user_foo'))
-        self.assertFalse('user_foo' in tool._members)
+        self.assertNotIn('user_foo', tool._members)
         self.assertFalse(tool.deleteMemberData('user_foo'))
 
     def test_pruneMemberData(self):
@@ -214,4 +214,4 @@ def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(MemberDataToolTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(MemberAdapterTests),
-        ))
+    ))

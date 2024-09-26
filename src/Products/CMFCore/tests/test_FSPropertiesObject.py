@@ -67,7 +67,7 @@ class FSPOTests(SecurityTest, FSDVTest):
                                                           'test_props.props')
 
         target = fspo._createZODBClone()
-        self.assertTrue(isinstance(target, Folder))
+        self.assertIsInstance(target, Folder)
         for prop_id in fspo.propertyIds():
             self.assertEqual(target.getProperty(prop_id),
                              fspo.getProperty(prop_id))
@@ -79,7 +79,7 @@ class FSPOTests(SecurityTest, FSDVTest):
         fspo.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(custom.objectIds()), 1)
-        self.assertTrue('test_props' in custom.objectIds())
+        self.assertIn('test_props', custom.objectIds())
 
     def test_manage_doCustomize_alternate_root(self):
         from OFS.Folder import Folder
@@ -90,16 +90,16 @@ class FSPOTests(SecurityTest, FSDVTest):
 
         fspo.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.assertFalse('test_props' in custom.objectIds())
-        self.assertTrue('test_props' in self.app.other.objectIds())
+        self.assertNotIn('test_props', custom.objectIds())
+        self.assertIn('test_props', self.app.other.objectIds())
 
     def test_manage_doCustomize_fspath_as_dot(self):
         stool, custom, _fsdir, fspo = self._makeContext('test_props',
                                                         'test_props.props')
         fspo.manage_doCustomize(folder_path='.')
 
-        self.assertFalse('test_props' in custom.objectIds())
-        self.assertTrue('test_props' in stool.objectIds())
+        self.assertNotIn('test_props', custom.objectIds())
+        self.assertIn('test_props', stool.objectIds())
 
     def test_manage_doCustomize_manual_clone(self):
         from OFS.Folder import Folder
@@ -109,11 +109,11 @@ class FSPOTests(SecurityTest, FSDVTest):
         clone = Folder('test_props')
         fspo.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.assertTrue('test_props' in custom.objectIds())
-        self.assertTrue(aq_base(custom._getOb('test_props')) is clone)
+        self.assertIn('test_props', custom.objectIds())
+        self.assertIs(aq_base(custom._getOb('test_props')), clone)
 
 
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(FSPOTests),
-        ))
+    ))

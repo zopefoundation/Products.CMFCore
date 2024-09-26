@@ -197,7 +197,7 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
             'reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES),
             'reindex /site/foo/bar %s 0' % str(CMF_SECURITY_INDEXES),
             'reindex /site/foo/hop %s 0' % str(CMF_SECURITY_INDEXES),
-            ])
+        ])
         self.assertFalse(foo.notified)
         self.assertFalse(bar.notified)
         self.assertFalse(hop.notified)
@@ -362,4 +362,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(CMFCatalogAwareTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             CMFCatalogAware_CopySupport_Tests),
-        ))
+    ))

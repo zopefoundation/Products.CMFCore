@@ -225,4 +225,4 @@ def test_suite():
             exportCatalogToolTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             importCatalogToolTests),
-        ))
+    ))

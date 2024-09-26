@@ -572,7 +572,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
         context._files['structure/.properties'] = (
-                _PROPERTIES_TEMPLATE % 'Test Site')
+            _PROPERTIES_TEMPLATE % 'Test Site')
 
         importer = self._getImporter()
         importer(context)
@@ -600,7 +600,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
         context._files['structure/.properties'] = (
-                _PROPERTIES_TEMPLATE % 'Test Site')
+            _PROPERTIES_TEMPLATE % 'Test Site')
 
         importer = self._getImporter()
         importer(context)
@@ -630,7 +630,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         context._files['structure/.objects'] = _ROOT_OBJECTS
         context._files['structure/.properties'] = (
-                _PROPERTIES_TEMPLATE % 'Test Site')
+            _PROPERTIES_TEMPLATE % 'Test Site')
 
         importer = self._getImporter()
         importer(context)
@@ -651,8 +651,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
         importer = self._getImporter()
         importer(context)
 
@@ -683,8 +683,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
         importer = self._getImporter()
         importer(context)
 
@@ -706,8 +706,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
         importer = self._getImporter()
         importer(context)
 
@@ -725,12 +725,12 @@ class SiteStructureExporterTests(unittest.TestCase):
         context = DummyImportContext(site)
         # We want to add 'baz' to 'foo', without losing 'bar'
         context._files['structure/.objects'] = '\n'.join(
-                                ['%s,Unknown Type' % x for x in ITEM_IDS])
+            ['%s,Unknown Type' % x for x in ITEM_IDS])
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
 
         importer = self._getImporter()
         importer(context)
@@ -775,8 +775,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
 
         importer = self._getImporter()
         importer(context)
@@ -800,8 +800,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
         context._files['structure/.preserve'] = '*'
 
         importer = self._getImporter()
@@ -829,8 +829,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
         context._files['structure/.preserve'] = 'b*'
 
         importer = self._getImporter()
@@ -859,8 +859,8 @@ class SiteStructureExporterTests(unittest.TestCase):
         for index in range(len(ITEM_IDS)):
             id = ITEM_IDS[index]
             context._files[
-                    'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
-                                                            'xyzzy')
+                'structure/%s.ini' % id] = KNOWN_INI % ('Title: %s' % id,
+                                                        'xyzzy')
         context._files['structure/.preserve'] = 'foo'
         context._files['structure/.delete'] = 'baz'
 
@@ -869,7 +869,7 @@ class SiteStructureExporterTests(unittest.TestCase):
 
         after = site.objectIds()
         self.assertEqual(len(after), len(ITEM_IDS) - 1)
-        self.assertFalse('baz' in after)
+        self.assertNotIn('baz', after)
         self.assertEqual(getattr(site.foo, 'before', None), True)
         self.assertFalse(hasattr(site.bar, 'before'))
 

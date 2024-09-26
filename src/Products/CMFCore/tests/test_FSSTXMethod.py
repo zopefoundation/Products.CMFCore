@@ -94,9 +94,9 @@ class _TemplateSwitcher:
 
         if which == 'DTML':
             self.app.standard_html_header = (
-                    lambda *args, **kw: '<html>\n<body>\n')
+                lambda *args, **kw: '<html>\n<body>\n')
             self.app.standard_html_footer = (
-                    lambda *args, **kw: '</body>\n</html>\n')
+                lambda *args, **kw: '</body>\n</html>\n')
         elif which == 'ZPT':
             main = ZopePageTemplate('main_template', _TEST_MAIN_TEMPLATE)
             self.app._setOb('main_template', main)
@@ -139,9 +139,9 @@ class FSSTXMethodTests(TransactionalTest, FSSTXMaker, _TemplateSwitcher):
         obj = self._makeOne('testSTX', 'testSTX.stx')
         obj = obj.__of__(self.app)
         obj(self.REQUEST, self.RESPONSE)
-        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
-        self.assertTrue('foo' in self.RESPONSE.headers)
-        self.assertTrue('bar' in self.RESPONSE.headers)
+        self.assertGreaterEqual(len(self.RESPONSE.headers), original_len + 2)
+        self.assertIn('foo', self.RESPONSE.headers)
+        self.assertIn('bar', self.RESPONSE.headers)
 
     def test_ownership(self):
         script = self._makeOne('testSTX', 'testSTX.stx')
@@ -187,7 +187,7 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         SecurityTest.setUp(self)
         FSSTXMaker.setUp(self)
         self.skins, self.custom, self.fsdir, self.fsSTX = self._makeContext(
-                                                      'testSTX', 'testSTX.stx')
+            'testSTX', 'testSTX.stx')
 
     def tearDown(self):
         cleanUp()
@@ -203,16 +203,16 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
         self.fsSTX.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.assertFalse('testSTX' in self.custom.objectIds())
-        self.assertTrue('testSTX' in self.app.other.objectIds())
+        self.assertNotIn('testSTX', self.custom.objectIds())
+        self.assertIn('testSTX', self.app.other.objectIds())
 
     def test_customize_fspath_as_dot(self):
         self._setWhichTemplate('DTML')
 
         self.fsSTX.manage_doCustomize(folder_path='.')
 
-        self.assertFalse('testSTX' in self.custom.objectIds())
-        self.assertTrue('testSTX' in self.skins.objectIds())
+        self.assertNotIn('testSTX', self.custom.objectIds())
+        self.assertIn('testSTX', self.skins.objectIds())
 
     def test_customize_manual_clone(self):
         from OFS.Folder import Folder
@@ -223,8 +223,8 @@ class FSSTXMethodCustomizationTests(SecurityTest,
 
         self.fsSTX.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.assertTrue('testSTX' in self.custom.objectIds())
-        self.assertTrue(aq_base(self.custom._getOb('testSTX')) is clone)
+        self.assertIn('testSTX', self.custom.objectIds())
+        self.assertIs(aq_base(self.custom._getOb('testSTX')), clone)
 
     def test_customize_with_DTML(self):
         from OFS.DTMLDocument import DTMLDocument
@@ -236,10 +236,10 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         self.fsSTX.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.assertTrue('testSTX' in self.custom.objectIds())
+        self.assertIn('testSTX', self.custom.objectIds())
         target = self.custom._getOb('testSTX')
 
-        self.assertTrue(isinstance(target, DTMLDocument))
+        self.assertIsInstance(target, DTMLDocument)
 
         propinfo = target.propdict()['stx']
         self.assertEqual(propinfo['type'], 'text')
@@ -258,10 +258,10 @@ class FSSTXMethodCustomizationTests(SecurityTest,
         self.fsSTX.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.assertTrue('testSTX' in self.custom.objectIds())
+        self.assertIn('testSTX', self.custom.objectIds())
         target = self.custom._getOb('testSTX')
 
-        self.assertTrue(isinstance(target, ZopePageTemplate))
+        self.assertIsInstance(target, ZopePageTemplate)
 
         propinfo = target.propdict()['stx']
         self.assertEqual(propinfo['type'], 'text')
@@ -293,4 +293,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(FSSTXMethodTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             FSSTXMethodCustomizationTests),
-        ))
+    ))
