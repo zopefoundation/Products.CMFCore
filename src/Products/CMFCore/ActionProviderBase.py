@@ -66,7 +66,7 @@ class ActionProviderBase:
         sep = action.rfind('/')
         if sep == -1:
             raise ValueError('Actions must have the format <category>/<id>.')
-        category, id = action[:sep], action[sep+1:]
+        category, id = action[:sep], action[sep + 1:]
 
         # search for action and return first one found
         for ai in self.listActions():
@@ -96,7 +96,7 @@ class ActionProviderBase:
                 action_chain = (action_chain,)
             for action_ident in action_chain:
                 sep = action_ident.rfind('/')
-                category, id = action_ident[:sep], action_ident[sep+1:]
+                category, id = action_ident[:sep], action_ident[sep + 1:]
                 for ai in actions:
                     if id == ai['id'] and category == ai['category']:
                         filtered_actions.append(ai)
@@ -130,7 +130,7 @@ class ActionProviderBase:
             else:
                 provider = object
             msg = 'Action "{}" not available for {}'.format(
-                        action_chain, '/'.join(provider.getPhysicalPath()))
+                action_chain, '/'.join(provider.getPhysicalPath()))
             raise ValueError(msg)
         for ai in action_infos:
             if ai['allowed']:
@@ -143,7 +143,6 @@ class ActionProviderBase:
     #
     @security.protected(ManagePortal)
     def manage_editActionsForm(self, REQUEST, manage_tabs_message=None):
-
         """ Show the 'Actions' management tab.
         """
         actions = []
@@ -194,7 +193,6 @@ class ActionProviderBase:
 
     @security.protected(ManagePortal)
     def changeActions(self, properties=None, REQUEST=None):
-
         """ Update our list of actions.
         """
         if properties is None:
@@ -214,7 +212,6 @@ class ActionProviderBase:
 
     @security.protected(ManagePortal)
     def deleteActions(self, selections=(), REQUEST=None):
-
         """ Delete actions indicated by indexes in 'selections'.
         """
         sels = list(map(int, selections))  # Convert to a list of integers.
@@ -235,7 +232,6 @@ class ActionProviderBase:
 
     @security.protected(ManagePortal)
     def moveUpActions(self, selections=(), REQUEST=None):
-
         """ Move the specified actions up one slot in our list.
         """
         sels = sorted(map(int, selections))  # Convert to list of ints
@@ -261,7 +257,6 @@ class ActionProviderBase:
 
     @security.protected(ManagePortal)
     def moveDownActions(self, selections=(), REQUEST=None):
-
         """ Move the specified actions down one slot in our list.
         """
         sels = sorted(list(map(int, selections)))  # Convert to list of ints
@@ -291,14 +286,12 @@ class ActionProviderBase:
     #
     @security.private
     def _cloneActions(self):
-
         """ Return a list of actions, cloned from our current list.
         """
         return [x.clone() for x in list(self._actions)]
 
     @security.private
     def _extractAction(self, properties, index):
-
         """ Extract an ActionInformation from the funky form properties.
         """
         id = str(properties.get('id_%d' % index, ''))

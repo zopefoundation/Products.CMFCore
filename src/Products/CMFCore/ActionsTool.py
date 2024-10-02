@@ -83,7 +83,7 @@ class ActionsTool(UniqueObject, IFAwareObjectManager, OrderedFolder,
         self.action_providers = tuple(providers)
         if REQUEST is not None:
             return self.manage_actionProviders(
-                       self, REQUEST, manage_tabs_message='Providers changed.')
+                self, REQUEST, manage_tabs_message='Providers changed.')
 
     @security.protected(ManagePortal)
     def manage_editActionsForm(self, REQUEST, manage_tabs_message=None):

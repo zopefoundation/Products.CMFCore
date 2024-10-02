@@ -207,9 +207,9 @@ class FSFileTests(TransactionalTest, FSDVTest):
         obj = obj.__of__(self.app)
         obj.index_html(self.REQUEST, self.RESPONSE)
         headers = self.RESPONSE.headers
-        self.assertTrue(len(headers) >= original_len + 3)
-        self.assertTrue('foo' in headers)
-        self.assertTrue('bar' in headers)
+        self.assertGreaterEqual(len(headers), original_len + 3)
+        self.assertIn('foo', headers)
+        self.assertIn('bar', headers)
         self.assertEqual(headers['test_path'], '/test_file')
 
     def test_forced_content_type(self):
@@ -280,4 +280,4 @@ class FSFileTests(TransactionalTest, FSDVTest):
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(FSFileTests),
-        ))
+    ))

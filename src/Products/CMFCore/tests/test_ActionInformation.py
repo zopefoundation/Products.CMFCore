@@ -379,7 +379,7 @@ class ActionInfoSecurityTests(SecurityTest):
 
         self.assertEqual(ai._lazy_keys, ['allowed'])
         self.assertEqual(ai2._lazy_keys, ['allowed'])
-        self.assertFalse(ai2._lazy_keys is ai._lazy_keys)
+        self.assertIsNot(ai2._lazy_keys, ai._lazy_keys)
         self.assertEqual(ai['allowed'], True)
         self.assertEqual(ai2['allowed'], True)
 
@@ -441,7 +441,7 @@ class ActionInformationTests(TransactionalTest):
     def test_setActionExpression_with_string_prefix(self):
         ai = self._makeOne(id='view', category='folder')
         ai.setActionExpression('string:blah')
-        self.assertTrue(isinstance(ai.action, Expression))
+        self.assertIsInstance(ai.action, Expression)
         self.assertEqual(ai.getActionExpression(), 'string:blah')
 
     def test_construction_with_Expressions(self):

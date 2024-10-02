@@ -90,10 +90,11 @@ class ActionsToolTests(unittest.TestCase):
             tool.getActionObject('object/an_id')
             self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category, DeprecationWarning))
-            self.assertTrue(
+            self.assertIn(
                 'Old-style actions are deprecated and will be removed in CMF '
-                '2.4. Use Action and Action Category objects instead.'
-                in str(w[-1].message))
+                '2.4. Use Action and Action Category objects instead.',
+                str(w[-1].message)
+            )
 
     def test_getActionObject_skips_newstyle_actions(self):
         tool = self._makeOne()
@@ -146,17 +147,17 @@ class ActionsToolSecurityTests(SecurityTest):
         tool = self.tool
         act = 'string:${folder_url}/folder_contents'
         tool._actions = (
-              ActionInformation(id='folderContents',
-                                title='Folder contents',
-                                action=Expression(text=act),
-                                icon_expr=Expression(text='string:'
-                                                     '${folder_url}/icon.gif'),
-                                condition=Expression(text='python: '
-                                                     'folder is not object'),
-                                permissions=('List folder contents',),
-                                category='folder',
-                                link_target='_top',
-                                visible=1),)
+            ActionInformation(id='folderContents',
+                              title='Folder contents',
+                              action=Expression(text=act),
+                              icon_expr=Expression(text='string:'
+                                                   '${folder_url}/icon.gif'),
+                              condition=Expression(text='python: '
+                                                   'folder is not object'),
+                              permissions=('List folder contents',),
+                              category='folder',
+                              link_target='_top',
+                              visible=1),)
 
         newSecurityManager(None, OmnipotentUser().__of__(self.app.acl_users))
         expected = {'workflow': [],
@@ -188,4 +189,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(ActionsToolTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             ActionsToolSecurityTests),
-        ))
+    ))

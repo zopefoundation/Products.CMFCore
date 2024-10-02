@@ -34,6 +34,7 @@ class ObjectDeleted(Exception):
 
     Swallowed by the workflow tool.
     """
+
     def __init__(self, result=None):
         self._r = result
 
@@ -47,6 +48,7 @@ class ObjectMoved(Exception):
 
     Swallowed by the workflow tool.
     """
+
     def __init__(self, new_ob, result=None):
         self._ob = new_ob  # Includes acquisition wrappers.
         self._r = result

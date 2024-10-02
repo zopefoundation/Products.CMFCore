@@ -120,7 +120,7 @@ class FSFile(FSObject):
         encoding = None
 
         if 'charset=' in ct:
-            encoding = ct[ct.find('charset=')+8:]
+            encoding = ct[ct.find('charset=') + 8:]
         elif getattr(self, 'encoding', None):
             encoding = self.encoding
         elif ct.startswith('text/'):

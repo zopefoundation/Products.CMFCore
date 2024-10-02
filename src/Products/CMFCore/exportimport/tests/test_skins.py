@@ -274,8 +274,8 @@ class SkinsToolXMLAdapterTests(_DVRegistrySetup,
 
         obj._setObject('foo_directoryview',
                        DirectoryView(
-                            'foo_directoryview',
-                            'Products.CMFCore.exportimport.tests:one'))
+                           'foo_directoryview',
+                           'Products.CMFCore.exportimport.tests:one'))
         obj.addSkinSelection('foo_path', 'one')
 
     def _verifyImport(self, obj):
@@ -379,13 +379,13 @@ class importSkinsToolTests(_SkinsSetup):
 
         site, skins_tool = self._initSite(selections=_PATHS, ids=_IDS)
 
-        self.assertTrue('fancy' in skins_tool._getSelections())
+        self.assertIn('fancy', skins_tool._getSelections())
 
         context = DummyImportContext(site)
         context._files['skins.xml'] = self._FRAGMENT6_IMPORT
         importSkinsTool(context)
 
-        self.assertFalse('fancy' in skins_tool._getSelections())
+        self.assertNotIn('fancy', skins_tool._getSelections())
 
     def test_empty_default_purge(self):
         from ..skins import importSkinsTool

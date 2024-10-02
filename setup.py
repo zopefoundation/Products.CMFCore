@@ -36,6 +36,7 @@ setup(name='Products.%s' % NAME,
           'Programming Language :: Python :: 3.10',
           'Programming Language :: Python :: 3.11',
           'Programming Language :: Python :: 3.12',
+          'Programming Language :: Python :: 3.13',
           'Programming Language :: Python :: Implementation :: CPython',
           'Topic :: Software Development :: Libraries'
           ' :: Application Frameworks',
@@ -70,12 +71,12 @@ setup(name='Products.%s' % NAME,
           'Products.ZCatalog >= 4.0a2',  # Products.ZCTextIndex lives there now
           'zope.datetime',
           'zope.interface >= 3.8',
-          ],
+      ],
       extras_require={
           'test': ['Products.StandardCacheManagers'],
           'zsql': ['Products.ZSQLMethods >= 3.0.0b1'],
           'docs': ['Sphinx', 'repoze.sphinx.autointerface', 'pkginfo'],
-          },
+      },
       entry_points="""
       [zope2.initialize]
       Products.{} = Products.{}:initialize

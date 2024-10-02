@@ -290,12 +290,12 @@ class MembershipToolMemberAreaTests(SecurityTest):
         mtool.createMemberArea('user_foo')
         self.assertTrue(hasattr(members.aq_self, 'user_foo'))
         mdtool.registerMemberData('Dummy', 'user_foo')
-        self.assertTrue('user_foo' in mdtool._members)
+        self.assertIn('user_foo', mdtool._members)
 
         rval = mtool.deleteMembers(('user_foo', 'user_baz'))
         self.assertEqual(rval, ('user_foo',))
         self.assertFalse(acl_users.getUserById('user_foo', None))
-        self.assertFalse('user_foo' in mdtool._members)
+        self.assertNotIn('user_foo', mdtool._members)
         self.assertFalse(hasattr(members.aq_self, 'user_foo'))
 
     def test_deleteMembersUnsupported(self):
@@ -316,7 +316,7 @@ class MembershipToolMemberAreaTests(SecurityTest):
         mtool.createMemberArea('user_foo')
         self.assertTrue(hasattr(members.aq_self, 'user_foo'))
         mdtool.registerMemberData('Dummy', 'user_foo')
-        self.assertTrue('user_foo' in mdtool._members)
+        self.assertIn('user_foo', mdtool._members)
 
         # Fake an incompatible user folder by deleting the class method
         deletion_method = DummyUserFolder.userFolderDelUsers
@@ -324,7 +324,7 @@ class MembershipToolMemberAreaTests(SecurityTest):
         self.assertRaises(NotImplementedError, mtool.deleteMembers,
                           ('user_foo',))
         self.assertTrue(acl_users.getUserById('user_foo', None))
-        self.assertTrue('user_foo' in mdtool._members)
+        self.assertIn('user_foo', mdtool._members)
         self.assertTrue(hasattr(members.aq_self, 'user_foo'))
 
         # Cleanup
@@ -338,4 +338,4 @@ def test_suite():
             MembershipToolSecurityTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             MembershipToolMemberAreaTests),
-        ))
+    ))

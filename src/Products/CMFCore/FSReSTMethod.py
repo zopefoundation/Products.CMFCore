@@ -141,7 +141,7 @@ class FSReSTMethod(FSObject):
                         'initial_header_level': 1,
                         'stylesheet': None,
                         'stylesheet_path': None,
-                        'pub.settings.warning_stream':  Warnings(),
+                        'pub.settings.warning_stream': Warnings(),
                         'file_insertion_enabled': 0,
                         'raw_enabled': 0}
 

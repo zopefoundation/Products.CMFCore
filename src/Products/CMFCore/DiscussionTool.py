@@ -92,7 +92,7 @@ class OldDiscussable(Implicit):
         ctool = queryUtility(ICatalogTool)
         if ctool is not None:
             return ctool.searchResults(in_reply_to=urllib.parse.unquote(
-                                                   '/' + self.absolute_url(1)))
+                '/' + self.absolute_url(1)))
 
     @security.protected(View)
     def getReplies(self):

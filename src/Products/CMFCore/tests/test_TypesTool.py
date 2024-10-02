@@ -121,11 +121,11 @@ class TypesToolFunctionalTests(SecurityTest):
                 continue
             meta_types[factype['name']] = 1
             act = tool.unrestrictedTraverse(factype['action'])
-            self.assertFalse(type(aq_base(act)) is NullResource)
+            self.assertIsNot(type(aq_base(act)), NullResource)
 
         # Check the ones we're expecting are there
-        self.assertTrue('Scriptable Type Information' in meta_types)
-        self.assertTrue('Factory-based Type Information' in meta_types)
+        self.assertIn('Scriptable Type Information', meta_types)
+        self.assertIn('Factory-based Type Information', meta_types)
 
     def test_constructContent_simple_FTI(self):
         from AccessControl.SecurityManagement import newSecurityManager
@@ -374,23 +374,23 @@ class TypeInfoTests:
         self.assertTrue(actions)
 
         ids = [x.getId() for x in actions]
-        self.assertTrue('view' in ids)
-        self.assertTrue('edit' in ids)
-        self.assertTrue('objectproperties' in ids)
-        self.assertTrue('slot' in ids)
+        self.assertIn('view', ids)
+        self.assertIn('edit', ids)
+        self.assertIn('objectproperties', ids)
+        self.assertIn('slot', ids)
 
         names = [x.Title() for x in actions]
-        self.assertTrue('View' in names)
-        self.assertTrue('Edit' in names)
-        self.assertTrue('Object Properties' in names)
-        self.assertFalse('slot' in names)
-        self.assertTrue('Slot' in names)
+        self.assertIn('View', names)
+        self.assertIn('Edit', names)
+        self.assertIn('Object Properties', names)
+        self.assertNotIn('slot', names)
+        self.assertIn('Slot', names)
 
         visible = [x.getId() for x in actions if x.getVisibility()]
-        self.assertTrue('view' in visible)
-        self.assertTrue('edit' in visible)
-        self.assertTrue('objectproperties' in visible)
-        self.assertFalse('slot' in visible)
+        self.assertIn('view', visible)
+        self.assertIn('edit', visible)
+        self.assertIn('objectproperties', visible)
+        self.assertNotIn('slot', visible)
 
     def test_MethodAliases_methods(self):
         from .base.tidata import FTIDATA_CMF
@@ -462,7 +462,7 @@ class TypeInfoTests:
         wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
         wanted_actions_text2 = 'string:${object_url}/metadata_edit_form'
 
-        self.assertTrue(isinstance(ti._actions[0], ActionInformation))
+        self.assertIsInstance(ti._actions[0], ActionInformation)
         self.assertEqual(len(ti._actions), 3)
         self.assertEqual(ti._aliases, wanted_aliases)
         self.assertEqual(ti._actions[0].action.text, wanted_actions_text0)
@@ -485,7 +485,7 @@ class TypeInfoTests:
         wanted_actions_text1 = 'string:${object_url}/dummy_edit_form'
         wanted_actions_text2 = 'string:${object_url}/folder_localrole_form'
 
-        self.assertTrue(isinstance(ti._actions[0], ActionInformation))
+        self.assertIsInstance(ti._actions[0], ActionInformation)
         self.assertEqual(len(ti._actions), 3)
         self.assertEqual(ti._aliases, wanted_aliases)
         self.assertEqual(ti._actions[0].action.text, wanted_actions_text0)
@@ -508,18 +508,18 @@ class TypeInfoTests:
         info_data = ti.getInfoData()
         self.assertTrue(hasattr(ti, 'icon_expr_object'))
         self.assertTrue(info_data[0].get('icon'))
-        self.assertTrue('icon' in info_data[1])
+        self.assertIn('icon', info_data[1])
         self.assertTrue(hasattr(ti, 'add_view_expr_object'))
         self.assertTrue(info_data[0].get('url'))
-        self.assertTrue('url' in info_data[1])
+        self.assertIn('url', info_data[1])
         ti.manage_changeProperties(icon_expr='', add_view_expr='')
         info_data = ti.getInfoData()
         self.assertFalse(hasattr(ti, 'icon_expr_object'))
         self.assertFalse(info_data[0].get('icon'))
-        self.assertFalse('icon' in info_data[1])
+        self.assertNotIn('icon', info_data[1])
         self.assertFalse(hasattr(ti, 'add_view_expr_object'))
         self.assertFalse(info_data[0].get('url'))
-        self.assertFalse('url' in info_data[1])
+        self.assertNotIn('url', info_data[1])
 
 
 class FTIDataTests(TypeInfoTests, unittest.TestCase):

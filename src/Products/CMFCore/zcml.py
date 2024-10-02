@@ -79,7 +79,7 @@ def registerDirectory(_context, name, directory=None, recursive=False,
         discriminator=('registerDirectory', reg_key),
         callable=_dirreg.registerDirectoryByKey,
         args=(filepath, reg_key, int(recursive), ignore),
-        )
+    )
 
 
 def cleanUp():

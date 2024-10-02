@@ -191,7 +191,7 @@ class DynamicTypeSecurityTests(SecurityTest):
         except ValueError as e:
             message = e.args[0]
             detail = f'"{message}" does not offer action "{INVALID_ID}"'
-            self.assertTrue(message.find(INVALID_ID) != -1, detail)
+            self.assertNotEqual(message.find(INVALID_ID), -1, detail)
 
 
 def test_suite():
@@ -201,4 +201,4 @@ def test_suite():
             DynamicTypeDefaultTraversalTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             DynamicTypeSecurityTests),
-        ))
+    ))

@@ -60,12 +60,12 @@ class SkinsToolTests(unittest.TestCase):
 
         # Make sure the skin selection exists
         paths = tool.getSkinPath('fooskin')
-        self.assertFalse(paths is None)
+        self.assertIsNotNone(paths)
 
         # Test for the contents
-        self.assertFalse(paths.find('foo') == -1)
-        self.assertFalse(paths.find('bar') == -1)
-        self.assertTrue(paths.find('.svn') == -1)
+        self.assertNotEqual(paths.find('foo'), -1)
+        self.assertNotEqual(paths.find('bar'), -1)
+        self.assertEqual(paths.find('.svn'), -1)
 
 
 class SkinnableTests(RequestTest):
@@ -102,11 +102,11 @@ class SkinnableTests(RequestTest):
         getSiteManager().registerUtility(stool, ISkinsTool)
 
         # Expect the default skin name to be returned
-        self.assertTrue(som.getCurrentSkinName() == 'skinA')
+        self.assertEqual(som.getCurrentSkinName(), 'skinA')
 
         # after a changeSkin the new skin name should be returned
         som.changeSkin('skinB', som.REQUEST)
-        self.assertTrue(som.getCurrentSkinName() == 'skinB')
+        self.assertEqual(som.getCurrentSkinName(), 'skinB')
 
     def test_getSkinNameFromRequest(self):
         from ..interfaces import ISkinsTool

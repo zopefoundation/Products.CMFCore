@@ -57,14 +57,16 @@ class FSPythonScriptTests(FSPSMaker):
 
     def test_getModTime(self):
         script = self._makeOne('test1', 'test1.py')
-        self.assertTrue(isinstance(script.getModTime(), DateTime))
+        self.assertIsInstance(script.getModTime(), DateTime)
         self.assertEqual(script.getModTime(),
                          DateTime(os.stat(script._filepath).st_mtime))
 
     def test_bobobase_modification_time(self):
         script = self._makeOne('test1', 'test1.py')
-        self.assertTrue(isinstance(script.bobobase_modification_time(),
-                                   DateTime))
+        self.assertIsInstance(
+            script.bobobase_modification_time(),
+            DateTime
+        )
         self.assertEqual(script.bobobase_modification_time(),
                          DateTime(os.stat(script._filepath).st_mtime))
 
@@ -119,11 +121,11 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         fsPS.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(custom.objectIds()), 1)
-        self.assertTrue('test6' in custom.objectIds())
+        self.assertIn('test6', custom.objectIds())
 
         test6 = custom._getOb('test6')
 
-        self.assertTrue(isinstance(test6, CustomizedPythonScript))
+        self.assertIsInstance(test6, CustomizedPythonScript)
         self.assertEqual(test6.original_source, fsPS.read())
 
     def test_customize_alternate_root(self):
@@ -132,16 +134,16 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
 
         fsPS.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.assertFalse('test6' in custom.objectIds())
-        self.assertTrue('test6' in self.app.other.objectIds())
+        self.assertNotIn('test6', custom.objectIds())
+        self.assertIn('test6', self.app.other.objectIds())
 
     def test_customize_fspath_as_dot(self):
         stool, custom, _fsdir, fsPS = self._makeContext('test6', 'test6.py')
 
         fsPS.manage_doCustomize(folder_path='.')
 
-        self.assertFalse('test6' in custom.objectIds())
-        self.assertTrue('test6' in stool.objectIds())
+        self.assertNotIn('test6', custom.objectIds())
+        self.assertIn('test6', stool.objectIds())
 
     def test_customize_manual_clone(self):
         _stool, custom, _fsdir, fsPS = self._makeContext('test6', 'test6.py')
@@ -149,8 +151,8 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
 
         fsPS.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.assertTrue('test6' in custom.objectIds())
-        self.assertTrue(aq_base(custom._getOb('test6')) is clone)
+        self.assertIn('test6', custom.objectIds())
+        self.assertIs(aq_base(custom._getOb('test6')), clone)
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
@@ -191,9 +193,9 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         rop = fsPS.rolesOfPermission(perm)
         for rop_info in rop:
             if rop_info['name'] == 'Anonymous':
-                self.assertFalse(rop_info['selected'] == '')
+                self.assertNotEqual(rop_info['selected'], '')
             else:
-                self.assertTrue(rop_info['selected'] == '')
+                self.assertEqual(rop_info['selected'], '')
 
         # Now customize and verify again
         fsPS.manage_doCustomize(folder_path='custom')
@@ -201,9 +203,9 @@ class FSPythonScriptCustomizationTests(SecurityTest, FSPSMaker):
         rop = custom_ps.rolesOfPermission(perm)
         for rop_info in rop:
             if rop_info['name'] == 'Anonymous':
-                self.assertFalse(rop_info['selected'] == '')
+                self.assertNotEqual(rop_info['selected'], '')
             else:
-                self.assertTrue(rop_info['selected'] == '')
+                self.assertEqual(rop_info['selected'], '')
 
 
 _ORIGINAL_TEXT = """\

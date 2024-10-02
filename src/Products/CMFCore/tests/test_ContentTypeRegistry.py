@@ -191,12 +191,15 @@ class ContentTypeRegistryTests(unittest.TestCase):
 
     def test_empty(self):
         reg = self.reg
-        self.assertTrue(reg.findTypeName('foo', 'text/plain', 'asdfljksadf')
-                        is None)
-        self.assertTrue(reg.findTypeName('fargo', 'text/plain', 'asdfljksadf')
-                        is None)
-        self.assertTrue(reg.findTypeName('bar', 'text/plain', 'asdfljksadf')
-                        is None)
+        self.assertIsNone(
+            reg.findTypeName('foo', 'text/plain', 'asdfljksadf')
+        )
+        self.assertIsNone(
+            reg.findTypeName('fargo', 'text/plain', 'asdfljksadf')
+        )
+        self.assertIsNone(
+            reg.findTypeName('bar', 'text/plain', 'asdfljksadf')
+        )
         self.assertFalse(reg.listPredicates())
         self.assertRaises(KeyError, reg.removePredicate, 'xyzzy')
 

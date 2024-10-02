@@ -184,14 +184,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
                 return ''
 
         result = FSPageTemplate.inheritedAttribute('pt_render')(
-                                self, source, extra_context)
+            self, source, extra_context)
         if not source:
             _setCacheHeaders(self, extra_context)
         return result
 
     @security.protected(ViewManagementScreens)
     def pt_source_file(self):
-
         """ Return a file name to be compiled into the TAL code.
         """
         return 'file:%s' % self._filepath
@@ -228,13 +227,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         if self.ZCacheable_isCachingEnabled():
             # Prepare a cache key.
             keyset = {
-                      # Why oh why?
-                      # All this code is cut and paste
-                      # here to make sure that we
-                      # dont call _getContext and hence can't cache
-                      # Annoying huh?
-                      'here': self.aq_parent.getPhysicalPath(),
-                      'bound_names': bound_names}
+                # Why oh why?
+                # All this code is cut and paste
+                # here to make sure that we
+                # dont call _getContext and hence can't cache
+                # Annoying huh?
+                'here': self.aq_parent.getPhysicalPath(),
+                'bound_names': bound_names}
             result = self.ZCacheable_get(keywords=keyset)
             if result is not None:
                 # Got a cached value.

@@ -44,6 +44,7 @@ class DummyObject(Implicit):
     Comes with getIconURL and restrictedTraverse
     methods.
     """
+
     def __init__(self, id='dummy', **kw):
         self._id = id
         self.__dict__.update(kw)
@@ -199,6 +200,7 @@ class DummyFactoryDispatcher:
     """
     Dummy Product Factory Dispatcher
     """
+
     def __init__(self, folder):
         self._folder = folder
 
@@ -229,7 +231,7 @@ class DummyFolder(DummyObject):
 
         if fake_product:
             self.manage_addProduct = {
-                                   'FooProduct': DummyFactoryDispatcher(self)}
+                'FooProduct': DummyFactoryDispatcher(self)}
 
     def _setOb(self, id, object):
         setattr(self, id, object)
@@ -402,9 +404,9 @@ class DummyCachingManager:
 
     def getHTTPCachingHeaders(self, content, view_name, keywords, time=None):
         return (
-             ('foo', 'Foo'), ('bar', 'Bar'),
-             ('test_path', '/'.join(content.getPhysicalPath())),
-            )
+            ('foo', 'Foo'), ('bar', 'Bar'),
+            ('test_path', '/'.join(content.getPhysicalPath())),
+        )
 
     def getModTimeAndETag(self, content, view_method, keywords, time=None):
         return (None, None, False)

@@ -89,7 +89,7 @@ def _findProductForPath(path, subdir=None):
     p = os.path.abspath(path)
     for ppath in ProductsPath:
         if p.startswith(ppath):
-            dirpath = p[len(ppath)+1:]
+            dirpath = p[len(ppath) + 1:]
             parts = dirpath.replace('\\', '/').split('/', 1)
             parts.append('')
             if subdir:

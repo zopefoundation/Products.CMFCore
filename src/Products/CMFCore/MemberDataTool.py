@@ -64,7 +64,7 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         {'id': 'login_time', 'type': 'date', 'mode': 'w'},
         {'id': 'last_login_time', 'type': 'date', 'mode': 'w'},
         {'id': 'fullname', 'type': 'string', 'mode': 'w'},
-        )
+    )
     email = ''
     fullname = ''
     last_login_time = DateTime('1970/01/01 00:00:00 UTC')  # epoch

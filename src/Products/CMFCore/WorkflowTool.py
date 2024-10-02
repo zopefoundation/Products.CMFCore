@@ -89,7 +89,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     @security.protected(ManagePortal)
     def manage_selectWorkflows(self, REQUEST, manage_tabs_message=None):
-
         """ Show a management screen for changing type to workflow connections.
         """
         cbt = self._chains_by_type
@@ -163,7 +162,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
     #
     @security.private
     def listActions(self, info=None, object=None):
-
         """ Returns a list of actions to be displayed to the user.
 
         o Invoked by the portal_actions tool.
@@ -486,7 +484,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     @security.protected(ManagePortal)
     def getWorkflowsFor(self, ob):
-
         """ Find the workflows for the type of the given object.
         """
         res = []
@@ -510,7 +507,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     @security.private
     def _invokeWithNotification(self, wfs, ob, action, func, args, kw):
-
         """ Private utility method:  call 'func', and deal with exceptions
             indicating that the object has been deleted or moved.
         """
@@ -580,7 +576,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     @security.private
     def _setDefaultCataloging(self, value):
-
         """ Toggle whether '_reindexWorkflowVariables' actually touches
             the catalog (sometimes not desirable, e.g. when the workflow
             objects do this themselves only at particular points).
@@ -589,7 +584,6 @@ class WorkflowTool(UniqueObject, IFAwareObjectManager, Folder,
 
     @security.private
     def _reindexWorkflowVariables(self, ob):
-
         """ Reindex the variables that the workflow may have changed.
 
         Also reindexes the security.

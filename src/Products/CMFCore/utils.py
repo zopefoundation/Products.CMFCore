@@ -102,7 +102,6 @@ def getToolInterface(tool_id):
 
 @security.public
 def getToolByName(obj, name, default=_marker):
-
     """ Get the tool, 'toolname', by acquiring it.
 
     o Application code should use this method, rather than simply
@@ -163,7 +162,6 @@ def getUtilityByInterfaceName(dotted_name, default=_marker):
 
 @security.public
 def cookString(text):
-
     """ Make a Zope-friendly ID from 'text'.
 
     o Remove any spaces
@@ -177,7 +175,6 @@ def cookString(text):
 
 @security.public
 def tuplize(valueName, value):
-
     """ Make a tuple from 'value'.
 
     o Use 'valueName' to generate appropriate error messages.
@@ -497,7 +494,7 @@ def _setCacheHeaders(obj, extra_context):
 
         view_name = obj.getId()
         headers = manager.getHTTPCachingHeaders(
-                          content, view_name, extra_context)
+            content, view_name, extra_context)
         RESPONSE = REQUEST['RESPONSE']
         for key, value in headers:
             if key == 'ETag':
@@ -514,6 +511,7 @@ class _ViewEmulator(Implicit):
     """Auxiliary class used to adapt FSFile and FSImage
     for caching_policy_manager
     """
+
     def __init__(self, view_name=''):
         self._view_name = view_name
 
@@ -629,7 +627,6 @@ addInstanceForm = HTMLFile('dtml/addInstance', globals())
 
 
 def manage_addToolForm(self, REQUEST):
-
     """ Show the add tool form.
     """
     # self is a FactoryDispatcher.
@@ -647,7 +644,6 @@ def manage_addToolForm(self, REQUEST):
 
 
 def manage_addTool(self, type, REQUEST=None):
-
     """ Add the tool specified by name.
     """
     # self is a FactoryDispatcher.
@@ -695,7 +691,7 @@ class ContentInit:
                 constructors=(
                     manage_addContentForm,
                     manage_addContent,
-                    ) + self.extra_constructors,
+                ) + self.extra_constructors,
                 resources=(self, ),
                 permission=self.permission,
                 visibility=self.visibility)
@@ -705,7 +701,7 @@ class ContentInit:
                 meta_type=self.meta_type,
                 constructors=(
                     manage_addContentForm, manage_addContent, self,
-                    ) + self.extra_constructors,
+                ) + self.extra_constructors,
                 permission=self.permission,
                 visibility=self.visibility)
 
@@ -750,7 +746,6 @@ def manage_addContent(self, id, type, REQUEST=None):
 
 
 def registerIcon(klass, iconspec, _prefix=None):
-
     """ Make an icon available for a given class.
 
     o 'klass' is the class being decorated.

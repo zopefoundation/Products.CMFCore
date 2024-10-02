@@ -91,7 +91,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
          'label': 'Icon (Expression)'},
         {'id': 'content_meta_type', 'type': 'string', 'mode': 'w',
          'label': 'Product meta type'},
-        )
+    )
 
     _advanced_properties = (
         {'id': 'add_view_expr', 'type': 'string', 'mode': 'w',
@@ -638,7 +638,7 @@ allowedTypes = [
     'Python Method',
     'DTML Method',
     'External Method',
-   ]
+]
 
 
 @implementer(ITypesTool)

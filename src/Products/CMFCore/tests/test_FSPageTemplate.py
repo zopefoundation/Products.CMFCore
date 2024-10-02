@@ -114,7 +114,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = script.__of__(self.app)
         script.charset = 'utf-16'
         data = script.read()
-        self.assertTrue(unencoded in data)
+        self.assertIn(unencoded, data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFrom2FSMetadata(self):
@@ -124,7 +124,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = self._makeOne('testPT4', 'testPT4.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.assertTrue(unencoded in data)
+        self.assertIn(unencoded, data)
         self.assertEqual(script.content_type, 'text/html')
 
     def test_CharsetFromContentTypeMetadata(self):
@@ -132,7 +132,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         script = self._makeOne('testPT5', 'testPT5.pt')
         script = script.__of__(self.app)
         data = script.read()
-        self.assertTrue(unencoded in data)
+        self.assertIn(unencoded, data)
         self.assertEqual(script.content_type, 'text/html; charset=utf-16')
 
     def test_BadCall(self):
@@ -154,9 +154,9 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
         obj = self._makeOne('testPT', 'testPT.pt')
         obj = obj.__of__(self.app)
         obj()
-        self.assertTrue(len(self.RESPONSE.headers) >= original_len + 2)
-        self.assertTrue('foo' in self.RESPONSE.headers)
-        self.assertTrue('bar' in self.RESPONSE.headers)
+        self.assertGreaterEqual(len(self.RESPONSE.headers), original_len + 2)
+        self.assertIn('foo', self.RESPONSE.headers)
+        self.assertIn('bar', self.RESPONSE.headers)
 
     def test_pt_properties(self):
         script = self._makeOne('testPT', 'testPT.pt')
@@ -179,7 +179,7 @@ class FSPageTemplateCustomizationTests(SecurityTest, FSPTMaker):
         FSPTMaker.setUp(self)
         SecurityTest.setUp(self)
         self.skins, self.custom, self.fsdir, self.fsPT = self._makeContext(
-                                                         'testPT', 'testPT.pt')
+            'testPT', 'testPT.pt')
 
     def tearDown(self):
         cleanUp()
@@ -190,29 +190,29 @@ class FSPageTemplateCustomizationTests(SecurityTest, FSPTMaker):
         self.fsPT.manage_doCustomize(folder_path='custom')
 
         self.assertEqual(len(self.custom.objectIds()), 1)
-        self.assertTrue('testPT' in self.custom.objectIds())
+        self.assertIn('testPT', self.custom.objectIds())
 
     def test_customize_alternate_root(self):
         self.app.other = Folder('other')
 
         self.fsPT.manage_doCustomize(folder_path='other', root=self.app)
 
-        self.assertFalse('testPT' in self.custom.objectIds())
-        self.assertTrue('testPT' in self.app.other.objectIds())
+        self.assertNotIn('testPT', self.custom.objectIds())
+        self.assertIn('testPT', self.app.other.objectIds())
 
     def test_customize_fspath_as_dot(self):
         self.fsPT.manage_doCustomize(folder_path='.')
 
-        self.assertFalse('testPT' in self.custom.objectIds())
-        self.assertTrue('testPT' in self.skins.objectIds())
+        self.assertNotIn('testPT', self.custom.objectIds())
+        self.assertIn('testPT', self.skins.objectIds())
 
     def test_customize_manual_clone(self):
         clone = Folder('testPT')
 
         self.fsPT.manage_doCustomize(folder_path='custom', obj=clone)
 
-        self.assertTrue('testPT' in self.custom.objectIds())
-        self.assertTrue(aq_base(self.custom._getOb('testPT')) is clone)
+        self.assertIn('testPT', self.custom.objectIds())
+        self.assertIs(aq_base(self.custom._getOb('testPT')), clone)
 
     def test_customize_caching(self):
         # Test to ensure that cache manager associations survive customizing
@@ -240,4 +240,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(FSPageTemplateTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             FSPageTemplateCustomizationTests),
-        ))
+    ))

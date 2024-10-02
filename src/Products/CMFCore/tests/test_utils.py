@@ -274,4 +274,4 @@ def test_suite():
         unittest.defaultTestLoader.loadTestsFromTestCase(CoreUtilsTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             CoreUtilsSecurityTests),
-        ))
+    ))

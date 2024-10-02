@@ -193,9 +193,9 @@ class MembershipTool(UniqueObject, Folder):
             self.role_map[portal_role] = userfolder_role
 
         return MessageDialog(
-               title='Mapping updated',
-               message='The Role mappings have been updated',
-               action='manage_mapRoles')
+            title='Mapping updated',
+            message='The Role mappings have been updated',
+            action='manage_mapRoles')
 
     @security.protected(ManagePortal)
     def getMappedRole(self, portal_role):
@@ -246,9 +246,9 @@ class MembershipTool(UniqueObject, Folder):
             self.memberareaCreationFlag = 0
 
         return MessageDialog(
-               title='Member area creation flag changed',
-               message='Member area creation flag has been updated',
-               action='manage_mapRoles')
+            title='Member area creation flag changed',
+            message='Member area creation flag has been updated',
+            action='manage_mapRoles')
 
     @security.public
     def createMemberArea(self, member_id=''):

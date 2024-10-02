@@ -221,8 +221,8 @@ class WorkflowToolTests(unittest.TestCase):
 
         wfids = tool.getWorkflowIds()
         self.assertEqual(len(wfids), 2)
-        self.assertTrue('a' in wfids)
-        self.assertTrue('b' in wfids)
+        self.assertIn('a', wfids)
+        self.assertIn('b', wfids)
         self.assertEqual(tool.getWorkflowById('default'), None)
         wf = tool.getWorkflowById('a')
         self.assertEqual(wf.getId(), 'a')
@@ -269,13 +269,13 @@ class WorkflowToolTests(unittest.TestCase):
         self.assertEqual(len(tool.listChainOverrides()), 1)
         chain = tool.getChainFor(dummy)
         self.assertEqual(len(chain), 2)
-        self.assertTrue('a' in chain)
-        self.assertTrue('b' in chain)
+        self.assertIn('a', chain)
+        self.assertIn('b', chain)
 
         vars = tool.getCatalogVariablesFor(dummy)
         self.assertEqual(len(vars), 1)
-        self.assertTrue('dummy' in vars)
-        self.assertTrue('a: dummy' in vars.values())
+        self.assertIn('dummy', vars)
+        self.assertIn('a: dummy', vars.values())
 
     def test_setChainForPortalTypes(self):
         tool = self._makeWithTypes()
@@ -308,8 +308,8 @@ class WorkflowToolTests(unittest.TestCase):
 
         vars = tool.getCatalogVariablesFor(dummy)
         self.assertEqual(len(vars), 1)
-        self.assertTrue('dummy' in vars)
-        self.assertTrue('a: dummy' in vars.values())
+        self.assertIn('dummy', vars)
+        self.assertIn('a: dummy', vars.values())
 
     def test_getInfoFor(self):
         tool = self._makeWithTypesAndChain()
@@ -426,14 +426,14 @@ class WorkflowToolTests(unittest.TestCase):
         dummy_status0 = object()
         tool.setStatusOf('a', ob, dummy_status0)
 
-        self.assertTrue('a' in ob.workflow_history)
+        self.assertIn('a', ob.workflow_history)
         self.assertEqual(len(ob.workflow_history['a']), 1)
         self.assertEqual(ob.workflow_history['a'][0], dummy_status0)
 
         dummy_status1 = object()
         tool.setStatusOf('a', ob, dummy_status1)
 
-        self.assertTrue('a' in ob.workflow_history)
+        self.assertIn('a', ob.workflow_history)
         self.assertEqual(len(ob.workflow_history['a']), 2)
         self.assertEqual(ob.workflow_history['a'][0], dummy_status0)
         self.assertEqual(ob.workflow_history['a'][1], dummy_status1)

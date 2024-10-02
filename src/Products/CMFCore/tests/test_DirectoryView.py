@@ -82,14 +82,17 @@ class DirectoryViewPathTests(unittest.TestCase):
             self.assertTrue(issubclass(w[-1].category, UserWarning))
             text = ('DirectoryView fake_skin refers to a non-existing path %r'
                     % file)
-            self.assertTrue(text in str(w[-1].message))
+            self.assertIn(text, str(w[-1].message))
 
     # this test tests that registerDirectory creates keys in the right format.
     def test_registerDirectoryKeys(self):
         from Products.CMFCore.DirectoryView import _dirreg
         dirs = _dirreg._directories
-        self.assertTrue('Products.CMFCore.tests:fake_skins/fake_skin' in dirs,
-                        dirs.keys())
+        self.assertIn(
+            'Products.CMFCore.tests:fake_skins/fake_skin',
+            dirs,
+            dirs.keys()
+        )
         self.assertEqual(self.ob.fake_skin.getDirPath(),
                          'Products.CMFCore.tests:fake_skins/fake_skin')
 
@@ -110,7 +113,7 @@ class DirectoryViewTests(FSDVTest):
         # appears as a DirectoryViewSurrogate due
         # to Acquisition hackery.
         from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
-        self.assertTrue(isinstance(self.ob.fake_skin, DirectoryViewSurrogate))
+        self.assertIsInstance(self.ob.fake_skin, DirectoryViewSurrogate)
 
     def test_DirectoryViewMethod(self):
         # Check if DirectoryView method works
@@ -123,8 +126,11 @@ class DirectoryViewTests(FSDVTest):
     def test_ignored(self):
         # Test that "artifact" files and dirs are ignored
         for name in '#test1', 'CVS', '.test1', 'test1~':
-            self.assertTrue(name not in self.ob.fake_skin.objectIds(),
-                            '%s not ignored' % name)
+            self.assertNotIn(
+                name,
+                self.ob.fake_skin.objectIds(),
+                '%s not ignored' % name
+            )
 
     def test_surrogate_writethrough(self):
         # CMF Collector 316: It is possible to cause ZODB writes because
@@ -163,7 +169,7 @@ class DirectoryViewIgnoreTests(FSDVTest):
         visible = self.ob.fake_skin.objectIds()
 
         for name in must_ignore:
-            self.assertFalse(name in visible)
+            self.assertNotIn(name, visible)
 
 
 class DirectoryViewFolderTests(FSDVTest):
@@ -200,7 +206,7 @@ class DirectoryViewFolderTests(FSDVTest):
         # DirectoryViewSurrogate
         from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
         testfolder = self.ob.fake_skin.test_directory
-        self.assertTrue(isinstance(testfolder, DirectoryViewSurrogate))
+        self.assertIsInstance(testfolder, DirectoryViewSurrogate)
 
     def test_DirectoryViewFolderCustom(self):
         # Now we register a different class under the fake meta_type
@@ -222,7 +228,7 @@ class DirectoryViewFolderTests(FSDVTest):
         self.ob._delObject('fake_skin')
         self._registerDirectory(self)
         testfolder = self.ob.fake_skin.test_directory
-        self.assertTrue(isinstance(testfolder, DummyDirectoryViewSurrogate))
+        self.assertIsInstance(testfolder, DummyDirectoryViewSurrogate)
 
 
 class DebugModeTests(WritableFSDVTest):

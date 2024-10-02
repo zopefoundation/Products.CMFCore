@@ -67,76 +67,76 @@ _TYPESTOOL_BODY = b"""\
 """
 
 _TI_LIST = ({
-    'id':                    'foo',
-    'title':                 'Foo',
-    'description':           'Foo things',
-    'i18n_domain':           'foo_domain',
-    'content_meta_type':     'Foo Thing',
-    'icon_expr':             'string:${portal_url}/foo.png',
-    'product':               'CMFSetup',
-    'factory':               'addFoo',
-    'add_view_expr':         'string:${folder_url}/foo_add_view',
-    'link_target':           '_new',
-    'immediate_view':        'foo_view',
-    'filter_content_types':  False,
+    'id': 'foo',
+    'title': 'Foo',
+    'description': 'Foo things',
+    'i18n_domain': 'foo_domain',
+    'content_meta_type': 'Foo Thing',
+    'icon_expr': 'string:${portal_url}/foo.png',
+    'product': 'CMFSetup',
+    'factory': 'addFoo',
+    'add_view_expr': 'string:${folder_url}/foo_add_view',
+    'link_target': '_new',
+    'immediate_view': 'foo_view',
+    'filter_content_types': False,
     'allowed_content_types': (),
-    'allow_discussion':      False,
-    'global_allow':          False,
+    'allow_discussion': False,
+    'global_allow': False,
     'aliases': {'(Default)': 'foo_view',
-                'view':      'foo_view',
+                'view': 'foo_view',
                 },
-    'actions': ({'id':     'view',
-                 'title':  'View',
+    'actions': ({'id': 'view',
+                 'title': 'View',
                  'action': 'string:${object_url}/foo_view',
                  'icon_expr': 'string:${portal_url}/preview_icon.png',
                  'link_target': '_new',
                  'permissions': (View,),
                  },
-                {'id':     'edit',
-                 'title':  'Edit',
+                {'id': 'edit',
+                 'title': 'Edit',
                  'action': 'string:${object_url}/foo_edit_form',
                  'icon_expr': 'string:${portal_url}/edit_icon.png',
                  'permissions': (ModifyPortalContent,),
                  },
-                {'id':     'metadata',
-                 'title':  'Metadata',
+                {'id': 'metadata',
+                 'title': 'Metadata',
                  'action': 'string:${object_url}/metadata_edit_form',
                  'icon_expr': 'string:${portal_url}/metadata_icon.png',
                  'permissions': (ModifyPortalContent,),
                  },
                 ),
-    }, {
-    'id':                    'bar',
-    'title':                 'Bar',
-    'description':           'Bar things',
-    'content_meta_type':     'Bar Thing',
-    'icon_expr':             'string:${portal_url}/bar.png',
-    'constructor_path':      'make_bar',
-    'permission':            'Add portal content',
-    'add_view_expr':         'string:${folder_url}/bar_add_view',
-    'link_target':           '',
-    'immediate_view':        'bar_view',
-    'filter_content_types':  True,
+}, {
+    'id': 'bar',
+    'title': 'Bar',
+    'description': 'Bar things',
+    'content_meta_type': 'Bar Thing',
+    'icon_expr': 'string:${portal_url}/bar.png',
+    'constructor_path': 'make_bar',
+    'permission': 'Add portal content',
+    'add_view_expr': 'string:${folder_url}/bar_add_view',
+    'link_target': '',
+    'immediate_view': 'bar_view',
+    'filter_content_types': True,
     'allowed_content_types': ('foo',),
-    'allow_discussion':      True,
-    'global_allow':          True,
+    'allow_discussion': True,
+    'global_allow': True,
     'aliases': {'(Default)': 'bar_view',
-                'view':      'bar_view',
+                'view': 'bar_view',
                 },
-    'actions': ({'id':     'view',
-                 'title':  'View',
+    'actions': ({'id': 'view',
+                 'title': 'View',
                  'action': 'string:${object_url}/bar_view',
                  'permissions': (View,)},
-                {'id':     'edit',
-                 'title':  'Edit',
+                {'id': 'edit',
+                 'title': 'Edit',
                  'action': 'string:${object_url}/bar_edit_form',
                  'permissions': (ModifyPortalContent,)},
-                {'id':     'contents',
-                 'title':  'Contents',
+                {'id': 'contents',
+                 'title': 'Contents',
                  'action': 'string:${object_url}/folder_contents',
                  'permissions': (AccessContentsInformation,)},
-                {'id':     'metadata',
-                 'title':  'Metadata',
+                {'id': 'metadata',
+                 'title': 'Metadata',
                  'action': 'string:${object_url}/metadata_edit_form',
                  'permissions': (ModifyPortalContent,)})})
 
@@ -570,8 +570,8 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 2)
-        self.assertTrue('foo' in tool.objectIds())
-        self.assertTrue('bar' in tool.objectIds())
+        self.assertIn('foo', tool.objectIds())
+        self.assertIn('bar', tool.objectIds())
 
     def test_with_filenames(self):
         from ..typeinfo import importTypesTool
@@ -587,8 +587,8 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 2)
-        self.assertTrue('foo object' in tool.objectIds())
-        self.assertTrue('bar object' in tool.objectIds())
+        self.assertIn('foo object', tool.objectIds())
+        self.assertIn('bar object', tool.objectIds())
 
     def test_migration(self):
         from ..typeinfo import importTypesTool
@@ -605,9 +605,9 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 3)
-        self.assertTrue('foo' in tool.objectIds())
-        self.assertTrue('bar' in tool.objectIds())
-        self.assertTrue('baz' in tool.objectIds())
+        self.assertIn('foo', tool.objectIds())
+        self.assertIn('bar', tool.objectIds())
+        self.assertIn('baz', tool.objectIds())
         self.assertEqual(tool.bar.icon_expr, 'string:${portal_url}/bar.png')
         self.assertEqual(tool.baz.icon_expr, '')
 
@@ -676,7 +676,7 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 1)
-        self.assertTrue('baz' in tool.objectIds())
+        self.assertIn('baz', tool.objectIds())
         baz = tool['baz']
         actions = baz.listActions()
         self.assertEqual(len(actions), 1)
@@ -694,7 +694,7 @@ class importTypesToolTests(_TypeInfoSetup):
         importTypesTool(context)
 
         self.assertEqual(len(tool.objectIds()), 1)
-        self.assertTrue('baz' in tool.objectIds())
+        self.assertIn('baz', tool.objectIds())
         baz = tool['baz']
         actions = baz.listActions()
         self.assertEqual(len(actions), 0)

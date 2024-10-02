@@ -230,7 +230,7 @@ class WritableFSDVTest(FSDVTest):
     def setUp(self):
         # store the place where the skin copy will be created
         self.tempname = mktemp(dir=getPackageLocation(
-                                                     'Products.CMFCore.tests'))
+            'Products.CMFCore.tests'))
         # create the temporary folder
         mkdir(self.tempname)
         # copy the source fake skin to the new location
