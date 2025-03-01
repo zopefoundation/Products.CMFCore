@@ -4,6 +4,7 @@ Products.CMFCore Changelog
 3.7 (unreleased)
 ----------------
 
+- Drop `pkg_resources` usage
 
 3.6 (2024-10-02)
 ----------------
