@@ -18,12 +18,11 @@ import re
 import sys
 from _thread import allocate_lock
 from copy import deepcopy
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import distribution
 from os import path as os_path
 from os.path import abspath
 from warnings import warn
-
-from importlib.metadata import distribution
-from importlib.metadata import PackageNotFoundError
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
