@@ -4,7 +4,10 @@ Products.CMFCore Changelog
 3.7 (unreleased)
 ----------------
 
+- Drop support for Python 3.8.
+
 - Drop `pkg_resources` usage
+
 
 3.6 (2024-10-02)
 ----------------
