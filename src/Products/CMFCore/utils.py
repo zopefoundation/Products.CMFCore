@@ -22,7 +22,8 @@ from os import path as os_path
 from os.path import abspath
 from warnings import warn
 
-import pkg_resources
+from importlib.metadata import distribution
+from importlib.metadata import PackageNotFoundError
 
 from AccessControl.class_init import InitializeClass
 from AccessControl.Permission import Permission
@@ -62,8 +63,8 @@ from .interfaces import ICachingPolicyManager
 
 HAS_ZSERVER = True
 try:
-    dist = pkg_resources.get_distribution('ZServer')
-except pkg_resources.DistributionNotFound:
+    dist = distribution('ZServer')
+except PackageNotFoundError:
     HAS_ZSERVER = False
 
 SUBTEMPLATE = '__SUBTEMPLATE__'
