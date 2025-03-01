@@ -17,6 +17,7 @@ fail-under = 85
 
 [isort]
 known_first_party = "Products.GenericSetup, Products.MailHost, Products.BTreeFolder2, Products.PluginIndexes, Products.ZCatalog, Products.PythonScripts, Products.ZSQLMethods, Products.ZCTextIndex, Products.StandardCacheManagers"
+known_third_party = 'docutils, pytz'
 
 [check-manifest]
 additional-ignores = [
