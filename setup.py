@@ -21,7 +21,7 @@ README = _boundary.join([
 ])
 
 setup(name='Products.%s' % NAME,
-      version='3.7.dev0',
+      version='3.8.dev0',
       description='Zope Content Management Framework core components',
       long_description=README,
       long_description_content_type='text/x-rst',
@@ -39,7 +39,7 @@ setup(name='Products.%s' % NAME,
           'Programming Language :: Python :: 3.13',
           'Programming Language :: Python :: Implementation :: CPython',
           'Topic :: Software Development :: Libraries ::'
-          'Application Frameworks',
+          ' Application Frameworks',
       ],
       keywords='web application server zope cmf',
       author='Zope Foundation and Contributors',

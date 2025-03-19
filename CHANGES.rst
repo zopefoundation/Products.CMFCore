@@ -1,7 +1,11 @@
 Products.CMFCore Changelog
 ==========================
 
-3.7 (unreleased)
+3.8 (unreleased)
+----------------
+
+
+3.7 (2025-03-19)
 ----------------
 
 - Drop support for Python 3.8.
