@@ -39,7 +39,7 @@ setup(name='Products.%s' % NAME,
           'Programming Language :: Python :: 3.13',
           'Programming Language :: Python :: Implementation :: CPython',
           'Topic :: Software Development :: Libraries ::'
-          'Application Frameworks',
+          ' Application Frameworks',
       ],
       keywords='web application server zope cmf',
       author='Zope Foundation and Contributors',
