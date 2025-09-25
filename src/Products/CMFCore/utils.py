@@ -88,7 +88,6 @@ def registerToolInterface(tool_id, tool_interface):
 
     This method can go away when getToolByName is going away
     """
-    global _tool_interface_registry
     _tool_interface_registry[tool_id] = tool_interface
 
 
@@ -96,7 +95,6 @@ def registerToolInterface(tool_id, tool_interface):
 def getToolInterface(tool_id):
     """ Get the interface registered for a tool ID
     """
-    global _tool_interface_registry
     return _tool_interface_registry.get(tool_id, None)
 
 
