@@ -4,6 +4,12 @@ Products.CMFCore Changelog
 3.8 (unreleased)
 ----------------
 
+- Switch to PEP 420 native namespace.
+
+- Add support for Python 3.14.
+
+- Drop support for Python 3.9.
+
 
 3.7 (2025-03-19)
 ----------------

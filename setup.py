@@ -1,6 +1,5 @@
 import os
 
-from setuptools import find_packages
 from setuptools import setup
 
 
@@ -32,11 +31,11 @@ setup(name='Products.%s' % NAME,
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python :: 3',
-          'Programming Language :: Python :: 3.9',
           'Programming Language :: Python :: 3.10',
           'Programming Language :: Python :: 3.11',
           'Programming Language :: Python :: 3.12',
           'Programming Language :: Python :: 3.13',
+          'Programming Language :: Python :: 3.14',
           'Programming Language :: Python :: Implementation :: CPython',
           'Topic :: Software Development :: Libraries ::'
           ' Application Frameworks',
@@ -52,14 +51,8 @@ setup(name='Products.%s' % NAME,
           'Sources': 'https://github.com/zopefoundation/Products.CMFCore',
       },
       license='ZPL-2.1',
-      packages=find_packages('src'),
-      package_dir={'': 'src'},
-      include_package_data=True,
-      namespace_packages=['Products'],
-      zip_safe=False,
-      python_requires='>=3.9',
+      python_requires='>=3.10',
       install_requires=[
-          'setuptools',
           'Zope >= 5',
           'docutils > 0.15',
           'five.localsitemanager',
@@ -75,7 +68,7 @@ setup(name='Products.%s' % NAME,
       extras_require={
           'test': ['Products.StandardCacheManagers'],
           'zsql': ['Products.ZSQLMethods >= 3.0.0b1'],
-          'docs': ['Sphinx', 'repoze.sphinx.autointerface', 'pkginfo'],
+          'docs': ['Sphinx', 'repoze.sphinx.autointerface', 'furo'],
       },
       entry_points="""
       [zope2.initialize]
