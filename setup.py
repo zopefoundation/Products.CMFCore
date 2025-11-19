@@ -20,7 +20,7 @@ README = _boundary.join([
 ])
 
 setup(name='Products.%s' % NAME,
-      version='3.8.dev0',
+      version='3.8',
       description='Zope Content Management Framework core components',
       long_description=README,
       long_description_content_type='text/x-rst',
@@ -70,6 +70,7 @@ setup(name='Products.%s' % NAME,
           'zsql': ['Products.ZSQLMethods >= 3.0.0b1'],
           'docs': ['Sphinx', 'repoze.sphinx.autointerface', 'furo'],
       },
+      include_package_data=True,
       entry_points="""
       [zope2.initialize]
       Products.{} = Products.{}:initialize

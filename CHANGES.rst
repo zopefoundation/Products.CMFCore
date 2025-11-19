@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-3.8 (unreleased)
+3.8 (2025-11-19)
 ----------------
 
 - Switch to PEP 420 native namespace.
