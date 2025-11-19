@@ -18,7 +18,7 @@ from importlib.metadata import distribution
 
 year = datetime.datetime.now().year
 sys.path.append(os.path.abspath('../src'))
-rqmt = distribution('zope.interface')
+rqmt = distribution('Products.CMFCore')
 
 # -- General configuration -----------------------------------------------
 
