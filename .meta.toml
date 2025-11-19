@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/config/zope-product
 [meta]
 template = "zope-product"
-commit-id = "b3663390"
+commit-id = "9fcd3d67"
 
 [python]
 with-pypy = false
@@ -22,6 +22,7 @@ known_third_party = 'docutils, pytz'
 [check-manifest]
 additional-ignores = [
     "docs/_build/html/_sources/api/*",
+    "docs/_build/html/_static/scripts/*",
     ]
 
 [manifest]
