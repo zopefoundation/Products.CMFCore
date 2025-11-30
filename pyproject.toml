@@ -1,13 +1,74 @@
-# 
-# Generated from:
-# https://github.com/zopefoundation/meta/tree/master/config/zope-product
-
+# Generated with zope.meta (https://zopemeta.readthedocs.io/) from:
+# https://github.com/zopefoundation/meta/tree/master/src/zope/meta/zope-product
 [build-system]
 requires = [
     "setuptools >= 78.1.1,< 81",
     "wheel",
 ]
 build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "Products.CMFCore"
+version = "3.9.dev0"
+description = "Zope Content Management Framework core components"
+license = "ZPL-2.1"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Plone",
+    "Framework :: Zope :: 5",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dynamic = ["readme"]
+requires-python = ">=3.10"
+authors = [
+    {name = "Zope Foundation and contributors",email = "zope-cmf@zope.dev"},
+]
+maintainers = [
+    {name = "Plone Foundation and contributors",email = "zope-dev@zope.dev"},
+]
+dependencies = [
+    "Zope >= 5",
+    "docutils > 0.15",
+    "five.localsitemanager",
+    "Products.BTreeFolder2",
+    "Products.GenericSetup >= 2.1.2",
+    "Products.MailHost >= 4.0",
+    "Products.PythonScripts",
+    "Products.StandardCacheManagers",
+    "Products.ZCatalog >= 4.0a2",
+    "zope.datetime",
+    "zope.interface >= 3.8",
+]
+keywords = [
+    "web",
+    "application",
+    "server",
+    "zope",
+    "cmf",
+]
+
+[project.optional-dependencies]
+test = ["Products.StandardCacheManagers"]
+zsql = ["Products.ZSQLMethods >= 3.0.0b1"]
+docs = [
+    "Sphinx",
+    "repoze.sphinx.autointerface",
+    "furo",
+]
+
+[project.urls]
+Documentation = "https://zope.readthedocs.io"
+Source = "https://github.com/zopefoundation/Products.CMFCore"
+Issues = "https://github.com/zopefoundation/Products.CMFCore/issues"
 
 [tool.coverage.run]
 branch = true
@@ -31,3 +92,7 @@ exclude_lines = [
 
 [tool.coverage.html]
 directory = "parts/htmlcov"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.rst", "CHANGES.rst"]}
+
