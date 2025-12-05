@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 3.9 (unreleased)
 ----------------
 
+- Move package metadata from setup.py to pyproject.toml.
+
 
 3.8 (2025-11-19)
 ----------------
