@@ -4,6 +4,13 @@ Products.CMFCore Changelog
 3.9 (unreleased)
 ----------------
 
+- Rewrite ``reindexObjectSecurity`` to walk the containment tree instead of
+  querying the catalog. This avoids a catalog query (and potential
+  ``processQueue`` flush) and is 5-7x faster. Only objects providing
+  ``ICatalogAware`` are reindexed; non-catalog-aware containers are still
+  traversed so catalog-aware children within them are not missed.
+  (`#152 <https://github.com/zopefoundation/Products.CMFCore/issues/152>`_)
+
 - Move package metadata from setup.py to pyproject.toml.
 
 
