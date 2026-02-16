@@ -185,12 +185,12 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
 
     def test_reindexObjectSecurity(self):
         foo = self.site.foo
-        self.site.foo.bar = TheClass('bar')
-        bar = self.site.foo.bar
-        self.site.foo.hop = TheClass('hop')
-        hop = self.site.foo.hop
+        foo._setObject('bar', TheClass('bar'))
+        bar = foo.bar
+        foo._setObject('hop', TheClass('hop'))
+        hop = foo.hop
         cat = self.ctool
-        cat.setObs([foo, bar, hop])
+        cat.log = []
         foo.reindexObjectSecurity()
         log = sorted(cat.log)
         self.assertEqual(log, [
@@ -202,35 +202,61 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
         self.assertFalse(bar.notified)
         self.assertFalse(hop.notified)
 
-    def test_reindexObjectSecurity_missing_raise(self):
-        # Exception raised for missing object (Zope 2.8 brains)
+    def test_reindexObjectSecurity_skip_self(self):
         foo = self.site.foo
-        missing = TheClass('missing').__of__(foo)
-        missing.GETOBJECT_RAISES = True
+        foo._setObject('bar', TheClass('bar'))
         cat = self.ctool
-        try:
-            self._catch_log_errors()
-            cat.setObs([foo, missing])
-        finally:
-            self._ignore_log_errors()
-        self.assertRaises(NotFound, foo.reindexObjectSecurity)
-        self.assertFalse(self.logged)  # no logging due to raise
+        cat.log = []
+        foo.reindexObjectSecurity(skip_self=True)
+        log = sorted(cat.log)
+        self.assertEqual(log, [
+            'reindex /site/foo/bar %s 0' % str(CMF_SECURITY_INDEXES),
+        ])
 
-    def test_reindexObjectSecurity_missing_noraise(self):
-        # Raising disabled
-        self._catch_log_errors(subsystem='CMFCore.CMFCatalogAware')
+    def test_reindexObjectSecurity_skips_non_catalog_aware(self):
+        # Non-ICatalogAware children should not be reindexed,
+        # but their catalog-aware children should be.
         foo = self.site.foo
-        missing = TheClass('missing').__of__(foo)
-        missing.GETOBJECT_RAISES = False
+        # Add a plain Folder (not ICatalogAware) containing a
+        # catalog-aware object.
+        foo._setObject('plain', SimpleFolder('plain'))
+        foo.plain._setObject('deep', TheClass('deep'))
         cat = self.ctool
-        cat.setObs([foo, missing])
+        cat.log = []
         foo.reindexObjectSecurity()
-        self.assertEqual(
-            cat.log,
-            ['reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES)])
-        self.assertFalse(foo.notified)
-        self.assertFalse(missing.notified)
-        self.assertEqual(len(self.logged), 1)  # logging because no raise
+        log = sorted(cat.log)
+        self.assertEqual(log, [
+            'reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/plain/deep %s 0' % str(CMF_SECURITY_INDEXES),
+        ])
+
+    def test_reindexObjectSecurity_deep_nesting(self):
+        # Verify recursion works for deeper hierarchies.
+        foo = self.site.foo
+        foo._setObject('level1', TheClass('level1'))
+        foo.level1._setObject('level2', TheClass('level2'))
+        foo.level1.level2._setObject('level3', TheClass('level3'))
+        cat = self.ctool
+        cat.log = []
+        foo.reindexObjectSecurity()
+        log = sorted(cat.log)
+        self.assertEqual(log, [
+            'reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/level1 %s 0' % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/level1/level2 %s 0'
+            % str(CMF_SECURITY_INDEXES),
+            'reindex /site/foo/level1/level2/level3 %s 0'
+            % str(CMF_SECURITY_INDEXES),
+        ])
+
+    def test_reindexObjectSecurity_no_catalog_tool(self):
+        # Without a catalog tool, reindexObject is a no-op, so no log.
+        sm = getSiteManager()
+        sm.unregisterUtility(provided=ICatalogTool)
+        foo = self.site.foo
+        foo._setObject('bar', TheClass('bar'))
+        # Should not raise
+        foo.reindexObjectSecurity()
 
     def test_catalog_tool(self):
         foo = self.site.foo

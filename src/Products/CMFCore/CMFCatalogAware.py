@@ -99,39 +99,34 @@ class CatalogAware(Base):
     @security.protected(ModifyPortalContent)
     def reindexObjectSecurity(self, skip_self=False):
         """ Reindex security-related indexes on the object.
-        """
-        catalog = self._getCatalogTool()
-        if catalog is None:
-            return
-        path = '/'.join(self.getPhysicalPath())
 
-        # XXX if _getCatalogTool() is overriden we will have to change
-        # this method for the sub-objects.
-        for brain in catalog.unrestrictedSearchResults(path=path):
-            brain_path = brain.getPath()
-            if brain_path == path and skip_self:
-                continue
-            # Get the object
-            try:
-                ob = brain._unrestrictedGetObject()
-            except (AttributeError, KeyError):
-                # don't fail on catalog inconsistency
-                continue
-            if ob is None:
-                # BBB: Ignore old references to deleted objects.
-                # Can happen only when using
-                # catalog-getObject-raises off in Zope 2.8
-                logger.warning('reindexObjectSecurity: Cannot get %s from '
-                               'catalog', brain_path)
-                continue
-            s = getattr(ob, '_p_changed', 0)
-            ob.reindexObject(idxs=self._cmf_security_indexes,
-                             update_metadata=0)
-            if s is None:
-                ob._p_deactivate()
+        Walks the containment tree instead of querying the catalog.
+        This avoids a catalog query (and potential processQueue flush)
+        and is significantly faster than the catalog-based approach.
+        Only objects providing ICatalogAware are reindexed.
+        """
+        _recursive_security_reindex(self, skip_self=skip_self)
 
 
 InitializeClass(CatalogAware)
+
+
+def _recursive_security_reindex(ob, skip_self=False):
+    """Walk the containment tree and reindex security indexes.
+
+    Only objects providing ICatalogAware are reindexed.
+    Non-catalog-aware containers are still traversed so that
+    catalog-aware children within them are not missed.
+    """
+    if not skip_self and ICatalogAware.providedBy(ob):
+        s = getattr(ob, '_p_changed', 0)
+        ob.reindexObject(idxs=CatalogAware._cmf_security_indexes,
+                         update_metadata=0)
+        if s is None:
+            ob._p_deactivate()
+    if hasattr(aq_base(ob), 'objectIds'):
+        for child in ob.objectValues():
+            _recursive_security_reindex(child)
 
 
 @implementer(IWorkflowAware)
