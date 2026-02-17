@@ -110,6 +110,9 @@ class DummyCatalog(SimpleItem):
             res.append(self.brain_class(ob, obpath))
         return res
 
+    def _unrestrictedSearchResults(self, **kw):
+        return self.unrestrictedSearchResults(**kw)
+
 
 class DummyWorkflowTool(SimpleItem):
 

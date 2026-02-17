@@ -4,6 +4,12 @@ Products.CMFCore Changelog
 3.9 (unreleased)
 ----------------
 
+- Fix ``reindexObjectSecurity`` to not trigger ``processQueue()`` mid-request.
+  Uses ``_unrestrictedSearchResults`` that bypasses the indexing queue flush,
+  consistent with existing ``_indexObject``/``_reindexObject``/
+  ``_unindexObject`` convention.
+  (`#152 <https://github.com/zopefoundation/Products.CMFCore/issues/152>`_)
+
 - Move package metadata from setup.py to pyproject.toml.
 
 
