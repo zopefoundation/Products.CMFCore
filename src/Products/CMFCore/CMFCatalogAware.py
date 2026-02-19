@@ -137,11 +137,10 @@ class CatalogAware(Base):
                 # don't fail on catalog inconsistency
                 continue
             if ob is None:
-                # BBB: Ignore old references to deleted objects.
-                # Can happen only when using
-                # catalog-getObject-raises off in Zope 2.8
-                logger.warning('reindexObjectSecurity: Cannot get %s from '
-                               'catalog', brain_path)
+                # Expected when objects were deleted in this transaction
+                # but the queue hasn't been flushed yet.
+                logger.debug('reindexObjectSecurity: Cannot get %s from '
+                             'catalog (pending unindex)', brain_path)
                 continue
             s = getattr(ob, '_p_changed', 0)
             ob.reindexObject(idxs=self._cmf_security_indexes,
