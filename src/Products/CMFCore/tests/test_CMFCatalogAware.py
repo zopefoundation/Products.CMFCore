@@ -239,7 +239,8 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
                 ['reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES)])
             self.assertFalse(foo.notified)
             self.assertFalse(missing.notified)
-            self.assertEqual(len(self.logged), 1)  # debug log for pending unindex
+            # debug log for pending unindex
+            self.assertEqual(len(self.logged), 1)
         finally:
             test_logger.setLevel(old_level)
 
