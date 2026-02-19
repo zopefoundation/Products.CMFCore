@@ -98,7 +98,24 @@ class CatalogAware(Base):
 
     @security.protected(ModifyPortalContent)
     def reindexObjectSecurity(self, skip_self=False):
-        """ Reindex security-related indexes on the object.
+        """Reindex security-related indexes on the object.
+
+        Uses ``_unrestrictedSearchResults`` instead of
+        ``unrestrictedSearchResults`` to avoid triggering
+        ``processQueue()`` mid-request.  This is safe because:
+
+        1. **Pre-existing objects** are already in the catalog, the
+           search finds them, and we queue a security reindex.
+           ``optimize()`` merges with any other pending REINDEX.
+
+        2. **Objects modified in this transaction** are still in the
+           catalog under their existing path.  The search finds them
+           and ``optimize()`` merges both REINDEXes.
+
+        3. **Objects created in this transaction** have pending INDEX
+           operations that will be processed at commit time and will
+           index *all* attributes — including ``allowedRolesAndUsers``
+           — using the current security state.
         """
         catalog = self._getCatalogTool()
         if catalog is None:
@@ -107,7 +124,9 @@ class CatalogAware(Base):
 
         # XXX if _getCatalogTool() is overriden we will have to change
         # this method for the sub-objects.
-        for brain in catalog.unrestrictedSearchResults(path=path):
+        search = getattr(catalog, '_unrestrictedSearchResults',
+                         catalog.unrestrictedSearchResults)
+        for brain in search(path=path):
             brain_path = brain.getPath()
             if brain_path == path and skip_self:
                 continue
@@ -118,11 +137,10 @@ class CatalogAware(Base):
                 # don't fail on catalog inconsistency
                 continue
             if ob is None:
-                # BBB: Ignore old references to deleted objects.
-                # Can happen only when using
-                # catalog-getObject-raises off in Zope 2.8
-                logger.warning('reindexObjectSecurity: Cannot get %s from '
-                               'catalog', brain_path)
+                # Expected when objects were deleted in this transaction
+                # but the queue hasn't been flushed yet.
+                logger.debug('reindexObjectSecurity: Cannot get %s from '
+                             'catalog (pending unindex)', brain_path)
                 continue
             s = getattr(ob, '_p_changed', 0)
             ob.reindexObject(idxs=self._cmf_security_indexes,

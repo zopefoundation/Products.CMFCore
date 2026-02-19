@@ -13,6 +13,7 @@
 """Unit tests for CMFCatalogAware.
 """
 
+import logging
 import unittest
 
 import transaction
@@ -109,6 +110,9 @@ class DummyCatalog(SimpleItem):
                 continue
             res.append(self.brain_class(ob, obpath))
         return res
+
+    def _unrestrictedSearchResults(self, **kw):
+        return self.unrestrictedSearchResults(**kw)
 
 
 class DummyWorkflowTool(SimpleItem):
@@ -218,19 +222,27 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
 
     def test_reindexObjectSecurity_missing_noraise(self):
         # Raising disabled
-        self._catch_log_errors(subsystem='CMFCore.CMFCatalogAware')
-        foo = self.site.foo
-        missing = TheClass('missing').__of__(foo)
-        missing.GETOBJECT_RAISES = False
-        cat = self.ctool
-        cat.setObs([foo, missing])
-        foo.reindexObjectSecurity()
-        self.assertEqual(
-            cat.log,
-            ['reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES)])
-        self.assertFalse(foo.notified)
-        self.assertFalse(missing.notified)
-        self.assertEqual(len(self.logged), 1)  # logging because no raise
+        self._catch_log_errors(ignored_level=logging.DEBUG,
+                               subsystem='CMFCore.CMFCatalogAware')
+        test_logger = logging.getLogger('CMFCore.CMFCatalogAware')
+        old_level = test_logger.level
+        test_logger.setLevel(logging.DEBUG)
+        try:
+            foo = self.site.foo
+            missing = TheClass('missing').__of__(foo)
+            missing.GETOBJECT_RAISES = False
+            cat = self.ctool
+            cat.setObs([foo, missing])
+            foo.reindexObjectSecurity()
+            self.assertEqual(
+                cat.log,
+                ['reindex /site/foo %s 0' % str(CMF_SECURITY_INDEXES)])
+            self.assertFalse(foo.notified)
+            self.assertFalse(missing.notified)
+            # debug log for pending unindex
+            self.assertEqual(len(self.logged), 1)
+        finally:
+            test_logger.setLevel(old_level)
 
     def test_catalog_tool(self):
         foo = self.site.foo

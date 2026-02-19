@@ -272,6 +272,16 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         processQueue()
         return ZCatalog.searchResults(self, REQUEST, **kw)
 
+    @security.private
+    def _unrestrictedSearchResults(self, REQUEST=None, **kw):
+        """Like unrestrictedSearchResults but without processQueue().
+
+        Only finds objects already in the catalog.  Used by
+        reindexObjectSecurity to avoid flushing the indexing queue
+        mid-request.
+        """
+        return ZCatalog.searchResults(self, REQUEST, **kw)
+
     def __url(self, ob):
         return '/'.join(ob.getPhysicalPath())
 
