@@ -458,19 +458,25 @@ class MembershipTool(UniqueObject, Folder):
                          REQUEST=None):
         """ Delete local roles of specified members.
         """
+        changed = False
         if _checkPermission(ChangeLocalRoles, obj):
             for member_id in member_ids:
                 if obj.get_local_roles_for_userid(userid=member_id):
                     obj.manage_delLocalRoles(userids=member_ids)
+                    changed = True
                     break
 
         if recursive and hasattr(aq_base(obj), 'contentValues'):
             for subobj in obj.contentValues():
-                self.deleteLocalRoles(subobj, member_ids, 0, 1)
+                if self.deleteLocalRoles(subobj, member_ids, 0, 1):
+                    changed = True
 
-        if reindex and hasattr(aq_base(obj), 'reindexObjectSecurity'):
+        if reindex and changed \
+                and hasattr(aq_base(obj), 'reindexObjectSecurity'):
             # reindexObjectSecurity is always recursive
             obj.reindexObjectSecurity()
+
+        return changed
 
     @security.private
     def addMember(self, id, password, roles, domains, properties=None):

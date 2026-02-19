@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 3.9 (unreleased)
 ----------------
 
+- Optimize ``deleteLocalRoles`` to skip ``reindexObjectSecurity`` when no
+  local roles were actually deleted. This avoids a full security reindex
+  when deleting a user who has no local roles assigned.
+  (`#140 <https://github.com/zopefoundation/Products.CMFCore/issues/140>`_)
+
 - Fix ``reindexObjectSecurity`` to not trigger ``processQueue()`` mid-request.
   Uses ``_unrestrictedSearchResults`` that bypasses the indexing queue flush,
   consistent with existing ``_indexObject``/``_reindexObject``/

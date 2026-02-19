@@ -841,13 +841,13 @@ class IMembershipTool(Interface):
 
         o 'member_ids' is a sequence of user IDs from which to remove the role.
 
-        o If 'reindex' is True, then reindex the security-related attributes
-          of the object and all subobjects.
+        o If 'reindex' is True, reindex the security-related attributes
+          of the object and all subobjects, but only if local roles were
+          actually deleted.
 
-        o if 'recursive' is True, recurse over all subobjects of 'object'.
+        o If 'recursive' is True, recurse over all subobjects of 'object'.
 
-        o Raise Unauthorized if the currently-authenticated member cannot
-          assign 'member_role' on 'obj'.
+        o Return True if any local roles were actually deleted, else False.
 
         Permission:  Public
         """

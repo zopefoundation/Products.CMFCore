@@ -25,6 +25,7 @@ from zope.testing.cleanup import cleanUp
 from ..CMFBTreeFolder import CMFBTreeFolder
 from ..interfaces import IMemberDataTool
 from ..interfaces import ISiteRoot
+from ..interfaces import ITypesTool
 from ..interfaces import IWorkflowTool
 from ..MemberDataTool import MemberDataTool
 from ..permissions import AccessContentsInformation
@@ -331,6 +332,109 @@ class MembershipToolMemberAreaTests(SecurityTest):
         DummyUserFolder.userFolderDelUsers = deletion_method
 
 
+class MembershipToolDeleteLocalRolesTests(SecurityTest):
+    """Tests for deleteLocalRoles: skip reindex when nothing changed."""
+
+    def _getTargetClass(self):
+        from ..MembershipTool import MembershipTool
+        return MembershipTool
+
+    def _makeOne(self, *args, **kw):
+        return self._getTargetClass()(*args, **kw)
+
+    def _makeSite(self, parent=None):
+        if parent is None:
+            parent = self.app
+        site = DummySite('site').__of__(parent)
+        site._setObject('portal_membership', self._makeOne())
+        return site
+
+    def setUp(self):
+        SecurityTest.setUp(self)
+        self.site = self._makeSite()
+        acl_users = self.site._setObject('acl_users', DummyUserFolder())
+        sm = getSiteManager()
+        sm.registerUtility(DummyTool(), ITypesTool)
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+
+    def tearDown(self):
+        cleanUp()
+        SecurityTest.tearDown(self)
+
+    def test_no_reindex_when_no_roles(self):
+        """reindexObjectSecurity must NOT be called when no roles deleted."""
+        mtool = self.site.portal_membership
+        folder = PortalFolder('folder')
+        self.site._setObject('folder', folder)
+        obj = self.site.folder
+
+        reindex_calls = []
+        obj.reindexObjectSecurity = lambda: reindex_calls.append(1)
+
+        result = mtool.deleteLocalRoles(obj, ['nonexistent_user'], reindex=1)
+
+        self.assertFalse(result)
+        self.assertEqual(reindex_calls, [])
+
+    def test_reindex_when_roles_deleted(self):
+        """reindexObjectSecurity MUST be called when roles are deleted."""
+        mtool = self.site.portal_membership
+        folder = PortalFolder('folder')
+        self.site._setObject('folder', folder)
+        obj = self.site.folder
+        obj.manage_setLocalRoles('user_foo', ['Reviewer'])
+
+        reindex_calls = []
+        obj.reindexObjectSecurity = lambda: reindex_calls.append(1)
+
+        result = mtool.deleteLocalRoles(obj, ['user_foo'], reindex=1)
+
+        self.assertTrue(result)
+        self.assertEqual(len(reindex_calls), 1)
+
+    def test_recursive_child_roles_triggers_reindex(self):
+        """changed=True propagates up; reindex called on root object."""
+        mtool = self.site.portal_membership
+        parent = PortalFolder('parent')
+        self.site._setObject('parent', parent)
+        parent_obj = self.site.parent
+
+        child = PortalFolder('child')
+        child.portal_type = 'Dummy Content'
+        parent_obj._setObject('child', child)
+        child_obj = parent_obj.child
+        child_obj.manage_setLocalRoles('user_foo', ['Reviewer'])
+
+        reindex_calls = []
+        parent_obj.reindexObjectSecurity = lambda: reindex_calls.append(1)
+
+        result = mtool.deleteLocalRoles(
+            parent_obj, ['user_foo'], reindex=1, recursive=1)
+
+        self.assertTrue(result)
+        self.assertEqual(len(reindex_calls), 1)
+
+    def test_recursive_no_roles_no_reindex(self):
+        """When recursive=1 and no roles anywhere, skip reindex."""
+        mtool = self.site.portal_membership
+        parent = PortalFolder('parent')
+        self.site._setObject('parent', parent)
+        parent_obj = self.site.parent
+
+        child = PortalFolder('child')
+        child.portal_type = 'Dummy Content'
+        parent_obj._setObject('child', child)
+
+        reindex_calls = []
+        parent_obj.reindexObjectSecurity = lambda: reindex_calls.append(1)
+
+        result = mtool.deleteLocalRoles(
+            parent_obj, ['user_foo'], reindex=1, recursive=1)
+
+        self.assertFalse(result)
+        self.assertEqual(reindex_calls, [])
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(MembershipToolTests),
@@ -338,4 +442,6 @@ def test_suite():
             MembershipToolSecurityTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             MembershipToolMemberAreaTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            MembershipToolDeleteLocalRolesTests),
     ))
