@@ -7,9 +7,9 @@ from zope.lifecycleevent import Attributes
 from ..indexing import INDEX
 from ..indexing import REINDEX
 from ..indexing import UNINDEX
-
-
 from ..subscribers import objectAdded as _oa
+
+
 MOD = _oa.__module__
 
 
@@ -211,7 +211,7 @@ class TestObjectMoved(TestCase):
         ev = FakeMovedEvent(obj, oldParent=folder, newParent=folder)
         queue = FakeQueue()
         with patch(f'{MOD}.getQueue', return_value=queue), \
-             patch(f'{MOD}.dispatchToSublocations') as disp:
+                patch(f'{MOD}.dispatchToSublocations') as disp:
             self._call(ev)
             disp.assert_called_once_with(obj, ev)
         self.assertEqual(len(queue.ops), 1)
