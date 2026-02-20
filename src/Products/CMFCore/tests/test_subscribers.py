@@ -1,3 +1,5 @@
+import importlib.util
+import unittest
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -274,3 +276,228 @@ class TestObjectTransitioned(TestCase):
         with patch(f'{MOD}.getQueue', return_value=queue):
             objectTransitioned(FakeEvent(obj))
         self.assertEqual(queue.ops, [])
+
+
+# --- Integration tests: real queue, real events, ZCML-registered handlers ---
+
+class SubscribersIntegrationTests(TestCase):
+    """Integration tests exercising subscribers via real event dispatch
+    with the real IndexQueue (no mocking of getQueue/filterTemporaryItems).
+    """
+
+    from ..testing import SubscribersZCMLLayer as layer
+
+    def setUp(self):
+        # Must use absolute import to get the same module instance
+        # that ZCML-registered handlers use (Products.CMFCore.indexing),
+        # not the relative import (CMFCore.indexing) which may be a
+        # different module due to namespace package dual-import.
+        from Products.CMFCore.indexing import getQueue
+        self.queue = getQueue()
+        self.queue.clear()
+
+    def tearDown(self):
+        self.queue.clear()
+
+    def test_objectAdded_created_event(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectCreatedEvent
+
+        _, obj = _make_obj()
+        notify(ObjectCreatedEvent(obj))
+
+        state = self.queue.getState()
+        self.assertEqual(len(state), 1)
+        self.assertEqual(state[0][0], INDEX)
+
+    def test_objectAdded_added_event(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectAddedEvent
+
+        folder, obj = _make_obj()
+        notify(ObjectAddedEvent(obj, newParent=folder, newName='doc'))
+
+        # ObjectAddedEvent is also an IObjectMovedEvent, so objectMoved
+        # fires too but returns early (oldParent=None).  Only 1 INDEX.
+        ops = [s[0] for s in self.queue.getState()]
+        self.assertEqual(ops.count(INDEX), 1)
+
+    def test_objectAdded_skips_unwrapped(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectCreatedEvent
+
+        obj = FakeContent('doc')  # no acquisition wrapper
+        notify(ObjectCreatedEvent(obj))
+
+        self.assertEqual(self.queue.getState(), [])
+
+    def test_objectModified_full_reindex(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectModifiedEvent
+
+        _, obj = _make_obj()
+        notify(ObjectModifiedEvent(obj))
+
+        state = self.queue.getState()
+        self.assertEqual(len(state), 1)
+        op, _, attrs, _ = state[0]
+        self.assertEqual(op, REINDEX)
+        self.assertIsNone(attrs)
+
+    def test_objectModified_partial_reindex(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectModifiedEvent
+
+        _, obj = _make_obj()
+        desc = Attributes(None, 'title', 'description')
+        notify(ObjectModifiedEvent(obj, desc))
+
+        state = self.queue.getState()
+        self.assertEqual(len(state), 1)
+        op, _, attrs, _ = state[0]
+        self.assertEqual(op, REINDEX)
+        self.assertIn('title', attrs)
+        self.assertIn('description', attrs)
+
+    def test_objectCopied_queues_index(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectCopiedEvent
+
+        folder, obj = _make_obj()
+        original = FakeContent('original').__of__(folder)
+        setattr(folder, 'original', original)
+        notify(ObjectCopiedEvent(obj, original))
+
+        ops = [s[0] for s in self.queue.getState()]
+        self.assertIn(INDEX, ops)
+
+    def test_objectRemoved_queues_unindex(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectRemovedEvent
+
+        folder, obj = _make_obj()
+        notify(ObjectRemovedEvent(obj, oldParent=folder, oldName='doc'))
+
+        # ObjectRemovedEvent is also IObjectMovedEvent; objectMoved fires
+        # but returns early (newParent=None).
+        state = self.queue.getState()
+        unindex_ops = [s for s in state if s[0] == UNINDEX]
+        self.assertEqual(len(unindex_ops), 1)
+        # unindex wraps in PathProxy; verify path is preserved
+        self.assertEqual(
+            unindex_ops[0][1].getPhysicalPath(), obj.getPhysicalPath())
+
+    def test_objectMoved_skips_add(self):
+        """ObjectAddedEvent triggers objectMoved but it returns early."""
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectAddedEvent
+
+        folder, obj = _make_obj()
+        notify(ObjectAddedEvent(obj, newParent=folder, newName='doc'))
+
+        # objectAdded produces 1 INDEX; objectMoved should NOT add another
+        ops = [s[0] for s in self.queue.getState()]
+        self.assertEqual(ops.count(INDEX), 1)
+
+    def test_objectMoved_skips_remove(self):
+        """ObjectRemovedEvent triggers objectMoved but it returns early."""
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectRemovedEvent
+
+        folder, obj = _make_obj()
+        notify(ObjectRemovedEvent(obj, oldParent=folder, oldName='doc'))
+
+        # objectRemoved produces 1 UNINDEX; objectMoved should NOT add more
+        ops = [s[0] for s in self.queue.getState()]
+        self.assertEqual(ops.count(UNINDEX), 1)
+        self.assertNotIn(INDEX, ops)
+
+    def test_objectMoved_real_move(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectMovedEvent
+
+        folder, obj = _make_obj()
+        other = FakeFolder('other')
+
+        notify(ObjectMovedEvent(obj, folder, 'doc', other, 'doc'))
+
+        state = self.queue.getState()
+        ops = [s[0] for s in state]
+        self.assertIn(INDEX, ops)
+
+    def test_objectMoved_rename(self):
+        from zope.event import notify
+        from zope.lifecycleevent import ObjectMovedEvent
+
+        folder, obj = _make_obj()
+        notify(ObjectMovedEvent(obj, folder, 'doc', folder, 'newdoc'))
+
+        state = self.queue.getState()
+        ops = [s[0] for s in state]
+        self.assertIn(INDEX, ops)
+
+    def test_dispatch_rename_chains_to_modified(self):
+        """dispatchObjectMovedEvent fires ObjectModifiedEvent on children,
+        which objectModified picks up and queues a REINDEX.
+        """
+        from zope.lifecycleevent import ObjectMovedEvent
+
+        from ..subscribers import dispatchObjectMovedEvent
+
+        folder, parent = _make_obj('parent')
+        child = FakeContent('child').__of__(folder)
+        setattr(folder, 'child', child)
+
+        ev = ObjectMovedEvent(parent, folder, 'parent', folder, 'newparent')
+        # Call directly — dispatchObjectMovedEvent is registered for
+        # (IItem, IObjectMovedEvent) but FakeContent doesn't provide IItem.
+        dispatchObjectMovedEvent(child, ev)
+
+        # The chained notify(ObjectModifiedEvent(child)) goes through real
+        # event dispatch to the ZCML-registered objectModified handler.
+        state = self.queue.getState()
+        self.assertEqual(len(state), 1)
+        self.assertEqual(state[0][0], REINDEX)
+
+    def test_dispatch_noop_on_real_move(self):
+        from zope.lifecycleevent import ObjectMovedEvent
+
+        from ..subscribers import dispatchObjectMovedEvent
+
+        folder, parent = _make_obj('parent')
+        other = FakeFolder('other')
+        child = FakeContent('child').__of__(folder)
+        setattr(folder, 'child', child)
+
+        ev = ObjectMovedEvent(parent, folder, 'parent', other, 'parent')
+        dispatchObjectMovedEvent(child, ev)
+
+        self.assertEqual(self.queue.getState(), [])
+
+    @unittest.skipUnless(
+        importlib.util.find_spec('Products.DCWorkflow'),
+        'Products.DCWorkflow not installed',
+    )
+    def test_objectTransitioned(self):
+        from zope.event import notify
+        from zope.interface import implementer
+
+        from Products.DCWorkflow.interfaces import IAfterTransitionEvent
+
+        @implementer(IAfterTransitionEvent)
+        class FakeTransitionEvent:
+            def __init__(self, ob):
+                self.object = ob
+                self.workflow = None
+                self.old_state = None
+                self.new_state = None
+                self.transition = None
+                self.status = {}
+                self.kwargs = {}
+
+        _, obj = _make_obj()
+        notify(FakeTransitionEvent(obj))
+
+        state = self.queue.getState()
+        self.assertEqual(len(state), 1)
+        self.assertEqual(state[0][0], REINDEX)
