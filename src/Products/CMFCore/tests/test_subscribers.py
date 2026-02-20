@@ -479,10 +479,9 @@ class SubscribersIntegrationTests(TestCase):
         'Products.DCWorkflow not installed',
     )
     def test_objectTransitioned(self):
+        from Products.DCWorkflow.interfaces import IAfterTransitionEvent
         from zope.event import notify
         from zope.interface import implementer
-
-        from Products.DCWorkflow.interfaces import IAfterTransitionEvent
 
         @implementer(IAfterTransitionEvent)
         class FakeTransitionEvent:
