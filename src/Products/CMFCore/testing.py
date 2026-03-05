@@ -115,6 +115,21 @@ class EventZCMLLayer(ZopeLite):
         cleanUp()
 
 
+class SubscribersZCMLLayer(ZopeLite):
+
+    @classmethod
+    def setUp(cls):
+        import Products
+
+        zcml.load_config('meta.zcml', Products.Five)
+        zcml.load_config('subscribers.zcml', Products.CMFCore)
+        setHooks()
+
+    @classmethod
+    def tearDown(cls):
+        cleanUp()
+
+
 class TraversingZCMLLayer(ZopeLite):
 
     @classmethod
