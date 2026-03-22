@@ -13,7 +13,7 @@
 """Actions tool node adapters.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -32,13 +32,12 @@ from ..interfaces import IActionsTool
 from ..utils import getToolByName
 
 
+@adapter(IActionCategory, ISetupEnviron)
 class ActionCategoryNodeAdapter(NodeAdapterBase, ObjectManagerHelpers,
                                 PropertyManagerHelpers):
 
     """Node im- and exporter for ActionCategory.
     """
-
-    adapts(IActionCategory, ISetupEnviron)
 
     def _exportNode(self):
         """Export the object as a DOM node.
@@ -64,12 +63,11 @@ class ActionCategoryNodeAdapter(NodeAdapterBase, ObjectManagerHelpers,
     node = property(_exportNode, _importNode)
 
 
+@adapter(IAction, ISetupEnviron)
 class ActionNodeAdapter(NodeAdapterBase, PropertyManagerHelpers):
 
     """Node im- and exporter for Action.
     """
-
-    adapts(IAction, ISetupEnviron)
 
     def _exportNode(self):
         """Export the object as a DOM node.
@@ -92,12 +90,11 @@ class ActionNodeAdapter(NodeAdapterBase, PropertyManagerHelpers):
     node = property(_exportNode, _importNode)
 
 
+@adapter(IActionsTool, ISetupEnviron)
 class ActionsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
 
     """XML im- and exporter for ActionsTool.
     """
-
-    adapts(IActionsTool, ISetupEnviron)
 
     _LOGGER_ID = 'actions'
 

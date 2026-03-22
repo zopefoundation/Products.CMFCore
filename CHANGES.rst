@@ -4,6 +4,8 @@ Products.CMFCore Changelog
 3.9 (unreleased)
 ----------------
 
+- Cleanup: Change from adapts to the @adapts decorator.
+
 - Optimize ``deleteLocalRoles`` to skip ``reindexObjectSecurity`` when no
   local roles were actually deleted. This avoids a full security reindex
   when deleting a user who has no local roles assigned.

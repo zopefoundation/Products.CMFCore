@@ -13,7 +13,7 @@
 """Workflow tool xml adapters and setup handlers.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -27,13 +27,12 @@ from ..interfaces import IConfigurableWorkflowTool
 from ..interfaces import IWorkflowTool
 
 
+@adapter(IConfigurableWorkflowTool, ISetupEnviron)
 class WorkflowToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers,
                              PropertyManagerHelpers):
 
     """XML im- and exporter for WorkflowTool.
     """
-
-    adapts(IConfigurableWorkflowTool, ISetupEnviron)
 
     _LOGGER_ID = 'workflow'
 

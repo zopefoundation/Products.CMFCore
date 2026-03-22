@@ -25,7 +25,7 @@ from DateTime.DateTime import DateTime
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from Persistence import Persistent
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
@@ -223,13 +223,12 @@ class MemberData(Persistent):
         self.id = id
 
 
+@adapter(IUser, IMemberDataTool)
 @implementer(IMember)
 class MemberAdapter:
 
     """Member data adapter.
     """
-
-    adapts(IUser, IMemberDataTool)
 
     security = ClassSecurityInfo()
 

@@ -13,7 +13,7 @@
 """Site properties xml adapters and setup handlers.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import queryMultiAdapter
 
 from Products.GenericSetup.interfaces import IBody
@@ -27,12 +27,11 @@ from ..interfaces import ISiteRoot
 _FILENAME = 'properties.xml'
 
 
+@adapter(ISiteRoot, ISetupEnviron)
 class PropertiesXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
 
     """XML im- and exporter for properties.
     """
-
-    adapts(ISiteRoot, ISetupEnviron)
 
     _LOGGER_ID = 'properties'
 
