@@ -16,7 +16,7 @@
 from OFS.SimpleItem import SimpleItem
 from Testing.ZopeTestCase.layer import ZopeLite
 from Zope2.App import zcml
-from zope.component import adapts
+from zope.component import adapter
 from zope.component.hooks import setHooks
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.interface import implementer
@@ -85,11 +85,9 @@ class ConformsToContent:
         verifyClass(IWorkflowAware, self._getTargetClass())
 
 
+@adapter(IHTTPRequest)
 @implementer(IUserPreferredLanguages)
 class BrowserLanguages:
-
-    adapts(IHTTPRequest)
-
     def __init__(self, context):
         self.context = context
 

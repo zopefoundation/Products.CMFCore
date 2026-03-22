@@ -22,7 +22,7 @@ from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from App.special_dtml import DTMLFile
 from DateTime.DateTime import DateTime
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.interface import implementer
@@ -75,10 +75,10 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
             return ObjectSpecification(provided, cls)
 
 
+@adapter(IContentish, ICatalogTool)
 @implementer(IIndexableObjectWrapper, IIndexableObject)
 class IndexableObjectWrapper:
 
-    adapts(IContentish, ICatalogTool)
     __providedBy__ = IndexableObjectSpecification()
 
     def __init__(self, ob, catalog):

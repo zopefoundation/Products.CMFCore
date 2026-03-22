@@ -13,7 +13,7 @@
 """Types tool xml adapters and setup handlers.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -28,12 +28,11 @@ from ..interfaces import ITypeInformation
 from ..interfaces import ITypesTool
 
 
+@adapter(ITypeInformation, ISetupEnviron)
 class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
 
     """XML im- and exporter for TypeInformation.
     """
-
-    adapts(ITypeInformation, ISetupEnviron)
 
     _LOGGER_ID = 'types'
 
@@ -174,13 +173,12 @@ class TypeInformationXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
                                     visible=visible, link_target=link_target)
 
 
+@adapts(ITypesTool, ISetupEnviron)
 class TypesToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers,
                           PropertyManagerHelpers):
 
     """XML im- and exporter for TypesTool.
     """
-
-    adapts(ITypesTool, ISetupEnviron)
 
     _LOGGER_ID = 'types'
 

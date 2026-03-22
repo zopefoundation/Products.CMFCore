@@ -13,7 +13,7 @@
 """Content type registry xml adapters and setup handlers.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -24,12 +24,11 @@ from Products.GenericSetup.utils import importObjects
 from ..interfaces import IContentTypeRegistry
 
 
+@adapter(IContentTypeRegistry, ISetupEnviron)
 class ContentTypeRegistryXMLAdapter(XMLAdapterBase):
 
     """XML im- and exporter for ContentTypeRegistry.
     """
-
-    adapts(IContentTypeRegistry, ISetupEnviron)
 
     _LOGGER_ID = 'contenttypes'
 

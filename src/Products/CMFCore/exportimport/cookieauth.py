@@ -13,7 +13,7 @@
 """Cookie crumbler xml adapters and setup handlers.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -25,12 +25,11 @@ from Products.GenericSetup.utils import importObjects
 from ..interfaces import ICookieCrumbler
 
 
+@adapter(ICookieCrumbler, ISetupEnviron)
 class CookieCrumblerXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
 
     """XML im- and exporter for CookieCrumbler.
     """
-
-    adapts(ICookieCrumbler, ISetupEnviron)
 
     _LOGGER_ID = 'cookies'
 

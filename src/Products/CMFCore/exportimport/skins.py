@@ -15,7 +15,7 @@
 
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -29,12 +29,11 @@ from ..interfaces import IDirectoryView
 from ..interfaces import ISkinsTool
 
 
+@adapter(IDirectoryView, ISetupEnviron)
 class DirectoryViewNodeAdapter(NodeAdapterBase):
 
     """Node im- and exporter for DirectoryView.
     """
-
-    adapts(IDirectoryView, ISetupEnviron)
 
     def _exportNode(self):
         """Export the object as a DOM node.
@@ -51,12 +50,11 @@ class DirectoryViewNodeAdapter(NodeAdapterBase):
     node = property(_exportNode, _importNode)
 
 
+@adapter(ISkinsTool, ISetupEnviron)
 class SkinsToolXMLAdapter(XMLAdapterBase, ObjectManagerHelpers):
 
     """XML im- and exporter for SkinsTool.
     """
-
-    adapts(ISkinsTool, ISetupEnviron)
 
     _LOGGER_ID = 'skins'
 

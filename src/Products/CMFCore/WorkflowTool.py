@@ -26,7 +26,6 @@ from OFS.Folder import Folder
 from OFS.ObjectManager import IFAwareObjectManager
 from Persistence import PersistentMapping
 from zope.component import adapter
-from zope.component import adapts
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
@@ -606,10 +605,9 @@ InitializeClass(WorkflowTool)
 registerToolInterface('portal_workflow', IWorkflowTool)
 
 
+@adapter(IWorkflowAware, IWorkflowDefinition)
 @implementer(IWorkflowStatus)
 class DefaultWorkflowStatus:
-    adapts(IWorkflowAware, IWorkflowDefinition)
-
     def __init__(self, context, workflow):
         self.context = aq_base(context)
         self.wf_id = workflow.getId()
