@@ -4,6 +4,11 @@ Products.CMFCore Changelog
 3.10 (unreleased)
 -----------------
 
+- Fix ``PortalCatalogProcessor`` to ensure a local site manager is active
+  before processing catalog operations. When the indexing queue is processed
+  outside a request (e.g. in a ``before_commit`` hook), ``getSite()`` may
+  return ``None``, causing indexer adapters to not be found.
+  (`#160 <https://github.com/zopefoundation/Products.CMFCore/issues/160>`_)
 
 3.9 (2026-03-23)
 ----------------
