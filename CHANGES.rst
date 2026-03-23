@@ -1,7 +1,7 @@
 Products.CMFCore Changelog
 ==========================
 
-3.9 (unreleased)
+3.9 (2026-03-23)
 ----------------
 
 - Cleanup: Change from adapts to the @adapter decorator.

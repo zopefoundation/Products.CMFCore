@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Products.CMFCore"
-version = "3.9.dev0"
+version = "3.9"
 description = "Zope Content Management Framework core components"
 license = "ZPL-2.1"
 classifiers = [
