@@ -13,7 +13,7 @@
 """Caching policy manager xml adapters and setup handlers.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 from zope.component import queryMultiAdapter
 
@@ -28,12 +28,11 @@ from ..interfaces import ICachingPolicy
 from ..interfaces import ICachingPolicyManager
 
 
+@adapter(ICachingPolicy, ISetupEnviron)
 class CachingPolicyNodeAdapter(NodeAdapterBase):
 
     """Node im- and exporter for CachingPolicy.
     """
-
-    adapts(ICachingPolicy, ISetupEnviron)
 
     def _exportNode(self):
         """Export the object as a DOM node.
@@ -109,12 +108,11 @@ class CachingPolicyNodeAdapter(NodeAdapterBase):
     node = property(_exportNode, _importNode)
 
 
+@adapter(ICachingPolicyManager, ISetupEnviron)
 class CachingPolicyManagerXMLAdapter(XMLAdapterBase):
 
     """XML im- and exporter for CachingPolicyManager.
     """
-
-    adapts(ICachingPolicyManager, ISetupEnviron)
 
     _LOGGER_ID = 'cachingpolicies'
 

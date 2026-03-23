@@ -13,7 +13,7 @@
 """Namespace for CMF specific add views.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.interface import Interface
@@ -25,13 +25,12 @@ from .interfaces import IFolderish
 from .interfaces import ITypesTool
 
 
+@adapter(IFolderish, Interface)
 @implementer(ITraversable)
 class AddViewTraverser:
 
     """Add view traverser.
     """
-
-    adapts(IFolderish, Interface)
 
     def __init__(self, context, request):
         self.context = context

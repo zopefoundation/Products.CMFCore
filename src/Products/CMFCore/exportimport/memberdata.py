@@ -13,7 +13,7 @@
 """Member data tool xml adapter and setup handlers.
 """
 
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getSiteManager
 
 from Products.GenericSetup.interfaces import ISetupEnviron
@@ -25,12 +25,11 @@ from Products.GenericSetup.utils import importObjects
 from ..interfaces import IMemberDataTool
 
 
+@adapter(IMemberDataTool, ISetupEnviron)
 class MemberDataToolXMLAdapter(XMLAdapterBase, PropertyManagerHelpers):
 
     """XML im- and exporter for MemberDataTool.
     """
-
-    adapts(IMemberDataTool, ISetupEnviron)
 
     _LOGGER_ID = 'memberdata'
 
