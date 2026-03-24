@@ -9,6 +9,9 @@ from Acquisition import aq_parent
 from transaction import get as getTransaction
 from transaction.interfaces import ISavepointDataManager
 from zope.component import getSiteManager
+from zope.component.hooks import getSite
+from zope.component.hooks import setSite
+from zope.component.interfaces import ISite
 from zope.interface import implementer
 from zope.proxy import ProxyBase
 from zope.proxy import non_overridable
@@ -52,11 +55,8 @@ class PortalCatalogProcessor:
         it so that local component registrations are available during
         catalog operations.
         """
-        from zope.component.hooks import getSite
-        from zope.component.hooks import setSite
         if getSite() is not None:
             return
-        from zope.component.interfaces import ISite
         current = obj
         while current is not None:
             if ISite.providedBy(current):
