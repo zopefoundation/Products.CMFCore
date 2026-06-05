@@ -4,6 +4,20 @@ Products.CMFCore Changelog
 3.10 (unreleased)
 -----------------
 
+- Optimize object moves by reindexing only context-aware indexes instead of
+  a full unindex + reindex.  The catalog RID is preserved across the move,
+  avoiding stale references and unnecessary work.
+  A new ``moveObject(object, old_path, idxs)`` method is added to
+  ``CatalogTool`` and ``ICatalogTool`` to implement the path remap.
+
+- Add ``IContextAwareIndexProvider``, a named-utility interface that
+  contributes catalog index names which must be reindexed on object moves
+  (path-sensitive, security-sensitive, etc.).  Register a named utility
+  providing this interface to extend the default set (``path``, ``getId``,
+  ``id``, ``allowedRolesAndUsers``).  The helper
+  ``CMFCatalogAware.get_context_aware_indexes()`` aggregates all registered
+  providers.
+
 
 3.9 (2026-03-23)
 ----------------

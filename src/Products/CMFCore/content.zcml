@@ -46,6 +46,17 @@
     name="portal-catalog"
     factory="Products.CMFCore.indexing.PortalCatalogProcessor" />
 
+  <!-- Context-aware index providers for move optimization -->
+  <utility
+    provides="Products.CMFCore.interfaces.IContextAwareIndexProvider"
+    name="cmf.location"
+    factory="Products.CMFCore.CMFCatalogAware._BuiltinLocationIndexProvider" />
+
+  <utility
+    provides="Products.CMFCore.interfaces.IContextAwareIndexProvider"
+    name="cmf.security"
+    factory="Products.CMFCore.CMFCatalogAware._BuiltinSecurityIndexProvider" />
+
   <!-- Don't publish acquired content items  -->
   <adapter
       provides=".interfaces.IShouldAllowAcquiredItemPublication"

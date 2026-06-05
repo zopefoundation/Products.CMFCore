@@ -23,6 +23,7 @@ from App.special_dtml import DTMLFile
 from ExtensionClass import Base
 from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
+from zope.component import getUtilitiesFor
 from zope.component import queryUtility
 from zope.component import subscribers
 from zope.interface import implementer
@@ -34,6 +35,7 @@ from zope.lifecycleevent.interfaces import IObjectMovedEvent
 from .interfaces import ICallableOpaqueItem
 from .interfaces import ICatalogAware
 from .interfaces import ICatalogTool
+from .interfaces import IContextAwareIndexProvider
 from .interfaces import IOpaqueItemManager
 from .interfaces import IWorkflowAware
 from .interfaces import IWorkflowTool
@@ -284,6 +286,42 @@ class CMFCatalogAware(CatalogAware, WorkflowAware, OpaqueItemManager):
     """
 
 
+@implementer(IContextAwareIndexProvider)
+class _BuiltinLocationIndexProvider:
+    """Default provider for location-based context-aware indexes.
+
+    These indexes change when an object moves to a different container
+    (its path and id change).
+    """
+
+    def getIndexNames(self):
+        return ('path', 'getId', 'id')
+
+
+@implementer(IContextAwareIndexProvider)
+class _BuiltinSecurityIndexProvider:
+    """Default provider for security context-aware indexes.
+
+    allowedRolesAndUsers must be recomputed whenever the object moves
+    into a differently-protected part of the tree.
+    """
+
+    def getIndexNames(self):
+        return ('allowedRolesAndUsers',)
+
+
+def get_context_aware_indexes():
+    """Return frozenset of all context-aware catalog index names.
+
+    Aggregates all named IContextAwareIndexProvider utilities.
+    Returns an empty frozenset if no providers are registered.
+    """
+    indexes = set()
+    for _name, provider in getUtilitiesFor(IContextAwareIndexProvider):
+        indexes.update(provider.getIndexNames())
+    return frozenset(indexes)
+
+
 def handleContentishEvent(ob, event):
     """ Event subscriber for (IContentish, IObjectEvent) events.
     """
@@ -295,10 +333,32 @@ def handleContentishEvent(ob, event):
 
     elif IObjectMovedEvent.providedBy(event):
         if event.newParent is not None:
+            old_path = getattr(ob, '_v_cmf_old_path', None)
+            if old_path is not None:
+                # True move: optimization path — preserve catalog RID.
+                try:
+                    del ob._v_cmf_old_path
+                except AttributeError:
+                    pass
+                catalog = queryUtility(ICatalogTool)
+                if catalog is not None:
+                    idxs = get_context_aware_indexes()
+                    catalog.moveObject(ob, old_path, idxs)
+                    return
             ob.indexObject()
 
     elif IObjectWillBeMovedEvent.providedBy(event):
         if event.oldParent is not None:
+            if event.newParent is not None:
+                # True move: check if optimization is available before
+                # deciding whether to skip the unindex.
+                catalog = queryUtility(ICatalogTool)
+                idxs = get_context_aware_indexes()
+                if catalog is not None and idxs:
+                    # Save old path; skip unindexObject so the catalog
+                    # entry survives for IObjectMovedEvent to remap.
+                    ob._v_cmf_old_path = '/'.join(ob.getPhysicalPath())
+                    return
             ob.unindexObject()
 
     elif IObjectCopiedEvent.providedBy(event):
