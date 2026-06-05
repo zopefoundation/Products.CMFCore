@@ -379,7 +379,8 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
 
 class ContextAwareIndexProviderTests(unittest.TestCase):
-    """Tests for IContextAwareIndexProvider utilities and get_context_aware_indexes."""
+    """Tests for IContextAwareIndexProvider utilities and the
+    get_context_aware_indexes helper."""
 
     def setUp(self):
         self._sm = getSiteManager()
