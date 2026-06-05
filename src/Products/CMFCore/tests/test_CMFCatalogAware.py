@@ -106,7 +106,7 @@ class DummyCatalog(SimpleItem):
 
     def moveObject(self, ob, old_path, idxs):
         self.log.append(
-            'move %s from %s %s' % (
+            'move {} from {} {}'.format(
                 physicalpath(ob), old_path, sorted(idxs)))
 
     def setObs(self, obs):
