@@ -14,8 +14,8 @@
 """
 
 import logging
-import transaction
 
+import transaction
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
