@@ -312,7 +312,8 @@ class _BuiltinSecurityIndexProvider:
 
 
 class _MovePathsRegistryKey:
-    """Singleton used as key for ``transaction.set_data`` / ``transaction.data``.
+    """Singleton used as key for ``transaction.set_data`` /
+    ``transaction.data``.
 
     The ``transaction`` package stores arbitrary per-transaction data via
     ``Transaction.set_data(ob, value)`` / ``Transaction.data(ob)``, keyed by
@@ -326,7 +327,8 @@ _MOVE_PATHS_KEY = _MovePathsRegistryKey()
 
 
 def _pending_move_paths():
-    """Return the transaction-local dict ``{oid: old_path}`` for in-flight moves.
+    """Return the transaction-local dict ``{oid: old_path}`` for in-flight
+    moves.
 
     On ``IObjectWillBeMovedEvent`` we record each object's current physical
     path here, keyed by its ZODB ``_p_oid``.  On ``IObjectMovedEvent`` we pop
