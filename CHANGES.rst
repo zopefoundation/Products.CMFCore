@@ -10,6 +10,17 @@ Products.CMFCore Changelog
   A new ``moveObject(object, old_path, idxs)`` method is added to
   ``CatalogTool`` and ``ICatalogTool`` to implement the path remap.
 
+  The pre-move path is now stored via ``Transaction.set_data`` /
+  ``Transaction.data`` (keyed by the object's ZODB ``_p_oid``) instead of a
+  volatile ``_v_cmf_old_path`` attribute on each object.  Volatile attributes
+  are discarded whenever the ZODB object cache evicts an object
+  (ghostification); for subtrees larger than the configured cache size this
+  caused the optimisation to silently fall back to a full reindex for all
+  objects ghostified between the ``IObjectWillBeMovedEvent`` and
+  ``IObjectMovedEvent`` phases.  Transaction-attached data lives outside the
+  ZODB object graph, is never affected by cache pressure, and is discarded
+  automatically on commit or abort.
+
 - Add ``IContextAwareIndexProvider``, a named-utility interface that
   contributes catalog index names which must be reindexed on object moves
   (path-sensitive, security-sensitive, etc.).  Register a named utility
