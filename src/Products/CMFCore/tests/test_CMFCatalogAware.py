@@ -24,9 +24,14 @@ from zope.component import getSiteManager
 from zope.interface import implementer
 
 from ..CMFCatalogAware import CMFCatalogAware
+from ..CMFCatalogAware import _BuiltinLocationIndexProvider
+from ..CMFCatalogAware import _BuiltinModificationDateIndexProvider
+from ..CMFCatalogAware import _BuiltinSecurityIndexProvider
+from ..CMFCatalogAware import get_context_aware_indexes
 from ..exceptions import NotFound
 from ..interfaces import ICatalogTool
 from ..interfaces import IContentish
+from ..interfaces import IContextAwareIndexProvider
 from ..interfaces import IWorkflowTool
 from ..testing import EventZCMLLayer
 from ..testing import TraversingZCMLLayer
@@ -99,6 +104,11 @@ class DummyCatalog(SimpleItem):
 
     def unindexObject(self, ob):
         self.log.append('unindex %s' % physicalpath(ob))
+
+    def moveObject(self, ob, old_path, idxs):
+        self.log.append(
+            'move {} from {} {}'.format(
+                physicalpath(ob), old_path, sorted(idxs)))
 
     def setObs(self, obs):
         self.obs = [(ob, physicalpath(ob)) for ob in obs]
@@ -369,9 +379,222 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         self.assertEqual(cat.log, ['unindex /site/bar', 'index /site/baz'])
 
 
+class ContextAwareIndexProviderTests(unittest.TestCase):
+    """Tests for IContextAwareIndexProvider utilities and the
+    get_context_aware_indexes helper."""
+
+    def setUp(self):
+        self._sm = getSiteManager()
+
+    def tearDown(self):
+        for name, _ in list(
+                self._sm.getUtilitiesFor(IContextAwareIndexProvider)):
+            self._sm.unregisterUtility(
+                provided=IContextAwareIndexProvider, name=name)
+
+    def test_location_provider(self):
+        names = _BuiltinLocationIndexProvider().getIndexNames()
+        self.assertIn('path', names)
+        self.assertIn('getId', names)
+        self.assertIn('id', names)
+
+    def test_security_provider(self):
+        names = _BuiltinSecurityIndexProvider().getIndexNames()
+        self.assertIn('allowedRolesAndUsers', names)
+
+    def test_modification_date_provider(self):
+        names = _BuiltinModificationDateIndexProvider().getIndexNames()
+        self.assertIn('modified', names)
+        self.assertIn('Date', names)
+
+    def test_get_context_aware_indexes_no_providers(self):
+        result = get_context_aware_indexes()
+        self.assertEqual(result, frozenset())
+
+    def test_get_context_aware_indexes_with_defaults(self):
+        self._sm.registerUtility(
+            _BuiltinLocationIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.location',
+        )
+        self._sm.registerUtility(
+            _BuiltinSecurityIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.security',
+        )
+        result = get_context_aware_indexes()
+        self.assertIn('path', result)
+        self.assertIn('getId', result)
+        self.assertIn('id', result)
+        self.assertIn('allowedRolesAndUsers', result)
+
+    def test_get_context_aware_indexes_third_party(self):
+        @implementer(IContextAwareIndexProvider)
+        class CustomProvider:
+            def getIndexNames(self):
+                return ('my_custom_index',)
+
+        self._sm.registerUtility(
+            _BuiltinLocationIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.location',
+        )
+        self._sm.registerUtility(
+            CustomProvider(),
+            IContextAwareIndexProvider,
+            name='test.custom',
+        )
+        result = get_context_aware_indexes()
+        self.assertIn('my_custom_index', result)
+        self.assertIn('path', result)
+
+    def test_get_context_aware_indexes_deduplication(self):
+        @implementer(IContextAwareIndexProvider)
+        class DuplicateProvider:
+            def getIndexNames(self):
+                return ('allowedRolesAndUsers',)
+
+        self._sm.registerUtility(
+            _BuiltinSecurityIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.security',
+        )
+        self._sm.registerUtility(
+            DuplicateProvider(),
+            IContextAwareIndexProvider,
+            name='test.duplicate',
+        )
+        result = get_context_aware_indexes()
+        self.assertEqual(
+            len([n for n in result if n == 'allowedRolesAndUsers']), 1)
+
+
+class CMFCatalogAwareMoveOptimizationTests(CMFCatalogAware_CopySupport_Tests):
+    """Re-run the copy-support suite with IContextAwareIndexProvider
+    utilities registered.
+
+    With providers registered, true moves take the optimized ``moveObject``
+    path (only context-aware indexes are reindexed, RID preserved), while
+    add / remove / copy behavior is unchanged.  The two move tests are
+    overridden to assert the optimized behavior; all other inherited tests
+    verify the non-move paths are unaffected.
+    """
+
+    def setUp(self):
+        super().setUp()
+        sm = getSiteManager()
+        sm.registerUtility(
+            _BuiltinLocationIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.location',
+        )
+        sm.registerUtility(
+            _BuiltinSecurityIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.security',
+        )
+        sm.registerUtility(
+            _BuiltinModificationDateIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.modification-date',
+        )
+
+    def tearDown(self):
+        sm = getSiteManager()
+        sm.unregisterUtility(
+            provided=IContextAwareIndexProvider, name='cmf.location')
+        sm.unregisterUtility(
+            provided=IContextAwareIndexProvider, name='cmf.security')
+        sm.unregisterUtility(
+            provided=IContextAwareIndexProvider, name='cmf.modification-date')
+        super().tearDown()
+
+    def test_object_reindexed_after_cut_and_paste(self):
+        self._initPolicyAndUser()  # allow copy/paste operations
+        site = self._makeSite()
+        site.folder1 = SimpleFolder('folder1')
+        folder1 = site.folder1
+        site.folder2 = SimpleFolder('folder2')
+        folder2 = site.folder2
+
+        bar = TheClass('bar')
+        folder1._setObject('bar', bar)
+        cat = self.ctool
+        cat.log = []
+
+        transaction.savepoint(optimistic=True)
+
+        cookie = folder1.manage_cutObjects(ids=['bar'])
+        folder2.manage_pasteObjects(cookie)
+
+        idxs = sorted(get_context_aware_indexes())
+        self.assertEqual(
+            cat.log,
+            ['move /site/folder2/bar from /site/folder1/bar %s' % idxs])
+
+    def test_object_reindexed_after_moving(self):
+        self._initPolicyAndUser()  # allow copy/paste operations
+        site = self._makeSite()
+
+        bar = TheClass('bar')
+        site._setObject('bar', bar)
+        cat = self.ctool
+        cat.log = []
+
+        transaction.savepoint(optimistic=True)
+
+        site.manage_renameObject(id='bar', new_id='baz')
+
+        idxs = sorted(get_context_aware_indexes())
+        self.assertEqual(
+            cat.log, ['move /site/baz from /site/bar %s' % idxs])
+
+    def test_notifyModified_called_after_cut_and_paste(self):
+        # The optimized move path must call ob.notifyModified() so that the
+        # modification date is updated in the same operation.  In the
+        # non-optimized Plone path this happened as a side-effect of
+        # CMFPlone.CatalogTool.indexObject delegating to
+        # reindexObject(idxs=[]).
+        self._initPolicyAndUser()
+        site = self._makeSite()
+        site.folder1 = SimpleFolder('folder1')
+        folder1 = site.folder1
+        site.folder2 = SimpleFolder('folder2')
+        folder2 = site.folder2
+
+        bar = TheClass('bar')
+        folder1._setObject('bar', bar)
+        transaction.savepoint(optimistic=True)
+
+        cookie = folder1.manage_cutObjects(ids=['bar'])
+        folder2.manage_pasteObjects(cookie)
+
+        self.assertTrue(folder2['bar'].notified,
+                        'notifyModified() was not called on the moved object')
+
+    def test_notifyModified_called_after_moving(self):
+        # Same as above for rename (manage_renameObject).
+        self._initPolicyAndUser()
+        site = self._makeSite()
+
+        bar = TheClass('bar')
+        site._setObject('bar', bar)
+        transaction.savepoint(optimistic=True)
+
+        site.manage_renameObject(id='bar', new_id='baz')
+
+        self.assertTrue(
+            site['baz'].notified,
+            'notifyModified() was not called on the renamed object')
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(CMFCatalogAwareTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             CMFCatalogAware_CopySupport_Tests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            ContextAwareIndexProviderTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            CMFCatalogAwareMoveOptimizationTests),
     ))

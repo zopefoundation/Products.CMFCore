@@ -15,6 +15,7 @@
 
 import logging
 
+import transaction
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -23,6 +24,7 @@ from App.special_dtml import DTMLFile
 from ExtensionClass import Base
 from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
+from zope.component import getUtilitiesFor
 from zope.component import queryUtility
 from zope.component import subscribers
 from zope.interface import implementer
@@ -34,6 +36,7 @@ from zope.lifecycleevent.interfaces import IObjectMovedEvent
 from .interfaces import ICallableOpaqueItem
 from .interfaces import ICatalogAware
 from .interfaces import ICatalogTool
+from .interfaces import IContextAwareIndexProvider
 from .interfaces import IOpaqueItemManager
 from .interfaces import IWorkflowAware
 from .interfaces import IWorkflowTool
@@ -284,6 +287,130 @@ class CMFCatalogAware(CatalogAware, WorkflowAware, OpaqueItemManager):
     """
 
 
+@implementer(IContextAwareIndexProvider)
+class _BuiltinLocationIndexProvider:
+    """Default provider for location-based context-aware indexes.
+
+    These indexes change when an object moves to a different container
+    (its path and id change).
+    """
+
+    def getIndexNames(self):
+        return ('path', 'getId', 'id')
+
+
+@implementer(IContextAwareIndexProvider)
+class _BuiltinSecurityIndexProvider:
+    """Default provider for security context-aware indexes.
+
+    allowedRolesAndUsers must be recomputed whenever the object moves
+    into a differently-protected part of the tree.
+    """
+
+    def getIndexNames(self):
+        return ('allowedRolesAndUsers',)
+
+
+@implementer(IContextAwareIndexProvider)
+class _BuiltinModificationDateIndexProvider:
+    """Provider for the modification-date catalog indexes updated on every move.
+
+    ``handleContentishEvent`` calls ``ob.notifyModified()`` (when the method is
+    present) during the optimized move path, which updates the object's
+    modification date.  The catalog indexes ``modified`` and ``Date`` must
+    therefore be reindexed in the same ``moveObject`` call so the catalog entry
+    reflects the new date.
+
+    **Background — why notifyModified() is called at all on a move**
+
+    In a standard Plone installation (without the optimization) the call chain
+    on ``IObjectMovedEvent`` is::
+
+        handleContentishEvent
+          → ob.indexObject()
+          → CMFPlone.CatalogTool.indexObject(obj, idxs=[])  ← Plone override
+          → CMFCatalogAware.reindexObject(idxs=[])
+          → ob.notifyModified()                              ← side-effect
+
+    ``Products.CMFPlone`` overrides ``CatalogTool.indexObject`` to delegate to
+    ``reindexObject(idxs=[])``, and ``CMFCatalogAware.reindexObject`` calls
+    ``notifyModified()`` whenever ``idxs`` is empty.  The modification-date
+    update therefore happened as a side-effect of that override, not as an
+    intentional part of the move flow.
+
+    The optimization introduced in this branch bypasses ``indexObject``
+    entirely and calls ``catalog.moveObject()`` directly, which breaks the
+    side-effect chain.  ``handleContentishEvent`` compensates by calling
+    ``ob.notifyModified()`` explicitly, and this provider ensures the updated
+    date is written to the catalog in the same operation.
+
+    The semantic correctness of updating the modification date on a move is
+    well-established: HTTP caches and ETags that are built on modification
+    dates must be invalidated when an object's canonical URL changes, even if
+    its content has not changed.  This is also the rationale documented by
+    ``ftw.copymovepatches``, a third-party package that adds the same
+    behaviour to older CMFCore versions.
+    """
+
+    def getIndexNames(self):
+        return ('modified', 'Date')
+
+
+class _MovePathsRegistryKey:
+    """Singleton used as key for ``transaction.set_data`` /
+    ``transaction.data``.
+
+    The ``transaction`` package stores arbitrary per-transaction data via
+    ``Transaction.set_data(ob, value)`` / ``Transaction.data(ob)``, keyed by
+    the identity (``id``) of *ob*.  Using a module-level singleton that is
+    never garbage-collected gives a stable, collision-free key.
+    """
+
+
+#: Singleton key for the pending-move registry stored on the transaction.
+_MOVE_PATHS_KEY = _MovePathsRegistryKey()
+
+
+def _pending_move_paths():
+    """Return the transaction-local dict ``{oid: old_path}`` for in-flight
+    moves.
+
+    On ``IObjectWillBeMovedEvent`` we record each object's current physical
+    path here, keyed by its ZODB ``_p_oid``.  On ``IObjectMovedEvent`` we pop
+    the entry and use it to call ``CatalogTool.moveObject``, which remaps the
+    catalog RID without a full unindex + reindex.
+
+    The map is stored via ``Transaction.set_data`` / ``Transaction.data`` —
+    rather than as a volatile ``_v_`` attribute directly on each object —
+    because volatile attributes are discarded whenever the ZODB object cache
+    evicts an object (ghostification).  For large subtrees (tens of thousands
+    of children) this caused the optimisation to silently fall back to a full
+    reindex for all objects ghostified between the ``IObjectWillBeMovedEvent``
+    and ``IObjectMovedEvent`` phases.  Transaction-attached data lives outside
+    the ZODB object graph, is never affected by cache pressure, and is
+    automatically discarded when the transaction commits or aborts.
+    """
+    txn = transaction.get()
+    try:
+        return txn.data(_MOVE_PATHS_KEY)
+    except KeyError:
+        registry = {}
+        txn.set_data(_MOVE_PATHS_KEY, registry)
+        return registry
+
+
+def get_context_aware_indexes():
+    """Return frozenset of all context-aware catalog index names.
+
+    Aggregates all named IContextAwareIndexProvider utilities.
+    Returns an empty frozenset if no providers are registered.
+    """
+    indexes = set()
+    for _name, provider in getUtilitiesFor(IContextAwareIndexProvider):
+        indexes.update(provider.getIndexNames())
+    return frozenset(indexes)
+
+
 def handleContentishEvent(ob, event):
     """ Event subscriber for (IContentish, IObjectEvent) events.
     """
@@ -295,10 +422,46 @@ def handleContentishEvent(ob, event):
 
     elif IObjectMovedEvent.providedBy(event):
         if event.newParent is not None:
+            oid = getattr(ob, '_p_oid', None)
+            old_path = _pending_move_paths().pop(oid, None) if oid else None
+            if old_path is not None:
+                # True move: optimization path — preserve catalog RID.
+                catalog = queryUtility(ICatalogTool)
+                if catalog is not None:
+                    # Update the modification date before writing the catalog
+                    # entry.  In the non-optimized path this happened as a
+                    # side-effect of CMFPlone overriding CatalogTool.indexObject
+                    # to call reindexObject(idxs=[]), which in turn calls
+                    # notifyModified().  Our optimization bypasses that chain,
+                    # so we call notifyModified() explicitly here.
+                    # See _BuiltinModificationDateIndexProvider for the full
+                    # rationale and background.
+                    if hasattr(aq_base(ob), 'notifyModified'):
+                        ob.notifyModified()
+                    idxs = get_context_aware_indexes()
+                    catalog.moveObject(ob, old_path, idxs)
+                    return
             ob.indexObject()
 
     elif IObjectWillBeMovedEvent.providedBy(event):
         if event.oldParent is not None:
+            if event.newParent is not None:
+                # True move: record the current path so IObjectMovedEvent can
+                # call moveObject() to remap the catalog RID instead of doing
+                # a full unindex + reindex.  The path is stored in the
+                # transaction data dict (keyed by _p_oid) rather than as a
+                # volatile _v_ attribute on the object itself; volatile attrs
+                # are lost when ZODB ghostifies an object under cache pressure,
+                # which caused the optimisation to silently degrade for large
+                # subtrees.  See _pending_move_paths() for details.
+                catalog = queryUtility(ICatalogTool)
+                idxs = get_context_aware_indexes()
+                if catalog is not None and idxs:
+                    oid = getattr(ob, '_p_oid', None)
+                    if oid is not None:
+                        _pending_move_paths()[oid] = '/'.join(
+                            ob.getPhysicalPath())
+                        return  # skip unindexObject; catalog entry preserved
             ob.unindexObject()
 
     elif IObjectCopiedEvent.providedBy(event):

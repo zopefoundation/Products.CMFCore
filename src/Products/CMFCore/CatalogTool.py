@@ -344,6 +344,34 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             )
 
     @security.private
+    def moveObject(self, object, old_path, idxs):
+        """Update the catalog when 'object' is moved, preserving its RID.
+
+        Flushes the index queue to ensure the catalog is consistent, then
+        remaps the old path to the same RID at the new path in the
+        underlying catalog, and reindexes 'idxs'.
+        """
+        getQueue().process()
+
+        new_path = '/'.join(object.getPhysicalPath())
+        cat = self._catalog
+        rid = cat.uids.get(old_path)
+
+        if rid is None:
+            # Object not in catalog (e.g., added and moved in same
+            # transaction; INDEX already ran at new_path via queue.process).
+            self.reindexObject(object, idxs=list(idxs), update_metadata=1)
+            return
+
+        # Remap old path → same RID → new path (preserves RID)
+        cat.uids[new_path] = rid
+        cat.paths[rid] = new_path
+        if old_path in cat.uids:
+            del cat.uids[old_path]
+
+        self.reindexObject(object, idxs=list(idxs), update_metadata=1)
+
+    @security.private
     def _indexObject(self, object):
         """Add to catalog.
         """

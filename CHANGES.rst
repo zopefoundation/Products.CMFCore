@@ -4,6 +4,31 @@ Products.CMFCore Changelog
 3.10 (unreleased)
 -----------------
 
+- Optimize object moves by reindexing only context-aware indexes instead of
+  a full unindex + reindex.  The catalog RID is preserved across the move,
+  avoiding stale references and unnecessary work.
+  A new ``moveObject(object, old_path, idxs)`` method is added to
+  ``CatalogTool`` and ``ICatalogTool`` to implement the path remap.
+
+  The pre-move path is now stored via ``Transaction.set_data`` /
+  ``Transaction.data`` (keyed by the object's ZODB ``_p_oid``) instead of a
+  volatile ``_v_cmf_old_path`` attribute on each object.  Volatile attributes
+  are discarded whenever the ZODB object cache evicts an object
+  (ghostification); for subtrees larger than the configured cache size this
+  caused the optimisation to silently fall back to a full reindex for all
+  objects ghostified between the ``IObjectWillBeMovedEvent`` and
+  ``IObjectMovedEvent`` phases.  Transaction-attached data lives outside the
+  ZODB object graph, is never affected by cache pressure, and is discarded
+  automatically on commit or abort.
+
+- Add ``IContextAwareIndexProvider``, a named-utility interface that
+  contributes catalog index names which must be reindexed on object moves
+  (path-sensitive, security-sensitive, etc.).  Register a named utility
+  providing this interface to extend the default set (``path``, ``getId``,
+  ``id``, ``allowedRolesAndUsers``).  The helper
+  ``CMFCatalogAware.get_context_aware_indexes()`` aggregates all registered
+  providers.
+
 
 3.9 (2026-03-23)
 ----------------
