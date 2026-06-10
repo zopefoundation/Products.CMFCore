@@ -553,7 +553,8 @@ class CMFCatalogAwareMoveOptimizationTests(CMFCatalogAware_CopySupport_Tests):
         # The optimized move path must call ob.notifyModified() so that the
         # modification date is updated in the same operation.  In the
         # non-optimized Plone path this happened as a side-effect of
-        # CMFPlone.CatalogTool.indexObject delegating to reindexObject(idxs=[]).
+        # CMFPlone.CatalogTool.indexObject delegating to
+        # reindexObject(idxs=[]).
         self._initPolicyAndUser()
         site = self._makeSite()
         site.folder1 = SimpleFolder('folder1')
@@ -582,8 +583,9 @@ class CMFCatalogAwareMoveOptimizationTests(CMFCatalogAware_CopySupport_Tests):
 
         site.manage_renameObject(id='bar', new_id='baz')
 
-        self.assertTrue(site['baz'].notified,
-                        'notifyModified() was not called on the renamed object')
+        self.assertTrue(
+            site['baz'].notified,
+            'notifyModified() was not called on the renamed object')
 
 
 def test_suite():
