@@ -25,6 +25,7 @@ from zope.interface import implementer
 
 from ..CMFCatalogAware import CMFCatalogAware
 from ..CMFCatalogAware import _BuiltinLocationIndexProvider
+from ..CMFCatalogAware import _BuiltinModificationDateIndexProvider
 from ..CMFCatalogAware import _BuiltinSecurityIndexProvider
 from ..CMFCatalogAware import get_context_aware_indexes
 from ..exceptions import NotFound
@@ -401,6 +402,11 @@ class ContextAwareIndexProviderTests(unittest.TestCase):
         names = _BuiltinSecurityIndexProvider().getIndexNames()
         self.assertIn('allowedRolesAndUsers', names)
 
+    def test_modification_date_provider(self):
+        names = _BuiltinModificationDateIndexProvider().getIndexNames()
+        self.assertIn('modified', names)
+        self.assertIn('Date', names)
+
     def test_get_context_aware_indexes_no_providers(self):
         result = get_context_aware_indexes()
         self.assertEqual(result, frozenset())
@@ -487,6 +493,11 @@ class CMFCatalogAwareMoveOptimizationTests(CMFCatalogAware_CopySupport_Tests):
             IContextAwareIndexProvider,
             name='cmf.security',
         )
+        sm.registerUtility(
+            _BuiltinModificationDateIndexProvider(),
+            IContextAwareIndexProvider,
+            name='cmf.modification-date',
+        )
 
     def tearDown(self):
         sm = getSiteManager()
@@ -494,6 +505,8 @@ class CMFCatalogAwareMoveOptimizationTests(CMFCatalogAware_CopySupport_Tests):
             provided=IContextAwareIndexProvider, name='cmf.location')
         sm.unregisterUtility(
             provided=IContextAwareIndexProvider, name='cmf.security')
+        sm.unregisterUtility(
+            provided=IContextAwareIndexProvider, name='cmf.modification-date')
         super().tearDown()
 
     def test_object_reindexed_after_cut_and_paste(self):
@@ -535,6 +548,42 @@ class CMFCatalogAwareMoveOptimizationTests(CMFCatalogAware_CopySupport_Tests):
         idxs = sorted(get_context_aware_indexes())
         self.assertEqual(
             cat.log, ['move /site/baz from /site/bar %s' % idxs])
+
+    def test_notifyModified_called_after_cut_and_paste(self):
+        # The optimized move path must call ob.notifyModified() so that the
+        # modification date is updated in the same operation.  In the
+        # non-optimized Plone path this happened as a side-effect of
+        # CMFPlone.CatalogTool.indexObject delegating to reindexObject(idxs=[]).
+        self._initPolicyAndUser()
+        site = self._makeSite()
+        site.folder1 = SimpleFolder('folder1')
+        folder1 = site.folder1
+        site.folder2 = SimpleFolder('folder2')
+        folder2 = site.folder2
+
+        bar = TheClass('bar')
+        folder1._setObject('bar', bar)
+        transaction.savepoint(optimistic=True)
+
+        cookie = folder1.manage_cutObjects(ids=['bar'])
+        folder2.manage_pasteObjects(cookie)
+
+        self.assertTrue(folder2['bar'].notified,
+                        'notifyModified() was not called on the moved object')
+
+    def test_notifyModified_called_after_moving(self):
+        # Same as above for rename (manage_renameObject).
+        self._initPolicyAndUser()
+        site = self._makeSite()
+
+        bar = TheClass('bar')
+        site._setObject('bar', bar)
+        transaction.savepoint(optimistic=True)
+
+        site.manage_renameObject(id='bar', new_id='baz')
+
+        self.assertTrue(site['baz'].notified,
+                        'notifyModified() was not called on the renamed object')
 
 
 def test_suite():

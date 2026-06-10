@@ -57,6 +57,11 @@
     name="cmf.security"
     factory="Products.CMFCore.CMFCatalogAware._BuiltinSecurityIndexProvider" />
 
+  <utility
+    provides="Products.CMFCore.interfaces.IContextAwareIndexProvider"
+    name="cmf.modification-date"
+    factory="Products.CMFCore.CMFCatalogAware._BuiltinModificationDateIndexProvider" />
+
   <!-- Don't publish acquired content items  -->
   <adapter
       provides=".interfaces.IShouldAllowAcquiredItemPublication"

@@ -311,6 +311,51 @@ class _BuiltinSecurityIndexProvider:
         return ('allowedRolesAndUsers',)
 
 
+@implementer(IContextAwareIndexProvider)
+class _BuiltinModificationDateIndexProvider:
+    """Provider for the modification-date catalog indexes updated on every move.
+
+    ``handleContentishEvent`` calls ``ob.notifyModified()`` (when the method is
+    present) during the optimized move path, which updates the object's
+    modification date.  The catalog indexes ``modified`` and ``Date`` must
+    therefore be reindexed in the same ``moveObject`` call so the catalog entry
+    reflects the new date.
+
+    **Background — why notifyModified() is called at all on a move**
+
+    In a standard Plone installation (without the optimization) the call chain
+    on ``IObjectMovedEvent`` is::
+
+        handleContentishEvent
+          → ob.indexObject()
+          → CMFPlone.CatalogTool.indexObject(obj, idxs=[])  ← Plone override
+          → CMFCatalogAware.reindexObject(idxs=[])
+          → ob.notifyModified()                              ← side-effect
+
+    ``Products.CMFPlone`` overrides ``CatalogTool.indexObject`` to delegate to
+    ``reindexObject(idxs=[])``, and ``CMFCatalogAware.reindexObject`` calls
+    ``notifyModified()`` whenever ``idxs`` is empty.  The modification-date
+    update therefore happened as a side-effect of that override, not as an
+    intentional part of the move flow.
+
+    The optimization introduced in this branch bypasses ``indexObject``
+    entirely and calls ``catalog.moveObject()`` directly, which breaks the
+    side-effect chain.  ``handleContentishEvent`` compensates by calling
+    ``ob.notifyModified()`` explicitly, and this provider ensures the updated
+    date is written to the catalog in the same operation.
+
+    The semantic correctness of updating the modification date on a move is
+    well-established: HTTP caches and ETags that are built on modification
+    dates must be invalidated when an object's canonical URL changes, even if
+    its content has not changed.  This is also the rationale documented by
+    ``ftw.copymovepatches``, a third-party package that adds the same
+    behaviour to older CMFCore versions.
+    """
+
+    def getIndexNames(self):
+        return ('modified', 'Date')
+
+
 class _MovePathsRegistryKey:
     """Singleton used as key for ``transaction.set_data`` /
     ``transaction.data``.
@@ -383,6 +428,16 @@ def handleContentishEvent(ob, event):
                 # True move: optimization path — preserve catalog RID.
                 catalog = queryUtility(ICatalogTool)
                 if catalog is not None:
+                    # Update the modification date before writing the catalog
+                    # entry.  In the non-optimized path this happened as a
+                    # side-effect of CMFPlone overriding CatalogTool.indexObject
+                    # to call reindexObject(idxs=[]), which in turn calls
+                    # notifyModified().  Our optimization bypasses that chain,
+                    # so we call notifyModified() explicitly here.
+                    # See _BuiltinModificationDateIndexProvider for the full
+                    # rationale and background.
+                    if hasattr(aq_base(ob), 'notifyModified'):
+                        ob.notifyModified()
                     idxs = get_context_aware_indexes()
                     catalog.moveObject(ob, old_path, idxs)
                     return
