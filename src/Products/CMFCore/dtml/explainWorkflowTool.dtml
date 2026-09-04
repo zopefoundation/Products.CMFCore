@@ -4,7 +4,7 @@
 <main class="container-fluid">
 
   <h3><code>portal_workflow</code> Tool</h3>
-  
+
   <p>
     This tool associates objects of a given content type with a "workflow";
     workflows are "state machines", each representing the life cycle of a

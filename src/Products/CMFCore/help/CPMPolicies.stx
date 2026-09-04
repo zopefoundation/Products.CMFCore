@@ -51,4 +51,3 @@ Cache Policy Manager - Policies
        'no_store=1' argument => "no-store" token
 
        'must_revalidate=1' argument => "must-revalidate" token
- 

@@ -17,7 +17,7 @@
 <main class="container-fluid">
 
   <h3>Workflows by type</h3>
-  
+
   <form action="manage_changeWorkflows" method="POST">
 
     <dtml-in types_info mapping sort=id>
@@ -49,12 +49,12 @@
     </div>
 
   <hr />
-  
+
   <p>
     Click the button below to update the security settings of all
     workflow-aware objects in this portal.
   </p>
-  
+
   <form action="updateRoleMappings" method="POST">
     <div class="zmi-controls">
       <input class="btn btn-primary" type="submit" name="submit"

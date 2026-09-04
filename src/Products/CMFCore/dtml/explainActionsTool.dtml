@@ -4,11 +4,11 @@
 <main class="container-fluid">
 
   <h3><code>portal_actions</code> Tool</h3>
-  
+
   <p> This tool assembles the "actions" which are germane to the current
       user (anonymous, member, etc.) and context (content object or folder
       being viewed).  These actions are drawn from several optional sources:
-  
+
     <ul>
       <li> the actions tool itself, for "global" actions;</li>
       <li> the workflow tool, for actions which depend on the
@@ -19,7 +19,7 @@
            content type;</li>
       <li> other action providers.</li>
     </ul>
-  
+
   </p>
 
 </main>

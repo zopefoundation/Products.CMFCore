@@ -5,13 +5,13 @@
 <main class="container-fluid">
 
   <h3>Diff of Customized vs. Original Source</h3>
-  
+
   <div tal:define="diffLines python:list(context.getDiff())">
     <pre tal:condition="diffLines"
          tal:content="python: '\n'.join(diffLines)">
       DIFF GOES HERE
     </pre>
-    
+
     <p tal:condition="not: diffLines"><em> No changes. </em></p>
   </div>
 

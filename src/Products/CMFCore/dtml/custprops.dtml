@@ -85,7 +85,7 @@
   <tr><td class="form-element"><dtml-var "getProperty(id)" html_quote></td></tr>
   </table>
   </td>
-  
+
   <td align="left" valign="top">
   <div class="list-item">
   &dtml-type;

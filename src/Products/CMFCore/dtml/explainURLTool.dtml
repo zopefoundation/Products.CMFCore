@@ -4,7 +4,7 @@
 <main class="container-fluid">
 
   <h3><code>portal_url</code> Tool</h3>
-  
+
   <p>
     This tool provides a common mechanism for finding the "root" object
     of a CMF Site, and for computing paths to objects relative to that root.
