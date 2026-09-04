@@ -15,7 +15,7 @@
     <p><b>Number of members stored: <dtml-var name="member_count"></b></p>
     <p><b>Number of "orphaned" members without user record: <dtml-var name="orphan_count"></b></p>
   </dtml-in>
- 
+
   <form action="<dtml-var name="URL0">" method="post">
     <input type="submit" name="button_pressed" value=" Prune orphaned member records ">
   </form>

@@ -8,4 +8,3 @@
 <x tal:replace="structure context/output_page_2" />
 
 </html>
-

@@ -11,7 +11,7 @@
     Please select two items to compare on the <i>Find</i> page.
 
   <dtml-else>
-    
+
     <form action="manage_compareResults" method="POST">
       <dtml-in item_paths>
         <input name="item_paths:list" value="&dtml-sequence-item;" type="hidden"/>

@@ -16,7 +16,7 @@
 <main class="container-fluid">
 
   <h3>Skin selections</h3>
-  
+
   <form action="manage_skinLayers" method="POST">
     <table>
       <tr>
@@ -35,7 +35,7 @@
         </td>
       </tr>
       </dtml-in>
-  
+
       <tr>
         <td colspan="2">
           <input type="submit" name="del_skin" value="Delete">
@@ -48,7 +48,7 @@
     <hr/>
 
     <h3>Add a new skin</h3>
-      
+
     <table>
       <tr>
          <th align="left">Name</th>
@@ -62,20 +62,20 @@
           <textarea cols="30" rows="3" name="skinpath:lines"></textarea>
         </td>
       </tr>
-  
+
       <tr>
         <td colspan="2">
           <input type="submit" name="add_skin" value="Add">
         </td>
       </tr>
-  
+
     </table>
   </form>
-  
+
   <hr />
 
   <h3>Skins settings</h3>
-  
+
   <form action="manage_properties" method="POST">
 
     <div class="form-group row">

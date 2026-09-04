@@ -15,7 +15,7 @@
 <dtml-var name="manage_tabs">
 
 <main class="container-fluid">
-  
+
 <h2>Membership role mappings</h2>
 
 <p class="form-help">
@@ -39,7 +39,7 @@
       <dtml-var name="sequence-item">
       <input type="hidden" name="portal_role" value="&dtml-sequence-item;"/>
     </td>
-    <td class="form-element"><input type="text" size="30" name="userfolder_role" 
+    <td class="form-element"><input type="text" size="30" name="userfolder_role"
         value="<dtml-var expr="getMappedRole(_['sequence-item'])">"></td>
     <td><input type="submit" value="Set Mapping"></td>
     </form>
@@ -63,10 +63,10 @@
 <form method="post" action="setMemberareaCreationFlag">
 
 <dtml-if expr="getMemberareaCreationFlag() == 1">
-  <p><b>Folders are created upon first login.</b> 
+  <p><b>Folders are created upon first login.</b>
   <input type="submit" value=" Turn folder creation off ">
 <dtml-else>
-  <p><b>No Folders are created.</b> 
+  <p><b>No Folders are created.</b>
   <input type="submit" value=" Turn folder creation on ">
 </dtml-if>
 
