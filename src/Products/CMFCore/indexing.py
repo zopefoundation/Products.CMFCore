@@ -9,6 +9,9 @@ from Acquisition import aq_parent
 from transaction import get as getTransaction
 from transaction.interfaces import ISavepointDataManager
 from zope.component import getSiteManager
+from zope.component.hooks import getSite
+from zope.component.hooks import setSite
+from zope.component.interfaces import ISite
 from zope.interface import implementer
 from zope.proxy import ProxyBase
 from zope.proxy import non_overridable
@@ -38,14 +41,39 @@ class PortalCatalogProcessor:
     """An index queue processor for the standard portal catalog via
        the `CatalogMultiplex` and `CMFCatalogAware` mixin classes """
 
+    @staticmethod
+    def _ensure_site(obj):
+        """Ensure a local site manager is active.
+
+        When the indexing queue is processed outside a request (e.g. in a
+        ``before_commit`` hook), ``getSite()`` may return ``None``.
+        Component lookups — especially indexer adapters used by
+        ``IndexableObjectWrapper`` — then fall back to the global site
+        manager and fail to find locally registered adapters.
+
+        Walk the object's acquisition chain to find a site and activate
+        it so that local component registrations are available during
+        catalog operations.
+        """
+        if getSite() is not None:
+            return
+        current = obj
+        while current is not None:
+            if ISite.providedBy(current):
+                setSite(current)
+                return
+            current = aq_parent(current)
+
     def index(self, obj, attributes=None):
         catalog = getToolByName(obj, 'portal_catalog', None)
         if catalog is not None:
+            self._ensure_site(obj)
             catalog._indexObject(obj)
 
     def reindex(self, obj, attributes=None, update_metadata=1):
         catalog = getToolByName(obj, 'portal_catalog', None)
         if catalog is not None:
+            self._ensure_site(obj)
             catalog._reindexObject(
                 obj,
                 idxs=attributes,
@@ -54,6 +82,7 @@ class PortalCatalogProcessor:
     def unindex(self, obj):
         catalog = getToolByName(obj, 'portal_catalog', None)
         if catalog is not None:
+            self._ensure_site(obj)
             catalog._unindexObject(obj)
 
     def begin(self):
