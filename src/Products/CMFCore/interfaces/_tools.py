@@ -411,14 +411,23 @@ class ICatalogTool(Interface):
         o Permission:  Private (Python only)
         """
 
-    def moveObject(object, old_path, idxs):
+    def moveObject(object, old_path):
         """Update the catalog when 'object' is moved, preserving its RID.
 
-        Flushes the index queue, remaps the old path to the same RID at
-        the new path in the underlying catalog, then reindexes 'idxs'.
+        Called on IObjectMovedEvent instead of 'indexObject', after the
+        'unindexObject' call on IObjectWillBeMovedEvent has been skipped.
+        CatalogTool updates the modification date of the object, remaps
+        the catalog entry at 'old_path' to the object's new path, then
+        reindexes all indexes except the ones listed in the optional
+        'contextless_indexes' lines property of the catalog.
+
+        This method is optional: catalogs that do not provide it get the
+        plain 'unindexObject' / 'indexObject' calls.
 
         o 'old_path' is the physical path string before the move.
-        o 'idxs' is the collection of context-aware index names to reindex.
+        o Return True if the move was handled.  Return False only if
+          nothing is cataloged under 'old_path': the caller then falls
+          back to 'indexObject' without unindexing the old path.
         o Permission:  Private (Python only)
         """
 
@@ -2264,31 +2273,6 @@ class IIndexQueueProcessor(IIndexing):
 class IPortalCatalogQueueProcessor(IIndexQueueProcessor):
     """ an index queue processor for the standard portal catalog via
         the `CatalogMultiplex` and `CMFCatalogAware` mixin classes """
-
-
-class IContextAwareIndexProvider(Interface):
-    """Named utility contributing catalog index names that must be
-    reindexed when an object moves within the content tree.
-
-    Register a named utility providing this interface to add custom
-    location- or security-sensitive indexes.  Use your package's dotted
-    name as the utility name (e.g. ``"mypackage.myindex"``) to avoid
-    conflicts.  All registered providers are aggregated by
-    ``CMFCatalogAware.get_context_aware_indexes()``.
-    """
-
-    __module__ = 'Products.CMFCore.interfaces'
-
-    def getIndexNames():
-        """Return a sequence of context-aware catalog index names.
-
-        These are indexes whose values change when an object moves to a
-        different location in the content tree (path, id, security context,
-        etc.).
-
-        o Return a sequence (tuple or list) of strings.
-        o Permission: Private (Python only)
-        """
 
 
 class InvalidQueueOperation(Exception):

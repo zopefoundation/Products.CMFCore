@@ -344,32 +344,48 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
             )
 
     @security.private
-    def moveObject(self, object, old_path, idxs):
+    def moveObject(self, object, old_path):
         """Update the catalog when 'object' is moved, preserving its RID.
 
-        Flushes the index queue to ensure the catalog is consistent, then
-        remaps the old path to the same RID at the new path in the
-        underlying catalog, and reindexes 'idxs'.
-        """
-        getQueue().process()
+        Updates the modification date of the object, remaps the catalog
+        entry at 'old_path' to the object's new path, then reindexes all
+        indexes except the ones listed in the optional 'contextless_indexes'
+        property.
 
-        new_path = '/'.join(object.getPhysicalPath())
+        Returns False, leaving the catalog and the object untouched, if
+        'old_path' is not cataloged.
+        """
         cat = self._catalog
         rid = cat.uids.get(old_path)
-
         if rid is None:
-            # Object not in catalog (e.g., added and moved in same
-            # transaction; INDEX already ran at new_path via queue.process).
-            self.reindexObject(object, idxs=list(idxs), update_metadata=1)
-            return
+            return False
+
+        # Without the optimization, CMFPlone updates the modification date as
+        # a side-effect of its indexObject override, which calls
+        # reindexObject(idxs=[]).  Keep that behavior: HTTP caches and ETags
+        # built on the modification date must be invalidated when the URL of
+        # the object changes.
+        if hasattr(aq_base(object), 'notifyModified'):
+            object.notifyModified()
+
+        new_path = self.__url(object)
+        stale_rid = cat.uids.get(new_path)
+        if stale_rid is not None and stale_rid != rid:
+            # Drop a leftover entry at the new path, or its RID would be
+            # orphaned by the remap below.
+            self.uncatalog_object(new_path)
 
         # Remap old path → same RID → new path (preserves RID)
         cat.uids[new_path] = rid
         cat.paths[rid] = new_path
-        if old_path in cat.uids:
-            del cat.uids[old_path]
+        del cat.uids[old_path]
 
-        self.reindexObject(object, idxs=list(idxs), update_metadata=1)
+        contextless = self.getProperty('contextless_indexes', None) or ()
+        idxs = [i for i in self.indexes() if i not in contextless]
+        if idxs:
+            # An empty list would mean "all indexes".
+            self.reindexObject(object, idxs=idxs, update_metadata=1)
+        return True
 
     @security.private
     def _indexObject(self, object):

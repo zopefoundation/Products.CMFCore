@@ -24,7 +24,6 @@ from App.special_dtml import DTMLFile
 from ExtensionClass import Base
 from OFS.interfaces import IObjectClonedEvent
 from OFS.interfaces import IObjectWillBeMovedEvent
-from zope.component import getUtilitiesFor
 from zope.component import queryUtility
 from zope.component import subscribers
 from zope.interface import implementer
@@ -33,10 +32,10 @@ from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectMovedEvent
 
+from .indexing import processQueue
 from .interfaces import ICallableOpaqueItem
 from .interfaces import ICatalogAware
 from .interfaces import ICatalogTool
-from .interfaces import IContextAwareIndexProvider
 from .interfaces import IOpaqueItemManager
 from .interfaces import IWorkflowAware
 from .interfaces import IWorkflowTool
@@ -287,75 +286,6 @@ class CMFCatalogAware(CatalogAware, WorkflowAware, OpaqueItemManager):
     """
 
 
-@implementer(IContextAwareIndexProvider)
-class _BuiltinLocationIndexProvider:
-    """Default provider for location-based context-aware indexes.
-
-    These indexes change when an object moves to a different container
-    (its path and id change).
-    """
-
-    def getIndexNames(self):
-        return ('path', 'getId', 'id')
-
-
-@implementer(IContextAwareIndexProvider)
-class _BuiltinSecurityIndexProvider:
-    """Default provider for security context-aware indexes.
-
-    allowedRolesAndUsers must be recomputed whenever the object moves
-    into a differently-protected part of the tree.
-    """
-
-    def getIndexNames(self):
-        return ('allowedRolesAndUsers',)
-
-
-@implementer(IContextAwareIndexProvider)
-class _BuiltinModificationDateIndexProvider:
-    """Provider for the modification-date catalog indexes updated on every move.
-
-    ``handleContentishEvent`` calls ``ob.notifyModified()`` (when the method is
-    present) during the optimized move path, which updates the object's
-    modification date.  The catalog indexes ``modified`` and ``Date`` must
-    therefore be reindexed in the same ``moveObject`` call so the catalog entry
-    reflects the new date.
-
-    **Background — why notifyModified() is called at all on a move**
-
-    In a standard Plone installation (without the optimization) the call chain
-    on ``IObjectMovedEvent`` is::
-
-        handleContentishEvent
-          → ob.indexObject()
-          → CMFPlone.CatalogTool.indexObject(obj, idxs=[])  ← Plone override
-          → CMFCatalogAware.reindexObject(idxs=[])
-          → ob.notifyModified()                              ← side-effect
-
-    ``Products.CMFPlone`` overrides ``CatalogTool.indexObject`` to delegate to
-    ``reindexObject(idxs=[])``, and ``CMFCatalogAware.reindexObject`` calls
-    ``notifyModified()`` whenever ``idxs`` is empty.  The modification-date
-    update therefore happened as a side-effect of that override, not as an
-    intentional part of the move flow.
-
-    The optimization introduced in this branch bypasses ``indexObject``
-    entirely and calls ``catalog.moveObject()`` directly, which breaks the
-    side-effect chain.  ``handleContentishEvent`` compensates by calling
-    ``ob.notifyModified()`` explicitly, and this provider ensures the updated
-    date is written to the catalog in the same operation.
-
-    The semantic correctness of updating the modification date on a move is
-    well-established: HTTP caches and ETags that are built on modification
-    dates must be invalidated when an object's canonical URL changes, even if
-    its content has not changed.  This is also the rationale documented by
-    ``ftw.copymovepatches``, a third-party package that adds the same
-    behaviour to older CMFCore versions.
-    """
-
-    def getIndexNames(self):
-        return ('modified', 'Date')
-
-
 class _MovePathsRegistryKey:
     """Singleton used as key for ``transaction.set_data`` /
     ``transaction.data``.
@@ -399,18 +329,6 @@ def _pending_move_paths():
         return registry
 
 
-def get_context_aware_indexes():
-    """Return frozenset of all context-aware catalog index names.
-
-    Aggregates all named IContextAwareIndexProvider utilities.
-    Returns an empty frozenset if no providers are registered.
-    """
-    indexes = set()
-    for _name, provider in getUtilitiesFor(IContextAwareIndexProvider):
-        indexes.update(provider.getIndexNames())
-    return frozenset(indexes)
-
-
 def handleContentishEvent(ob, event):
     """ Event subscriber for (IContentish, IObjectEvent) events.
     """
@@ -428,19 +346,10 @@ def handleContentishEvent(ob, event):
                 # True move: optimization path — preserve catalog RID.
                 catalog = queryUtility(ICatalogTool)
                 if catalog is not None:
-                    # Update the modification date before writing the catalog
-                    # entry.  In the non-optimized path this happened as a
-                    # side-effect of CMFPlone overriding CatalogTool.indexObject
-                    # to call reindexObject(idxs=[]), which in turn calls
-                    # notifyModified().  Our optimization bypasses that chain,
-                    # so we call notifyModified() explicitly here.
-                    # See _BuiltinModificationDateIndexProvider for the full
-                    # rationale and background.
-                    if hasattr(aq_base(ob), 'notifyModified'):
-                        ob.notifyModified()
-                    idxs = get_context_aware_indexes()
-                    catalog.moveObject(ob, old_path, idxs)
-                    return
+                    if catalog.moveObject(ob, old_path):
+                        return
+                    # Not cataloged under the old path: index it like a
+                    # regular add, honouring any indexObject override.
             ob.indexObject()
 
     elif IObjectWillBeMovedEvent.providedBy(event):
@@ -455,13 +364,18 @@ def handleContentishEvent(ob, event):
                 # which caused the optimisation to silently degrade for large
                 # subtrees.  See _pending_move_paths() for details.
                 catalog = queryUtility(ICatalogTool)
-                idxs = get_context_aware_indexes()
-                if catalog is not None and idxs:
-                    oid = getattr(ob, '_p_oid', None)
-                    if oid is not None:
-                        _pending_move_paths()[oid] = '/'.join(
-                            ob.getPhysicalPath())
-                        return  # skip unindexObject; catalog entry preserved
+                oid = getattr(ob, '_p_oid', None)
+                if catalog is not None and oid is not None and \
+                        getattr(catalog, 'moveObject', None) is not None:
+                    # Flush the indexing queue while every queued wrapper
+                    # still reports the old path.  Processed after the move,
+                    # a pending operation would be applied to the new path
+                    # (rename) or the old one (cut/paste), creating a second
+                    # catalog entry next to the remapped one.
+                    processQueue()
+                    _pending_move_paths()[oid] = '/'.join(
+                        ob.getPhysicalPath())
+                    return  # skip unindexObject; catalog entry preserved
             ob.unindexObject()
 
     elif IObjectCopiedEvent.providedBy(event):

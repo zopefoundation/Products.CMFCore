@@ -58,16 +58,20 @@ and search content.  See also the interfaces for :ref:`searchable_content`.
 .. autointerface::  Products.CMFCore.interfaces.ICatalogTool
    :members:
 
-When an object is moved within the content tree, the catalog only reindexes
-the *context-aware* indexes (those whose value depends on the object's
-location, such as ``path``, ``getId``, ``id`` and ``allowedRolesAndUsers``)
-rather than performing a full unindex and reindex.  Packages that implement
-their own location- or security-sensitive index can extend the set of
-reindexed indexes by registering a named utility providing
-``IContextAwareIndexProvider``.
+When an object is moved within the content tree, the catalog remaps its
+existing entry to the new path, preserving the RID, instead of performing a
+full unindex and reindex.  All indexes are then reindexed, except the ones
+whose value does not depend on the object's location or security context.
+List those in the optional ``contextless_indexes`` lines property of
+``portal_catalog``, for example from a GenericSetup ``catalog.xml``:
 
-.. autointerface::  Products.CMFCore.interfaces.IContextAwareIndexProvider
-   :members:
+.. code-block:: xml
+
+   <object name="portal_catalog">
+    <property name="contextless_indexes" type="lines">
+     <element value="SearchableText"/>
+    </property>
+   </object>
 
 
 

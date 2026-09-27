@@ -4,30 +4,32 @@ Products.CMFCore Changelog
 3.10 (unreleased)
 -----------------
 
-- Optimize object moves by reindexing only context-aware indexes instead of
-  a full unindex + reindex.  The catalog RID is preserved across the move,
-  avoiding stale references and unnecessary work.
-  A new ``moveObject(object, old_path, idxs)`` method is added to
-  ``CatalogTool`` and ``ICatalogTool`` to implement the path remap.
+- Optimize object moves: instead of a full unindex + reindex, the catalog
+  entry is remapped from the old to the new path, preserving its RID.  All
+  indexes are then reindexed, except the ones listed in the optional
+  ``contextless_indexes`` lines property of ``portal_catalog``: indexes whose
+  value does not depend on the object's location or security context, such as
+  ``SearchableText``, can be skipped this way.  The property can be set from a
+  GenericSetup ``catalog.xml``::
 
-  The pre-move path is now stored via ``Transaction.set_data`` /
-  ``Transaction.data`` (keyed by the object's ZODB ``_p_oid``) instead of a
-  volatile ``_v_cmf_old_path`` attribute on each object.  Volatile attributes
-  are discarded whenever the ZODB object cache evicts an object
-  (ghostification); for subtrees larger than the configured cache size this
-  caused the optimisation to silently fall back to a full reindex for all
-  objects ghostified between the ``IObjectWillBeMovedEvent`` and
-  ``IObjectMovedEvent`` phases.  Transaction-attached data lives outside the
-  ZODB object graph, is never affected by cache pressure, and is discarded
-  automatically on commit or abort.
+    <property name="contextless_indexes" type="lines">
+      <element value="SearchableText"/>
+    </property>
 
-- Add ``IContextAwareIndexProvider``, a named-utility interface that
-  contributes catalog index names which must be reindexed on object moves
-  (path-sensitive, security-sensitive, etc.).  Register a named utility
-  providing this interface to extend the default set (``path``, ``getId``,
-  ``id``, ``allowedRolesAndUsers``).  The helper
-  ``CMFCatalogAware.get_context_aware_indexes()`` aggregates all registered
-  providers.
+  A new ``moveObject(object, old_path)`` method is added to ``CatalogTool``
+  and ``ICatalogTool`` to implement the path remap.  Catalog tools that do not
+  provide ``moveObject`` keep the previous unindex + index behavior.
+  ``CatalogTool.moveObject`` also updates the modification date of moved
+  objects, as Plone already did through its ``CatalogTool.indexObject``.
+
+  The pre-move path is stored via ``Transaction.set_data`` /
+  ``Transaction.data`` (keyed by the object's ZODB ``_p_oid``), so it survives
+  ghostification of large moved subtrees.  The indexing queue is flushed
+  before the move, while queued objects still report their old path.
+
+  Note for ``IIndexQueueProcessor`` implementations (e.g. external search
+  engines): a move now queues a ``reindex`` of the object at its new path,
+  instead of an ``unindex`` of the old path followed by an ``index``.
 
 
 3.9 (2026-03-23)
