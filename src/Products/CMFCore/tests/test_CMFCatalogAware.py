@@ -48,6 +48,12 @@ class SimpleFolder(Folder):
         self._setId(id)
 
 
+class OrderedFolder(SimpleFolder):
+    # Like plone.folder: a moveObject that catalogs could acquire.
+    def moveObject(self, id, position):
+        raise AssertionError('moveObject acquired from the container')
+
+
 class DummyRoot(SimpleFolder):
     def getPhysicalRoot(self):
         return self
@@ -375,6 +381,21 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         cat = self.ctool
         cat.log = []
 
+        transaction.savepoint(optimistic=True)
+
+        site.manage_renameObject(id='bar', new_id='baz')
+        self.assertEqual(cat.log, ['unindex /site/bar', 'index /site/baz'])
+
+    def test_moveObject_not_acquired(self):
+        # A catalog without moveObject keeps the unindex + index flow even
+        # when its acquisition parent has a moveObject (e.g. plone.folder).
+        self._initPolicyAndUser()  # allow copy/paste operations
+        site = self._makeSite()
+        cat = DummyCatalog().__of__(OrderedFolder('container'))
+        getSiteManager().registerUtility(cat, ICatalogTool)
+
+        site._setObject('bar', TheClass('bar'))
+        cat.log = []
         transaction.savepoint(optimistic=True)
 
         site.manage_renameObject(id='bar', new_id='baz')

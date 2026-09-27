@@ -365,8 +365,11 @@ def handleContentishEvent(ob, event):
                 # subtrees.  See _pending_move_paths() for details.
                 catalog = queryUtility(ICatalogTool)
                 oid = getattr(ob, '_p_oid', None)
+                # aq_base: never acquire a moveObject from the catalog's
+                # container (e.g. plone.folder's moveObject(id, position)).
                 if catalog is not None and oid is not None and \
-                        getattr(catalog, 'moveObject', None) is not None:
+                        getattr(aq_base(catalog), 'moveObject', None) \
+                        is not None:
                     # Flush the indexing queue while every queued wrapper
                     # still reports the old path.  Processed after the move,
                     # a pending operation would be applied to the new path
