@@ -4,7 +4,7 @@
 <main class="container-fluid">
 
   <h3><code>portal_skins</code> Tool</h3>
-  
+
   <p>
     This tool extends the user interface of the CMF Site by providing
     configurable, layered name lookup to "skin methods", which may be

@@ -63,7 +63,7 @@ class FSPageTemplateTests(TransactionalTest, FSPTMaker):
     def test___call__(self):
         script = self._makeOne('testPT', 'testPT.pt')
         script = script.__of__(self.app)
-        self.assertEqual(script(), 'nohost')
+        self.assertEqual(script().strip(), 'nohost')
 
     def test_ContentType(self):
         script = self._makeOne('testXMLPT', 'testXMLPT.pt')

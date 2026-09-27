@@ -4,11 +4,11 @@
 <main class="container-fluid">
 
   <h3><code>portal_types</code> Tool</h3>
-  
+
   <p>
     This tool manages the set of policies related to the content types
     which can be created on the CMF Site.  These policies include:
-  
+
     <ul>
       <li> the construction mechanism; </li>
       <li> whether discussion is allowed for the type; </li>

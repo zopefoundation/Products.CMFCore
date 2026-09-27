@@ -13,4 +13,3 @@ allow_simple_one_argument_traversal : 1
 FROM test_table
 SELECT *
 WHERE <dtml-sqltest id type="string">
-

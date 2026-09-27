@@ -6,4 +6,3 @@ Subhead Here
 
 And this is a paragraph,
 broken across lines.
-

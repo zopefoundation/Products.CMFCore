@@ -4,7 +4,7 @@
 <main class="container-fluid">
 
   <h3><code>portal_catalog</code> Tool</h3>
-  
+
   <p>
     This tool wraps the standard Zope ZCatalog, supplying additional
     indices, metadata, and policies which are specific to the operation

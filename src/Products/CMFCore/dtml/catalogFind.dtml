@@ -18,7 +18,7 @@ are found will be automatically added to the catalog.
     </td>
     <td style="width:*">
     <div class="form-element">
-      <select id="type" class="form-control" 
+      <select id="type" class="form-control"
               name="obj_metatypes:list" size="8" multiple="multiple">
         <option value="all" selected="selected">
           All types
@@ -122,7 +122,7 @@ are found will be automatically added to the catalog.
     </td>
   </tr>
 
-  <input type="hidden" name="search_sub:int" value="1" checked> 
+  <input type="hidden" name="search_sub:int" value="1" checked>
 
   <tr class="simple-search">
     <td>&nbsp;</td>

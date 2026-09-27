@@ -88,7 +88,7 @@
         <small class="text-muted">
           Select a destination folder and press the button
           to make a copy of this method that can be customized.
-          If the destination folder is not listed try 
+          If the destination folder is not listed try
           increasing the maximum results number (default: 20).
         </small>
       </div>
@@ -107,9 +107,9 @@
           <dtml-var "tag(scale=250.0 / _.int(height), css_class='img-thumbnail', id='preview')">
       <dtml-elif "width==-1 and getId().split('.')[-1]=='svg'">
         <!-- SVG images whose dimensions are not determinable -->
-        <object class="img-thumbnail" 
+        <object class="img-thumbnail"
           alt="preview" title="Preview"
-          data="&dtml-absolute_url;"  type="image/svg+xml" 
+          data="&dtml-absolute_url;"  type="image/svg+xml"
           onload="this.style.maxWidth='99.99%'" />
       <dtml-else>
           <dtml-var "tag(css_class='img-thumbnail', id='preview')">
@@ -122,7 +122,7 @@
       background-color: #ddd;
       background-position: 4px 4px, 14px 14px;
       background-size: 20px 20px;
-      background-image: 
+      background-image:
         linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),
         linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);
       box-shadow: inset 0px 0px 0px 4px #fff;

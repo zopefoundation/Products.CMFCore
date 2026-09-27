@@ -49,7 +49,7 @@
         </tr>
           <td>
             <span class="form-label"> Custom member ID pattern </span>
-            <input type="text" size="30" name="pattern" 
+            <input type="text" size="30" name="pattern"
                    value="&dtml-getIDPattern;" />
           </td>
         </tr>

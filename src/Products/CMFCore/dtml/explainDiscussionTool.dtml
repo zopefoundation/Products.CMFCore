@@ -4,7 +4,7 @@
 <main class="container-fluid">
 
   <h3><code>portal_discussion</code> Tool</h3>
-  
+
   <p>
     This tool embodies the policies for a given CMF Site concerning
     the storage mechanisms for discussion about content.
