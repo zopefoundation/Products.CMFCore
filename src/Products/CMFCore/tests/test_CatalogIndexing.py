@@ -94,6 +94,42 @@ class MockQueueProcessor(MockQueue):
         self.state = 'aborted'
 
 
+@implementer(IIndexQueueProcessor)
+class ReentrantQueueProcessor:
+    """ a processor whose `index` call for a given object simulates
+        what happens for real when indexing triggers event handlers
+        that end up doing a catalog search, which itself calls
+        `processQueue` (and thus `IndexQueue.process`) again while the
+        outer `process` call is still iterating its queue """
+
+    def __init__(self, queue):
+        self.queue = queue
+        self.calls = []
+        self._triggered = False
+
+    def begin(self):
+        pass
+
+    def commit(self):
+        pass
+
+    def abort(self):
+        pass
+
+    def index(self, obj, attributes=None):
+        self.calls.append(('index', obj))
+        if obj == 'trigger' and not self._triggered:
+            self._triggered = True
+            self.queue.reindex('other')
+            self.queue.process()
+
+    def reindex(self, obj, attributes=None, update_metadata=1):
+        self.calls.append(('reindex', obj))
+
+    def unindex(self, obj):
+        self.calls.append(('unindex', obj))
+
+
 class QueueTests(CleanUp, TestCase):
 
     def setUp(self):
@@ -150,6 +186,23 @@ class QueueTests(CleanUp, TestCase):
         self.assertEqual(proc.state, 'started')
         queue.commit()
         self.assertEqual(proc.state, 'finished')
+
+    def testReentrantProcessDoesNotCorruptQueue(self):
+        # a nested call to `process`, triggered while the outer call is
+        # still iterating over the queue, must not process any item more
+        # than once, see
+        # https://github.com/zopefoundation/Products.CMFCore/issues/79
+        queue = self.queue
+        proc = ReentrantQueueProcessor(queue)
+        provideUtility(proc, IIndexQueueProcessor)
+        queue.index('trigger')
+        queue.index('after')
+        processed = queue.process()
+        self.assertEqual(proc.calls.count(('index', 'trigger')), 1)
+        self.assertEqual(proc.calls.count(('index', 'after')), 1)
+        self.assertEqual(len(proc.calls), 3)
+        self.assertEqual(processed, 3)
+        self.assertEqual(queue.getState(), [])
 
     def testMultipleQueueProcessors(self):
         queue = self.queue

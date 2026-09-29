@@ -133,6 +133,7 @@ class IndexQueue(local):
     def __init__(self):
         self.queue = []
         self.tmhook = None
+        self._processing = False
 
     def hook(self):
         """ register a hook into the transaction machinery if that hasn't
@@ -210,29 +211,51 @@ class IndexQueue(local):
         self.setState(sorted(res.values(), key=itemgetter(0)))
 
     def process(self):
-        self.optimize()
-        if not self.queue:
+        # Guard against reentrant calls.  If processing an item causes,
+        # directly or indirectly, another call to `process` on this same
+        # queue (for example because an index update triggers a catalog
+        # search, which calls `processQueue`), that nested call must not
+        # run: `optimize`/`setState`/`clear` all mutate `self.queue` in
+        # place, and doing so while the loop below is still iterating
+        # over that very list corrupts the iteration, causing items to
+        # be processed more than once or not at all (see
+        # https://github.com/zopefoundation/Products.CMFCore/issues/79).
+        # Note this only guards against reentrant calls to `process`
+        # itself; `processQueue` already has its own, separate,
+        # equivalent guard for the cases going through it, but that
+        # guard does not cover the transaction machinery's call to
+        # `process` via `QueueTM.before_commit`.
+        if self._processing:
             return 0
-        sm = getSiteManager()
-        utilities = list(sm.getUtilitiesFor(IIndexQueueProcessor))
-        processed = 0
-        for name, util in utilities:
-            util.begin()
-        # ??? must the queue be handled independently for each processor?
-        for op, obj, attributes, metadata in self.queue:
+        self._processing = True
+        try:
+            self.optimize()
+            if not self.queue:
+                return 0
+            sm = getSiteManager()
+            utilities = list(sm.getUtilitiesFor(IIndexQueueProcessor))
+            processed = 0
             for name, util in utilities:
-                if op == INDEX:
-                    util.index(obj, attributes)
-                elif op == REINDEX:
-                    util.reindex(obj, attributes, update_metadata=metadata)
-                elif op == UNINDEX:
-                    util.unindex(obj)
-                else:
-                    raise InvalidQueueOperation(op)
-            processed += 1
-        debug('finished processing %d items...', processed)
-        self.clear()
-        return processed
+                util.begin()
+            # ??? must the queue be handled independently for each
+            # processor?
+            for op, obj, attributes, metadata in self.queue:
+                for name, util in utilities:
+                    if op == INDEX:
+                        util.index(obj, attributes)
+                    elif op == REINDEX:
+                        util.reindex(obj, attributes,
+                                     update_metadata=metadata)
+                    elif op == UNINDEX:
+                        util.unindex(obj)
+                    else:
+                        raise InvalidQueueOperation(op)
+                processed += 1
+            debug('finished processing %d items...', processed)
+            self.clear()
+            return processed
+        finally:
+            self._processing = False
 
     def commit(self):
         sm = getSiteManager()

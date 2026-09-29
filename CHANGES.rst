@@ -4,6 +4,14 @@ Products.CMFCore Changelog
 3.10 (unreleased)
 -----------------
 
+- Fix ``IndexQueue.process`` to guard against reentrant calls. An index
+  update that itself triggers, directly or indirectly, another call to
+  ``process`` on the same queue (for example a catalog search performed
+  from within an event handler) would otherwise mutate ``self.queue``
+  while the outer call was still iterating over it, causing items to be
+  processed more than once or skipped entirely.
+  (`#79 <https://github.com/zopefoundation/Products.CMFCore/issues/79>`_)
+
 
 3.9 (2026-03-23)
 ----------------
