@@ -112,7 +112,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 0)
 
         filename, text, content_type = context._wrote[1]
@@ -141,7 +141,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 0)
 
         filename, text, content_type = context._wrote[1]
@@ -174,7 +174,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 3)
         for index in range(len(ITEM_IDS)):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
@@ -212,7 +212,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 3)
         for index in range(len(ITEM_IDS)):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
@@ -254,7 +254,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 3)
         for index in range(len(ITEM_IDS)):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
@@ -305,7 +305,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.workflow_states')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 3)
         for index in range(len(ITEM_IDS)):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
@@ -336,7 +336,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 3)
         for index in range(len(ITEM_IDS)):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
@@ -384,7 +384,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 3)
         for index in range(len(ITEM_IDS)):
             self.assertEqual(objects[index][0], ITEM_IDS[index])
@@ -430,7 +430,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 3)
 
         for index in range(len(FOLDER_IDS)):
@@ -441,7 +441,7 @@ class SiteStructureExporterTests(unittest.TestCase):
             filename, text, content_type = context._wrote[2 + (2 * index)]
             self.assertEqual(filename, '/'.join(('structure', id, '.objects')))
             self.assertEqual(content_type, 'text/comma-separated-values')
-            subobjects = [x for x in reader(StringIO(text))]
+            subobjects = [*reader(StringIO(text))]
             self.assertEqual(len(subobjects), 0)
 
             filename, text, content_type = context._wrote[2 + (2 * index) + 1]
@@ -503,7 +503,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         self.assertEqual(filename, 'structure/.objects')
         self.assertEqual(content_type, 'text/comma-separated-values')
 
-        objects = [x for x in reader(StringIO(text))]
+        objects = [*reader(StringIO(text))]
         self.assertEqual(len(objects), 1)
         self.assertEqual(objects[0][0], 'aware')
         self.assertEqual(objects[0][1], TEST_CSV_AWARE)
@@ -521,7 +521,7 @@ class SiteStructureExporterTests(unittest.TestCase):
         filename, text, content_type = context._wrote[2]
         self.assertEqual(filename, 'structure/aware.csv')
         self.assertEqual(content_type, 'text/comma-separated-values')
-        rows = [x for x in reader(StringIO(text))]
+        rows = [*reader(StringIO(text))]
         self.assertEqual(len(rows), 2)
         self.assertEqual(rows[0][0], 'one')
         self.assertEqual(rows[0][1], 'two')
