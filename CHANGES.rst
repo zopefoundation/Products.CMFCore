@@ -5,6 +5,10 @@ Products.CMFCore Changelog
 -----------------
 
 
+- Add support for Python 3.15.
+
+- Drop support for Python 3.10.
+
 3.9 (2026-03-23)
 ----------------
 
