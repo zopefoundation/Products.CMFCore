@@ -411,6 +411,26 @@ class ICatalogTool(Interface):
         o Permission:  Private (Python only)
         """
 
+    def moveObject(object, old_path):
+        """Update the catalog when 'object' is moved, preserving its RID.
+
+        Called on IObjectMovedEvent instead of 'indexObject', after the
+        'unindexObject' call on IObjectWillBeMovedEvent has been skipped.
+        CatalogTool updates the modification date of the object, remaps
+        the catalog entry at 'old_path' to the object's new path, then
+        reindexes all indexes except the ones listed in the optional
+        'contextless_indexes' lines property of the catalog.
+
+        This method is optional: catalogs that do not provide it get the
+        plain 'unindexObject' / 'indexObject' calls.
+
+        o 'old_path' is the physical path string before the move.
+        o Return True if the move was handled.  Return False only if
+          nothing is cataloged under 'old_path': the caller then falls
+          back to 'indexObject' without unindexing the old path.
+        o Permission:  Private (Python only)
+        """
+
 
 class IIndexableObjectWrapper(Interface):
 
