@@ -22,8 +22,8 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
 from OFS.Image import File
 from zope.contenttype import guess_content_type
-from ZPublisher.HTTPRequest import default_encoding
 from ZPublisher import zpublish
+from ZPublisher.HTTPRequest import default_encoding
 
 from .DirectoryView import registerFileExtension
 from .DirectoryView import registerMetaType
