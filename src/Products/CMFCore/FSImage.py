@@ -20,6 +20,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.special_dtml import DTMLFile
 from OFS.Image import Image
 from OFS.Image import getImageInfo
+from ZPublisher import zpublish
 
 from .DirectoryView import registerFileExtension
 from .DirectoryView import registerMetaType
@@ -101,6 +102,7 @@ class FSImage(FSObject):
         return self._image_tag(*args, **kw)
 
     @security.protected(View)
+    @zpublish(True)
     def index_html(self, REQUEST, RESPONSE):
         """
         The default view of the contents of a File or Image.

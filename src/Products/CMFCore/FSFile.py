@@ -23,6 +23,7 @@ from App.special_dtml import DTMLFile
 from OFS.Image import File
 from zope.contenttype import guess_content_type
 from ZPublisher.HTTPRequest import default_encoding
+from ZPublisher import zpublish
 
 from .DirectoryView import registerFileExtension
 from .DirectoryView import registerMetaType
@@ -141,6 +142,7 @@ class FSFile(FSObject):
         return self.getModTime()
 
     @security.protected(View)
+    @zpublish(True)
     def index_html(self, REQUEST, RESPONSE):
         """
         The default view of the contents of a File or Image.

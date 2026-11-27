@@ -9,6 +9,8 @@ Products.CMFCore Changelog
 
 - Drop support for Python 3.10.
 
+- Decorated relevant methods with ``@zpublish(True)`` to integrate with ZPublisher.
+
 3.9 (2026-03-23)
 ----------------
 
