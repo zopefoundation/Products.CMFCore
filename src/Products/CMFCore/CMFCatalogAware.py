@@ -15,6 +15,7 @@
 
 import logging
 
+import transaction
 from AccessControl.class_init import InitializeClass
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.SecurityManagement import getSecurityManager
@@ -31,6 +32,7 @@ from zope.lifecycleevent.interfaces import IObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectMovedEvent
 
+from .indexing import processQueue
 from .interfaces import ICallableOpaqueItem
 from .interfaces import ICatalogAware
 from .interfaces import ICatalogTool
@@ -284,6 +286,49 @@ class CMFCatalogAware(CatalogAware, WorkflowAware, OpaqueItemManager):
     """
 
 
+class _MovePathsRegistryKey:
+    """Singleton used as key for ``transaction.set_data`` /
+    ``transaction.data``.
+
+    The ``transaction`` package stores arbitrary per-transaction data via
+    ``Transaction.set_data(ob, value)`` / ``Transaction.data(ob)``, keyed by
+    the identity (``id``) of *ob*.  Using a module-level singleton that is
+    never garbage-collected gives a stable, collision-free key.
+    """
+
+
+#: Singleton key for the pending-move registry stored on the transaction.
+_MOVE_PATHS_KEY = _MovePathsRegistryKey()
+
+
+def _pending_move_paths():
+    """Return the transaction-local dict ``{oid: old_path}`` for in-flight
+    moves.
+
+    On ``IObjectWillBeMovedEvent`` we record each object's current physical
+    path here, keyed by its ZODB ``_p_oid``.  On ``IObjectMovedEvent`` we pop
+    the entry and use it to call ``CatalogTool.moveObject``, which remaps the
+    catalog RID without a full unindex + reindex.
+
+    The map is stored via ``Transaction.set_data`` / ``Transaction.data`` —
+    rather than as a volatile ``_v_`` attribute directly on each object —
+    because volatile attributes are discarded whenever the ZODB object cache
+    evicts an object (ghostification).  For large subtrees (tens of thousands
+    of children) this caused the optimisation to silently fall back to a full
+    reindex for all objects ghostified between the ``IObjectWillBeMovedEvent``
+    and ``IObjectMovedEvent`` phases.  Transaction-attached data lives outside
+    the ZODB object graph, is never affected by cache pressure, and is
+    automatically discarded when the transaction commits or aborts.
+    """
+    txn = transaction.get()
+    try:
+        return txn.data(_MOVE_PATHS_KEY)
+    except KeyError:
+        registry = {}
+        txn.set_data(_MOVE_PATHS_KEY, registry)
+        return registry
+
+
 def handleContentishEvent(ob, event):
     """ Event subscriber for (IContentish, IObjectEvent) events.
     """
@@ -295,10 +340,45 @@ def handleContentishEvent(ob, event):
 
     elif IObjectMovedEvent.providedBy(event):
         if event.newParent is not None:
+            oid = getattr(ob, '_p_oid', None)
+            old_path = _pending_move_paths().pop(oid, None) if oid else None
+            if old_path is not None:
+                # True move: optimization path — preserve catalog RID.
+                catalog = queryUtility(ICatalogTool)
+                if catalog is not None:
+                    if catalog.moveObject(ob, old_path):
+                        return
+                    # Not cataloged under the old path: index it like a
+                    # regular add, honouring any indexObject override.
             ob.indexObject()
 
     elif IObjectWillBeMovedEvent.providedBy(event):
         if event.oldParent is not None:
+            if event.newParent is not None:
+                # True move: record the current path so IObjectMovedEvent can
+                # call moveObject() to remap the catalog RID instead of doing
+                # a full unindex + reindex.  The path is stored in the
+                # transaction data dict (keyed by _p_oid) rather than as a
+                # volatile _v_ attribute on the object itself; volatile attrs
+                # are lost when ZODB ghostifies an object under cache pressure,
+                # which caused the optimisation to silently degrade for large
+                # subtrees.  See _pending_move_paths() for details.
+                catalog = queryUtility(ICatalogTool)
+                oid = getattr(ob, '_p_oid', None)
+                # aq_base: never acquire a moveObject from the catalog's
+                # container (e.g. plone.folder's moveObject(id, position)).
+                if catalog is not None and oid is not None and \
+                        getattr(aq_base(catalog), 'moveObject', None) \
+                        is not None:
+                    # Flush the indexing queue while every queued wrapper
+                    # still reports the old path.  Processed after the move,
+                    # a pending operation would be applied to the new path
+                    # (rename) or the old one (cut/paste), creating a second
+                    # catalog entry next to the remapped one.
+                    processQueue()
+                    _pending_move_paths()[oid] = '/'.join(
+                        ob.getPhysicalPath())
+                    return  # skip unindexObject; catalog entry preserved
             ob.unindexObject()
 
     elif IObjectCopiedEvent.providedBy(event):

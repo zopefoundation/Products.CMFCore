@@ -70,6 +70,16 @@ _UPDATE_IMPORT = """\
 """
 
 
+_CONTEXTLESS_IMPORT = """\
+<?xml version="1.0"?>
+<object meta_type="CMF Catalog" name="portal_catalog">
+ <property name="contextless_indexes" type="lines">
+  <element value="SearchableText"/>
+ </property>
+</object>
+"""
+
+
 class _extra:
 
     pass
@@ -217,6 +227,21 @@ class importCatalogToolTests(_CatalogToolSetup):
         self.assertEqual(len(ctool.objectIds()), 1)
         self.assertEqual(len(ctool.indexes()), 2)
         self.assertEqual(len(ctool.schema()), 2)
+
+    def test_contextless_indexes(self):
+        # The property read by CatalogTool.moveObject needs no declaration:
+        # GenericSetup adds it on import.
+        from ..catalog import importCatalogTool
+
+        site, ctool = self._initSite(0)
+        self.assertIsNone(ctool.getProperty('contextless_indexes'))
+
+        context = DummyImportContext(site, False)
+        context._files['catalog.xml'] = _CONTEXTLESS_IMPORT
+        importCatalogTool(context)
+
+        self.assertEqual(ctool.getProperty('contextless_indexes'),
+                         ('SearchableText',))
 
 
 def test_suite():

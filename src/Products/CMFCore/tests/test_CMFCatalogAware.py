@@ -48,6 +48,12 @@ class SimpleFolder(Folder):
         self._setId(id)
 
 
+class OrderedFolder(SimpleFolder):
+    # Like plone.folder: a moveObject that catalogs could acquire.
+    def moveObject(self, id, position):
+        raise AssertionError('moveObject acquired from the container')
+
+
 class DummyRoot(SimpleFolder):
     def getPhysicalRoot(self):
         return self
@@ -113,6 +119,17 @@ class DummyCatalog(SimpleItem):
 
     def _unrestrictedSearchResults(self, **kw):
         return self.unrestrictedSearchResults(**kw)
+
+
+class DummyMoveCatalog(DummyCatalog):
+
+    def __init__(self):
+        super().__init__()
+        self.move_result = True
+
+    def moveObject(self, ob, old_path):
+        self.log.append(f'move {physicalpath(ob)} from {old_path}')
+        return self.move_result
 
 
 class DummyWorkflowTool(SimpleItem):
@@ -258,12 +275,13 @@ class CMFCatalogAwareTests(unittest.TestCase, LogInterceptor):
 class CMFCatalogAware_CopySupport_Tests(SecurityTest):
 
     layer = EventZCMLLayer
+    _catalog_class = DummyCatalog
 
     def _makeSite(self):
         self.app._setObject('site', SimpleFolder('site'))
         site = self.app._getOb('site')
         sm = getSiteManager()
-        self.ctool = DummyCatalog()
+        self.ctool = self._catalog_class()
         sm.registerUtility(self.ctool, ICatalogTool)
         sm.registerUtility(DummyWorkflowTool(), IWorkflowTool)
         # Hack, we need a _p_mtime for the file, so we make sure that it
@@ -368,10 +386,95 @@ class CMFCatalogAware_CopySupport_Tests(SecurityTest):
         site.manage_renameObject(id='bar', new_id='baz')
         self.assertEqual(cat.log, ['unindex /site/bar', 'index /site/baz'])
 
+    def test_moveObject_not_acquired(self):
+        # A catalog without moveObject keeps the unindex + index flow even
+        # when its acquisition parent has a moveObject (e.g. plone.folder).
+        self._initPolicyAndUser()  # allow copy/paste operations
+        site = self._makeSite()
+        cat = DummyCatalog().__of__(OrderedFolder('container'))
+        getSiteManager().registerUtility(cat, ICatalogTool)
+
+        site._setObject('bar', TheClass('bar'))
+        cat.log = []
+        transaction.savepoint(optimistic=True)
+
+        site.manage_renameObject(id='bar', new_id='baz')
+        self.assertEqual(cat.log, ['unindex /site/bar', 'index /site/baz'])
+
+
+class CMFCatalogAwareMoveOptimizationTests(CMFCatalogAware_CopySupport_Tests):
+    """Re-run the copy-support suite with a catalog providing ``moveObject``.
+
+    True moves take the optimized ``moveObject`` path (RID preserved), while
+    add / remove / copy behavior is unchanged.  The two move tests are
+    overridden to assert the optimized behavior; all other inherited tests
+    verify the non-move paths are unaffected.  The base class, whose catalog
+    has no ``moveObject``, covers the unindex + index fallback.
+    """
+
+    _catalog_class = DummyMoveCatalog
+
+    def _makeFolders(self):
+        self._initPolicyAndUser()  # allow copy/paste operations
+        site = self._makeSite()
+        site.folder1 = SimpleFolder('folder1')
+        site.folder2 = SimpleFolder('folder2')
+        site.folder1._setObject('bar', TheClass('bar'))
+        self.ctool.log = []
+        transaction.savepoint(optimistic=True)
+        return site.folder1, site.folder2
+
+    def _makeBar(self):
+        self._initPolicyAndUser()  # allow copy/paste operations
+        site = self._makeSite()
+        site._setObject('bar', TheClass('bar'))
+        self.ctool.log = []
+        transaction.savepoint(optimistic=True)
+        return site
+
+    def test_object_reindexed_after_cut_and_paste(self):
+        folder1, folder2 = self._makeFolders()
+
+        cookie = folder1.manage_cutObjects(ids=['bar'])
+        folder2.manage_pasteObjects(cookie)
+
+        self.assertEqual(
+            self.ctool.log,
+            ['move /site/folder2/bar from /site/folder1/bar'])
+
+    def test_object_reindexed_after_moving(self):
+        site = self._makeBar()
+
+        site.manage_renameObject(id='bar', new_id='baz')
+
+        self.assertEqual(self.ctool.log, ['move /site/baz from /site/bar'])
+
+    def test_object_indexed_after_moving_if_not_cataloged(self):
+        # moveObject returns False when nothing is cataloged under the old
+        # path: the object is then indexed like a regular add.
+        site = self._makeBar()
+        self.ctool.move_result = False
+
+        site.manage_renameObject(id='bar', new_id='baz')
+
+        self.assertEqual(self.ctool.log, ['move /site/baz from /site/bar',
+                                          'index /site/baz'])
+
+    def test_notifyModified_left_to_catalog(self):
+        # Updating the modification date is up to moveObject, so that
+        # alternative catalogs can avoid it (e.g. for bulk moves).
+        site = self._makeBar()
+
+        site.manage_renameObject(id='bar', new_id='baz')
+
+        self.assertFalse(site['baz'].notified)
+
 
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(CMFCatalogAwareTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(
             CMFCatalogAware_CopySupport_Tests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            CMFCatalogAwareMoveOptimizationTests),
     ))

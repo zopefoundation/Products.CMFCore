@@ -15,6 +15,8 @@
 
 import unittest
 
+import transaction
+from AccessControl.SecurityManagement import newSecurityManager
 from Acquisition import Implicit
 from Testing.ZopeTestCase import installProduct
 from zope.component import getSiteManager
@@ -23,11 +25,18 @@ from zope.globalrequest import setRequest
 from zope.interface import implementer
 from zope.testing.cleanup import cleanUp
 
+from ..indexing import processQueue
+from ..interfaces import ICatalogTool
 from ..interfaces import IContentish
+from ..interfaces import IIndexQueueProcessor
+from ..interfaces import ITypesTool
 from ..interfaces import IWorkflowTool
+from ..testing import TraversingEventZCMLLayer
 from .base.dummy import DummyContent
 from .base.dummy import DummySite
+from .base.dummy import DummyUserFolder
 from .base.testcase import SecurityTest
+from .test_PortalFolder import extra_meta_types
 
 
 installProduct('PluginIndexes')
@@ -588,9 +597,202 @@ class CatalogToolTests(SecurityTest):
         self.assertEqual(1, len(ctool._catalog.searchResults(query)))
 
 
+class ModifiableDummyContent(DummyContent):
+
+    notified = False
+
+    def notifyModified(self):
+        self.notified = True
+
+
+class CatalogToolMoveTests(SecurityTest):
+
+    layer = TraversingEventZCMLLayer
+
+    def setUp(self):
+        from ..CatalogTool import CatalogTool
+        from ..indexing import PortalCatalogProcessor
+        from ..PortalFolder import PortalFolder
+        from ..TypesTool import TypesTool
+
+        SecurityTest.setUp(self)
+        self.app._setObject('site', DummySite('site'))
+        site = self.app.site
+        acl_users = site._setObject('acl_users', DummyUserFolder())
+        newSecurityManager(None, acl_users.all_powerful_Oz)
+        site._setObject('portal_catalog', CatalogTool())
+        self.ctool = ctool = site.portal_catalog
+        ctool.addIndex('path', 'PathIndex')
+        ctool.addIndex('getId', 'FieldIndex')
+        ctool.addIndex('Title', 'FieldIndex')
+        sm = getSiteManager()
+        sm.registerUtility(ctool, ICatalogTool)
+        sm.registerUtility(TypesTool(), ITypesTool)
+        sm.registerUtility(PortalCatalogProcessor(), IIndexQueueProcessor,
+                           name='portal-catalog')
+        self.folder = site._setObject('folder', PortalFolder('folder'))
+        self.sub = self.folder._getOb(
+            self.folder._setObject('sub', PortalFolder('sub')))
+        # Waaa! force both folders to allow paste of Dummy object.
+        self.folder.all_meta_types = extra_meta_types()
+        self.sub.all_meta_types = extra_meta_types()
+
+    def tearDown(self):
+        sm = getSiteManager()
+        sm.unregisterUtility(provided=ICatalogTool)
+        sm.unregisterUtility(provided=ITypesTool)
+        sm.unregisterUtility(provided=IIndexQueueProcessor,
+                             name='portal-catalog')
+        SecurityTest.tearDown(self)
+
+    def _addContent(self, id='foo', title='Old'):
+        ob = ModifiableDummyContent(id, catalog=1)
+        ob.title = title
+        self.folder._setObject(id, ob)
+        return self.folder._getOb(id)
+
+    def _catalogedPaths(self):
+        # Every RID must be reachable through its path: no orphans.
+        processQueue()
+        cat = self.ctool._catalog
+        self.assertEqual(len(cat.uids), len(cat.paths))
+        self.assertEqual(len(cat), len(cat.paths))
+        return sorted(cat.uids.keys())
+
+    def _indexedValue(self, index, path):
+        rid = self.ctool.getrid(path)
+        return self.ctool._catalog.getIndex(index).getEntryForObject(rid)
+
+    def test_moveObject_not_cataloged(self):
+        ob = self._addContent()
+        processQueue()
+
+        self.assertFalse(self.ctool.moveObject(ob, '/bar/site/nowhere'))
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/foo'])
+        self.assertFalse(ob.notified)
+
+    def test_moveObject_drops_stale_entry_at_new_path(self):
+        ob = self._addContent()
+        processQueue()
+        self.ctool.catalog_object(ob, '/bar/site/folder/old')
+        old_rid = self.ctool.getrid('/bar/site/folder/old')
+
+        self.assertTrue(self.ctool.moveObject(ob, '/bar/site/folder/old'))
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/foo'])
+        self.assertEqual(self.ctool.getrid('/bar/site/folder/foo'), old_rid)
+
+    def test_rename_preserves_rid(self):
+        self._addContent()
+        processQueue()
+        rid = self.ctool.getrid('/bar/site/folder/foo')
+        transaction.savepoint(optimistic=True)
+
+        self.folder.manage_renameObject('foo', 'baz')
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/baz'])
+        self.assertEqual(self.ctool.getrid('/bar/site/folder/baz'), rid)
+        self.assertEqual(self._indexedValue('getId', '/bar/site/folder/baz'),
+                         'baz')
+        self.assertEqual(
+            self._indexedValue('path', '/bar/site/folder/baz'),
+            '/bar/site/folder/baz')
+
+    def test_cut_and_paste_preserves_rid(self):
+        self._addContent()
+        processQueue()
+        rid = self.ctool.getrid('/bar/site/folder/foo')
+        transaction.savepoint(optimistic=True)
+
+        cookie = self.folder.manage_cutObjects(ids=['foo'])
+        self.sub.manage_pasteObjects(cookie)
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/sub/foo'])
+        self.assertEqual(self.ctool.getrid('/bar/site/folder/sub/foo'), rid)
+
+    def test_move_updates_modification_date(self):
+        self._addContent()
+        processQueue()
+        transaction.savepoint(optimistic=True)
+
+        self.folder.manage_renameObject('foo', 'baz')
+
+        self.assertTrue(self.folder.baz.notified)
+
+    def test_move_reindexes_all_indexes_by_default(self):
+        ob = self._addContent(title='Old')
+        processQueue()
+        ob.title = 'New'  # changed without reindexing
+        transaction.savepoint(optimistic=True)
+
+        self.folder.manage_renameObject('foo', 'baz')
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/baz'])
+        self.assertEqual(self._indexedValue('Title', '/bar/site/folder/baz'),
+                         'New')
+
+    def test_move_skips_contextless_indexes(self):
+        self.ctool._setProperty('contextless_indexes', ('Title',), 'lines')
+        ob = self._addContent(title='Old')
+        processQueue()
+        ob.title = 'New'  # changed without reindexing
+        transaction.savepoint(optimistic=True)
+
+        self.folder.manage_renameObject('foo', 'baz')
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/baz'])
+        self.assertEqual(self._indexedValue('Title', '/bar/site/folder/baz'),
+                         'Old')
+        self.assertEqual(self._indexedValue('getId', '/bar/site/folder/baz'),
+                         'baz')
+
+    def test_rename_with_pending_reindex(self):
+        # A reindex queued before the rename must not create a second
+        # catalog entry next to the remapped one.
+        ob = self._addContent(title='Old')
+        processQueue()
+        transaction.savepoint(optimistic=True)
+        ob.title = 'New'
+        ob.reindexObject()
+
+        self.folder.manage_renameObject('foo', 'baz')
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/baz'])
+        self.assertEqual(self._indexedValue('Title', '/bar/site/folder/baz'),
+                         'New')
+
+    def test_cut_and_paste_with_pending_reindex(self):
+        # A reindex queued before the move must not leave an entry behind
+        # at the old path.
+        ob = self._addContent(title='Old')
+        processQueue()
+        transaction.savepoint(optimistic=True)
+        ob.title = 'New'
+        ob.reindexObject()
+
+        cookie = self.folder.manage_cutObjects(ids=['foo'])
+        self.sub.manage_pasteObjects(cookie)
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/sub/foo'])
+        self.assertEqual(
+            self._indexedValue('Title', '/bar/site/folder/sub/foo'), 'New')
+
+    def test_add_and_rename_in_same_transaction(self):
+        self._addContent(title='Old')  # index operation still queued
+        transaction.savepoint(optimistic=True)
+
+        self.folder.manage_renameObject('foo', 'baz')
+
+        self.assertEqual(self._catalogedPaths(), ['/bar/site/folder/baz'])
+        self.assertEqual(self._indexedValue('Title', '/bar/site/folder/baz'),
+                         'Old')
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.defaultTestLoader.loadTestsFromTestCase(
             IndexableObjectWrapperTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(CatalogToolTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(
+            CatalogToolMoveTests),
     ))

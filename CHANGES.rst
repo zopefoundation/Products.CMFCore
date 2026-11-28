@@ -4,6 +4,33 @@ Products.CMFCore Changelog
 3.10 (unreleased)
 -----------------
 
+- Optimize object moves: instead of a full unindex + reindex, the catalog
+  entry is remapped from the old to the new path, preserving its RID.  All
+  indexes are then reindexed, except the ones listed in the optional
+  ``contextless_indexes`` lines property of ``portal_catalog``: indexes whose
+  value does not depend on the object's location or security context, such as
+  ``SearchableText``, can be skipped this way.  The property can be set from a
+  GenericSetup ``catalog.xml``::
+
+    <property name="contextless_indexes" type="lines">
+      <element value="SearchableText"/>
+    </property>
+
+  A new ``moveObject(object, old_path)`` method is added to ``CatalogTool``
+  and ``ICatalogTool`` to implement the path remap.  Catalog tools that do not
+  provide ``moveObject`` keep the previous unindex + index behavior.
+  ``CatalogTool.moveObject`` also updates the modification date of moved
+  objects, as Plone already did through its ``CatalogTool.indexObject``.
+
+  The pre-move path is stored via ``Transaction.set_data`` /
+  ``Transaction.data`` (keyed by the object's ZODB ``_p_oid``), so it survives
+  ghostification of large moved subtrees.  The indexing queue is flushed
+  before the move, while queued objects still report their old path.
+
+  Note for ``IIndexQueueProcessor`` implementations (e.g. external search
+  engines): a move now queues a ``reindex`` of the object at its new path,
+  instead of an ``unindex`` of the old path followed by an ``index``.
+
 
 - Add support for Python 3.15.
 
